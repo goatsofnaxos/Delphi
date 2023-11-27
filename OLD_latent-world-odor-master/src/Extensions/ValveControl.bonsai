@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WorkflowBuilder Version="2.7.3"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xmlns="https://bonsai-rx.org/2018/workflow">
+  <Workflow>
+    <Nodes>
+      <Expression xsi:type="WorkflowInput">
+        <Name>Source1</Name>
+      </Expression>
+      <Expression xsi:type="ExternalizedMapping">
+        <Property Name="Value" DisplayName="ValveState" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="BooleanProperty">
+          <Value>true</Value>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="MulticastSubject">
+        <Name>DeliverOdor</Name>
+      </Expression>
+      <Expression xsi:type="WorkflowOutput" />
+    </Nodes>
+    <Edges>
+      <Edge From="0" To="2" Label="Source1" />
+      <Edge From="1" To="2" Label="Source2" />
+      <Edge From="2" To="3" Label="Source1" />
+      <Edge From="3" To="4" Label="Source1" />
+    </Edges>
+  </Workflow>
+</WorkflowBuilder>
