@@ -29,7 +29,7 @@
 		- save all frames between t_videoPRE = video_t0-0.5 seconds to video_tn+t_videoPOST = +0.5
 		- t_videoPRE = 0.5 seconds, t_videoPOST = 0.5 seconds
 		- we somehow need to handle situations in which beam is broken twice within the t_videoPRE and t_videoPOST windows, I'm sure you have thought about this before and settled on a good solution
-- Define Harp expander lines according to hardware parameters file (XML, CSV...), which lists:
+- Have all workflow parameters loaded from an XML or CSV file which lists:
 	- the name of the stimuli ("OdorA"/"OdorB"/"OdorC"/...)
 	- which Harp expander digital OUT line (out2/out3/...) corresponds to which stimulus (A/B/C…)
 	- which Harp expander digital OUT line (out1) corresponds to the poke valve (VALVE_P)
