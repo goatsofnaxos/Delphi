@@ -3,10 +3,40 @@
 - 1x Harp poke in the wall of the cage
 - 1x Harp expander + breakout board
 - 1x Harp passive Voltage step-up board (8 channels)
-- 1x FLIR Blackfly camera (part # BFS-U3-13Y3M-C), 8-pin GPIU + IR source
+- 1x FLIR Blackfly camera (part # BFS-U3-13Y3M-C), 8-pin GPIO + IR source
 - 8x 3-way “stimulus” valves (VALVE_Sx) to control which stimulus is administered; these valves upstream of the “poke” valve
 - 1x 4-way “poke” valve (VALVE_p) feeding into the poke that controls onset and offset of the stimulus (by default flows odorless air, when energized  flows odorized air; which odor it flow is determined by the “stimulus” valves upstream)
  
+**HARDWARE TESTING WORKFLOW**
+- See [Wiring diagram for hardware](https://github.com/goatsofnaxos/Delphi/blob/main/Design/WiringDiagram.pdf)
+- Goal: control the state of all valves + camera trigger as well as simulate IR beam breaks on the poke
+- Graphical interface
+	- Black background
+	- 8 grey/white square for the 8 VALVE_Sx valves, with text above it indicating "stimulus" name ("OdorA/OdorB/...") and line ID ("outX")
+	- 1 (separate, standalone) grey/white square for the VALVE_P valve, with text above indicating name ("VALVE_P") and line ID ("out1")
+	- 1 (separate, standalone) grey/white circle for the poke IR beam state
+	- 1 (separate, standalone) grey/white triangle for camera trigger state
+	- Color convention: GREY when line is low / WHITE when line is high
+	- Interaction:
+		- Clicking a square or triangle (valves and camera trigger) switches the shape's color from grey to white and switches the relevant line to high. Clicking it again switches the color back to grey and the line back to low. 
+		- Clicking the circle (poke IR beam state) simulates a beam break in software, again, with same color convention as for squares/triangle
+- Video
+	- 100 Hz frame rate
+	- Realtime display at any frame rate >= 20Hz
+	- Buffering the 100 Hz stream and save frames conditional on beam breaks (real or simulated)
+		- video_t0 is when beam is broken
+		- video_tn is when beam is restored
+		- save all frames between t_videoPRE = video_t0-0.5 seconds to video_tn+t_videoPOST = +0.5
+		- t_videoPRE = 0.5 seconds, t_videoPOST = 0.5 seconds
+		- we somehow need to handle situations in which beam is broken twice within the t_videoPRE and t_videoPOST windows, I'm sure you have thought about this before and settled on a good solution
+- Define Harp expander lines according to hardware parameters file (XML, CSV...), which lists:
+	- the name of the stimuli ("OdorA"/"OdorB"/"OdorC"/...)
+	- which Harp expander digital OUT line (out2/out3/...) corresponds to which stimulus (A/B/C…)
+	- which Harp expander digital OUT line (out1) corresponds to the poke valve (VALVE_P)
+	- which Harp expander digital OUT line (out0) corresponds to the video trigger
+	- which Harp expander digital IN line corresponds to the IR beam break input from the poke
+	- the video acquisition buffer durations (t_videoPRE, t_videoPOST)
+	- any other relevant hardware parameters
 
 **EXAMPLE TRIAL FLOW FOR “ABC” RULE**
 - Rule: A —> B —> C —> A …
@@ -28,11 +58,15 @@
 	- *abc.rule* file encoding A —> B —> C —> A …
  	- *cba.rule* file encoding C —> B —> A —> C …
 - An experiment parameters file defining
-	- the name of the stimuli ("A"/"B"/"C"/...)
-	- which Harp expander digital line corresponds to which stimulus (A/B/C…)
+	- the name of the stimuli ("OdorA"/"OdorB"/"OdorC"/...)
+	- which Harp expander digital OUT line (out2/out3/...) corresponds to which stimulus (A/B/C…)
+	- which Harp expander digital OUT line (out1) corresponds to the poke valve (VALVE_P)
+	- which Harp expander digital OUT line (out0) corresponds to the video trigger
+	- which Harp expander digital IN line corresponds to the IR beam break input from the poke
  	- the t_X time delays
-  	- the filenames of rules to populate in the rule-selection drop-down list (see graphical interface, below); first filename in the list indicates which rule to initialize the system with
+	- the video acquisition buffer durations (t_videoPRE, t_videoPOST)
 	- any other relevant hardware parameters
+  	- the filenames of rules to populate in the rule-selection drop-down list (see graphical interface, below); first filename in the list indicates which rule to initialize the system with
 - Rule representation: so far all the rules and breaks we've thought of can be represented by a transition matrix, but you had mentioned a more flexible representation. We're up for anything as long as it doesn't slow down development too much as we are keen to get back to piloting the behaviors.
 - Rule switching. We'd like to be able to switch between rules and rule breaks (so in the ABC example, have the animal in ABC rule for a few days, then switch it to CBA). This should occur
 	- during the inter-poke interval: so if IR beam is being broken while user switches between rules, software should wait for IR beam to be restored before switching
