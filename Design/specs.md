@@ -24,11 +24,11 @@
 	- 100 Hz frame rate
 	- Realtime display at any frame rate >= 20Hz
 	- Buffering the 100 Hz stream and save frames conditional on beam breaks (real or simulated)
-		- video_t0 is when beam is broken
-		- video_tn is when beam is restored
-		- save all frames between t_videoPRE = video_t0-0.5 seconds to video_tn+t_videoPOST = +0.5
+		- beam_t0 is when beam is broken
+		- beam_tn is when beam is restored
+		- save all frames between (beam_t0 - t_videoPRE) and (beam_tn + t_videoPOST)
 		- t_videoPRE = 0.5 seconds, t_videoPOST = 0.5 seconds
-		- we somehow need to handle situations in which beam is broken twice within the t_videoPRE and t_videoPOST windows, I'm sure you have thought about this before and settled on a good solution
+		- we somehow need to handle situations in which beam is broken >1 times within the t_videoPRE and t_videoPOST windows, I'm sure you have thought about this before and settled on a good solution
 - Have all workflow parameters loaded from an XML or CSV file which lists:
 	- the name of the stimuli ("OdorA"/"OdorB"/"OdorC"/...)
 	- which Harp expander digital OUT line (out2/out3/...) corresponds to which stimulus (A/B/C…)
