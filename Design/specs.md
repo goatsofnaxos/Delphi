@@ -23,6 +23,7 @@
 - Video
 	- 100 Hz frame rate
 	- Realtime display at any frame rate >= 20Hz
+	- ROI (which pixels actually streamed to disk) drawn over video window
 	- Buffering the 100 Hz stream and save frames conditional on beam breaks (real or simulated)
 		- beam_t0 is when beam is broken
 		- beam_tn is when beam is restored
@@ -35,6 +36,7 @@
 	- which Harp expander digital OUT line (out1) corresponds to the poke valve (VALVE_P)
 	- which Harp expander digital OUT line (out0) corresponds to the video trigger
 	- which Harp expander digital IN line corresponds to the IR beam break input from the poke
+	- ROI in the video stream to select which subset of pixels to stream to disk
 	- the video acquisition buffer durations (t_videoPRE, t_videoPOST)
 	- any other relevant hardware parameters
 
@@ -85,7 +87,10 @@
 		- current rule that’s being followed
 		- name of the current and next stimulus (A/B/C...)
 	- Buttons, or some way we can trigger events ourselves by clicking so that we can "break the beam", open one of the valves, etc...
-- Video feed from Blackfly camera. If possible we would like to save video at ~100 Hz but if it makes things easier, the live feed can update at 10-20 Hz. NOTE: video should be an optional functionality (most boxes will run without video)
+- Video feed from Blackfly camera.
+	- If possible we would like to save video at ~100 Hz but if it makes things easier, the live feed can update at 10-20 Hz. 
+	- ROI (which pixels actually streamed to disk) drawn over video window
+	- NOTE: video should be an optional functionality (most boxes will run without video)
 - Drop-down menu that allows us to select which rule to use. Menu should be populated according to the rule filenames defined in the experiment parameters file.
 - A button or a key combination to halt the workflow and exit gracefully, turn off all valves that were on, etc.
 - Plotting (this would be nice down the road, not a priority now) to keep track of poking data as it comes in: 
