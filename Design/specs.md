@@ -20,6 +20,7 @@
 	- Interaction:
 		- Clicking a square or triangle (valves and camera trigger) switches the shape's color from grey to white and switches the relevant line to high. Clicking it again switches the color back to grey and the line back to low. 
 		- Clicking the circle (poke IR beam state) simulates a beam break in software, again, with same color convention as for squares/triangle
+		- *Assign each odor valve to number keys on keyboard (e.g. valve 1 = key 1, valve 2 = key 2,...) so we can turn it on and off with the keys. Same with port valve (key "p" would control the on/off stage of the port valve)
 - Video
 	- 100 Hz frame rate
 	- Realtime display at any frame rate >= 20Hz
