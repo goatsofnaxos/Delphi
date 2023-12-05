@@ -1,0 +1,13 @@
+# bonsai environment files
+.vs
+bin
+obj
+Packages
+*.exe
+*.exe.settings
+*.WebView2
+
+# data files
+*.avi
+*.bin
+*.csv
