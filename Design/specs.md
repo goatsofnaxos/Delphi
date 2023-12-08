@@ -127,3 +127,32 @@
 		- current stimulus
 		- IR beam state (broken / not broken, perhaps represented by a grey vs white box), frame by frame
 		- VALVE_p state (open / closed, perhaps represented by a grey vs white box), frame by frame
+
+**WIRING DIAGRAM**
+
+```mermaid
+graph TD
+    A[Nitrogen Tank] --> B[Flow Regulator 1]
+    AA{Computer} -.-> BB{Harp Expander}
+    BB -.OUT0 > USB 3.-> CC{Blackfly Camera}
+    BB -.OUT1.-> DD{CoolDrive}
+    EE{12 VDC} -.-> Y{Harp Passive Controller}
+    EE -.-> DD
+    DD -.-> E
+    BB -.OUT 2,3,4 > IN 1,2,3.-> Y
+    Y -.VALVE SA-SH > OUT 1-8.-> Q
+    A --> C[Flow Regulator 2]
+    C --> E[Port/Final Valve]
+    B --> D[Nitrogen Manifold]
+    D --> F[Odour Bottle 1-8]
+    F --> Q[Valve 1-8]
+    Q --> N[Odour Manifold]
+    N --> O(Exhaust)
+    N --> E
+    E --> P[Harp Poke]
+    E --> O
+    FF -.IN0 > DI, GND > GND, +5V > +5V.-> GG{Harp Poke Breakout}
+    GG -.-> P
+    BB <-.-> FF{Harp Expander Breakout}
+    FF -.OUT 5,7,6,8,9 > IN 4,5,6,7,8.->Y
+```
