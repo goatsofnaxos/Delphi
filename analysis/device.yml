@@ -1,0 +1,422 @@
+%YAML 1.1
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/harp-tech/reflex-generator/main/schema/device.json
+device: OutputExpander
+whoAmI: 1108
+firmwareVersion: "2.2"
+hardwareTargets: "1.2"
+registers:
+  AuxInState:
+    address: 32
+    type: U8
+    access: Event
+    maskType: AuxiliaryInputs
+    description: Reports the state of the auxiliary inputs.
+  AuxInRisingEdge:
+    address: 33
+    type: U8
+    access: Write
+    maskType: AuxiliaryInputs
+    description: Enables rising edge detection on the auxiliary inputs.
+  AuxInFallingEdge:
+    address: 34
+    type: U8
+    access: Write
+    maskType: AuxiliaryInputs
+    description: Enables falling edge detection on the auxiliary input port.
+  OutputSet: &output
+    address: 35
+    type: U16
+    access: Write
+    maskType: DigitalOutputs
+    description: Set the specified digital output lines.
+  OutputClear:
+    <<: *output
+    address: 36
+    description: Clear the specified digital output lines
+  OutputToggle:
+    <<: *output
+    address: 37
+    description: Toggle the specified digital output lines
+  OutputState:
+    <<: *output
+    address: 38
+    description: Write the state of all digital output lines
+  PwmAndStimEnable: &pwmstimcontrol
+    address: 39
+    type: U16
+    access: Write
+    maskType: PwmAndStimMappings
+    description: Enables PWM and stimulation on the specified digital output lines.
+  PwmAndStimDisable:
+    <<: *pwmstimcontrol
+    address: 40
+    description: Disables PWM and stimulation on the specified digital output lines.
+  PwmAndStimState:
+    <<: *pwmstimcontrol
+    address: 41
+    description: Writes the mapping between PWM/stimulation and the specified digital output lines in a single command.
+  Pwm0Frequency: &pwmfrequency
+    address: 42
+    type: Float
+    maxValue: 1000
+    minValue: 0.5
+    access: Write
+    description: Sets the frequency of PWM0 (Hz).
+  Pwm0DutyCycle: &dutycycle
+    address: 43
+    type: Float
+    minValue: 1
+    maxValue: 100
+    defaultValue: 50
+    access: Write
+    description: Sets the duty cycle of PWM0 (%).
+  Pwm0PulseCount: &pulsecount
+    address: 44
+    type: U16
+    access: Write
+    description: Sets the number of pulses to generate for PWM0.
+  Pwm0ActualFrequency: &realfrequency
+    address: 45
+    type: Float
+    access: Read
+    description: Reports the actual frequency to be generated from PWM0 (Hz).
+  Pwm0ActualDutyCycle: &realdutycycle
+    address: 46
+    type: Float
+    access: Read
+    description: Reports the actual duty cycle to be generated from PWM0 (%).
+  Pwm0AcquisitionMode: &pwmmode
+    address: 47
+    type: U8
+    access: Write
+    maskType: AcquisitionMode
+    description: Sets the acquisition mode of PWM0.
+  Pwm0TriggerSource: &pwmtriggermode
+    address: 48
+    type: U8
+    access: Write
+    maskType: TriggerSource
+    description: Sets the trigger source of PWM0.
+  Pwm0EventConfig: &eventenable
+    address: 49
+    type: U8
+    access: Write
+    maskType: EnableFlag
+    description: Enables the generation of events for PWM0.
+  Pwm1Frequency:
+    <<: *pwmfrequency
+    address: 50
+    description: Sets the frequency of PWM1 (Hz).
+  Pwm1DutyCycle:
+    <<: *dutycycle
+    address: 51
+    description: Sets the duty cycle of PWM1 (%).
+  Pwm1PulseCount:
+    <<: *pulsecount
+    address: 52
+    description: Sets the number of pulses to generate for PWM1.
+  Pwm1ActualFrequency:
+    <<: *realfrequency
+    address: 53
+    description: Reports the actual frequency to be generated from PWM1 (Hz).
+  Pwm1ActualDutyCycle:
+    <<: *realdutycycle
+    address: 54
+    description: Reports the actual duty cycle to be generated from PWM1 (%).
+  Pwm1AcquisitionMode:
+    <<: *pwmmode
+    address: 55
+    description: Sets the acquisition mode of PWM1.
+  Pwm1TriggerSource:
+    <<: *pwmtriggermode
+    address: 56
+    description: Sets the trigger source of PWM1.
+  Pwm1EventConfig:
+    <<: *eventenable
+    address: 57
+    description: Enables the generation of events for PWM1.
+  Pwm2Frequency:
+    <<: *pwmfrequency
+    address: 58
+    description: Sets the frequency of PWM2 (Hz).
+  Pwm2DutyCycle:
+    <<: *dutycycle
+    address: 59
+    description: Sets the duty cycle of PWM2 (%).
+  Pwm2PulseCount:
+    <<: *pulsecount
+    address: 60
+    description: Sets the number of pulses to generate for PWM2.
+  Pwm2ActualFrequency:
+    <<: *realfrequency
+    address: 61
+    description: Reports the actual frequency to be generated from PWM2 (Hz).
+  Pwm2ActualDutyCycle:
+    <<: *realdutycycle
+    address: 62
+    description: Reports the actual duty cycle to be generated from PWM2 (%).
+  Pwm2AcquisitionMode:
+    <<: *pwmmode
+    address: 63
+    description: Sets the acquisition mode of PWM2.
+  Pwm2TriggerSource:
+    <<: *pwmtriggermode
+    address: 64
+    description: Sets the trigger source of PWM2.
+  Pwm2EventConfig:
+    <<: *eventenable
+    address: 65
+    description: Enables the generation of events for PWM2.
+  PwmStart:
+    address: 66
+    type: U8
+    access: [Write, Event]
+    maskType: PwmChannels
+    description: Starts the a PWM on the specified channels. An event will be generated if the start was triggered by an auxiliary input.
+  PwmStop:
+    address: 67
+    type: U8
+    access: Write
+    maskType: PwmChannels
+    description: Stops the a PWM on the specified channels.
+  PwmRiseEvent:
+    address: 68
+    type: U8
+    access: [Write, Event]
+    maskType: PwmChannels
+    description: Enables the generation of an event on every rising edge of the PWM line.
+  Stim0PulseOnTime: &stimulusontime
+    address: 69
+    type: U16
+    access: Write
+    description: Sets the duration (us) each pulse is on for.
+  Stim0PulseOffTime:
+    <<: *stimulusontime
+    address: 70
+    description: Sets the duration (us) each pulse is off for.
+  Stim0PulseCount:
+    <<: *pulsecount
+    address: 71
+    description: Sets the number of pulses to be generate when triggered.
+  Stim0AcquisitionMode:
+    address: 72
+    type: U8
+    access: Write
+    maskType: AcquisitionMode
+    description: Sets the acquisition mode of Stim0.
+  Stim0TriggerSource:
+    address: 73
+    type: U8
+    access: Write
+    maskType: TriggerSource
+    description: Sets the trigger source of Stim0.
+  StimStart:
+    address: 74
+    type: U8
+    access: Write
+    maskType: StimChannels
+    description: Starts a target Stim protocol.
+  StimStop:
+    address: 75
+    type: U8
+    access: Write
+    maskType: StimChannels
+    description: Stops the target Stim protocol.
+  OutputPulse:
+    address: 76
+    type: U16
+    access: Write
+    maskType: DigitalOutputs
+    description: Enables pulse generation on the specified digital output line.
+  Out0PulseWidth: &outpulsewidth
+    address: 77
+    type: U16
+    access: Write
+    description: Sets the duration (ms) of the pulse to be generated on the specified digital output line.
+  Out1PulseWidth:
+    <<: *outpulsewidth
+    address: 78
+  Out2PulseWidth:
+    <<: *outpulsewidth
+    address: 79
+  Out3PulseWidth:
+    <<: *outpulsewidth
+    address: 80
+  Out4PulseWidth:
+    <<: *outpulsewidth
+    address: 81
+  Out5PulseWidth:
+    <<: *outpulsewidth
+    address: 82
+  Out6PulseWidth:
+    <<: *outpulsewidth
+    address: 83
+  Out7PulseWidth:
+    <<: *outpulsewidth
+    address: 84
+  Out8PulseWidth:
+    <<: *outpulsewidth
+    address: 85
+  Out9PulseWidth:
+    <<: *outpulsewidth
+    address: 86
+  ExpansionBoard:
+    address: 87
+    type: U8
+    access: Write
+    maskType: ExpansionBoardType
+    description: Selects the board to be interfaced with via the expansion port.
+  Reserved0: &reserved
+    address: 88
+    type: U8
+    access: Read
+    visibility: private
+    description: Reserved for future use.
+  Reserved1:
+    <<: *reserved
+    address: 89
+  MagneticEncoder:
+    address: 90
+    type: U16
+    length: 2
+    access: Event
+    description: Generated event with the latest read from the magnetic encoder.
+    payloadSpec:
+      Angle:
+        offset: 0
+        description: The angle position measurement of the magnetic encoder.
+      Magnitude:
+        offset: 1
+        description: The magnitude of the magnetic field.
+  MagneticEncoderSampleRate:
+    address: 91
+    type: U8
+    access: Write
+    maskType: MagneticEncoderSampleRateMode
+    description: Sets the sample rate of the magnetic encoder.
+  Reserved2:
+    <<: *reserved
+    address: 92
+  Reserved3:
+    <<: *reserved
+    address: 93
+  ServoPeriod:
+    address: 94
+    type: U16
+    access: Write
+    description: Sets the period of the servo pulses (us).
+  Servo0PulseWidth: &servopulsewidth
+    address: 95
+    type: U16
+    access: Write
+    description: Sets the pulse width of the Servo0 pulses (us).
+  Servo1PulseWidth:
+    <<: *servopulsewidth
+    address: 96
+    description: Sets the pulse width of the Servo1 pulses (us).
+  Servo2PulseWidth:
+    <<: *servopulsewidth
+    address: 97
+    description: Sets the pulse width of the Servo2 pulses (us).
+  Reserved4:
+    <<: *reserved
+    address: 98
+  Reserved5:
+    <<: *reserved
+    address: 99
+  OpticalFlow:
+    address: 100
+    type: S16
+    length: 3
+    access: Event
+    description: Generated event with the latest read from the optical flow sensor.
+    payloadSpec:
+      DeltaX:
+        offset: 0
+        description: The movement in the X axis.
+      DeltaY:
+        offset: 1
+        description: The movement in the Y axis.
+      Squal:
+        offset: 2
+        description: The measure of the number of features visible by the sensor.
+bitMasks:
+  AuxiliaryInputs:
+    bits:
+      Aux0: 0x1
+      Aux1: 0x2
+      Aux0Changed: 0x10
+      Aux1Changed: 0x20
+    description: Specifies the state of auxiliary input lines.
+  DigitalOutputs:
+    description: Specifies the available digital output lines.
+    bits:
+      Out0: 0x1
+      Out1: 0x2
+      Out2: 0x4
+      Out3: 0x8
+      Out4: 0x10
+      Out5: 0x20
+      Out6: 0x40
+      Out7: 0x80
+      Out8: 0x100
+      Out9: 0x200
+  PwmAndStimMappings:
+    description: Specifies the mapping PWM and Stimulation to digital output lines.
+    bits:
+      Pwm0ToOut1: 0x1
+      Pwm0ToOut2: 0x2
+      Pwm0ToOut3: 0x4
+      Pwm1ToOut6: 0x8
+      Pwm1ToOut7: 0x10
+      Pwm1ToOut8: 0x20
+      Pwm2ToOut9: 0x40
+      Stim0ToOut0: 0x80
+      Stim0ToOut5: 0x100
+  PwmChannels:
+    description: Specifies the available PWM protocols.
+    bits:
+      Pwm0: 0x1
+      Pwm1: 0x2
+      Pwm2: 0x4
+  StimChannels:
+    description: Specifies the available Stim protocols.
+    bits:
+      Stim0: 0x1
+groupMasks:
+  AcquisitionMode:
+    description: Available configurations for a PWM line.
+    values:
+      Continuous: 0
+      Finite: 1
+  TriggerSource:
+    description: Available trigger sources.
+    values:
+      Software: 0
+      Aux0Rising: 1
+      Aux0Falling: 2
+      Aux0WhileHigh: 3
+      Aux0WhileLow: 4
+      Aux1Rising: 16
+      Aux1Falling: 32
+      Aux1WhileHigh: 64
+      Aux1WhileLow: 128
+  ExpansionBoardType:
+    description: Specifies the available expansion boards implemented.
+    values:
+      Breakout: 0
+      MagneticEncoder: 1
+      ServoMotor1: 2
+      ServoMotor2: 3
+      ServoMotor3: 4
+      OpticalFlow: 5
+  MagneticEncoderSampleRateMode:
+    description: Specifies the sample rate of the encoder.
+    values:
+      SampleRate50Hz: 0
+      SampleRate100Hz: 1
+      SampleRate200Hz: 2
+      SampleRate250Hz: 3
+      SampleRate500Hz: 4
+      SampleRate1000Hz: 5
