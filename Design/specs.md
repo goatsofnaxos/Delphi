@@ -154,5 +154,5 @@ graph TD
     FF -.IN0 > DI, GND > GND, +5V > +5V.-> GG{Harp Poke Breakout}
     GG -.-> P
     BB <-.-> FF{Harp Expander Breakout}
-    FF -.OUT 5,7,6,8,9 > IN 4,5,6,7,8.->Y
+    FF -.OUT 5,6,7,8,9 > IN 4,5,6,7,8.->Y
 ```
