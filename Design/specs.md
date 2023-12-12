@@ -45,7 +45,7 @@
 - Rule: A —> B —> C —> A …
 - Stimulus A controlled by VALVE_SA, stimulus B controlled by VALVE_SB, stimulus C controlled by VALVE_SC
 - The setup should be initialized with VALVE_p closed, VALVE_SA open, and VALVE_S{B,C} closed. In general the stimulus valves need to have been opened for awhile (low hundreds of milliseconds) in order to charge up the line upstream of the poke valve with odorized air.
-- The first trial begins when the animal breaks the IR beam of the poke port which triggers VALVE_p to open, which causes odor A to be delivered.
+- The first trial begins when the animal breaks the IR beam of the poke port which triggers VALVE_p to open, which causes odor A to be delivered. (t_minpokelen = 10milliseconds defines the minimum continuous amount of time the IR beam must be broken before the beam break is considered a true poke: only open VALVE_p after that has elapsed)
 - The first trial ends either after t_odor  = 100 milliseconds has elapsed (minimum duration), or after the animal is no longer breaking the beam, whichever is longest. 
 	- At that time VALVE_p closes.
 	- Then after  t_switch1 = 10 milliseconds VALVE_SA closes.
