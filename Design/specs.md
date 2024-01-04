@@ -156,3 +156,6 @@ graph TD
     BB <-.-> FF{Harp Expander Breakout}
     FF -.OUT 5,6,7,8,9 > IN 4,5,6,7,8.->Y
 ```
+**FUTURE**
+- Reduce time necessary to switch between odors to reduce refractory period between stimulated pokes.
+- Add a small & cheap  sensor (e.g. [Pololu #1483](https://www.pololu.com/product/1483)) at the nose port to monitor odor concentration over time. Possible to include it in-line downstream of the 4-way valve?
