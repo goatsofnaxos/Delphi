@@ -158,4 +158,4 @@ graph TD
 ```
 **FUTURE**
 - Reduce time necessary to switch between odors to reduce refractory period between stimulated pokes.
-- Add a small & cheap  sensor (e.g. [Pololu #1483](https://www.pololu.com/product/1483)) at the nose port to monitor odor concentration over time. Possible to include it in-line downstream of the 4-way valve?
+- Add a small & cheap  sensor (e.g. [Pololu #1483](https://www.pololu.com/product/1483)) at the nose port to monitor odor concentration over time. Possible to include it in-line downstream of the final (4-way) valve?
