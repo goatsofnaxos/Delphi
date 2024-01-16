@@ -7,7 +7,9 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Disposables;
 using System.Reactive;
+using Extensions.Extensions;
 
+[TypeVisualizer(typeof(DeviceVisualizer))]
 public class DeviceVisualInterface : Combinator<HarpMessage, HarpMessage>
 {
     public override IObservable<HarpMessage> Process(IObservable<HarpMessage> source)
