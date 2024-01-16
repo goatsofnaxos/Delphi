@@ -42,7 +42,7 @@ namespace Extensions.Extensions
 
         private void lineButton0_Click(object sender, EventArgs e)
         {
-
+            Source.DoCommand("line 0");
         }
     }
 }
