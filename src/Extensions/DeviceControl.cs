@@ -37,7 +37,7 @@ namespace Extensions.Extensions
 
         private void testButton_Click(object sender, EventArgs e)
         {
-            
+            Source.DoCommand("test command");
         }
     }
 }

@@ -15,7 +15,7 @@
     <WindowState>Normal</WindowState>
   </DialogSettings>
   <DialogSettings>
-    <Visible>true</Visible>
+    <Visible>false</Visible>
     <Location>
       <X>612</X>
       <Y>146</Y>
@@ -43,7 +43,7 @@
     <WindowState>Normal</WindowState>
   </DialogSettings>
   <DialogSettings>
-    <Visible>true</Visible>
+    <Visible>false</Visible>
     <Location>
       <X>622</X>
       <Y>189</Y>
@@ -61,8 +61,8 @@
   <DialogSettings>
     <Visible>true</Visible>
     <Location>
-      <X>242</X>
-      <Y>211</Y>
+      <X>632</X>
+      <Y>227</Y>
     </Location>
     <Size>
       <Width>490</Width>
@@ -73,6 +73,18 @@
     <VisualizerSettings>
       <DeviceVisualizer />
     </VisualizerSettings>
+  </DialogSettings>
+  <DialogSettings>
+    <Visible>false</Visible>
+    <Location>
+      <X>0</X>
+      <Y>0</Y>
+    </Location>
+    <Size>
+      <Width>0</Width>
+      <Height>0</Height>
+    </Size>
+    <WindowState>Normal</WindowState>
   </DialogSettings>
   <DialogSettings>
     <Visible>false</Visible>
