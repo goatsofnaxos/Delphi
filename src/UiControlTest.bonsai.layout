@@ -61,12 +61,12 @@
   <DialogSettings>
     <Visible>true</Visible>
     <Location>
-      <X>483</X>
-      <Y>116</Y>
+      <X>242</X>
+      <Y>211</Y>
     </Location>
     <Size>
-      <Width>334</Width>
-      <Height>116</Height>
+      <Width>490</Width>
+      <Height>323</Height>
     </Size>
     <WindowState>Normal</WindowState>
     <VisualizerTypeName>Extensions.Extensions.DeviceVisualizer</VisualizerTypeName>

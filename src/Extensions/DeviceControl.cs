@@ -19,9 +19,18 @@ namespace Extensions.Extensions
         {
             Source = source;
             InitializeComponent();
+
+            source.OnReceiveHarpMessage += (sender, e) => {
+                testLabel.Text = e.ToString();
+            };
         }
 
         private void DeviceControl_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void testLabel_Click(object sender, EventArgs e)
         {
 
         }

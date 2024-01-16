@@ -8,10 +8,13 @@ using System.Reactive.Linq;
 using System.Reactive.Disposables;
 using System.Reactive;
 using Extensions.Extensions;
+using System.Runtime.CompilerServices;
 
 [TypeVisualizer(typeof(DeviceVisualizer))]
 public class DeviceVisualInterface : Combinator<HarpMessage, HarpMessage>
 {
+    public event EventHandler<HarpMessage> OnReceiveHarpMessage;
+
     public override IObservable<HarpMessage> Process(IObservable<HarpMessage> source)
     {
         return Observable.Create<HarpMessage>(observer => {
@@ -19,7 +22,7 @@ public class DeviceVisualInterface : Combinator<HarpMessage, HarpMessage>
             // Source observer is the input handler
             var sourceObserver = Observer.Create<HarpMessage>(
                 message => {
-                    Console.WriteLine(message.ToString());
+                    OnReceiveHarpMessage.Invoke(this, message);
                 },
                 observer.OnError,
                 observer.OnCompleted
