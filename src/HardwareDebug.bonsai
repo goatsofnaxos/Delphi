@@ -4,6 +4,8 @@
                  xmlns:harp="clr-namespace:Bonsai.Harp;assembly=Bonsai.Harp"
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
                  xmlns:p1="clr-namespace:Harp.OutputExpander;assembly=Harp.OutputExpander"
+                 xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                 xmlns:wie="clr-namespace:Bonsai.Windows.Input;assembly=Bonsai.Windows.Input"
                  xmlns="https://bonsai-rx.org/2018/workflow">
   <Workflow>
     <Nodes>
@@ -103,6 +105,98 @@
             <Expression xsi:type="rx:PublishSubject">
               <Name>PokeOffset</Name>
             </Expression>
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Int32">
+              <rx:Name>SelectValveOpen</rx:Name>
+            </Expression>
+            <Expression xsi:type="rx:Condition">
+              <Name>Valve1</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Equal">
+                    <Operand xsi:type="IntProperty">
+                      <Value>1</Value>
+                    </Operand>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="p1:CreateMessage">
+              <harp:MessageType>Write</harp:MessageType>
+              <harp:Payload xsi:type="p1:CreateOutputSetPayload">
+                <p1:OutputSet>Out7</p1:OutputSet>
+              </harp:Payload>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>Commands</Name>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Int32">
+              <rx:Name>SelectValveClosed</rx:Name>
+            </Expression>
+            <Expression xsi:type="rx:Condition">
+              <Name>Valve1</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Equal">
+                    <Operand xsi:type="IntProperty">
+                      <Value>1</Value>
+                    </Operand>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="p1:CreateMessage">
+              <harp:MessageType>Write</harp:MessageType>
+              <harp:Payload xsi:type="p1:CreateOutputClearPayload">
+                <p1:OutputClear>Out7</p1:OutputClear>
+              </harp:Payload>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>Commands</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="wie:KeyDown">
+                <wie:Filter>LButton ShiftKey ControlKey Space Prior PageUp D0 D1 Control</wie:Filter>
+                <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>1</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>SelectValveOpen</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="wie:KeyDown">
+                <wie:Filter>LButton ShiftKey ControlKey Space Prior PageUp D0 D1 Shift</wie:Filter>
+                <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>1</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>SelectValveClosed</Name>
+            </Expression>
           </Nodes>
           <Edges>
             <Edge From="0" To="1" Label="Source1" />
@@ -120,6 +214,16 @@
             <Edge From="13" To="16" Label="Source1" />
             <Edge From="14" To="15" Label="Source1" />
             <Edge From="16" To="17" Label="Source1" />
+            <Edge From="18" To="19" Label="Source1" />
+            <Edge From="19" To="20" Label="Source1" />
+            <Edge From="20" To="21" Label="Source1" />
+            <Edge From="22" To="23" Label="Source1" />
+            <Edge From="23" To="24" Label="Source1" />
+            <Edge From="24" To="25" Label="Source1" />
+            <Edge From="26" To="27" Label="Source1" />
+            <Edge From="27" To="28" Label="Source1" />
+            <Edge From="29" To="30" Label="Source1" />
+            <Edge From="30" To="31" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
