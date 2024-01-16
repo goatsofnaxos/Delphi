@@ -39,5 +39,10 @@ namespace Extensions.Extensions
         {
             Source.DoCommand("test command");
         }
+
+        private void lineButton0_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
