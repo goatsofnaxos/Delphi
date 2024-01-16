@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.testLabel = new System.Windows.Forms.Label();
+            this.testButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // testLabel
@@ -43,15 +44,26 @@
             this.testLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.testLabel.Click += new System.EventHandler(this.testLabel_Click);
             // 
+            // testButton
+            // 
+            this.testButton.Location = new System.Drawing.Point(212, 134);
+            this.testButton.Name = "testButton";
+            this.testButton.Size = new System.Drawing.Size(75, 23);
+            this.testButton.TabIndex = 1;
+            this.testButton.Text = "Click me";
+            this.testButton.UseVisualStyleBackColor = true;
+            this.testButton.Click += new System.EventHandler(this.testButton_Click);
+            // 
             // DeviceControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.Controls.Add(this.testButton);
             this.Controls.Add(this.testLabel);
             this.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.Name = "DeviceControl";
-            this.Size = new System.Drawing.Size(504, 150);
+            this.Size = new System.Drawing.Size(504, 251);
             this.Load += new System.EventHandler(this.DeviceControl_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -61,5 +73,6 @@
         #endregion
 
         private System.Windows.Forms.Label testLabel;
+        private System.Windows.Forms.Button testButton;
     }
 }

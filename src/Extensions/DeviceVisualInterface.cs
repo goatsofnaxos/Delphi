@@ -15,6 +15,10 @@ public class DeviceVisualInterface : Combinator<HarpMessage, HarpMessage>
 {
     public event EventHandler<HarpMessage> OnReceiveHarpMessage;
 
+    public void DoCommand(HarpMessage command) {
+        
+    }
+
     public override IObservable<HarpMessage> Process(IObservable<HarpMessage> source)
     {
         return Observable.Create<HarpMessage>(observer => {
@@ -28,7 +32,9 @@ public class DeviceVisualInterface : Combinator<HarpMessage, HarpMessage>
                 observer.OnCompleted
             );
 
-            return new CompositeDisposable(source.SubscribeSafe(sourceObserver));
+            return new CompositeDisposable(
+                source.SubscribeSafe(sourceObserver)
+            );
         });
     }
 }
