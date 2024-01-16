@@ -7,6 +7,10 @@ Packages
 *.exe.settings
 *.WebView2
 
+# python files
+.venv
+*.pyc
+
 # data files
 *.avi
 *.bin
