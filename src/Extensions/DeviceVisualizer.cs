@@ -19,7 +19,7 @@ namespace Extensions.Extensions
             var visualizerElement = ExpressionBuilder.GetVisualizerElement(context.Source);
             var source = (DeviceVisualInterface)ExpressionBuilder.GetWorkflowElement(visualizerElement.Builder);
 
-            Control = new DeviceControl();
+            Control = new DeviceControl(source);
             Control.Dock = DockStyle.Fill;
 
             var visualizerService = (IDialogTypeVisualizerService)provider.GetService(typeof(IDialogTypeVisualizerService));
@@ -31,12 +31,15 @@ namespace Extensions.Extensions
 
         public override void Show(object value)
         {
-            throw new NotImplementedException();
         }
 
         public override void Unload()
         {
-            throw new NotImplementedException();
+            if (Control != null)
+            {
+                Control.Dispose();
+                Control = null;
+            }
         }
     }
 }

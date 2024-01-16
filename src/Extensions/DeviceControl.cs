@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bonsai;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,9 +13,17 @@ namespace Extensions.Extensions
 {
     public partial class DeviceControl : UserControl
     {
-        public DeviceControl()
+        DeviceVisualInterface Source;
+
+        public DeviceControl(DeviceVisualInterface source)
         {
+            Source = source;
             InitializeComponent();
+        }
+
+        private void DeviceControl_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
