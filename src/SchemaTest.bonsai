@@ -108,6 +108,10 @@
           <Value>OdorB</Value>
         </Operand>
       </Expression>
+      <Expression xsi:type="IncludeWorkflow" Path="Extensions\DelphiVisualizer.bonsai">
+        <EventsInSubject>Events</EventsInSubject>
+        <EventsOutSubject>Commands</EventsOutSubject>
+      </Expression>
     </Nodes>
     <Edges>
       <Edge From="1" To="2" Label="Source1" />
