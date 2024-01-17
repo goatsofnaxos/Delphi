@@ -9,6 +9,6 @@ metadata:
 lineMappings:
   -   {name: "OdorA", line: 6}
   -   {name: "OdorB", line: 7}
-  -   {name: "OdorC", line: 6}
-  -   {name: "OdorD", line: 7}
+  -   {name: "OdorC", line: 8}
+  -   {name: "OdorD", line: 9}
   -   {name: "PortValve", line: 1}

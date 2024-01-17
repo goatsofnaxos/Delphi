@@ -28,9 +28,16 @@ namespace Extensions.Extensions
             source.OnReceiveHarpMessage += (sender, e) => {
                 testLabel.Text = e.ToString();
 
+                // Detect changes to output state
                 if (e.Address == OutputState.Address) {
                     DigitalOutputState = OutputState.GetPayload(e);
                     UpdateDigitalOutputVisuals();
+                }
+
+                // If an output was set, read the current output state
+                if (e.Address == OutputSet.Address || e.Address == OutputClear.Address)
+                {
+                    Source.DoCommand(OutputState.FromPayload(Bonsai.Harp.MessageType.Read, DigitalOutputs.Out0));
                 }
 
                 if (e.Address == AuxInState.Address) {
@@ -77,10 +84,8 @@ namespace Extensions.Extensions
             var commandMessage = DigitalOutputState.HasFlag(DigitalOutputs.Out0) 
                 ? OutputClear.FromPayload(Bonsai.Harp.MessageType.Write, DigitalOutputs.Out0) 
                 : OutputSet.FromPayload(Bonsai.Harp.MessageType.Write, DigitalOutputs.Out0);
-            var readMessage = OutputState.FromPayload(Bonsai.Harp.MessageType.Read, DigitalOutputs.Out0);
 
             Source.DoCommand(commandMessage);
-            Source.DoCommand(readMessage);
         }
 
         private void lineButton1_Click(object sender, EventArgs e)
@@ -88,10 +93,8 @@ namespace Extensions.Extensions
             var commandMessage = DigitalOutputState.HasFlag(DigitalOutputs.Out1) 
                 ? OutputClear.FromPayload(Bonsai.Harp.MessageType.Write, DigitalOutputs.Out1) 
                 : OutputSet.FromPayload(Bonsai.Harp.MessageType.Write, DigitalOutputs.Out1);
-            var readMessage = OutputState.FromPayload(Bonsai.Harp.MessageType.Read, DigitalOutputs.Out1);
 
             Source.DoCommand(commandMessage);
-            Source.DoCommand(readMessage);
         }
 
         private void lineButton2_Click(object sender, EventArgs e)
@@ -99,10 +102,8 @@ namespace Extensions.Extensions
             var commandMessage = DigitalOutputState.HasFlag(DigitalOutputs.Out2) 
                 ? OutputClear.FromPayload(Bonsai.Harp.MessageType.Write, DigitalOutputs.Out2) 
                 : OutputSet.FromPayload(Bonsai.Harp.MessageType.Write, DigitalOutputs.Out2);
-            var readMessage = OutputState.FromPayload(Bonsai.Harp.MessageType.Read, DigitalOutputs.Out2);
 
             Source.DoCommand(commandMessage);
-            Source.DoCommand(readMessage);
         }
 
         private void auxInState1_CheckedChanged(object sender, EventArgs e)
