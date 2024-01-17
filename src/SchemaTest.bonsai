@@ -1,17 +1,80 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <WorkflowBuilder Version="2.8.1"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xmlns:p1="clr-namespace:;assembly=Extensions"
+                 xmlns:harp="clr-namespace:Bonsai.Harp;assembly=Bonsai.Harp"
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
+                 xmlns:p1="clr-namespace:Harp.OutputExpander;assembly=Harp.OutputExpander"
+                 xmlns:p2="clr-namespace:;assembly=Extensions"
                  xmlns="https://bonsai-rx.org/2018/workflow">
   <Workflow>
     <Nodes>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>DelphiController</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="Unit" />
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="harp:SynchronizeTimestamp" />
+            </Expression>
+            <Expression xsi:type="Unit" />
+            <Expression xsi:type="harp:CreateMessage">
+              <harp:MessageType>Write</harp:MessageType>
+              <harp:Payload xsi:type="harp:CreateOperationControlPayload">
+                <harp:OperationMode>Active</harp:OperationMode>
+                <harp:DumpRegisters>true</harp:DumpRegisters>
+                <harp:MuteReplies>false</harp:MuteReplies>
+                <harp:VisualIndicators>On</harp:VisualIndicators>
+                <harp:OperationLed>On</harp:OperationLed>
+                <harp:Heartbeat>Enabled</harp:Heartbeat>
+              </harp:Payload>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:DelaySubscription">
+                <rx:DueTime>PT1S</rx:DueTime>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Concat" />
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>Commands</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Commands</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p1:Device">
+                <harp:OperationMode>Standby</harp:OperationMode>
+                <harp:OperationLed>On</harp:OperationLed>
+                <harp:DumpRegisters>false</harp:DumpRegisters>
+                <harp:VisualIndicators>On</harp:VisualIndicators>
+                <harp:Heartbeat>Disabled</harp:Heartbeat>
+                <harp:IgnoreErrors>false</harp:IgnoreErrors>
+                <harp:PortName>COM12</harp:PortName>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:PublishSubject">
+              <Name>Events</Name>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="5" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="5" Label="Source2" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="8" To="9" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
       <Expression xsi:type="ExternalizedMapping">
         <Property Name="Path" />
       </Expression>
       <Expression xsi:type="Combinator">
-        <Combinator xsi:type="p1:LoadSettings">
-          <p1:Path>sessionTemplate.yml</p1:Path>
+        <Combinator xsi:type="p2:LoadSettings">
+          <p2:Path>sessionTemplate.yml</p2:Path>
         </Combinator>
       </Expression>
       <Expression xsi:type="MemberSelector">
@@ -47,13 +110,13 @@
       </Expression>
     </Nodes>
     <Edges>
-      <Edge From="0" To="1" Label="Source1" />
       <Edge From="1" To="2" Label="Source1" />
       <Edge From="2" To="3" Label="Source1" />
       <Edge From="3" To="4" Label="Source1" />
       <Edge From="4" To="5" Label="Source1" />
       <Edge From="5" To="6" Label="Source1" />
-      <Edge From="8" To="9" Label="Source1" />
+      <Edge From="6" To="7" Label="Source1" />
+      <Edge From="9" To="10" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
