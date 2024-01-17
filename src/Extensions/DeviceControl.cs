@@ -18,6 +18,7 @@ namespace Extensions.Extensions
 
         // TODO - this sort of thing should be in separate state class with some INotifyPropertyChanged interface
         DigitalOutputs DigitalOutputState = DigitalOutputs.None;
+        AuxiliaryInputs AuxiliaryInputState = AuxiliaryInputs.None;
 
         public DeviceControl(DeviceVisualInterface source)
         {
@@ -31,6 +32,11 @@ namespace Extensions.Extensions
                     DigitalOutputState = OutputState.GetPayload(e);
                     UpdateDigitalOutputVisuals();
                 }
+
+                if (e.Address == AuxInState.Address) {
+                    AuxiliaryInputState = AuxInState.GetPayload(e);
+                    UpdateAuxiliaryInputVisuals();
+                }
             };
         }
 
@@ -39,6 +45,11 @@ namespace Extensions.Extensions
             lineButton0.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out0) ? Color.White : Color.Gray;
             lineButton1.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out1) ? Color.White : Color.Gray;
             lineButton2.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out2) ? Color.White : Color.Gray;
+        }
+
+        private void UpdateAuxiliaryInputVisuals() {
+            auxInState0.Checked = AuxiliaryInputState.HasFlag(AuxiliaryInputs.Aux0);
+            auxInState1.Checked = AuxiliaryInputState.HasFlag(AuxiliaryInputs.Aux1);
         }
 
         private void DeviceControl_Load(object sender, EventArgs e)
@@ -87,6 +98,16 @@ namespace Extensions.Extensions
 
             Source.DoCommand(commandMessage);
             Source.DoCommand(readMessage);
+        }
+
+        private void auxInState1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void auxInState2_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

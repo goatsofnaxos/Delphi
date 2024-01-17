@@ -47,7 +47,11 @@
             this.lineButton6 = new System.Windows.Forms.Button();
             this.lineButton7 = new System.Windows.Forms.Button();
             this.testLabel = new System.Windows.Forms.Label();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.auxInState0 = new System.Windows.Forms.RadioButton();
+            this.auxInState1 = new System.Windows.Forms.RadioButton();
             this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // testButton
@@ -257,20 +261,68 @@
             this.testLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.testLabel.Click += new System.EventHandler(this.testLabel_Click);
             // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Controls.Add(this.auxInState1, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.auxInState0, 0, 0);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(27, 299);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 1;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(453, 51);
+            this.tableLayoutPanel2.TabIndex = 3;
+            // 
+            // auxInState0
+            // 
+            this.auxInState0.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.auxInState0.AutoCheck = false;
+            this.auxInState0.AutoSize = true;
+            this.auxInState0.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.auxInState0.Location = new System.Drawing.Point(61, 3);
+            this.auxInState0.Name = "auxInState0";
+            this.auxInState0.Size = new System.Drawing.Size(104, 45);
+            this.auxInState0.TabIndex = 0;
+            this.auxInState0.TabStop = true;
+            this.auxInState0.Text = "aux in state 0";
+            this.auxInState0.UseVisualStyleBackColor = true;
+            this.auxInState0.CheckedChanged += new System.EventHandler(this.auxInState1_CheckedChanged);
+            // 
+            // auxInState1
+            // 
+            this.auxInState1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.auxInState1.AutoCheck = false;
+            this.auxInState1.AutoSize = true;
+            this.auxInState1.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.auxInState1.Location = new System.Drawing.Point(287, 3);
+            this.auxInState1.Name = "auxInState1";
+            this.auxInState1.Size = new System.Drawing.Size(104, 45);
+            this.auxInState1.TabIndex = 1;
+            this.auxInState1.TabStop = true;
+            this.auxInState1.Text = "aux in state 1";
+            this.auxInState1.UseVisualStyleBackColor = true;
+            this.auxInState1.CheckedChanged += new System.EventHandler(this.auxInState2_CheckedChanged);
+            // 
             // DeviceControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.testButton);
             this.Controls.Add(this.testLabel);
             this.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.Name = "DeviceControl";
-            this.Size = new System.Drawing.Size(501, 318);
+            this.Size = new System.Drawing.Size(501, 504);
             this.Load += new System.EventHandler(this.DeviceControl_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -296,5 +348,8 @@
         private System.Windows.Forms.Label lineLabel1;
         private System.Windows.Forms.Label lineLabel0;
         private System.Windows.Forms.Label testLabel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.RadioButton auxInState0;
+        private System.Windows.Forms.RadioButton auxInState1;
     }
 }
