@@ -8,8 +8,7 @@ metadata:
 
 cameraProperties:
   imagingRate: 100
-  frameBuffer: 60
-  preEventBufferFrames: 20
+  frameBuffer: 200
   postEventBufferFrames: 20
 
 lineMappings:
