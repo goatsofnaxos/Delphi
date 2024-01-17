@@ -38,7 +38,6 @@
             this.lineLabel2 = new System.Windows.Forms.Label();
             this.lineLabel1 = new System.Windows.Forms.Label();
             this.lineLabel0 = new System.Windows.Forms.Label();
-            this.lineButton0 = new System.Windows.Forms.Button();
             this.lineButton1 = new System.Windows.Forms.Button();
             this.lineButton2 = new System.Windows.Forms.Button();
             this.lineButton3 = new System.Windows.Forms.Button();
@@ -47,11 +46,14 @@
             this.lineButton6 = new System.Windows.Forms.Button();
             this.lineButton7 = new System.Windows.Forms.Button();
             this.testLabel = new System.Windows.Forms.Label();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.setAuxInputButton0 = new System.Windows.Forms.TableLayoutPanel();
             this.auxInState0 = new System.Windows.Forms.RadioButton();
             this.auxInState1 = new System.Windows.Forms.RadioButton();
+            this.lineButton0 = new System.Windows.Forms.Button();
+            this.setAuxInput0Button = new System.Windows.Forms.Button();
+            this.setAuxInput1Button = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
+            this.setAuxInputButton0.SuspendLayout();
             this.SuspendLayout();
             // 
             // testButton
@@ -181,16 +183,6 @@
             this.lineLabel0.TabIndex = 3;
             this.lineLabel0.Text = "line 0";
             // 
-            // lineButton0
-            // 
-            this.lineButton0.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.lineButton0.Location = new System.Drawing.Point(3, 53);
-            this.lineButton0.Name = "lineButton0";
-            this.lineButton0.Size = new System.Drawing.Size(50, 23);
-            this.lineButton0.TabIndex = 0;
-            this.lineButton0.UseVisualStyleBackColor = true;
-            this.lineButton0.Click += new System.EventHandler(this.lineButton0_Click);
-            // 
             // lineButton1
             // 
             this.lineButton1.Location = new System.Drawing.Point(59, 53);
@@ -261,20 +253,23 @@
             this.testLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.testLabel.Click += new System.EventHandler(this.testLabel_Click);
             // 
-            // tableLayoutPanel2
+            // setAuxInputButton0
             // 
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Controls.Add(this.auxInState1, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.auxInState0, 0, 0);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(27, 299);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(453, 51);
-            this.tableLayoutPanel2.TabIndex = 3;
+            this.setAuxInputButton0.ColumnCount = 2;
+            this.setAuxInputButton0.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.setAuxInputButton0.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.setAuxInputButton0.Controls.Add(this.setAuxInput1Button, 1, 0);
+            this.setAuxInputButton0.Controls.Add(this.auxInState0, 0, 1);
+            this.setAuxInputButton0.Controls.Add(this.auxInState1, 1, 1);
+            this.setAuxInputButton0.Controls.Add(this.setAuxInput0Button, 0, 0);
+            this.setAuxInputButton0.Location = new System.Drawing.Point(27, 299);
+            this.setAuxInputButton0.Name = "setAuxInputButton0";
+            this.setAuxInputButton0.RowCount = 2;
+            this.setAuxInputButton0.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.setAuxInputButton0.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.setAuxInputButton0.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.setAuxInputButton0.Size = new System.Drawing.Size(453, 64);
+            this.setAuxInputButton0.TabIndex = 3;
             // 
             // auxInState0
             // 
@@ -282,9 +277,9 @@
             this.auxInState0.AutoCheck = false;
             this.auxInState0.AutoSize = true;
             this.auxInState0.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.auxInState0.Location = new System.Drawing.Point(61, 3);
+            this.auxInState0.Location = new System.Drawing.Point(61, 35);
             this.auxInState0.Name = "auxInState0";
-            this.auxInState0.Size = new System.Drawing.Size(104, 45);
+            this.auxInState0.Size = new System.Drawing.Size(104, 26);
             this.auxInState0.TabIndex = 0;
             this.auxInState0.TabStop = true;
             this.auxInState0.Text = "aux in state 0";
@@ -297,21 +292,51 @@
             this.auxInState1.AutoCheck = false;
             this.auxInState1.AutoSize = true;
             this.auxInState1.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.auxInState1.Location = new System.Drawing.Point(287, 3);
+            this.auxInState1.Location = new System.Drawing.Point(287, 35);
             this.auxInState1.Name = "auxInState1";
-            this.auxInState1.Size = new System.Drawing.Size(104, 45);
+            this.auxInState1.Size = new System.Drawing.Size(104, 26);
             this.auxInState1.TabIndex = 1;
             this.auxInState1.TabStop = true;
             this.auxInState1.Text = "aux in state 1";
             this.auxInState1.UseVisualStyleBackColor = true;
             this.auxInState1.CheckedChanged += new System.EventHandler(this.auxInState2_CheckedChanged);
             // 
+            // lineButton0
+            // 
+            this.lineButton0.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.lineButton0.Location = new System.Drawing.Point(3, 53);
+            this.lineButton0.Name = "lineButton0";
+            this.lineButton0.Size = new System.Drawing.Size(50, 23);
+            this.lineButton0.TabIndex = 0;
+            this.lineButton0.UseVisualStyleBackColor = true;
+            this.lineButton0.Click += new System.EventHandler(this.lineButton0_Click);
+            // 
+            // setAuxInput0Button
+            // 
+            this.setAuxInput0Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.setAuxInput0Button.Location = new System.Drawing.Point(75, 3);
+            this.setAuxInput0Button.Name = "setAuxInput0Button";
+            this.setAuxInput0Button.Size = new System.Drawing.Size(75, 26);
+            this.setAuxInput0Button.TabIndex = 2;
+            this.setAuxInput0Button.UseVisualStyleBackColor = true;
+            this.setAuxInput0Button.Click += new System.EventHandler(this.setAuxInput0Button_Click);
+            // 
+            // setAuxInput1Button
+            // 
+            this.setAuxInput1Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.setAuxInput1Button.Location = new System.Drawing.Point(302, 3);
+            this.setAuxInput1Button.Name = "setAuxInput1Button";
+            this.setAuxInput1Button.Size = new System.Drawing.Size(75, 26);
+            this.setAuxInput1Button.TabIndex = 3;
+            this.setAuxInput1Button.UseVisualStyleBackColor = true;
+            this.setAuxInput1Button.Click += new System.EventHandler(this.setAuxInput1Button_Click);
+            // 
             // DeviceControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.Controls.Add(this.tableLayoutPanel2);
+            this.Controls.Add(this.setAuxInputButton0);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.testButton);
             this.Controls.Add(this.testLabel);
@@ -321,8 +346,8 @@
             this.Load += new System.EventHandler(this.DeviceControl_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
+            this.setAuxInputButton0.ResumeLayout(false);
+            this.setAuxInputButton0.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -335,7 +360,6 @@
         private System.Windows.Forms.Button lineButton5;
         private System.Windows.Forms.Button lineButton6;
         private System.Windows.Forms.Button lineButton7;
-        private System.Windows.Forms.Button lineButton0;
         private System.Windows.Forms.Button lineButton1;
         private System.Windows.Forms.Button lineButton2;
         private System.Windows.Forms.Button lineButton3;
@@ -348,8 +372,11 @@
         private System.Windows.Forms.Label lineLabel1;
         private System.Windows.Forms.Label lineLabel0;
         private System.Windows.Forms.Label testLabel;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.TableLayoutPanel setAuxInputButton0;
         private System.Windows.Forms.RadioButton auxInState0;
         private System.Windows.Forms.RadioButton auxInState1;
+        private System.Windows.Forms.Button lineButton0;
+        private System.Windows.Forms.Button setAuxInput0Button;
+        private System.Windows.Forms.Button setAuxInput1Button;
     }
 }

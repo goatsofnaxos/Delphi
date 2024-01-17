@@ -62,7 +62,7 @@
     </Location>
     <Size>
       <Width>392</Width>
-      <Height>300</Height>
+      <Height>467</Height>
     </Size>
     <WindowState>Normal</WindowState>
     <VisualizerTypeName>Extensions.Extensions.DeviceVisualizer</VisualizerTypeName>

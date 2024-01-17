@@ -109,5 +109,15 @@ namespace Extensions.Extensions
         {
 
         }
+
+        private void setAuxInput0Button_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void setAuxInput1Button_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
