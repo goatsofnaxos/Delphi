@@ -29,8 +29,16 @@ namespace Extensions.Extensions
 
                 if (e.Address == OutputState.Address) {
                     DigitalOutputState = OutputState.GetPayload(e);
+                    UpdateDigitalOutputVisuals();
                 }
             };
+        }
+
+        // TODO - horrible, there's a better way to do this
+        private void UpdateDigitalOutputVisuals() {
+            lineButton0.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out0) ? Color.White : Color.Gray;
+            lineButton1.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out1) ? Color.White : Color.Gray;
+            lineButton2.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out2) ? Color.White : Color.Gray;
         }
 
         private void DeviceControl_Load(object sender, EventArgs e)

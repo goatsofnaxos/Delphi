@@ -179,11 +179,11 @@
             // 
             // lineButton0
             // 
+            this.lineButton0.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.lineButton0.Location = new System.Drawing.Point(3, 53);
             this.lineButton0.Name = "lineButton0";
             this.lineButton0.Size = new System.Drawing.Size(50, 23);
             this.lineButton0.TabIndex = 0;
-            this.lineButton0.Text = "open";
             this.lineButton0.UseVisualStyleBackColor = true;
             this.lineButton0.Click += new System.EventHandler(this.lineButton0_Click);
             // 
@@ -193,7 +193,6 @@
             this.lineButton1.Name = "lineButton1";
             this.lineButton1.Size = new System.Drawing.Size(50, 23);
             this.lineButton1.TabIndex = 1;
-            this.lineButton1.Text = "open";
             this.lineButton1.UseVisualStyleBackColor = true;
             this.lineButton1.Click += new System.EventHandler(this.lineButton1_Click);
             // 
@@ -203,7 +202,6 @@
             this.lineButton2.Name = "lineButton2";
             this.lineButton2.Size = new System.Drawing.Size(50, 23);
             this.lineButton2.TabIndex = 2;
-            this.lineButton2.Text = "open";
             this.lineButton2.UseVisualStyleBackColor = true;
             this.lineButton2.Click += new System.EventHandler(this.lineButton2_Click);
             // 
@@ -213,7 +211,6 @@
             this.lineButton3.Name = "lineButton3";
             this.lineButton3.Size = new System.Drawing.Size(50, 23);
             this.lineButton3.TabIndex = 3;
-            this.lineButton3.Text = "open";
             this.lineButton3.UseVisualStyleBackColor = true;
             // 
             // lineButton4
@@ -222,7 +219,6 @@
             this.lineButton4.Name = "lineButton4";
             this.lineButton4.Size = new System.Drawing.Size(50, 23);
             this.lineButton4.TabIndex = 4;
-            this.lineButton4.Text = "open";
             this.lineButton4.UseVisualStyleBackColor = true;
             // 
             // lineButton5
@@ -231,7 +227,6 @@
             this.lineButton5.Name = "lineButton5";
             this.lineButton5.Size = new System.Drawing.Size(50, 23);
             this.lineButton5.TabIndex = 5;
-            this.lineButton5.Text = "open";
             this.lineButton5.UseVisualStyleBackColor = true;
             // 
             // lineButton6
@@ -240,7 +235,6 @@
             this.lineButton6.Name = "lineButton6";
             this.lineButton6.Size = new System.Drawing.Size(50, 23);
             this.lineButton6.TabIndex = 6;
-            this.lineButton6.Text = "open";
             this.lineButton6.UseVisualStyleBackColor = true;
             // 
             // lineButton7
@@ -249,7 +243,6 @@
             this.lineButton7.Name = "lineButton7";
             this.lineButton7.Size = new System.Drawing.Size(55, 23);
             this.lineButton7.TabIndex = 7;
-            this.lineButton7.Text = "open";
             this.lineButton7.UseVisualStyleBackColor = true;
             // 
             // testLabel
