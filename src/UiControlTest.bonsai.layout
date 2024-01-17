@@ -45,30 +45,26 @@
   <DialogSettings>
     <Visible>false</Visible>
     <Location>
-      <X>622</X>
-      <Y>189</Y>
+      <X>0</X>
+      <Y>0</Y>
     </Location>
     <Size>
-      <Width>334</Width>
-      <Height>206</Height>
+      <Width>0</Width>
+      <Height>0</Height>
     </Size>
     <WindowState>Normal</WindowState>
   </DialogSettings>
   <DialogSettings>
-    <Visible>true</Visible>
+    <Visible>false</Visible>
     <Location>
-      <X>481</X>
-      <Y>120</Y>
+      <X>0</X>
+      <Y>0</Y>
     </Location>
     <Size>
-      <Width>392</Width>
-      <Height>467</Height>
+      <Width>0</Width>
+      <Height>0</Height>
     </Size>
     <WindowState>Normal</WindowState>
-    <VisualizerTypeName>Extensions.Extensions.DeviceVisualizer</VisualizerTypeName>
-    <VisualizerSettings>
-      <DeviceVisualizer />
-    </VisualizerSettings>
   </DialogSettings>
   <DialogSettings>
     <Visible>false</Visible>
