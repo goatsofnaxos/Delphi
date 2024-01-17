@@ -219,7 +219,7 @@
                   <Expression xsi:type="p2:CreateMessage">
                     <harp:MessageType>Write</harp:MessageType>
                     <harp:Payload xsi:type="p2:CreateOutputClearPayload">
-                      <p2:OutputClear>Out6</p2:OutputClear>
+                      <p2:OutputClear>Out7</p2:OutputClear>
                     </harp:Payload>
                   </Expression>
                   <Expression xsi:type="Combinator">
