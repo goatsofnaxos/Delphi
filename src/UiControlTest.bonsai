@@ -4,7 +4,6 @@
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
                  xmlns:harp="clr-namespace:Bonsai.Harp;assembly=Bonsai.Harp"
                  xmlns:p1="clr-namespace:Harp.OutputExpander;assembly=Harp.OutputExpander"
-                 xmlns:p2="clr-namespace:;assembly=Extensions"
                  xmlns="https://bonsai-rx.org/2018/workflow">
   <Workflow>
     <Nodes>
@@ -25,21 +24,14 @@
       <Expression xsi:type="rx:PublishSubject">
         <Name>Events</Name>
       </Expression>
-      <Expression xsi:type="SubscribeSubject">
-        <Name>Events</Name>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="p2:DeviceVisualInterface" />
-      </Expression>
-      <Expression xsi:type="MulticastSubject">
-        <Name>Commands</Name>
+      <Expression xsi:type="IncludeWorkflow" Path="Extensions\DelphiVisualizer.bonsai">
+        <EventsInSubject>Events</EventsInSubject>
+        <EventsOutSubject>Commands</EventsOutSubject>
       </Expression>
     </Nodes>
     <Edges>
       <Edge From="0" To="1" Label="Source1" />
       <Edge From="1" To="2" Label="Source1" />
-      <Edge From="3" To="4" Label="Source1" />
-      <Edge From="4" To="5" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
