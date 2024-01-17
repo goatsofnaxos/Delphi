@@ -30,6 +30,14 @@
         {
             this.testButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.lineLabel7 = new System.Windows.Forms.Label();
+            this.lineLabel6 = new System.Windows.Forms.Label();
+            this.lineLabel5 = new System.Windows.Forms.Label();
+            this.lineLabel4 = new System.Windows.Forms.Label();
+            this.lineLabel3 = new System.Windows.Forms.Label();
+            this.lineLabel2 = new System.Windows.Forms.Label();
+            this.lineLabel1 = new System.Windows.Forms.Label();
+            this.lineLabel0 = new System.Windows.Forms.Label();
             this.lineButton0 = new System.Windows.Forms.Button();
             this.lineButton1 = new System.Windows.Forms.Button();
             this.lineButton2 = new System.Windows.Forms.Button();
@@ -39,14 +47,6 @@
             this.lineButton6 = new System.Windows.Forms.Button();
             this.lineButton7 = new System.Windows.Forms.Button();
             this.testLabel = new System.Windows.Forms.Label();
-            this.lineLabel0 = new System.Windows.Forms.Label();
-            this.lineLabel1 = new System.Windows.Forms.Label();
-            this.lineLabel2 = new System.Windows.Forms.Label();
-            this.lineLabel3 = new System.Windows.Forms.Label();
-            this.lineLabel4 = new System.Windows.Forms.Label();
-            this.lineLabel5 = new System.Windows.Forms.Label();
-            this.lineLabel6 = new System.Windows.Forms.Label();
-            this.lineLabel7 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -97,6 +97,86 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(453, 100);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
+            // lineLabel7
+            // 
+            this.lineLabel7.AutoSize = true;
+            this.lineLabel7.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.lineLabel7.Location = new System.Drawing.Point(395, 0);
+            this.lineLabel7.Name = "lineLabel7";
+            this.lineLabel7.Size = new System.Drawing.Size(38, 16);
+            this.lineLabel7.TabIndex = 14;
+            this.lineLabel7.Text = "line 7";
+            // 
+            // lineLabel6
+            // 
+            this.lineLabel6.AutoSize = true;
+            this.lineLabel6.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.lineLabel6.Location = new System.Drawing.Point(339, 0);
+            this.lineLabel6.Name = "lineLabel6";
+            this.lineLabel6.Size = new System.Drawing.Size(38, 16);
+            this.lineLabel6.TabIndex = 13;
+            this.lineLabel6.Text = "line 6";
+            // 
+            // lineLabel5
+            // 
+            this.lineLabel5.AutoSize = true;
+            this.lineLabel5.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.lineLabel5.Location = new System.Drawing.Point(283, 0);
+            this.lineLabel5.Name = "lineLabel5";
+            this.lineLabel5.Size = new System.Drawing.Size(38, 16);
+            this.lineLabel5.TabIndex = 12;
+            this.lineLabel5.Text = "line 5";
+            // 
+            // lineLabel4
+            // 
+            this.lineLabel4.AutoSize = true;
+            this.lineLabel4.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.lineLabel4.Location = new System.Drawing.Point(227, 0);
+            this.lineLabel4.Name = "lineLabel4";
+            this.lineLabel4.Size = new System.Drawing.Size(38, 16);
+            this.lineLabel4.TabIndex = 11;
+            this.lineLabel4.Text = "line 4";
+            // 
+            // lineLabel3
+            // 
+            this.lineLabel3.AutoSize = true;
+            this.lineLabel3.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.lineLabel3.Location = new System.Drawing.Point(171, 0);
+            this.lineLabel3.Name = "lineLabel3";
+            this.lineLabel3.Size = new System.Drawing.Size(38, 16);
+            this.lineLabel3.TabIndex = 10;
+            this.lineLabel3.Text = "line 3";
+            // 
+            // lineLabel2
+            // 
+            this.lineLabel2.AutoSize = true;
+            this.lineLabel2.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.lineLabel2.Location = new System.Drawing.Point(115, 0);
+            this.lineLabel2.Name = "lineLabel2";
+            this.lineLabel2.Size = new System.Drawing.Size(38, 16);
+            this.lineLabel2.TabIndex = 9;
+            this.lineLabel2.Text = "line 2";
+            // 
+            // lineLabel1
+            // 
+            this.lineLabel1.AutoSize = true;
+            this.lineLabel1.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.lineLabel1.Location = new System.Drawing.Point(59, 0);
+            this.lineLabel1.Name = "lineLabel1";
+            this.lineLabel1.Size = new System.Drawing.Size(38, 16);
+            this.lineLabel1.TabIndex = 8;
+            this.lineLabel1.Text = "line 1";
+            // 
+            // lineLabel0
+            // 
+            this.lineLabel0.AutoSize = true;
+            this.lineLabel0.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.lineLabel0.Location = new System.Drawing.Point(3, 0);
+            this.lineLabel0.Name = "lineLabel0";
+            this.lineLabel0.Size = new System.Drawing.Size(38, 16);
+            this.lineLabel0.TabIndex = 3;
+            this.lineLabel0.Text = "line 0";
+            // 
             // lineButton0
             // 
             this.lineButton0.Location = new System.Drawing.Point(3, 53);
@@ -115,6 +195,7 @@
             this.lineButton1.TabIndex = 1;
             this.lineButton1.Text = "open";
             this.lineButton1.UseVisualStyleBackColor = true;
+            this.lineButton1.Click += new System.EventHandler(this.lineButton1_Click);
             // 
             // lineButton2
             // 
@@ -124,6 +205,7 @@
             this.lineButton2.TabIndex = 2;
             this.lineButton2.Text = "open";
             this.lineButton2.UseVisualStyleBackColor = true;
+            this.lineButton2.Click += new System.EventHandler(this.lineButton2_Click);
             // 
             // lineButton3
             // 
@@ -181,86 +263,6 @@
             this.testLabel.Text = "Some default message";
             this.testLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.testLabel.Click += new System.EventHandler(this.testLabel_Click);
-            // 
-            // lineLabel0
-            // 
-            this.lineLabel0.AutoSize = true;
-            this.lineLabel0.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.lineLabel0.Location = new System.Drawing.Point(3, 0);
-            this.lineLabel0.Name = "lineLabel0";
-            this.lineLabel0.Size = new System.Drawing.Size(38, 16);
-            this.lineLabel0.TabIndex = 3;
-            this.lineLabel0.Text = "line 0";
-            // 
-            // lineLabel1
-            // 
-            this.lineLabel1.AutoSize = true;
-            this.lineLabel1.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.lineLabel1.Location = new System.Drawing.Point(59, 0);
-            this.lineLabel1.Name = "lineLabel1";
-            this.lineLabel1.Size = new System.Drawing.Size(38, 16);
-            this.lineLabel1.TabIndex = 8;
-            this.lineLabel1.Text = "line 1";
-            // 
-            // lineLabel2
-            // 
-            this.lineLabel2.AutoSize = true;
-            this.lineLabel2.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.lineLabel2.Location = new System.Drawing.Point(115, 0);
-            this.lineLabel2.Name = "lineLabel2";
-            this.lineLabel2.Size = new System.Drawing.Size(38, 16);
-            this.lineLabel2.TabIndex = 9;
-            this.lineLabel2.Text = "line 2";
-            // 
-            // lineLabel3
-            // 
-            this.lineLabel3.AutoSize = true;
-            this.lineLabel3.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.lineLabel3.Location = new System.Drawing.Point(171, 0);
-            this.lineLabel3.Name = "lineLabel3";
-            this.lineLabel3.Size = new System.Drawing.Size(38, 16);
-            this.lineLabel3.TabIndex = 10;
-            this.lineLabel3.Text = "line 3";
-            // 
-            // lineLabel4
-            // 
-            this.lineLabel4.AutoSize = true;
-            this.lineLabel4.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.lineLabel4.Location = new System.Drawing.Point(227, 0);
-            this.lineLabel4.Name = "lineLabel4";
-            this.lineLabel4.Size = new System.Drawing.Size(38, 16);
-            this.lineLabel4.TabIndex = 11;
-            this.lineLabel4.Text = "line 4";
-            // 
-            // lineLabel5
-            // 
-            this.lineLabel5.AutoSize = true;
-            this.lineLabel5.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.lineLabel5.Location = new System.Drawing.Point(283, 0);
-            this.lineLabel5.Name = "lineLabel5";
-            this.lineLabel5.Size = new System.Drawing.Size(38, 16);
-            this.lineLabel5.TabIndex = 12;
-            this.lineLabel5.Text = "line 5";
-            // 
-            // lineLabel6
-            // 
-            this.lineLabel6.AutoSize = true;
-            this.lineLabel6.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.lineLabel6.Location = new System.Drawing.Point(339, 0);
-            this.lineLabel6.Name = "lineLabel6";
-            this.lineLabel6.Size = new System.Drawing.Size(38, 16);
-            this.lineLabel6.TabIndex = 13;
-            this.lineLabel6.Text = "line 6";
-            // 
-            // lineLabel7
-            // 
-            this.lineLabel7.AutoSize = true;
-            this.lineLabel7.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.lineLabel7.Location = new System.Drawing.Point(395, 0);
-            this.lineLabel7.Name = "lineLabel7";
-            this.lineLabel7.Size = new System.Drawing.Size(38, 16);
-            this.lineLabel7.TabIndex = 14;
-            this.lineLabel7.Text = "line 7";
             // 
             // DeviceControl
             // 
