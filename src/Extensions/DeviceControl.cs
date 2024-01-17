@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Harp.OutputExpander;
 
 namespace Extensions.Extensions
 {
@@ -37,12 +38,13 @@ namespace Extensions.Extensions
 
         private void testButton_Click(object sender, EventArgs e)
         {
-            Source.DoCommand("test command");
+            // Source.DoCommand("test command");
         }
 
         private void lineButton0_Click(object sender, EventArgs e)
         {
-            Source.DoCommand("line 0");
+            var setMessage = OutputSet.FromPayload(Bonsai.Harp.MessageType.Write, DigitalOutputs.Out0);
+            Source.DoCommand(setMessage);
         }
     }
 }

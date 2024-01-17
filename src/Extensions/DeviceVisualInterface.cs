@@ -11,19 +11,19 @@ using Extensions.Extensions;
 using System.Runtime.CompilerServices;
 
 [TypeVisualizer(typeof(DeviceVisualizer))]
-public class DeviceVisualInterface : Combinator<HarpMessage, string>
+public class DeviceVisualInterface : Combinator<HarpMessage, HarpMessage>
 {
     public event EventHandler<HarpMessage> OnReceiveHarpMessage;
 
-    public event EventHandler<string> Command;
+    public event EventHandler<HarpMessage> Command;
 
-    public void DoCommand(string command) {
+    public void DoCommand(HarpMessage command) {
         Command.Invoke(this, command);
     }
 
-    public override IObservable<string> Process(IObservable<HarpMessage> source)
+    public override IObservable<HarpMessage> Process(IObservable<HarpMessage> source)
     {
-        return Observable.Create<string>(observer => {
+        return Observable.Create<HarpMessage>(observer => {
             
             // Source observer is the input handler
             var sourceObserver = Observer.Create<HarpMessage>(
@@ -34,7 +34,7 @@ public class DeviceVisualInterface : Combinator<HarpMessage, string>
                 observer.OnCompleted
             );
 
-            var outputObservable = Observable.FromEventPattern<string>(
+            var outputObservable = Observable.FromEventPattern<HarpMessage>(
                 handler => Command += handler,
                 handler => Command -= handler
             ).Select(evt => evt.EventArgs);
