@@ -45,6 +45,11 @@ namespace Extensions.Extensions
             lineButton0.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out0) ? Color.White : Color.Gray;
             lineButton1.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out1) ? Color.White : Color.Gray;
             lineButton2.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out2) ? Color.White : Color.Gray;
+            lineButton3.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out3) ? Color.White : Color.Gray;
+            lineButton4.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out4) ? Color.White : Color.Gray;
+            lineButton5.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out5) ? Color.White : Color.Gray;
+            lineButton6.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out6) ? Color.White : Color.Gray;
+            lineButton7.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out7) ? Color.White : Color.Gray;
         }
 
         private void UpdateAuxiliaryInputVisuals() {
