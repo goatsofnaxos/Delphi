@@ -6,9 +6,15 @@ metadata:
   animalId: plimbo
   loggingRootPath: C:/
 
+cameraProperties:
+  imagingRate: 100
+  frameBuffer: 60
+  preEventBufferFrames: 20
+  postEventBufferFrames: 20
+
 lineMappings:
   -   {name: "OdorA", line: 7}
   -   {name: "OdorB", line: 6}
   -   {name: "OdorC", line: 8}
   -   {name: "OdorD", line: 9}
-  -   {name: "PortValve", line: 1}
+  -   {name: "PortValve", line: 0}

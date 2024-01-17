@@ -26,6 +26,26 @@
                     ]
                 }
             }
+        },
+        "cameraProperties": {
+            "properties": {
+                "imagingRate": {
+                    "description": "The imaging rate in frames / s",
+                    "type": "number"
+                },
+                "frameBuffer": {
+                    "description": "The number of frames to store in the history buffer",
+                    "type": "integer"
+                },
+                "preEventBufferFrames": {
+                    "description": "The number of frames pre-event to include in the event buffer",
+                    "type": "integer"
+                },
+                "postEventBufferFrames": {
+                    "description": "The number of frames post-event to include in the event buffer",
+                    "type": "integer"
+                }
+            }
         }
     },
     "properties": {
@@ -46,6 +66,9 @@
                 "$ref": "#/definitions/lineMapping"
             },
             "type": "array"
+        },
+        "cameraProperties": {
+            "$ref": "#/definitions/cameraProperties"
         }
     },
     "title": "DelphiSession",
