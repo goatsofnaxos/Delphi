@@ -1,0 +1,14 @@
+%YAML 1.1
+---
+# yaml-language-server: $schema=schema.json
+
+metadata:
+  animalId: plimbo
+  loggingRootPath: C:/
+
+lineMappings:
+  -   {name: "OdorA", line: 7}
+  -   {name: "OdorB", line: 6}
+  -   {name: "OdorC", line: 8}
+  -   {name: "OdorD", line: 9}
+  -   {name: "PortValve", line: 1}
