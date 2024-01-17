@@ -53,8 +53,8 @@
   <DialogSettings>
     <Visible>true</Visible>
     <Location>
-      <X>120</X>
-      <Y>130</Y>
+      <X>481</X>
+      <Y>120</Y>
     </Location>
     <Size>
       <Width>392</Width>
@@ -64,22 +64,6 @@
     <VisualizerTypeName>Extensions.Extensions.DeviceVisualizer</VisualizerTypeName>
     <VisualizerSettings>
       <DeviceVisualizer />
-    </VisualizerSettings>
-  </DialogSettings>
-  <DialogSettings>
-    <Visible>true</Visible>
-    <Location>
-      <X>606</X>
-      <Y>199</Y>
-    </Location>
-    <Size>
-      <Width>334</Width>
-      <Height>137</Height>
-    </Size>
-    <WindowState>Normal</WindowState>
-    <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
-    <VisualizerSettings>
-      <ObjectTextVisualizer />
     </VisualizerSettings>
   </DialogSettings>
   <DialogSettings>
