@@ -507,28 +507,91 @@
               <Name>Buffer</Name>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>Buffer</Name>
+              <Name>CameraStream</Name>
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="rx:Merge" />
+              <Combinator xsi:type="rx:Take">
+                <rx:Count>1</rx:Count>
+              </Combinator>
             </Expression>
             <Expression xsi:type="MemberSelector">
-              <Selector>Item1</Selector>
+              <Selector>Item2</Selector>
+            </Expression>
+            <Expression xsi:type="p2:Parse">
+              <harp:Register xsi:type="p2:TimestampedPwmRiseEvent" />
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Seconds</Selector>
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="cv:VideoWriter">
-                <cv:FileName>test.avi</cv:FileName>
-                <cv:Suffix>None</cv:Suffix>
-                <cv:Buffered>true</cv:Buffered>
-                <cv:Overwrite>true</cv:Overwrite>
-                <cv:FourCC>FMP4</cv:FourCC>
-                <cv:FrameRate>30</cv:FrameRate>
-                <cv:FrameSize>
-                  <cv:Width>0</cv:Width>
-                  <cv:Height>0</cv:Height>
-                </cv:FrameSize>
-                <cv:ResizeInterpolation>NearestNeighbor</cv:ResizeInterpolation>
+              <Combinator xsi:type="rx:Take">
+                <rx:Count>1</rx:Count>
               </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:AsyncSubject">
+              <Name>HarpTime</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Buffer</Name>
+            </Expression>
+            <Expression xsi:type="rx:SelectMany">
+              <Name>SaveVideo</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Merge" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Item1</Selector>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>HarpTime</Name>
+                  </Expression>
+                  <Expression xsi:type="Format">
+                    <Format>Event-{0}.avi</Format>
+                    <Selector>it</Selector>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="FileName" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:VideoWriter">
+                      <cv:FileName>Event-3788377913.12448.avi</cv:FileName>
+                      <cv:Suffix>None</cv:Suffix>
+                      <cv:Buffered>true</cv:Buffered>
+                      <cv:Overwrite>false</cv:Overwrite>
+                      <cv:FourCC>FMP4</cv:FourCC>
+                      <cv:FrameRate>30</cv:FrameRate>
+                      <cv:FrameSize>
+                        <cv:Width>0</cv:Width>
+                        <cv:Height>0</cv:Height>
+                      </cv:FrameSize>
+                      <cv:ResizeInterpolation>NearestNeighbor</cv:ResizeInterpolation>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Take">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="6" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source1" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source2" />
+                  <Edge From="6" To="7" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source1" />
+                </Edges>
+              </Workflow>
             </Expression>
             <Expression xsi:type="WorkflowOutput" />
           </Nodes>
@@ -540,105 +603,12 @@
             <Edge From="6" To="7" Label="Source1" />
             <Edge From="7" To="8" Label="Source1" />
             <Edge From="8" To="9" Label="Source1" />
+            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="10" To="11" Label="Source1" />
+            <Edge From="12" To="13" Label="Source1" />
+            <Edge From="13" To="14" Label="Source1" />
           </Edges>
         </Workflow>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="Combinator">
-          <Combinator xsi:type="rx:Timer">
-            <rx:DueTime>PT0S</rx:DueTime>
-            <rx:Period>PT0.1S</rx:Period>
-          </Combinator>
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="rx:PublishSubject">
-          <Name>Timer</Name>
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="SubscribeSubject">
-          <Name>Timer</Name>
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="Combinator">
-          <Combinator xsi:type="rx:BufferCount">
-            <rx:Count>10</rx:Count>
-            <rx:Skip>1</rx:Skip>
-          </Combinator>
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="rx:PublishSubject">
-          <Name>HistoryBuffers</Name>
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="SubscribeSubject">
-          <Name>PokeOnset</Name>
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="SubscribeSubject">
-          <Name>Timer</Name>
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="Combinator">
-          <Combinator xsi:type="rx:WithLatestFrom" />
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="rx:SelectMany">
-          <Name>ExtractBuffer</Name>
-          <Workflow>
-            <Nodes>
-              <Expression xsi:type="WorkflowInput">
-                <Name>Source1</Name>
-              </Expression>
-              <Expression xsi:type="SubscribeSubject">
-                <Name>HistoryBuffers</Name>
-              </Expression>
-              <Expression xsi:type="Combinator">
-                <Combinator xsi:type="rx:Take">
-                  <rx:Count>5</rx:Count>
-                </Combinator>
-              </Expression>
-              <Expression xsi:type="Combinator">
-                <Combinator xsi:type="rx:TakeLast">
-                  <rx:Count>1</rx:Count>
-                </Combinator>
-              </Expression>
-              <Expression xsi:type="WorkflowOutput" />
-            </Nodes>
-            <Edges>
-              <Edge From="1" To="2" Label="Source1" />
-              <Edge From="2" To="3" Label="Source1" />
-              <Edge From="3" To="4" Label="Source1" />
-            </Edges>
-          </Workflow>
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="MemberSelector">
-          <Selector>Item2</Selector>
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="Combinator">
-          <Combinator xsi:type="rx:Zip" />
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="MemberSelector">
-          <Selector>Item1</Selector>
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="Combinator">
-          <Combinator xsi:type="rx:Merge" />
-        </Builder>
       </Expression>
     </Nodes>
     <Edges>
@@ -665,17 +635,6 @@
       <Edge From="25" To="26" Label="Source1" />
       <Edge From="26" To="27" Label="Source1" />
       <Edge From="28" To="29" Label="Source1" />
-      <Edge From="30" To="31" Label="Source1" />
-      <Edge From="32" To="33" Label="Source1" />
-      <Edge From="33" To="34" Label="Source1" />
-      <Edge From="35" To="37" Label="Source1" />
-      <Edge From="36" To="37" Label="Source2" />
-      <Edge From="37" To="38" Label="Source1" />
-      <Edge From="37" To="39" Label="Source1" />
-      <Edge From="38" To="40" Label="Source1" />
-      <Edge From="39" To="40" Label="Source2" />
-      <Edge From="40" To="41" Label="Source1" />
-      <Edge From="41" To="42" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
