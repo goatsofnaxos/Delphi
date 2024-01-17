@@ -13,6 +13,19 @@
                     "type": "integer"
                 }
             }
+        },
+        "lineCommand": {
+            "properties": {
+                "lineName": {
+                    "type": "string"
+                },
+                "state": {
+                    "enum": [
+                        "open",
+                        "close"
+                    ]
+                }
+            }
         }
     },
     "properties": {

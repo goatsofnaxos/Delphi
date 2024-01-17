@@ -66,6 +66,54 @@ namespace DataSchema
 
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    public partial class LineCommand
+    {
+    
+        private string _lineName;
+    
+        private LineCommandState _state;
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="lineName")]
+        public string LineName
+        {
+            get
+            {
+                return _lineName;
+            }
+            set
+            {
+                _lineName = value;
+            }
+        }
+    
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="state")]
+        public LineCommandState State
+        {
+            get
+            {
+                return _state;
+            }
+            set
+            {
+                _state = value;
+            }
+        }
+    
+        public System.IObservable<LineCommand> Process()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(
+                new LineCommand
+                {
+                    LineName = _lineName,
+                    State = _state
+                }));
+        }
+    }
+
+
+    [Bonsai.CombinatorAttribute()]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class DelphiSession
     {
     
@@ -110,6 +158,17 @@ namespace DataSchema
                     LineMappings = _lineMappings
                 }));
         }
+    }
+
+
+    public enum LineCommandState
+    {
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="open")]
+        Open = 0,
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="close")]
+        Close = 1,
     }
 
 
@@ -183,6 +242,11 @@ namespace DataSchema
             return Process<LineMapping>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<LineCommand> source)
+        {
+            return Process<LineCommand>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<DelphiSession> source)
         {
             return Process<DelphiSession>(source);
@@ -201,6 +265,7 @@ namespace DataSchema
     [System.ComponentModel.DefaultPropertyAttribute("Type")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineMapping>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineCommand>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiSession>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Metadata>))]
     [System.ComponentModel.DescriptionAttribute("Deserializes a sequence of YAML strings into data model objects.")]
