@@ -4,7 +4,7 @@
 
 metadata:
   animalId: plimbo
-  loggingRootPath: C:/
+  loggingRootPath: C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\
 
 cameraProperties:
   imagingRate: 100
