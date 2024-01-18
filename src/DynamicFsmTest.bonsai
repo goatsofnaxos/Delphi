@@ -542,13 +542,11 @@
             </Expression>
             <Expression xsi:type="PropertyMapping">
               <PropertyMappings>
-                <Property Name="Value" />
+                <Property Name="Key" />
               </PropertyMappings>
             </Expression>
-            <Expression xsi:type="Index">
-              <Operand xsi:type="StringProperty">
-                <Value>OdorA</Value>
-              </Operand>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p2:TryGetValueOrDefault" />
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Zip" />
