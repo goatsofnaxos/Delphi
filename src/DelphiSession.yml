@@ -23,6 +23,6 @@ lineMappings:
   -   {name: "OdorC", line: 8}
   -   {name: "OdorD", line: 9}
   -   {name: "PortValve", line: 0}
-# TODO - should define video trigger line
-# TODO - aux in for port
-# TODO - Vacuum line
+  -   {name: "VideoTrigger", line: 1}
+  -   {name: "AuxIn", line: 0}
+  -   {name: "Vacuum", line: 2}
