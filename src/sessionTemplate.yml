@@ -5,6 +5,11 @@
 metadata:
   animalId: plimbo
   loggingRootPath: C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\
+  # TODO - some maximum poke length allowed
+  # TODO - time interval for running robocopy
+  # TODO - show LEDs parameter
+  # TODO - max video saving time
+  # TODO - maxmimum odor delivery time
 
 cameraProperties:
   imagingRate: 100
@@ -12,13 +17,21 @@ cameraProperties:
   postEventBufferFrames: 50
 
 lineMappings:
-  -   {name: "OdorA", line: 7}
-  -   {name: "OdorB", line: 6}
+  -   {name: "OdorA", line: 6}
+  -   {name: "OdorB", line: 7}
   -   {name: "OdorC", line: 8}
   -   {name: "OdorD", line: 9}
   -   {name: "PortValve", line: 0}
+# TODO - should define video trigger line
+# TODO - aux in for 
+# Vacuum line
 
+# TODO - Bonsai dropdown for selecting rules should have some method of not allowing user to select rules that won't work in the experiment (e.g. wrong states)
+# TODO - Should be a separate schema to the rest of these parameters
+# TODO - If a new rule is loaded, once the rule is loaded the state machine should go to whatever the next legal transition is. If there's no legal transition, go to a default blank state and then transition to whatever the next legal state is.
+# TODO - optional vacuum 
 stateDefinitions:
   -   {name: "StartState", transitionsTo: "NextState"}
   -   {name: "NextState", transitionsTo: "FinalState"}
-  -   {name: "FinalState", transitionsTo: "StartState"}
+  -   {name: "FinalState", transitionsTo: "NextState"}
+  -   {name: "DefaultState", transitionsTo: "StartState"}
