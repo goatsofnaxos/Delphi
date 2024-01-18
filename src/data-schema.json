@@ -1,0 +1,97 @@
+{
+    "$id": "h...",
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "definitions": {
+        "lineMapping": {
+            "properties": {
+                "name": {
+                    "description": "The alias of this line (e.g. OdorA, FinalValve)",
+                    "type": "string"
+                },
+                "line": {
+                    "description": "The digital line associated with this mapping",
+                    "type": "integer"
+                }
+            }
+        },
+        "lineCommand": {
+            "properties": {
+                "lineName": {
+                    "type": "string"
+                },
+                "state": {
+                    "enum": [
+                        "open",
+                        "close"
+                    ]
+                }
+            }
+        },
+        "cameraProperties": {
+            "properties": {
+                "imagingRate": {
+                    "description": "The imaging rate in frames / s",
+                    "type": "number"
+                },
+                "preEventBufferFrames": {
+                    "description": "The number of frames pre-event to include in the event buffer",
+                    "type": "integer"
+                },
+                "postEventBufferFrames": {
+                    "description": "The number of frames post-event to include in the event buffer",
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "properties": {
+        "metadata": {
+            "properties": {
+                "animalId": {
+                    "default": "",
+                    "type": "string"
+                },
+                "loggingRootPath": {
+                    "default": "",
+                    "type": "string"
+                },
+                "maximumPokeTime": {
+                    "description": "Maximum poke time. Poke should be aborted after this time in seconds",
+                    "default": "10",
+                    "type": "number"
+                },
+                "robocopyTimeInterval": {
+                    "description": "Interval between robocopy initiations in seconds",
+                    "default": "3600",
+                    "type": "number"
+                },
+                "showHarpLeds": {
+                    "description": "Whether HARP device LEDs should be on",
+                    "default": "false",
+                    "type": "boolean"
+                },
+                "maxVideoLength": {
+                    "description": "Maximum allowed length of individual video files in seconds",
+                    "default": "120",
+                    "type": "number"
+                },
+                "maxOdorDelivery": {
+                    "description": "Maximum allowed length of odor deliveries in seconds",
+                    "default": "8",
+                    "type": "number"
+                }
+            }
+        },
+        "lineMappings": {
+            "items": {
+                "$ref": "#/definitions/lineMapping"
+            },
+            "type": "array"
+        },
+        "cameraProperties": {
+            "$ref": "#/definitions/cameraProperties"
+        }
+    },
+    "title": "DelphiSession",
+    "type": "object"
+}

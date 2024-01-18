@@ -1,0 +1,26 @@
+{
+    "$id": "h...",
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "definitions": {
+        "stateDefinition": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "transitionsTo": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "properties": {
+        "stateDefinitions": {
+            "items": {
+                "$ref": "#/definitions/stateDefinition"
+            },
+            "type": "array"
+        }
+    },
+    "title": "DelphiSession",
+    "type": "object"
+}
