@@ -114,12 +114,89 @@ namespace DataSchema
 
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    public partial class CameraProperties
+    {
+    
+        private double _imagingRate;
+    
+        private int _preEventBufferFrames;
+    
+        private int _postEventBufferFrames;
+    
+        /// <summary>
+        /// The imaging rate in frames / s
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="imagingRate")]
+        [System.ComponentModel.DescriptionAttribute("The imaging rate in frames / s")]
+        public double ImagingRate
+        {
+            get
+            {
+                return _imagingRate;
+            }
+            set
+            {
+                _imagingRate = value;
+            }
+        }
+    
+        /// <summary>
+        /// The number of frames pre-event to include in the event buffer
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="preEventBufferFrames")]
+        [System.ComponentModel.DescriptionAttribute("The number of frames pre-event to include in the event buffer")]
+        public int PreEventBufferFrames
+        {
+            get
+            {
+                return _preEventBufferFrames;
+            }
+            set
+            {
+                _preEventBufferFrames = value;
+            }
+        }
+    
+        /// <summary>
+        /// The number of frames post-event to include in the event buffer
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="postEventBufferFrames")]
+        [System.ComponentModel.DescriptionAttribute("The number of frames post-event to include in the event buffer")]
+        public int PostEventBufferFrames
+        {
+            get
+            {
+                return _postEventBufferFrames;
+            }
+            set
+            {
+                _postEventBufferFrames = value;
+            }
+        }
+    
+        public System.IObservable<CameraProperties> Process()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(
+                new CameraProperties
+                {
+                    ImagingRate = _imagingRate,
+                    PreEventBufferFrames = _preEventBufferFrames,
+                    PostEventBufferFrames = _postEventBufferFrames
+                }));
+        }
+    }
+
+
+    [Bonsai.CombinatorAttribute()]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class DelphiSession
     {
     
         private Metadata _metadata;
     
         private System.Collections.Generic.List<LineMapping> _lineMappings = new System.Collections.Generic.List<LineMapping>();
+    
+        private CameraProperties _cameraProperties;
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="metadata")]
@@ -149,13 +226,28 @@ namespace DataSchema
             }
         }
     
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="cameraProperties")]
+        public CameraProperties CameraProperties
+        {
+            get
+            {
+                return _cameraProperties;
+            }
+            set
+            {
+                _cameraProperties = value;
+            }
+        }
+    
         public System.IObservable<DelphiSession> Process()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(
                 new DelphiSession
                 {
                     Metadata = _metadata,
-                    LineMappings = _lineMappings
+                    LineMappings = _lineMappings,
+                    CameraProperties = _cameraProperties
                 }));
         }
     }
@@ -247,6 +339,11 @@ namespace DataSchema
             return Process<LineCommand>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<CameraProperties> source)
+        {
+            return Process<CameraProperties>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<DelphiSession> source)
         {
             return Process<DelphiSession>(source);
@@ -266,6 +363,7 @@ namespace DataSchema
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineMapping>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineCommand>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraProperties>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiSession>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Metadata>))]
     [System.ComponentModel.DescriptionAttribute("Deserializes a sequence of YAML strings into data model objects.")]
