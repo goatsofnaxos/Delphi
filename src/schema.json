@@ -37,6 +37,10 @@
                     "description": "The number of frames to store in the history buffer",
                     "type": "integer"
                 },
+                "preEventBufferFrames": {
+                    "description": "The number of frames pre-event to include in the event buffer",
+                    "type": "integer"
+                },
                 "postEventBufferFrames": {
                     "description": "The number of frames post-event to include in the event buffer",
                     "type": "integer"

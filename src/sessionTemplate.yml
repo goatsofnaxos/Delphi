@@ -9,7 +9,8 @@ metadata:
 cameraProperties:
   imagingRate: 100
   frameBuffer: 200
-  postEventBufferFrames: 20
+  preEventBufferFrames: 50
+  postEventBufferFrames: 100
 
 lineMappings:
   -   {name: "OdorA", line: 7}

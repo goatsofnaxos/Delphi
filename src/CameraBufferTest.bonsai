@@ -517,7 +517,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Take">
-                <rx:Count>180</rx:Count>
+                <rx:Count>100</rx:Count>
               </Combinator>
             </Expression>
             <Expression xsi:type="Combinator">
@@ -598,7 +598,7 @@
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="cv:VideoWriter">
-                      <cv:FileName>C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\Event-3788378862.18349.avi</cv:FileName>
+                      <cv:FileName>C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\Event-3788380987.2545.avi</cv:FileName>
                       <cv:Suffix>None</cv:Suffix>
                       <cv:Buffered>true</cv:Buffered>
                       <cv:Overwrite>false</cv:Overwrite>

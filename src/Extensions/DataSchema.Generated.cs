@@ -121,6 +121,8 @@ namespace DataSchema
     
         private int _frameBuffer;
     
+        private int _preEventBufferFrames;
+    
         private int _postEventBufferFrames;
     
         /// <summary>
@@ -158,6 +160,23 @@ namespace DataSchema
         }
     
         /// <summary>
+        /// The number of frames pre-event to include in the event buffer
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="preEventBufferFrames")]
+        [System.ComponentModel.DescriptionAttribute("The number of frames pre-event to include in the event buffer")]
+        public int PreEventBufferFrames
+        {
+            get
+            {
+                return _preEventBufferFrames;
+            }
+            set
+            {
+                _preEventBufferFrames = value;
+            }
+        }
+    
+        /// <summary>
         /// The number of frames post-event to include in the event buffer
         /// </summary>
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="postEventBufferFrames")]
@@ -181,6 +200,7 @@ namespace DataSchema
                 {
                     ImagingRate = _imagingRate,
                     FrameBuffer = _frameBuffer,
+                    PreEventBufferFrames = _preEventBufferFrames,
                     PostEventBufferFrames = _postEventBufferFrames
                 }));
         }
