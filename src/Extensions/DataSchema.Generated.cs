@@ -189,53 +189,6 @@ namespace DataSchema
 
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    public partial class StateDefinition
-    {
-    
-        private string _name;
-    
-        private string _transitionsTo;
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="name")]
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="transitionsTo")]
-        public string TransitionsTo
-        {
-            get
-            {
-                return _transitionsTo;
-            }
-            set
-            {
-                _transitionsTo = value;
-            }
-        }
-    
-        public System.IObservable<StateDefinition> Process()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(
-                new StateDefinition
-                {
-                    Name = _name,
-                    TransitionsTo = _transitionsTo
-                }));
-        }
-    }
-
-
-    [Bonsai.CombinatorAttribute()]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class DelphiSession
     {
     
@@ -244,8 +197,6 @@ namespace DataSchema
         private System.Collections.Generic.List<LineMapping> _lineMappings = new System.Collections.Generic.List<LineMapping>();
     
         private CameraProperties _cameraProperties;
-    
-        private System.Collections.Generic.List<StateDefinition> _stateDefinitions = new System.Collections.Generic.List<StateDefinition>();
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="metadata")]
@@ -289,20 +240,6 @@ namespace DataSchema
             }
         }
     
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="stateDefinitions")]
-        public System.Collections.Generic.List<StateDefinition> StateDefinitions
-        {
-            get
-            {
-                return _stateDefinitions;
-            }
-            set
-            {
-                _stateDefinitions = value;
-            }
-        }
-    
         public System.IObservable<DelphiSession> Process()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(
@@ -310,8 +247,7 @@ namespace DataSchema
                 {
                     Metadata = _metadata,
                     LineMappings = _lineMappings,
-                    CameraProperties = _cameraProperties,
-                    StateDefinitions = _stateDefinitions
+                    CameraProperties = _cameraProperties
                 }));
         }
     }
@@ -336,6 +272,18 @@ namespace DataSchema
         private string _animalId = "";
     
         private string _loggingRootPath = "";
+    
+        private double _maximumPokeTime = 10D;
+    
+        private double _robocopyTimeInterval = 3600D;
+    
+        private bool _showHarpLeds = false;
+    
+        private double _maxVideoLength = 120D;
+    
+        private double _maxOdorDelivery = 8D;
+    
+        private bool _useVacuum = true;
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="animalId")]
         public string AnimalId
@@ -363,13 +311,121 @@ namespace DataSchema
             }
         }
     
+        /// <summary>
+        /// Maximum poke time. Poke should be aborted after this time in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="maximumPokeTime")]
+        [System.ComponentModel.DescriptionAttribute("Maximum poke time. Poke should be aborted after this time in seconds")]
+        public double MaximumPokeTime
+        {
+            get
+            {
+                return _maximumPokeTime;
+            }
+            set
+            {
+                _maximumPokeTime = value;
+            }
+        }
+    
+        /// <summary>
+        /// Interval between robocopy initiations in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="robocopyTimeInterval")]
+        [System.ComponentModel.DescriptionAttribute("Interval between robocopy initiations in seconds")]
+        public double RobocopyTimeInterval
+        {
+            get
+            {
+                return _robocopyTimeInterval;
+            }
+            set
+            {
+                _robocopyTimeInterval = value;
+            }
+        }
+    
+        /// <summary>
+        /// Whether HARP device LEDs should be on
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="showHarpLeds")]
+        [System.ComponentModel.DescriptionAttribute("Whether HARP device LEDs should be on")]
+        public bool ShowHarpLeds
+        {
+            get
+            {
+                return _showHarpLeds;
+            }
+            set
+            {
+                _showHarpLeds = value;
+            }
+        }
+    
+        /// <summary>
+        /// Maximum allowed length of individual video files in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="maxVideoLength")]
+        [System.ComponentModel.DescriptionAttribute("Maximum allowed length of individual video files in seconds")]
+        public double MaxVideoLength
+        {
+            get
+            {
+                return _maxVideoLength;
+            }
+            set
+            {
+                _maxVideoLength = value;
+            }
+        }
+    
+        /// <summary>
+        /// Maximum allowed length of odor deliveries in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="maxOdorDelivery")]
+        [System.ComponentModel.DescriptionAttribute("Maximum allowed length of odor deliveries in seconds")]
+        public double MaxOdorDelivery
+        {
+            get
+            {
+                return _maxOdorDelivery;
+            }
+            set
+            {
+                _maxOdorDelivery = value;
+            }
+        }
+    
+        /// <summary>
+        /// Whether to use vacuum line during odor presentations
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="useVacuum")]
+        [System.ComponentModel.DescriptionAttribute("Whether to use vacuum line during odor presentations")]
+        public bool UseVacuum
+        {
+            get
+            {
+                return _useVacuum;
+            }
+            set
+            {
+                _useVacuum = value;
+            }
+        }
+    
         public System.IObservable<Metadata> Process()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(
                 new Metadata
                 {
                     AnimalId = _animalId,
-                    LoggingRootPath = _loggingRootPath
+                    LoggingRootPath = _loggingRootPath,
+                    MaximumPokeTime = _maximumPokeTime,
+                    RobocopyTimeInterval = _robocopyTimeInterval,
+                    ShowHarpLeds = _showHarpLeds,
+                    MaxVideoLength = _maxVideoLength,
+                    MaxOdorDelivery = _maxOdorDelivery,
+                    UseVacuum = _useVacuum
                 }));
         }
     }
@@ -408,11 +464,6 @@ namespace DataSchema
             return Process<CameraProperties>(source);
         }
 
-        public System.IObservable<string> Process(System.IObservable<StateDefinition> source)
-        {
-            return Process<StateDefinition>(source);
-        }
-
         public System.IObservable<string> Process(System.IObservable<DelphiSession> source)
         {
             return Process<DelphiSession>(source);
@@ -433,7 +484,6 @@ namespace DataSchema
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineMapping>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineCommand>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraProperties>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StateDefinition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiSession>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Metadata>))]
     [System.ComponentModel.DescriptionAttribute("Deserializes a sequence of YAML strings into data model objects.")]

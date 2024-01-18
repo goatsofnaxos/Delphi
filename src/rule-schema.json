@@ -21,6 +21,6 @@
             "type": "array"
         }
     },
-    "title": "DelphiSession",
+    "title": "DelphiRule",
     "type": "object"
 }

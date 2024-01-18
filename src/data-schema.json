@@ -79,6 +79,11 @@
                     "description": "Maximum allowed length of odor deliveries in seconds",
                     "default": "8",
                     "type": "number"
+                },
+                "useVacuum": {
+                    "description": "Whether to use vacuum line during odor presentations",
+                    "default": "true",
+                    "type": "boolean"
                 }
             }
         },

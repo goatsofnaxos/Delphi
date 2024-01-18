@@ -6,6 +6,5 @@
 # TODO - Should be a separate schema to the rest of these parameters
 stateDefinitions:
   -   {name: "OdorA", transitionsTo: "OdorB"}
-  -   {name: "OdorB", transitionsTo: "OdorC"}
-  -   {name: "OdorC", transitionsTo: "OdorA"}
+  -   {name: "OdorB", transitionsTo: "OdorA"}
   -   {name: "DefaultState", transitionsTo: "OdorA"}

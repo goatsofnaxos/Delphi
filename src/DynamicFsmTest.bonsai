@@ -3,16 +3,18 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
                  xmlns:p1="clr-namespace:DataSchema;assembly=Extensions"
+                 xmlns:p2="clr-namespace:RuleSchema;assembly=Extensions"
                  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
                  xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                 xmlns:p2="clr-namespace:;assembly=Extensions"
+                 xmlns:p3="clr-namespace:;assembly=Extensions"
                  xmlns:wie="clr-namespace:Bonsai.Windows.Input;assembly=Bonsai.Windows.Input"
                  xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
                  xmlns="https://bonsai-rx.org/2018/workflow">
   <Workflow>
     <Nodes>
       <Expression xsi:type="ExternalizedMapping">
-        <Property Name="Path" DisplayName="TemplatePath" />
+        <Property Name="SessionSettingsPath" />
+        <Property Name="RulePath" />
       </Expression>
       <Expression xsi:type="GroupWorkflow">
         <Name>InitializeSettings</Name>
@@ -21,15 +23,18 @@
             <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:DelphiSession">
               <rx:Name>SessionSettings</rx:Name>
             </Expression>
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p2:DelphiRule">
+              <rx:Name>RuleSettings</rx:Name>
+            </Expression>
             <Expression xsi:type="rx:BehaviorSubject" TypeArguments="scg:IDictionary(sys:String,sys:String)">
               <rx:Name>TransitionLookup</rx:Name>
             </Expression>
             <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Path" />
+              <Property Name="Path" DisplayName="SessionSettingsPath" />
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p2:LoadSettings">
-                <p2:Path>sessionTemplate1.yml</p2:Path>
+              <Combinator xsi:type="p3:LoadSessionSettings">
+                <p3:Path>sessionTemplate1.yml</p3:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="Combinator">
@@ -40,58 +45,24 @@
             <Expression xsi:type="MulticastSubject">
               <Name>SessionSettings</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="SubscribeSubject">
-                <Name>SessionSettings</Name>
-              </Builder>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Path" DisplayName="RulePath" />
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="MemberSelector">
-                <Selector>StateDefinitions</Selector>
-              </Builder>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p3:LoadRuleSettings">
+                <p3:Path>rule1.rule.yml</p3:Path>
+              </Combinator>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="Combinator">
-                <Combinator xsi:type="rx:Merge" />
-              </Builder>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Take">
+                <rx:Count>1</rx:Count>
+              </Combinator>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="SubscribeSubject">
-                <Name>SessionSettings</Name>
-              </Builder>
-            </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="MemberSelector">
-                <Selector>StateDefinitions.Count</Selector>
-              </Builder>
-            </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="PropertyMapping">
-                <PropertyMappings>
-                  <Property Name="Count" />
-                </PropertyMappings>
-              </Builder>
-            </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="Combinator">
-                <Combinator xsi:type="rx:Take">
-                  <rx:Count>4</rx:Count>
-                </Combinator>
-              </Builder>
-            </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="rx:ToDictionary">
-                <rx:KeySelector>Name</rx:KeySelector>
-                <rx:ElementSelector>TransitionsTo</rx:ElementSelector>
-              </Builder>
-            </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="MulticastSubject">
-                <Name>TransitionLookup</Name>
-              </Builder>
+            <Expression xsi:type="MulticastSubject">
+              <Name>RuleSettings</Name>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>SessionSettings</Name>
+              <Name>RuleSettings</Name>
             </Expression>
             <Expression xsi:type="rx:SelectMany">
               <Name>GenerateTransitionDictionary</Name>
@@ -101,7 +72,7 @@
                     <Name>Source1</Name>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>SessionSettings</Name>
+                    <Name>RuleSettings</Name>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
                     <Selector>StateDefinitions</Selector>
@@ -110,7 +81,7 @@
                     <Combinator xsi:type="rx:Merge" />
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>SessionSettings</Name>
+                    <Name>RuleSettings</Name>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
                     <Selector>StateDefinitions.Count</Selector>
@@ -122,7 +93,7 @@
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:Take">
-                      <rx:Count>3</rx:Count>
+                      <rx:Count>2</rx:Count>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="rx:ToDictionary">
@@ -163,8 +134,8 @@
                     <Property Name="Path" />
                   </Expression>
                   <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="p2:LoadSettings">
-                      <p2:Path>sessionTemplate1.yml</p2:Path>
+                    <Combinator xsi:type="p3:LoadRuleSettings">
+                      <p3:Path>rule1.rule.yml</p3:Path>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
@@ -198,8 +169,8 @@
                     <Property Name="Path" />
                   </Expression>
                   <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="p2:LoadSettings">
-                      <p2:Path>sessionTemplate2.yml</p2:Path>
+                    <Combinator xsi:type="p3:LoadRuleSettings">
+                      <p3:Path>rule2.rule.yml</p3:Path>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
@@ -233,8 +204,8 @@
                     <Property Name="Path" />
                   </Expression>
                   <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="p2:LoadSettings">
-                      <p2:Path>sessionTemplate3.yml</p2:Path>
+                    <Combinator xsi:type="p3:LoadRuleSettings">
+                      <p3:Path>rule3.rule.yml</p3:Path>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
@@ -260,35 +231,30 @@
               </Combinator>
             </Expression>
             <Expression xsi:type="MulticastSubject">
-              <Name>SessionSettings</Name>
+              <Name>RuleSettings</Name>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Repeat" />
             </Expression>
           </Nodes>
           <Edges>
-            <Edge From="2" To="3" Label="Source1" />
             <Edge From="3" To="4" Label="Source1" />
             <Edge From="4" To="5" Label="Source1" />
-            <Edge From="6" To="7" Label="Source1" />
+            <Edge From="5" To="6" Label="Source1" />
             <Edge From="7" To="8" Label="Source1" />
-            <Edge From="8" To="12" Label="Source1" />
+            <Edge From="8" To="9" Label="Source1" />
             <Edge From="9" To="10" Label="Source1" />
-            <Edge From="10" To="11" Label="Source1" />
-            <Edge From="11" To="12" Label="Source2" />
+            <Edge From="11" To="12" Label="Source1" />
             <Edge From="12" To="13" Label="Source1" />
-            <Edge From="13" To="14" Label="Source1" />
-            <Edge From="15" To="16" Label="Source1" />
+            <Edge From="14" To="15" Label="Source1" />
+            <Edge From="15" To="20" Label="Source1" />
             <Edge From="16" To="17" Label="Source1" />
+            <Edge From="17" To="20" Label="Source2" />
             <Edge From="18" To="19" Label="Source1" />
-            <Edge From="19" To="24" Label="Source1" />
+            <Edge From="19" To="20" Label="Source3" />
             <Edge From="20" To="21" Label="Source1" />
-            <Edge From="21" To="24" Label="Source2" />
+            <Edge From="21" To="22" Label="Source1" />
             <Edge From="22" To="23" Label="Source1" />
-            <Edge From="23" To="24" Label="Source3" />
-            <Edge From="24" To="25" Label="Source1" />
-            <Edge From="25" To="26" Label="Source1" />
-            <Edge From="26" To="27" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -546,7 +512,10 @@
               </PropertyMappings>
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p2:TryGetValueOrDefault" />
+              <Combinator xsi:type="p3:TryGetValueOrDefault">
+                <p3:Key>OdorA</p3:Key>
+                <p3:DefaultString>DefaultState</p3:DefaultString>
+              </Combinator>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Zip" />
@@ -597,15 +566,15 @@
       </Expression>
       <Expression xsi:type="Disable">
         <Builder xsi:type="Combinator">
-          <Combinator xsi:type="p2:ContainsKey">
-            <p2:Key>OdorA</p2:Key>
+          <Combinator xsi:type="p3:ContainsKey">
+            <p3:Key>OdorA</p3:Key>
           </Combinator>
         </Builder>
       </Expression>
       <Expression xsi:type="Disable">
         <Builder xsi:type="Combinator">
-          <Combinator xsi:type="p2:ContainsValue">
-            <p2:Element>A</p2:Element>
+          <Combinator xsi:type="p3:ContainsValue">
+            <p3:Element>A</p3:Element>
           </Combinator>
         </Builder>
       </Expression>
