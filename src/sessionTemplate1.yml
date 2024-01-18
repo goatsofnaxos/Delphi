@@ -31,7 +31,7 @@ lineMappings:
 # TODO - If a new rule is loaded, once the rule is loaded the state machine should go to whatever the next legal transition is. If there's no legal transition, go to a default blank state and then transition to whatever the next legal state is.
 # TODO - optional vacuum 
 stateDefinitions:
-  -   {name: "StartState", transitionsTo: "NextState"}
-  -   {name: "NextState", transitionsTo: "FinalState"}
-  -   {name: "FinalState", transitionsTo: "NextState"}
+  -   {name: "OdorA", transitionsTo: "OdorB"}
+  -   {name: "OdorB", transitionsTo: "OdorC"}
+  -   {name: "OdorC", transitionsTo: "OdorA"}
   -   {name: "DefaultState", transitionsTo: "StartState"}
