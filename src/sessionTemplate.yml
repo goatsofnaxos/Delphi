@@ -21,4 +21,4 @@ lineMappings:
 stateDefinitions:
   -   {name: "StartState", transitionsTo: "NextState"}
   -   {name: "NextState", transitionsTo: "FinalState"}
-  -   {name: "FinalState", transitionsTo: "NextState"}
+  -   {name: "FinalState", transitionsTo: "StartState"}
