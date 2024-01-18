@@ -17,3 +17,8 @@ lineMappings:
   -   {name: "OdorC", line: 8}
   -   {name: "OdorD", line: 9}
   -   {name: "PortValve", line: 0}
+
+stateDefinitions:
+  -   {name: "StartState", transitionsTo: "NextState"}
+  -   {name: "NextState", transitionsTo: "FinalState"}
+  -   {name: "FinalState", transitionsTo: "NextState"}

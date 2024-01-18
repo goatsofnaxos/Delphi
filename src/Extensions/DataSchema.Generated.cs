@@ -189,6 +189,53 @@ namespace DataSchema
 
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    public partial class StateDefinition
+    {
+    
+        private string _name;
+    
+        private string _transitionsTo;
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="name")]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="transitionsTo")]
+        public string TransitionsTo
+        {
+            get
+            {
+                return _transitionsTo;
+            }
+            set
+            {
+                _transitionsTo = value;
+            }
+        }
+    
+        public System.IObservable<StateDefinition> Process()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(
+                new StateDefinition
+                {
+                    Name = _name,
+                    TransitionsTo = _transitionsTo
+                }));
+        }
+    }
+
+
+    [Bonsai.CombinatorAttribute()]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class DelphiSession
     {
     
@@ -197,6 +244,8 @@ namespace DataSchema
         private System.Collections.Generic.List<LineMapping> _lineMappings = new System.Collections.Generic.List<LineMapping>();
     
         private CameraProperties _cameraProperties;
+    
+        private System.Collections.Generic.List<StateDefinition> _stateDefinitions = new System.Collections.Generic.List<StateDefinition>();
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="metadata")]
@@ -240,6 +289,20 @@ namespace DataSchema
             }
         }
     
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="stateDefinitions")]
+        public System.Collections.Generic.List<StateDefinition> StateDefinitions
+        {
+            get
+            {
+                return _stateDefinitions;
+            }
+            set
+            {
+                _stateDefinitions = value;
+            }
+        }
+    
         public System.IObservable<DelphiSession> Process()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(
@@ -247,7 +310,8 @@ namespace DataSchema
                 {
                     Metadata = _metadata,
                     LineMappings = _lineMappings,
-                    CameraProperties = _cameraProperties
+                    CameraProperties = _cameraProperties,
+                    StateDefinitions = _stateDefinitions
                 }));
         }
     }
@@ -344,6 +408,11 @@ namespace DataSchema
             return Process<CameraProperties>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<StateDefinition> source)
+        {
+            return Process<StateDefinition>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<DelphiSession> source)
         {
             return Process<DelphiSession>(source);
@@ -364,6 +433,7 @@ namespace DataSchema
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineMapping>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineCommand>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraProperties>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StateDefinition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiSession>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Metadata>))]
     [System.ComponentModel.DescriptionAttribute("Deserializes a sequence of YAML strings into data model objects.")]
