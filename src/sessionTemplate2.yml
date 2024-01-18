@@ -32,6 +32,5 @@ lineMappings:
 # TODO - optional vacuum 
 stateDefinitions:
   -   {name: "OdorA", transitionsTo: "OdorB"}
-  -   {name: "OdorB", transitionsTo: "OdorC"}
-  -   {name: "OdorC", transitionsTo: "OdorA"}
+  -   {name: "OdorB", transitionsTo: "OdorA"}
   -   {name: "DefaultState", transitionsTo: "OdorA"}
