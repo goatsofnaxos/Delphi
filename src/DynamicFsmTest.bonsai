@@ -559,33 +559,6 @@
       <Expression xsi:type="MulticastSubject">
         <Name>BeginState</Name>
       </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="SubscribeSubject">
-          <Name>TransitionLookup</Name>
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="Combinator">
-          <Combinator xsi:type="p3:ContainsKey">
-            <p3:Key>OdorA</p3:Key>
-          </Combinator>
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="Combinator">
-          <Combinator xsi:type="p3:ContainsValue">
-            <p3:Element>A</p3:Element>
-          </Combinator>
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="Combinator">
-          <Combinator xsi:type="rx:Zip" />
-        </Builder>
-      </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="BitwiseAnd" />
-      </Expression>
       <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:String">
         <rx:Name>CurrentState</rx:Name>
       </Expression>
@@ -615,11 +588,6 @@
       <Edge From="24" To="25" Label="Source1" />
       <Edge From="25" To="26" Label="Source1" />
       <Edge From="26" To="27" Label="Source1" />
-      <Edge From="28" To="29" Label="Source1" />
-      <Edge From="28" To="30" Label="Source1" />
-      <Edge From="29" To="31" Label="Source1" />
-      <Edge From="30" To="31" Label="Source2" />
-      <Edge From="31" To="32" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
