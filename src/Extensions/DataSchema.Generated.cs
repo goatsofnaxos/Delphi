@@ -273,6 +273,18 @@ namespace DataSchema
     
         private string _loggingRootPath = "";
     
+        private double _maximumPokeTime = 10D;
+    
+        private double _robocopyTimeInterval = 3600D;
+    
+        private bool _showHarpLeds = false;
+    
+        private double _maxVideoLength = 120D;
+    
+        private double _maxOdorDelivery = 8D;
+    
+        private bool _useVacuum = true;
+    
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="animalId")]
         public string AnimalId
         {
@@ -299,13 +311,121 @@ namespace DataSchema
             }
         }
     
+        /// <summary>
+        /// Maximum poke time. Poke should be aborted after this time in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="maximumPokeTime")]
+        [System.ComponentModel.DescriptionAttribute("Maximum poke time. Poke should be aborted after this time in seconds")]
+        public double MaximumPokeTime
+        {
+            get
+            {
+                return _maximumPokeTime;
+            }
+            set
+            {
+                _maximumPokeTime = value;
+            }
+        }
+    
+        /// <summary>
+        /// Interval between robocopy initiations in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="robocopyTimeInterval")]
+        [System.ComponentModel.DescriptionAttribute("Interval between robocopy initiations in seconds")]
+        public double RobocopyTimeInterval
+        {
+            get
+            {
+                return _robocopyTimeInterval;
+            }
+            set
+            {
+                _robocopyTimeInterval = value;
+            }
+        }
+    
+        /// <summary>
+        /// Whether HARP device LEDs should be on
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="showHarpLeds")]
+        [System.ComponentModel.DescriptionAttribute("Whether HARP device LEDs should be on")]
+        public bool ShowHarpLeds
+        {
+            get
+            {
+                return _showHarpLeds;
+            }
+            set
+            {
+                _showHarpLeds = value;
+            }
+        }
+    
+        /// <summary>
+        /// Maximum allowed length of individual video files in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="maxVideoLength")]
+        [System.ComponentModel.DescriptionAttribute("Maximum allowed length of individual video files in seconds")]
+        public double MaxVideoLength
+        {
+            get
+            {
+                return _maxVideoLength;
+            }
+            set
+            {
+                _maxVideoLength = value;
+            }
+        }
+    
+        /// <summary>
+        /// Maximum allowed length of odor deliveries in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="maxOdorDelivery")]
+        [System.ComponentModel.DescriptionAttribute("Maximum allowed length of odor deliveries in seconds")]
+        public double MaxOdorDelivery
+        {
+            get
+            {
+                return _maxOdorDelivery;
+            }
+            set
+            {
+                _maxOdorDelivery = value;
+            }
+        }
+    
+        /// <summary>
+        /// Whether to use vacuum line during odor presentations
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="useVacuum")]
+        [System.ComponentModel.DescriptionAttribute("Whether to use vacuum line during odor presentations")]
+        public bool UseVacuum
+        {
+            get
+            {
+                return _useVacuum;
+            }
+            set
+            {
+                _useVacuum = value;
+            }
+        }
+    
         public System.IObservable<Metadata> Process()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(
                 new Metadata
                 {
                     AnimalId = _animalId,
-                    LoggingRootPath = _loggingRootPath
+                    LoggingRootPath = _loggingRootPath,
+                    MaximumPokeTime = _maximumPokeTime,
+                    RobocopyTimeInterval = _robocopyTimeInterval,
+                    ShowHarpLeds = _showHarpLeds,
+                    MaxVideoLength = _maxVideoLength,
+                    MaxOdorDelivery = _maxOdorDelivery,
+                    UseVacuum = _useVacuum
                 }));
         }
     }

@@ -13,7 +13,7 @@ using YamlDotNet.Serialization.NamingConventions;
 [Combinator]
 [Description("")]
 [WorkflowElementCategory(ElementCategory.Source)]
-public class LoadSettings
+public class LoadSessionSettings
 {
     [Editor("Bonsai.Design.OpenFileNameEditor, Bonsai.Design", DesignTypes.UITypeEditor)]
     public string Path { get; set;}

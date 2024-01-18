@@ -1,0 +1,11 @@
+%YAML 1.1
+---
+# yaml-language-server: $schema=rule-schema.json
+
+# TODO - Bonsai dropdown for selecting rules should have some method of not allowing user to select rules that won't work in the experiment (e.g. wrong states)
+# TODO - Should be a separate schema to the rest of these parameters
+stateDefinitions:
+  -   {name: "OdorA", transitionsTo: "OdorB"}
+  -   {name: "OdorB", transitionsTo: "OdorC"}
+  -   {name: "OdorC", transitionsTo: "OdorA"}
+  -   {name: "DefaultState", transitionsTo: "OdorA"}

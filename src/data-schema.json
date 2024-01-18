@@ -42,16 +42,6 @@
                     "type": "integer"
                 }
             }
-        },
-        "stateDefinition": {
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "transitionsTo": {
-                    "type": "string"
-                }
-            }
         }
     },
     "properties": {
@@ -64,6 +54,36 @@
                 "loggingRootPath": {
                     "default": "",
                     "type": "string"
+                },
+                "maximumPokeTime": {
+                    "description": "Maximum poke time. Poke should be aborted after this time in seconds",
+                    "default": "10",
+                    "type": "number"
+                },
+                "robocopyTimeInterval": {
+                    "description": "Interval between robocopy initiations in seconds",
+                    "default": "3600",
+                    "type": "number"
+                },
+                "showHarpLeds": {
+                    "description": "Whether HARP device LEDs should be on",
+                    "default": "false",
+                    "type": "boolean"
+                },
+                "maxVideoLength": {
+                    "description": "Maximum allowed length of individual video files in seconds",
+                    "default": "120",
+                    "type": "number"
+                },
+                "maxOdorDelivery": {
+                    "description": "Maximum allowed length of odor deliveries in seconds",
+                    "default": "8",
+                    "type": "number"
+                },
+                "useVacuum": {
+                    "description": "Whether to use vacuum line during odor presentations",
+                    "default": "true",
+                    "type": "boolean"
                 }
             }
         },
@@ -75,12 +95,6 @@
         },
         "cameraProperties": {
             "$ref": "#/definitions/cameraProperties"
-        },
-        "stateDefinitions": {
-            "items": {
-                "$ref": "#/definitions/stateDefinition"
-            },
-            "type": "array"
         }
     },
     "title": "DelphiSession",
