@@ -119,8 +119,6 @@ namespace DataSchema
     
         private double _imagingRate;
     
-        private int _frameBuffer;
-    
         private int _preEventBufferFrames;
     
         private int _postEventBufferFrames;
@@ -139,23 +137,6 @@ namespace DataSchema
             set
             {
                 _imagingRate = value;
-            }
-        }
-    
-        /// <summary>
-        /// The number of frames to store in the history buffer
-        /// </summary>
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="frameBuffer")]
-        [System.ComponentModel.DescriptionAttribute("The number of frames to store in the history buffer")]
-        public int FrameBuffer
-        {
-            get
-            {
-                return _frameBuffer;
-            }
-            set
-            {
-                _frameBuffer = value;
             }
         }
     
@@ -199,7 +180,6 @@ namespace DataSchema
                 new CameraProperties
                 {
                     ImagingRate = _imagingRate,
-                    FrameBuffer = _frameBuffer,
                     PreEventBufferFrames = _preEventBufferFrames,
                     PostEventBufferFrames = _postEventBufferFrames
                 }));
