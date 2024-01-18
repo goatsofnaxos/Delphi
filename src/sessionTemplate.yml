@@ -4,11 +4,16 @@
 
 metadata:
   animalId: plimbo
-  loggingRootPath: C:/
+  loggingRootPath: C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\
+
+cameraProperties:
+  imagingRate: 100
+  preEventBufferFrames: 50
+  postEventBufferFrames: 50
 
 lineMappings:
   -   {name: "OdorA", line: 7}
   -   {name: "OdorB", line: 6}
   -   {name: "OdorC", line: 8}
   -   {name: "OdorD", line: 9}
-  -   {name: "PortValve", line: 1}
+  -   {name: "PortValve", line: 0}
