@@ -56,8 +56,16 @@
             this.lineLabel9 = new System.Windows.Forms.Label();
             this.lineButton8 = new System.Windows.Forms.Button();
             this.lineButton9 = new System.Windows.Forms.Button();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.currentRuleHeaderLabel = new System.Windows.Forms.Label();
+            this.currentStateHeaderLabel = new System.Windows.Forms.Label();
+            this.currentRuleLabel = new System.Windows.Forms.Label();
+            this.currentStateLabel = new System.Windows.Forms.Label();
+            this.pokeCountHeaderLabel = new System.Windows.Forms.Label();
+            this.pokeCountLabel = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.setAuxInputButton0.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // testButton
@@ -384,11 +392,98 @@
             this.lineButton9.UseVisualStyleBackColor = true;
             this.lineButton9.Click += new System.EventHandler(this.lineButton9_Click);
             // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Controls.Add(this.pokeCountLabel, 1, 2);
+            this.tableLayoutPanel2.Controls.Add(this.pokeCountHeaderLabel, 0, 2);
+            this.tableLayoutPanel2.Controls.Add(this.currentStateLabel, 1, 1);
+            this.tableLayoutPanel2.Controls.Add(this.currentRuleLabel, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.currentRuleHeaderLabel, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.currentStateHeaderLabel, 0, 1);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(21, 241);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 3;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(453, 69);
+            this.tableLayoutPanel2.TabIndex = 4;
+            // 
+            // currentRuleHeaderLabel
+            // 
+            this.currentRuleHeaderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.currentRuleHeaderLabel.AutoSize = true;
+            this.currentRuleHeaderLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.currentRuleHeaderLabel.Location = new System.Drawing.Point(75, 0);
+            this.currentRuleHeaderLabel.Name = "currentRuleHeaderLabel";
+            this.currentRuleHeaderLabel.Size = new System.Drawing.Size(75, 24);
+            this.currentRuleHeaderLabel.TabIndex = 0;
+            this.currentRuleHeaderLabel.Text = "current rule:";
+            // 
+            // currentStateHeaderLabel
+            // 
+            this.currentStateHeaderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.currentStateHeaderLabel.AutoSize = true;
+            this.currentStateHeaderLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.currentStateHeaderLabel.Location = new System.Drawing.Point(72, 24);
+            this.currentStateHeaderLabel.Name = "currentStateHeaderLabel";
+            this.currentStateHeaderLabel.Size = new System.Drawing.Size(82, 24);
+            this.currentStateHeaderLabel.TabIndex = 1;
+            this.currentStateHeaderLabel.Text = "current state:";
+            // 
+            // currentRuleLabel
+            // 
+            this.currentRuleLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.currentRuleLabel.AutoSize = true;
+            this.currentRuleLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.currentRuleLabel.Location = new System.Drawing.Point(334, 0);
+            this.currentRuleLabel.Name = "currentRuleLabel";
+            this.currentRuleLabel.Size = new System.Drawing.Size(10, 24);
+            this.currentRuleLabel.TabIndex = 2;
+            this.currentRuleLabel.Text = ".";
+            // 
+            // currentStateLabel
+            // 
+            this.currentStateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.currentStateLabel.AutoSize = true;
+            this.currentStateLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.currentStateLabel.Location = new System.Drawing.Point(334, 24);
+            this.currentStateLabel.Name = "currentStateLabel";
+            this.currentStateLabel.Size = new System.Drawing.Size(10, 24);
+            this.currentStateLabel.TabIndex = 3;
+            this.currentStateLabel.Text = ".";
+            // 
+            // pokeCountHeaderLabel
+            // 
+            this.pokeCountHeaderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.pokeCountHeaderLabel.AutoSize = true;
+            this.pokeCountHeaderLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.pokeCountHeaderLabel.Location = new System.Drawing.Point(75, 48);
+            this.pokeCountHeaderLabel.Name = "pokeCountHeaderLabel";
+            this.pokeCountHeaderLabel.Size = new System.Drawing.Size(76, 21);
+            this.pokeCountHeaderLabel.TabIndex = 4;
+            this.pokeCountHeaderLabel.Text = "poke count:";
+            // 
+            // pokeCountLabel
+            // 
+            this.pokeCountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.pokeCountLabel.AutoSize = true;
+            this.pokeCountLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.pokeCountLabel.Location = new System.Drawing.Point(334, 48);
+            this.pokeCountLabel.Name = "pokeCountLabel";
+            this.pokeCountLabel.Size = new System.Drawing.Size(10, 21);
+            this.pokeCountLabel.TabIndex = 5;
+            this.pokeCountLabel.Text = ".";
+            // 
             // DeviceControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.setAuxInputButton0);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.testButton);
@@ -401,6 +496,8 @@
             this.tableLayoutPanel1.PerformLayout();
             this.setAuxInputButton0.ResumeLayout(false);
             this.setAuxInputButton0.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -435,5 +532,12 @@
         private System.Windows.Forms.Button lineButton8;
         private System.Windows.Forms.Label lineLabel9;
         private System.Windows.Forms.Label lineLabel8;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.Label currentRuleHeaderLabel;
+        private System.Windows.Forms.Label currentStateHeaderLabel;
+        private System.Windows.Forms.Label currentStateLabel;
+        private System.Windows.Forms.Label currentRuleLabel;
+        private System.Windows.Forms.Label pokeCountLabel;
+        private System.Windows.Forms.Label pokeCountHeaderLabel;
     }
 }
