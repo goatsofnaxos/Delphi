@@ -1011,8 +1011,8 @@
   <DialogSettings>
     <Visible>true</Visible>
     <Location>
-      <X>601</X>
-      <Y>168</Y>
+      <X>144</X>
+      <Y>156</Y>
     </Location>
     <Size>
       <Width>389</Width>
@@ -1147,8 +1147,8 @@
   <DialogSettings>
     <Visible>true</Visible>
     <Location>
-      <X>144</X>
-      <Y>156</Y>
+      <X>644</X>
+      <Y>137</Y>
     </Location>
     <Size>
       <Width>334</Width>

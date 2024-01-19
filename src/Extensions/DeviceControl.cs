@@ -45,6 +45,24 @@ namespace Extensions.Extensions
                     UpdateAuxiliaryInputVisuals();
                 }
             };
+
+            // Detect session rule change
+            source.OnReceiveRuleChange += (sender, e) =>
+            {
+                currentRuleLabel.Text = e;
+            };
+
+            // Detect state change
+            source.OnReceiveStateChange += (sender, e) =>
+            {
+                currentStateLabel.Text = e;
+            };
+
+            // Detect poke count change
+            source.OnReceivePokeCountChange += (sender, e) =>
+            {
+                pokeCountLabel.Text = e.ToString();
+            };
         }
 
         // TODO - horrible, there's a better way to do this

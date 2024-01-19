@@ -61,7 +61,26 @@ namespace RuleSchema
     public partial class DelphiRule
     {
     
+        private string _ruleAlias = "undefined";
+    
         private System.Collections.Generic.List<StateDefinition> _stateDefinitions = new System.Collections.Generic.List<StateDefinition>();
+    
+        /// <summary>
+        /// The name or alias of this rule
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ruleAlias")]
+        [System.ComponentModel.DescriptionAttribute("The name or alias of this rule")]
+        public string RuleAlias
+        {
+            get
+            {
+                return _ruleAlias;
+            }
+            set
+            {
+                _ruleAlias = value;
+            }
+        }
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="stateDefinitions")]
@@ -82,6 +101,7 @@ namespace RuleSchema
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(
                 new DelphiRule
                 {
+                    RuleAlias = _ruleAlias,
                     StateDefinitions = _stateDefinitions
                 }));
         }
