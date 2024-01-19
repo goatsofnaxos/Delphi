@@ -63,6 +63,11 @@
                     "default": "",
                     "type": "string"
                 },
+                "minimumPokeTime": {
+                    "description": "Minimum poke time. Minimum time before a poke is considered 'active'",
+                    "default": "0.01",
+                    "type": "number"
+                },
                 "maximumPokeTime": {
                     "description": "Maximum poke time. Poke should be aborted after this time in seconds",
                     "default": "10",

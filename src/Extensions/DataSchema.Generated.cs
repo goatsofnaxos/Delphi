@@ -449,6 +449,8 @@ namespace DataSchema
     
         private string _loggingRootPath = "";
     
+        private double _minimumPokeTime = 0.01D;
+    
         private double _maximumPokeTime = 10D;
     
         private double _robocopyTimeInterval = 3600D;
@@ -469,6 +471,7 @@ namespace DataSchema
         {
             _animalId = other._animalId;
             _loggingRootPath = other._loggingRootPath;
+            _minimumPokeTime = other._minimumPokeTime;
             _maximumPokeTime = other._maximumPokeTime;
             _robocopyTimeInterval = other._robocopyTimeInterval;
             _showHarpLeds = other._showHarpLeds;
@@ -500,6 +503,23 @@ namespace DataSchema
             set
             {
                 _loggingRootPath = value;
+            }
+        }
+    
+        /// <summary>
+        /// Minimum poke time. Minimum time before a poke is considered 'active'
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="minimumPokeTime")]
+        [System.ComponentModel.DescriptionAttribute("Minimum poke time. Minimum time before a poke is considered \'active\'")]
+        public double MinimumPokeTime
+        {
+            get
+            {
+                return _minimumPokeTime;
+            }
+            set
+            {
+                _minimumPokeTime = value;
             }
         }
     
@@ -619,6 +639,7 @@ namespace DataSchema
         {
             stringBuilder.Append("animalId = " + _animalId + ", ");
             stringBuilder.Append("loggingRootPath = " + _loggingRootPath + ", ");
+            stringBuilder.Append("minimumPokeTime = " + _minimumPokeTime + ", ");
             stringBuilder.Append("maximumPokeTime = " + _maximumPokeTime + ", ");
             stringBuilder.Append("robocopyTimeInterval = " + _robocopyTimeInterval + ", ");
             stringBuilder.Append("showHarpLeds = " + _showHarpLeds + ", ");
