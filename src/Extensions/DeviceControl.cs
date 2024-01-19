@@ -108,6 +108,7 @@ namespace Extensions.Extensions
             Source.DoCommand(commandMessage);
         }
 
+
         private void lineButton0_Click(object sender, EventArgs e)
         {
             ToggleLine(DigitalOutputs.Out0);
