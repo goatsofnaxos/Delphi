@@ -27,6 +27,14 @@
                 }
             }
         },
+        "cameraCommand": {
+            "properties": {
+                "state": {
+                    "default": false,
+                    "type": "boolean"
+                }
+            }
+        },   
         "cameraProperties": {
             "properties": {
                 "imagingRate": {

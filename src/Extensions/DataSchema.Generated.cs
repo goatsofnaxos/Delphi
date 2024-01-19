@@ -176,6 +176,67 @@ namespace DataSchema
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    public partial class CameraCommand
+    {
+    
+        private bool _state = false;
+    
+        public CameraCommand()
+        {
+        }
+    
+        protected CameraCommand(CameraCommand other)
+        {
+            _state = other._state;
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="state")]
+        public bool State
+        {
+            get
+            {
+                return _state;
+            }
+            set
+            {
+                _state = value;
+            }
+        }
+    
+        public System.IObservable<CameraCommand> Process()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new CameraCommand(this)));
+        }
+    
+        public System.IObservable<CameraCommand> Process<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new CameraCommand(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("state = " + _state);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
+    [Bonsai.CombinatorAttribute()]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class CameraProperties
     {
     
@@ -725,6 +786,11 @@ namespace DataSchema
             return Process<LineCommand>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<CameraCommand> source)
+        {
+            return Process<CameraCommand>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<CameraProperties> source)
         {
             return Process<CameraProperties>(source);
@@ -756,6 +822,7 @@ namespace DataSchema
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineMapping>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineCommand>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraCommand>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraProperties>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiSession>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Metadata>))]
