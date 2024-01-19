@@ -22,10 +22,8 @@
                     "type": "string"
                 },
                 "state": {
-                    "enum": [
-                        "open",
-                        "close"
-                    ]
+                    "default": "false",
+                    "type": "boolean"
                 }
             }
         },
