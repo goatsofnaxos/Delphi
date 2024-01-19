@@ -50,7 +50,7 @@
 - Make sure that UI displays if the configuration is running in normal mode (8 odor stimuli) vs vacuum mode (7 odor stimuli, one vacuum line).
 
 
-**VACUUM FUNCTION**
+**TIMEOUTS**
 - Maxmimum odor delivery time: 10 seconds (specified in experiment definition file)
 - Maxmimum videl length: 60 seconds (specified in experiment definition file)
 
