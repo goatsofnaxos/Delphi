@@ -436,21 +436,51 @@ namespace DataSchema
     public partial class LineMappings
     {
     
-        private System.Collections.Generic.List<LineMapping> _digitalMap = new System.Collections.Generic.List<LineMapping>();
+        private System.Collections.Generic.List<LineMapping> _odorMap = new System.Collections.Generic.List<LineMapping>();
+    
+        private int _portLine;
+    
+        private int _vacuumLine;
     
         private int _auxLine = 0;
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="digitalMap")]
-        public System.Collections.Generic.List<LineMapping> DigitalMap
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="odorMap")]
+        public System.Collections.Generic.List<LineMapping> OdorMap
         {
             get
             {
-                return _digitalMap;
+                return _odorMap;
             }
             set
             {
-                _digitalMap = value;
+                _odorMap = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="portLine")]
+        public int PortLine
+        {
+            get
+            {
+                return _portLine;
+            }
+            set
+            {
+                _portLine = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="vacuumLine")]
+        public int VacuumLine
+        {
+            get
+            {
+                return _vacuumLine;
+            }
+            set
+            {
+                _vacuumLine = value;
             }
         }
     
@@ -472,7 +502,9 @@ namespace DataSchema
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(
                 new LineMappings
                 {
-                    DigitalMap = _digitalMap,
+                    OdorMap = _odorMap,
+                    PortLine = _portLine,
+                    VacuumLine = _vacuumLine,
                     AuxLine = _auxLine
                 }));
         }

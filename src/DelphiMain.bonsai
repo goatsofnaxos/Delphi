@@ -45,7 +45,7 @@
               <Name>SessionSettings</Name>
             </Expression>
             <Expression xsi:type="MemberSelector">
-              <Selector>LineMappings.DigitalMap.Count</Selector>
+              <Selector>LineMappings.OdorMap.Count</Selector>
             </Expression>
             <Expression xsi:type="rx:AsyncSubject">
               <Name>MappingCount</Name>
@@ -121,10 +121,7 @@
               <Name>SessionSettings</Name>
             </Expression>
             <Expression xsi:type="MemberSelector">
-              <Selector>LineMappings</Selector>
-            </Expression>
-            <Expression xsi:type="MemberSelector">
-              <Selector>DigitalMap</Selector>
+              <Selector>LineMappings.OdorMap</Selector>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Merge" />
@@ -139,7 +136,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Take">
-                <rx:Count>6</rx:Count>
+                <rx:Count>4</rx:Count>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:ToDictionary">
@@ -162,12 +159,11 @@
             <Edge From="12" To="13" Label="Source1" />
             <Edge From="14" To="15" Label="Source1" />
             <Edge From="15" To="16" Label="Source1" />
-            <Edge From="16" To="17" Label="Source1" />
-            <Edge From="17" To="20" Label="Source1" />
-            <Edge From="18" To="19" Label="Source1" />
-            <Edge From="19" To="20" Label="Source2" />
+            <Edge From="16" To="19" Label="Source1" />
+            <Edge From="17" To="18" Label="Source1" />
+            <Edge From="18" To="19" Label="Source2" />
+            <Edge From="19" To="20" Label="Source1" />
             <Edge From="20" To="21" Label="Source1" />
-            <Edge From="21" To="22" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -229,6 +225,36 @@
                   <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p4:LineCommand">
                     <rx:Name>LineCommands</rx:Name>
                   </Expression>
+                  <Expression xsi:type="rx:Condition">
+                    <Name>CommandExists</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="MemberSelector">
+                          <Selector>LineName</Selector>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>LineMappings</Name>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:WithLatestFrom" />
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="p2:ContainsKey" />
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                        <Edge From="1" To="3" Label="Source1" />
+                        <Edge From="2" To="3" Label="Source2" />
+                        <Edge From="3" To="4" Label="Source1" />
+                        <Edge From="4" To="5" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
                   <Expression xsi:type="rx:SelectMany">
                     <Name>LineActivation</Name>
                     <Workflow>
@@ -261,7 +287,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorB</Value>
+                            <Value>Vacuum</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
@@ -305,7 +331,7 @@
                         <Expression xsi:type="p3:CreateMessage">
                           <harp:MessageType>Write</harp:MessageType>
                           <harp:Payload xsi:type="p3:CreateOutputSetPayload">
-                            <p3:OutputSet>Out6</p3:OutputSet>
+                            <p3:OutputSet>Out7</p3:OutputSet>
                           </harp:Payload>
                         </Expression>
                         <Expression xsi:type="rx:Condition">
@@ -340,7 +366,7 @@
                         <Expression xsi:type="p3:CreateMessage">
                           <harp:MessageType>Write</harp:MessageType>
                           <harp:Payload xsi:type="p3:CreateOutputClearPayload">
-                            <p3:OutputClear>Out6</p3:OutputClear>
+                            <p3:OutputClear>Out7</p3:OutputClear>
                           </harp:Payload>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -455,16 +481,17 @@
                   <Edge From="7" To="8" Label="Source1" />
                   <Edge From="8" To="9" Label="Source1" />
                   <Edge From="10" To="11" Label="Source1" />
-                  <Edge From="12" To="13" Label="Source1" />
-                  <Edge From="13" To="18" Label="Source1" />
-                  <Edge From="14" To="15" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="13" To="14" Label="Source1" />
+                  <Edge From="14" To="19" Label="Source1" />
                   <Edge From="15" To="16" Label="Source1" />
                   <Edge From="16" To="17" Label="Source1" />
-                  <Edge From="17" To="18" Label="Source2" />
-                  <Edge From="18" To="19" Label="Source1" />
-                  <Edge From="18" To="21" Label="Source1" />
+                  <Edge From="17" To="18" Label="Source1" />
+                  <Edge From="18" To="19" Label="Source2" />
                   <Edge From="19" To="20" Label="Source1" />
-                  <Edge From="21" To="22" Label="Source1" />
+                  <Edge From="19" To="22" Label="Source1" />
+                  <Edge From="20" To="21" Label="Source1" />
+                  <Edge From="22" To="23" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -948,6 +975,33 @@
         </Workflow>
       </Expression>
       <Expression xsi:type="Combinator">
+        <Combinator xsi:type="wie:KeyDown">
+          <wie:Filter>RButton MButton XButton2 ShiftKey Menu Capital CapsLock B D F P R T V Shift</wie:Filter>
+          <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="rx:SelectMany">
+        <Name>LineCommand</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="LineName" />
+              <Property Name="State" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p4:LineCommand">
+                <p4:LineName>Vacuum</p4:LineName>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="Combinator">
         <Combinator xsi:type="rx:Merge" />
       </Expression>
       <Expression xsi:type="MulticastSubject">
@@ -961,14 +1015,16 @@
       <Edge From="0" To="1" Label="Source1" />
       <Edge From="2" To="3" Label="Source1" />
       <Edge From="6" To="7" Label="Source1" />
-      <Edge From="7" To="14" Label="Source1" />
+      <Edge From="7" To="16" Label="Source1" />
       <Edge From="8" To="9" Label="Source1" />
-      <Edge From="9" To="14" Label="Source2" />
+      <Edge From="9" To="16" Label="Source2" />
       <Edge From="10" To="11" Label="Source1" />
-      <Edge From="11" To="14" Label="Source3" />
+      <Edge From="11" To="16" Label="Source3" />
       <Edge From="12" To="13" Label="Source1" />
-      <Edge From="13" To="14" Label="Source4" />
+      <Edge From="13" To="16" Label="Source4" />
       <Edge From="14" To="15" Label="Source1" />
+      <Edge From="15" To="16" Label="Source5" />
+      <Edge From="16" To="17" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>

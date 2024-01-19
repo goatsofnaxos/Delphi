@@ -91,11 +91,21 @@
         },
         "lineMappings": {
             "properties": {
-                "digitalMap": {
+                "odorMap": {
                     "items": {
                         "$ref": "#/definitions/lineMapping"
                     },
                     "type": "array"
+                },
+                "portLine": {
+                    "minimum": 0,
+                    "maximum": 9,
+                    "type": "integer"
+                },
+                "vacuumLine": {
+                    "minimum": 0,
+                    "maximum": 9,
+                    "type": "integer"
                 },
                 "auxLine": {
                     "default": 0,

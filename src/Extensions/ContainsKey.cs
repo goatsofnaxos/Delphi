@@ -21,4 +21,9 @@ public class ContainsKey
     {
         return source.Select(value => value.ContainsKey(Key));
     }
+
+    public IObservable<bool> Process(IObservable<Tuple<string, IDictionary<string, int>>> source)
+    {
+        return source.Select(value => value.Item2.ContainsKey(value.Item1));
+    }
 }
