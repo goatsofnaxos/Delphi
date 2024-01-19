@@ -12,7 +12,7 @@ public class RuleSelector : Source<DelphiRule>
 {
     private DelphiRule Rule;
 
-    private string path;
+    private string path = "";
     [Editor("Bonsai.Design.OpenFileNameEditor, Bonsai.Design", DesignTypes.UITypeEditor)]
     public string Path {
         get {
@@ -41,7 +41,9 @@ public class RuleSelector : Source<DelphiRule>
 
     void OnValueChanged(DelphiRule value)
     {
-        ValueChanged.Invoke(value);
+        if (ValueChanged != null) {
+            ValueChanged.Invoke(value);
+        }
     }
 
     public override IObservable<DelphiRule> Generate()
