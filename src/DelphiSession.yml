@@ -18,11 +18,11 @@ cameraProperties:
   postEventBufferFrames: 50
 
 lineMappings:
-  -   {name: "OdorA", line: 7}
-  -   {name: "OdorB", line: 6}
-  -   {name: "OdorC", line: 8}
-  -   {name: "OdorD", line: 9}
-  -   {name: "PortValve", line: 0}
-  -   {name: "VideoTrigger", line: 1}
-  -   {name: "AuxIn", line: 0}
-  -   {name: "Vacuum", line: 2}
+  digitalMap:
+    -   {name: "OdorA", line: 7}
+    -   {name: "OdorB", line: 6}
+    -   {name: "OdorC", line: 8}
+    -   {name: "OdorD", line: 9}
+    -   {name: "PortValve", line: 0}
+    -   {name: "Vacuum", line: 2}
+  auxLine: 1

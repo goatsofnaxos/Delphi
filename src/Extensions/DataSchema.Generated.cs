@@ -194,7 +194,7 @@ namespace DataSchema
     
         private Metadata _metadata;
     
-        private System.Collections.Generic.List<LineMapping> _lineMappings = new System.Collections.Generic.List<LineMapping>();
+        private LineMappings _lineMappings;
     
         private CameraProperties _cameraProperties;
     
@@ -214,7 +214,7 @@ namespace DataSchema
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="lineMappings")]
-        public System.Collections.Generic.List<LineMapping> LineMappings
+        public LineMappings LineMappings
         {
             get
             {
@@ -431,6 +431,54 @@ namespace DataSchema
     }
 
 
+    [Bonsai.CombinatorAttribute()]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    public partial class LineMappings
+    {
+    
+        private System.Collections.Generic.List<LineMapping> _digitalMap = new System.Collections.Generic.List<LineMapping>();
+    
+        private int _auxLine = 0;
+    
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="digitalMap")]
+        public System.Collections.Generic.List<LineMapping> DigitalMap
+        {
+            get
+            {
+                return _digitalMap;
+            }
+            set
+            {
+                _digitalMap = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="auxLine")]
+        public int AuxLine
+        {
+            get
+            {
+                return _auxLine;
+            }
+            set
+            {
+                _auxLine = value;
+            }
+        }
+    
+        public System.IObservable<LineMappings> Process()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(
+                new LineMappings
+                {
+                    DigitalMap = _digitalMap,
+                    AuxLine = _auxLine
+                }));
+        }
+    }
+
+
     /// <summary>
     /// Serializes a sequence of data model objects into YAML strings.
     /// </summary>
@@ -473,6 +521,11 @@ namespace DataSchema
         {
             return Process<Metadata>(source);
         }
+
+        public System.IObservable<string> Process(System.IObservable<LineMappings> source)
+        {
+            return Process<LineMappings>(source);
+        }
     }
 
 
@@ -486,6 +539,7 @@ namespace DataSchema
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraProperties>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiSession>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Metadata>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineMappings>))]
     [System.ComponentModel.DescriptionAttribute("Deserializes a sequence of YAML strings into data model objects.")]
     public partial class DeserializeFromYaml : Bonsai.Expressions.SingleArgumentExpressionBuilder
     {

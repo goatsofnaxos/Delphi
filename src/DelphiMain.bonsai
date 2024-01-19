@@ -45,7 +45,7 @@
               <Name>SessionSettings</Name>
             </Expression>
             <Expression xsi:type="MemberSelector">
-              <Selector>LineMappings.Count</Selector>
+              <Selector>LineMappings.DigitalMap.Count</Selector>
             </Expression>
             <Expression xsi:type="rx:AsyncSubject">
               <Name>MappingCount</Name>
@@ -123,6 +123,9 @@
             <Expression xsi:type="MemberSelector">
               <Selector>LineMappings</Selector>
             </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>DigitalMap</Selector>
+            </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Merge" />
             </Expression>
@@ -136,7 +139,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Take">
-                <rx:Count>8</rx:Count>
+                <rx:Count>6</rx:Count>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:ToDictionary">
@@ -159,11 +162,12 @@
             <Edge From="12" To="13" Label="Source1" />
             <Edge From="14" To="15" Label="Source1" />
             <Edge From="15" To="16" Label="Source1" />
-            <Edge From="16" To="19" Label="Source1" />
-            <Edge From="17" To="18" Label="Source1" />
-            <Edge From="18" To="19" Label="Source2" />
-            <Edge From="19" To="20" Label="Source1" />
+            <Edge From="16" To="17" Label="Source1" />
+            <Edge From="17" To="20" Label="Source1" />
+            <Edge From="18" To="19" Label="Source1" />
+            <Edge From="19" To="20" Label="Source2" />
             <Edge From="20" To="21" Label="Source1" />
+            <Edge From="21" To="22" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -257,7 +261,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorA</Value>
+                            <Value>OdorB</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
@@ -301,7 +305,7 @@
                         <Expression xsi:type="p3:CreateMessage">
                           <harp:MessageType>Write</harp:MessageType>
                           <harp:Payload xsi:type="p3:CreateOutputSetPayload">
-                            <p3:OutputSet>Out7</p3:OutputSet>
+                            <p3:OutputSet>Out6</p3:OutputSet>
                           </harp:Payload>
                         </Expression>
                         <Expression xsi:type="rx:Condition">
@@ -336,7 +340,7 @@
                         <Expression xsi:type="p3:CreateMessage">
                           <harp:MessageType>Write</harp:MessageType>
                           <harp:Payload xsi:type="p3:CreateOutputClearPayload">
-                            <p3:OutputClear>Out7</p3:OutputClear>
+                            <p3:OutputClear>Out6</p3:OutputClear>
                           </harp:Payload>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -385,9 +389,23 @@
                   <Expression xsi:type="p3:Parse">
                     <harp:Register xsi:type="p3:AuxInState" />
                   </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>SessionSettings</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>LineMappings.AuxLine</Selector>
+                  </Expression>
+                  <Expression xsi:type="scr:ExpressionTransform">
+                    <scr:Expression>Convert.ToInt32(Math.Pow(2, it))</scr:Expression>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="Value" />
+                    </PropertyMappings>
+                  </Expression>
                   <Expression xsi:type="HasFlag">
                     <Operand xsi:type="WorkflowProperty" TypeArguments="p3:AuxiliaryInputs">
-                      <Value>Aux0</Value>
+                      <Value>Aux1</Value>
                     </Operand>
                   </Expression>
                   <Expression xsi:type="rx:Condition">
@@ -438,11 +456,15 @@
                   <Edge From="8" To="9" Label="Source1" />
                   <Edge From="10" To="11" Label="Source1" />
                   <Edge From="12" To="13" Label="Source1" />
-                  <Edge From="13" To="14" Label="Source1" />
+                  <Edge From="13" To="18" Label="Source1" />
                   <Edge From="14" To="15" Label="Source1" />
-                  <Edge From="14" To="17" Label="Source1" />
                   <Edge From="15" To="16" Label="Source1" />
-                  <Edge From="17" To="18" Label="Source1" />
+                  <Edge From="16" To="17" Label="Source1" />
+                  <Edge From="17" To="18" Label="Source2" />
+                  <Edge From="18" To="19" Label="Source1" />
+                  <Edge From="18" To="21" Label="Source1" />
+                  <Edge From="19" To="20" Label="Source1" />
+                  <Edge From="21" To="22" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -597,6 +619,13 @@
                   <Edge From="6" To="7" Label="Source1" />
                   <Edge From="7" To="8" Label="Source1" />
                 </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>CameraController</Name>
+              <Workflow>
+                <Nodes />
+                <Edges />
               </Workflow>
             </Expression>
           </Nodes>
