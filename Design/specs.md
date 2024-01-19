@@ -41,6 +41,37 @@
 	- the video acquisition buffer durations (t_videoPRE, t_videoPOST)
 	- any other relevant hardware parameters
 
+**VACUUM FUNCTION**
+- As an optional operating mode: flush previous trial's odor and pull next trials odor through the line upstream of the final valve by opening a valve that opens to a vacuum (valve placed downstream of final valve)
+        - After t_switch2 (next stimulus valve opening), wait t_vac1 = 5 milliseconds then open VALVE_VAC.
+        - Then after t_vac2 = 15 milliseconds close VALVE_VAC.
+  	- Only when vaccum closed can VALVE_P be opened!
+- Have it so that experiment paramaters file allows user to choose between 'normal' mode and 'vacuum' mode.
+- Make sure that UI displays if the configuration is running in normal mode (8 odor stimuli) vs vacuum mode (7 odor stimuli, one vacuum line).
+
+
+**VACUUM FUNCTION**
+- Maxmimum odor delivery time: 10 seconds (specified in experiment definition file)
+- Maxmimum videl length: 60 seconds (specified in experiment definition file)
+
+**FINITE STATE MACHINE TESTING**
+- transition from ABC rule to CBA rule
+	- when B was just delivered, next should be A, not C
+	- when C was just delivered, next should be B, not A
+	- when A was just delivered, next should be C, not B
+- transition from ABC rule to A-only rule
+	- no matter what was just delivered next should be A
+- transition from ABC rule to D-only rule
+	- no matter what was just delivered next should be D
+- transition from ABC rule to AB rule
+	- if A was just delivered, next should be B 
+	- if B was just delivered, next should be A
+	- if C was just delivered, next should be A
+- TK Andrew Fink’s test cases
+
+**WRAP-UP**
+- Walk Courtney and Carl/Andrew through setting up and running an experiment.
+
 **EXAMPLE TRIAL FLOW FOR “ABC” RULE**
 - Rule: A —> B —> C —> A …
 - Stimulus A controlled by VALVE_SA, stimulus B controlled by VALVE_SB, stimulus C controlled by VALVE_SC
@@ -119,6 +150,8 @@
 	- current Harp expander digital line
 - A script to organize video data (post hoc) by beam break, each time the IR beam was broken:
 	- filename should contain beam break number and stimulus number (if applicable)
+	- check for dropped frames
+	- combine individual frames into a video file
 	- ideally. for convenience, the following text should be printed to the bottom of the video
 		- beam break number
 		- stimulus number (if applicable)
