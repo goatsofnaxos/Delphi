@@ -55,7 +55,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:RuleSelector">
-                <p2:Path>rule2.rule.yml</p2:Path>
+                <p2:Path>rule1.rule.yml</p2:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="MulticastSubject">
@@ -93,7 +93,7 @@
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:Take">
-                      <rx:Count>3</rx:Count>
+                      <rx:Count>4</rx:Count>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="rx:ToDictionary">
@@ -507,7 +507,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorA</Value>
+                            <Value>OdorC</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -543,7 +543,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p2:TryGetValueOrDefault">
-                            <p2:Key>OdorA</p2:Key>
+                            <p2:Key>OdorC</p2:Key>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -805,6 +805,9 @@
       </Expression>
       <Expression xsi:type="IncludeWorkflow" Path="Extensions\DelphiVisualizer.bonsai">
         <EventsInSubject>Events</EventsInSubject>
+        <RuleSettingsSubject>RuleSettings</RuleSettingsSubject>
+        <CurrentStateSubject>CurrentState</CurrentStateSubject>
+        <PokeOnsetSubject>PokeOnset</PokeOnsetSubject>
         <EventsOutSubject>Commands</EventsOutSubject>
       </Expression>
       <Expression xsi:type="Combinator">
