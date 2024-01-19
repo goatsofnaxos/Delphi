@@ -123,6 +123,7 @@
 	- If possible we would like to save video at ~100 Hz but if it makes things easier, the live feed can update at 10-20 Hz. 
 	- ROI (which pixels actually streamed to disk) drawn over video window
 	- NOTE: video should be an optional functionality (most boxes will run without video)
+- Button in UI to toggle video recording on and off.
 - Drop-down menu that allows us to select which rule to use. Menu should be populated according to the rule filenames defined in the experiment parameters file.
 - A button or a key combination to halt the workflow and exit gracefully, turn off all valves that were on, etc.
 - Plotting (this would be nice down the road, not a priority now) to keep track of poking data as it comes in: 
