@@ -5,6 +5,7 @@
 metadata:
   animalId: plimbo
   loggingRootPath: C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\
+  minimumPokeTime: 1
   maximumPokeTime: 10
   robocopyTimeInterval: 3600
   showHarpLeds: false
@@ -14,15 +15,15 @@ metadata:
 
 cameraProperties:
   imagingRate: 100
-  preEventBufferFrames: 50
-  postEventBufferFrames: 50
+  preEventBufferFrames: 200
+  postEventBufferFrames: 200
 
 lineMappings:
-  -   {name: "OdorA", line: 6}
-  -   {name: "OdorB", line: 7}
-  -   {name: "OdorC", line: 8}
-  -   {name: "OdorD", line: 9}
-  -   {name: "PortValve", line: 0}
-# TODO - should define video trigger line
-# TODO - aux in for port
-# TODO - Vacuum line
+  odorMap:
+    -   {name: "OdorA", line: 6}
+    -   {name: "OdorB", line: 7}
+    -   {name: "OdorC", line: 8}
+    -   {name: "OdorD", line: 9}
+  portLine: 0
+  vacuumLine: 2
+  auxLine: 1

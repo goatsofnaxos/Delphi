@@ -45,6 +45,24 @@ namespace Extensions.Extensions
                     UpdateAuxiliaryInputVisuals();
                 }
             };
+
+            // Detect session rule change
+            source.OnReceiveRuleChange += (sender, e) =>
+            {
+                currentRuleLabel.Text = e;
+            };
+
+            // Detect state change
+            source.OnReceiveStateChange += (sender, e) =>
+            {
+                currentStateLabel.Text = e;
+            };
+
+            // Detect poke count change
+            source.OnReceivePokeCountChange += (sender, e) =>
+            {
+                pokeCountLabel.Text = e.ToString();
+            };
         }
 
         // TODO - horrible, there's a better way to do this
@@ -57,6 +75,8 @@ namespace Extensions.Extensions
             lineButton5.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out5) ? Color.White : Color.Gray;
             lineButton6.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out6) ? Color.White : Color.Gray;
             lineButton7.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out7) ? Color.White : Color.Gray;
+            lineButton8.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out8) ? Color.White : Color.Gray;
+            lineButton9.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out9) ? Color.White : Color.Gray;
         }
 
         private void UpdateAuxiliaryInputVisuals() {
@@ -76,34 +96,67 @@ namespace Extensions.Extensions
 
         private void testButton_Click(object sender, EventArgs e)
         {
-            // Source.DoCommand("test command");
+
         }
+
+        void ToggleLine(DigitalOutputs line)
+        {
+            var commandMessage = DigitalOutputState.HasFlag(line)
+                ? OutputClear.FromPayload(Bonsai.Harp.MessageType.Write, line)
+                : OutputSet.FromPayload(Bonsai.Harp.MessageType.Write, line);
+
+            Source.DoCommand(commandMessage);
+        }
+
 
         private void lineButton0_Click(object sender, EventArgs e)
         {
-            var commandMessage = DigitalOutputState.HasFlag(DigitalOutputs.Out0) 
-                ? OutputClear.FromPayload(Bonsai.Harp.MessageType.Write, DigitalOutputs.Out0) 
-                : OutputSet.FromPayload(Bonsai.Harp.MessageType.Write, DigitalOutputs.Out0);
-
-            Source.DoCommand(commandMessage);
+            ToggleLine(DigitalOutputs.Out0);
         }
 
         private void lineButton1_Click(object sender, EventArgs e)
         {
-            var commandMessage = DigitalOutputState.HasFlag(DigitalOutputs.Out1) 
-                ? OutputClear.FromPayload(Bonsai.Harp.MessageType.Write, DigitalOutputs.Out1) 
-                : OutputSet.FromPayload(Bonsai.Harp.MessageType.Write, DigitalOutputs.Out1);
-
-            Source.DoCommand(commandMessage);
+            ToggleLine(DigitalOutputs.Out1);
         }
 
         private void lineButton2_Click(object sender, EventArgs e)
         {
-            var commandMessage = DigitalOutputState.HasFlag(DigitalOutputs.Out2) 
-                ? OutputClear.FromPayload(Bonsai.Harp.MessageType.Write, DigitalOutputs.Out2) 
-                : OutputSet.FromPayload(Bonsai.Harp.MessageType.Write, DigitalOutputs.Out2);
+            ToggleLine(DigitalOutputs.Out2);
+        }
 
-            Source.DoCommand(commandMessage);
+        private void lineButton3_Click(object sender, EventArgs e)
+        {
+            ToggleLine(DigitalOutputs.Out3);
+        }
+
+        private void lineButton4_Click(object sender, EventArgs e)
+        {
+            ToggleLine(DigitalOutputs.Out4);
+        }
+
+        private void lineButton5_Click(object sender, EventArgs e)
+        {
+            ToggleLine(DigitalOutputs.Out5);
+        }
+
+        private void lineButton6_Click(object sender, EventArgs e)
+        {
+            ToggleLine(DigitalOutputs.Out6);
+        }
+
+        private void lineButton7_Click(object sender, EventArgs e)
+        {
+            ToggleLine(DigitalOutputs.Out7);
+        }
+
+        private void lineButton8_Click(object sender, EventArgs e)
+        {
+            ToggleLine(DigitalOutputs.Out8);
+        }
+
+        private void lineButton9_Click(object sender, EventArgs e)
+        {
+            ToggleLine(DigitalOutputs.Out9);
         }
 
         private void auxInState1_CheckedChanged(object sender, EventArgs e)

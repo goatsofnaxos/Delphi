@@ -24,9 +24,7 @@
               <Property Name="Path" />
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p1:LoadSettings">
-                <p1:Path>sessionTemplate.yml</p1:Path>
-              </Combinator>
+              <Combinator xsi:type="p1:LoadSessionSettings" />
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Take">

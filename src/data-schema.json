@@ -10,6 +10,8 @@
                 },
                 "line": {
                     "description": "The digital line associated with this mapping",
+                    "minimum": 0,
+                    "maximum": 9,
                     "type": "integer"
                 }
             }
@@ -20,13 +22,19 @@
                     "type": "string"
                 },
                 "state": {
-                    "enum": [
-                        "open",
-                        "close"
-                    ]
+                    "default": "false",
+                    "type": "boolean"
                 }
             }
         },
+        "cameraCommand": {
+            "properties": {
+                "state": {
+                    "default": false,
+                    "type": "boolean"
+                }
+            }
+        },   
         "cameraProperties": {
             "properties": {
                 "imagingRate": {
@@ -54,6 +62,11 @@
                 "loggingRootPath": {
                     "default": "",
                     "type": "string"
+                },
+                "minimumPokeTime": {
+                    "description": "Minimum poke time. Minimum time before a poke is considered 'active'",
+                    "default": "0.01",
+                    "type": "number"
                 },
                 "maximumPokeTime": {
                     "description": "Maximum poke time. Poke should be aborted after this time in seconds",
@@ -88,10 +101,30 @@
             }
         },
         "lineMappings": {
-            "items": {
-                "$ref": "#/definitions/lineMapping"
-            },
-            "type": "array"
+            "properties": {
+                "odorMap": {
+                    "items": {
+                        "$ref": "#/definitions/lineMapping"
+                    },
+                    "type": "array"
+                },
+                "portLine": {
+                    "minimum": 0,
+                    "maximum": 9,
+                    "type": "integer"
+                },
+                "vacuumLine": {
+                    "minimum": 0,
+                    "maximum": 9,
+                    "type": "integer"
+                },
+                "auxLine": {
+                    "default": 0,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "type": "integer"
+                }
+            }
         },
         "cameraProperties": {
             "$ref": "#/definitions/cameraProperties"
