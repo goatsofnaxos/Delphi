@@ -16,4 +16,9 @@ public class ContainsKey
     {
         return source.Select(value => value.ContainsKey(Key));
     }
+
+    public IObservable<bool> Process(IObservable<IDictionary<string, int>> source)
+    {
+        return source.Select(value => value.ContainsKey(Key));
+    }
 }
