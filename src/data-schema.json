@@ -60,11 +60,17 @@
                     "type": "string"
                 },
                 "loggingRootPath": {
+                    "description": "The local root foleder to save data for this session",
+                    "default": "",
+                    "type": "string"
+                },
+                "remoteTransferRootPath": {
+                    "description": "The path of the remote folder to copy local data to, with time interval specified by robocopyTimeInterval",
                     "default": "",
                     "type": "string"
                 },
                 "minimumPokeTime": {
-                    "description": "Minimum poke time. Minimum time before a poke is considered 'active'",
+                    "description": "Minimum poke time. Minimum time before a poke is considered 'active' in seconds",
                     "default": "0.01",
                     "type": "number"
                 },
@@ -119,6 +125,7 @@
                     "type": "integer"
                 },
                 "auxLine": {
+                                    // TODO - more descriptive line name
                     "default": 0,
                     "minimum": 0,
                     "maximum": 1,

@@ -449,6 +449,8 @@ namespace DataSchema
     
         private string _loggingRootPath = "";
     
+        private string _remoteTransferRootPath = "";
+    
         private double _minimumPokeTime = 0.01D;
     
         private double _maximumPokeTime = 10D;
@@ -471,6 +473,7 @@ namespace DataSchema
         {
             _animalId = other._animalId;
             _loggingRootPath = other._loggingRootPath;
+            _remoteTransferRootPath = other._remoteTransferRootPath;
             _minimumPokeTime = other._minimumPokeTime;
             _maximumPokeTime = other._maximumPokeTime;
             _robocopyTimeInterval = other._robocopyTimeInterval;
@@ -493,7 +496,11 @@ namespace DataSchema
             }
         }
     
+        /// <summary>
+        /// The local root foleder to save data for this session
+        /// </summary>
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="loggingRootPath")]
+        [System.ComponentModel.DescriptionAttribute("The local root foleder to save data for this session")]
         public string LoggingRootPath
         {
             get
@@ -507,10 +514,28 @@ namespace DataSchema
         }
     
         /// <summary>
-        /// Minimum poke time. Minimum time before a poke is considered 'active'
+        /// The path of the remote folder to copy local data to, with time interval specified by robocopyTimeInterval
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="remoteTransferRootPath")]
+        [System.ComponentModel.DescriptionAttribute("The path of the remote folder to copy local data to, with time interval specified" +
+            " by robocopyTimeInterval")]
+        public string RemoteTransferRootPath
+        {
+            get
+            {
+                return _remoteTransferRootPath;
+            }
+            set
+            {
+                _remoteTransferRootPath = value;
+            }
+        }
+    
+        /// <summary>
+        /// Minimum poke time. Minimum time before a poke is considered 'active' in seconds
         /// </summary>
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="minimumPokeTime")]
-        [System.ComponentModel.DescriptionAttribute("Minimum poke time. Minimum time before a poke is considered \'active\'")]
+        [System.ComponentModel.DescriptionAttribute("Minimum poke time. Minimum time before a poke is considered \'active\' in seconds")]
         public double MinimumPokeTime
         {
             get
@@ -639,6 +664,7 @@ namespace DataSchema
         {
             stringBuilder.Append("animalId = " + _animalId + ", ");
             stringBuilder.Append("loggingRootPath = " + _loggingRootPath + ", ");
+            stringBuilder.Append("remoteTransferRootPath = " + _remoteTransferRootPath + ", ");
             stringBuilder.Append("minimumPokeTime = " + _minimumPokeTime + ", ");
             stringBuilder.Append("maximumPokeTime = " + _maximumPokeTime + ", ");
             stringBuilder.Append("robocopyTimeInterval = " + _robocopyTimeInterval + ", ");
