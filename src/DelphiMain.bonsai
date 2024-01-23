@@ -3219,11 +3219,6 @@
                         <Expression xsi:type="SubscribeSubject">
                           <Name>CameraStream</Name>
                         </Expression>
-                        <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="rx:Take">
-                            <rx:Count>1</rx:Count>
-                          </Combinator>
-                        </Expression>
                         <Expression xsi:type="MemberSelector">
                           <Selector>Item2</Selector>
                         </Expression>
@@ -3395,12 +3390,11 @@
                         <Edge From="32" To="33" Label="Source1" />
                         <Edge From="33" To="34" Label="Source1" />
                         <Edge From="34" To="35" Label="Source1" />
-                        <Edge From="35" To="36" Label="Source1" />
+                        <Edge From="36" To="37" Label="Source1" />
                         <Edge From="37" To="38" Label="Source1" />
                         <Edge From="38" To="39" Label="Source1" />
                         <Edge From="39" To="40" Label="Source1" />
                         <Edge From="40" To="41" Label="Source1" />
-                        <Edge From="41" To="42" Label="Source1" />
                       </Edges>
                     </Workflow>
                   </Expression>
