@@ -58,7 +58,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:RuleSelector">
-                <p2:Path>rule2.rule.yml</p2:Path>
+                <p2:Path>rule1.rule.yml</p2:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="MulticastSubject">
@@ -226,7 +226,7 @@
                       <harp:VisualIndicators>On</harp:VisualIndicators>
                       <harp:Heartbeat>Disabled</harp:Heartbeat>
                       <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                      <harp:PortName>COM12</harp:PortName>
+                      <harp:PortName>COM13</harp:PortName>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="rx:PublishSubject">
@@ -1395,7 +1395,7 @@
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="rx:CreateObservable">
-                          <Name>OdorB</Name>
+                          <Name>OdorC</Name>
                           <Workflow>
                             <Nodes>
                               <Expression xsi:type="Unit" />
@@ -1485,7 +1485,7 @@
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="p4:LineCommand">
-                                              <p4:LineName>OdorB</p4:LineName>
+                                              <p4:LineName>OdorC</p4:LineName>
                                               <p4:State>true</p4:State>
                                             </Combinator>
                                           </Expression>
