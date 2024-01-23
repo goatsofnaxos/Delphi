@@ -297,7 +297,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorC</Value>
+                            <Value>OdorB</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
@@ -335,7 +335,7 @@
                         <Expression xsi:type="p3:CreateMessage">
                           <harp:MessageType>Write</harp:MessageType>
                           <harp:Payload xsi:type="p3:CreateOutputSetPayload">
-                            <p3:OutputSet>Out8</p3:OutputSet>
+                            <p3:OutputSet>Out7</p3:OutputSet>
                           </harp:Payload>
                         </Expression>
                         <Expression xsi:type="rx:Condition">
@@ -897,7 +897,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorC</Value>
+                            <Value>OdorB</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -933,7 +933,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p2:TryGetValueOrDefault">
-                            <p2:Key>OdorC</p2:Key>
+                            <p2:Key>OdorB</p2:Key>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -3055,8 +3055,8 @@
                   <Expression xsi:type="SubscribeSubject">
                     <Name>PokeOnset</Name>
                   </Expression>
-                  <Expression xsi:type="rx:Condition">
-                    <Name>BufferWriteEnabled</Name>
+                  <Expression xsi:type="rx:SelectMany">
+                    <Name>BufferWriteEnable</Name>
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="WorkflowInput">
@@ -3073,6 +3073,11 @@
                           <Combinator xsi:type="rx:Zip" />
                         </Expression>
                         <Expression xsi:type="BitwiseAnd" />
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Take">
+                            <rx:Count>1</rx:Count>
+                          </Combinator>
+                        </Expression>
                         <Expression xsi:type="WorkflowOutput" />
                       </Nodes>
                       <Edges>
@@ -3081,6 +3086,20 @@
                         <Edge From="3" To="4" Label="Source2" />
                         <Edge From="4" To="5" Label="Source1" />
                         <Edge From="5" To="6" Label="Source1" />
+                        <Edge From="6" To="7" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="rx:Condition">
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
                       </Edges>
                     </Workflow>
                   </Expression>
@@ -3124,7 +3143,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="rx:Throttle">
-                            <rx:DueTime>PT0S</rx:DueTime>
+                            <rx:DueTime>PT0.5S</rx:DueTime>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="rx:PublishSubject">
@@ -3285,7 +3304,7 @@
                               </Expression>
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="cv:VideoWriter">
-                                  <cv:FileName>C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\Event-3788536351.27149.avi</cv:FileName>
+                                  <cv:FileName>C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\Event-3788892279.23651.avi</cv:FileName>
                                   <cv:Suffix>None</cv:Suffix>
                                   <cv:Buffered>true</cv:Buffered>
                                   <cv:Overwrite>false</cv:Overwrite>
@@ -3330,17 +3349,17 @@
                           </Workflow>
                         </Expression>
                         <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="rx:Take">
-                            <rx:Count>1</rx:Count>
-                          </Combinator>
-                        </Expression>
-                        <Expression xsi:type="Combinator">
                           <Combinator xsi:type="BooleanProperty">
                             <Value>false</Value>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="MulticastSubject">
                           <Name>VideoWriting</Name>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Take">
+                            <rx:Count>1</rx:Count>
+                          </Combinator>
                         </Expression>
                         <Expression xsi:type="WorkflowOutput" />
                       </Nodes>
@@ -3405,6 +3424,7 @@
                   <Edge From="21" To="22" Label="Source1" />
                   <Edge From="23" To="24" Label="Source1" />
                   <Edge From="24" To="25" Label="Source1" />
+                  <Edge From="25" To="26" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
