@@ -122,13 +122,29 @@
           </Edges>
         </Workflow>
       </Expression>
-      <Expression xsi:type="SubscribeSubject">
-        <Name>PokeOnset</Name>
-      </Expression>
       <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Boolean">
         <rx:Name>BufferIntervalElapsed</rx:Name>
       </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="BooleanProperty">
+          <Value>true</Value>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="MulticastSubject">
+        <Name>BufferIntervalElapsed</Name>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>PokeOnset</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Throttle">
+          <rx:DueTime>PT2S</rx:DueTime>
+        </Combinator>
+      </Expression>
     </Nodes>
-    <Edges />
+    <Edges>
+      <Edge From="2" To="3" Label="Source1" />
+      <Edge From="4" To="5" Label="Source1" />
+    </Edges>
   </Workflow>
 </WorkflowBuilder>
