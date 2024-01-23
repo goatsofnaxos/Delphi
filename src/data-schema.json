@@ -48,6 +48,11 @@
                 "postEventBufferFrames": {
                     "description": "The number of frames post-event to include in the event buffer",
                     "type": "integer"
+                },
+                "bufferInterval": {
+                    "description": "When saving event-buffered video, at least this interval (in seconds) must elapse before a new video writer is initialized. Necessary to prevent too many video writers initializing for fast inter-event times.",
+                    "default": 0.5,
+                    "type": "number"
                 }
             }
         }
@@ -94,6 +99,11 @@
                     "default": "120",
                     "type": "number"
                 },
+                "minOdorDelivery": {
+                    "description": "Minimum required length of odor deliveries in seconds",
+                    "default": "0.1",
+                    "type": "number"
+                },
                 "maxOdorDelivery": {
                     "description": "Maximum allowed length of odor deliveries in seconds",
                     "default": "8",
@@ -125,7 +135,6 @@
                     "type": "integer"
                 },
                 "auxLine": {
-                                    // TODO - more descriptive line name
                     "default": 0,
                     "minimum": 0,
                     "maximum": 1,

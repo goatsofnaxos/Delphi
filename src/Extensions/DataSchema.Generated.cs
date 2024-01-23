@@ -246,6 +246,8 @@ namespace DataSchema
     
         private int _postEventBufferFrames;
     
+        private double _bufferInterval = 0.5D;
+    
         public CameraProperties()
         {
         }
@@ -255,6 +257,7 @@ namespace DataSchema
             _imagingRate = other._imagingRate;
             _preEventBufferFrames = other._preEventBufferFrames;
             _postEventBufferFrames = other._postEventBufferFrames;
+            _bufferInterval = other._bufferInterval;
         }
     
         /// <summary>
@@ -308,6 +311,25 @@ namespace DataSchema
             }
         }
     
+        /// <summary>
+        /// When saving event-buffered video, at least this interval (in seconds) must elapse before a new video writer is initialized. Necessary to prevent too many video writers initializing for fast inter-event times.
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="bufferInterval")]
+        [System.ComponentModel.DescriptionAttribute("When saving event-buffered video, at least this interval (in seconds) must elapse" +
+            " before a new video writer is initialized. Necessary to prevent too many video w" +
+            "riters initializing for fast inter-event times.")]
+        public double BufferInterval
+        {
+            get
+            {
+                return _bufferInterval;
+            }
+            set
+            {
+                _bufferInterval = value;
+            }
+        }
+    
         public System.IObservable<CameraProperties> Process()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new CameraProperties(this)));
@@ -322,7 +344,8 @@ namespace DataSchema
         {
             stringBuilder.Append("imagingRate = " + _imagingRate + ", ");
             stringBuilder.Append("preEventBufferFrames = " + _preEventBufferFrames + ", ");
-            stringBuilder.Append("postEventBufferFrames = " + _postEventBufferFrames);
+            stringBuilder.Append("postEventBufferFrames = " + _postEventBufferFrames + ", ");
+            stringBuilder.Append("bufferInterval = " + _bufferInterval);
             return true;
         }
     
@@ -461,6 +484,8 @@ namespace DataSchema
     
         private double _maxVideoLength = 120D;
     
+        private double _minOdorDelivery = 0.1D;
+    
         private double _maxOdorDelivery = 8D;
     
         private bool _useVacuum = true;
@@ -479,6 +504,7 @@ namespace DataSchema
             _robocopyTimeInterval = other._robocopyTimeInterval;
             _showHarpLeds = other._showHarpLeds;
             _maxVideoLength = other._maxVideoLength;
+            _minOdorDelivery = other._minOdorDelivery;
             _maxOdorDelivery = other._maxOdorDelivery;
             _useVacuum = other._useVacuum;
         }
@@ -617,6 +643,23 @@ namespace DataSchema
         }
     
         /// <summary>
+        /// Minimum required length of odor deliveries in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="minOdorDelivery")]
+        [System.ComponentModel.DescriptionAttribute("Minimum required length of odor deliveries in seconds")]
+        public double MinOdorDelivery
+        {
+            get
+            {
+                return _minOdorDelivery;
+            }
+            set
+            {
+                _minOdorDelivery = value;
+            }
+        }
+    
+        /// <summary>
         /// Maximum allowed length of odor deliveries in seconds
         /// </summary>
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="maxOdorDelivery")]
@@ -670,6 +713,7 @@ namespace DataSchema
             stringBuilder.Append("robocopyTimeInterval = " + _robocopyTimeInterval + ", ");
             stringBuilder.Append("showHarpLeds = " + _showHarpLeds + ", ");
             stringBuilder.Append("maxVideoLength = " + _maxVideoLength + ", ");
+            stringBuilder.Append("minOdorDelivery = " + _minOdorDelivery + ", ");
             stringBuilder.Append("maxOdorDelivery = " + _maxOdorDelivery + ", ");
             stringBuilder.Append("useVacuum = " + _useVacuum);
             return true;

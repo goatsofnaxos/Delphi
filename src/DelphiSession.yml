@@ -10,6 +10,7 @@ metadata:
   robocopyTimeInterval: 3600
   showHarpLeds: false
   maxVideoLength: 120
+  minOdorDelivery: 0.1
   maxOdorDelivery: 8
   useVacuum: true
 
@@ -17,6 +18,7 @@ cameraProperties:
   imagingRate: 100
   preEventBufferFrames: 200
   postEventBufferFrames: 200
+  bufferInterval: 0.5
 
 lineMappings:
   odorMap:
