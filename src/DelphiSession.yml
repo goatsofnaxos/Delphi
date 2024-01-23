@@ -5,6 +5,7 @@
 metadata:
   animalId: plimbo
   loggingRootPath: C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\
+  chargeTime: 0.2
   minimumPokeTime: 1
   maximumPokeTime: 10
   robocopyTimeInterval: 3600

@@ -74,6 +74,11 @@
                     "default": "",
                     "type": "string"
                 },
+                "chargeTime": {
+                    "description": "How long to wait for active odor line to charge in seconds",
+                    "default": "0.2",
+                    "type": "number"
+                },
                 "minimumPokeTime": {
                     "description": "Minimum poke time. Minimum time before a poke is considered 'active' in seconds",
                     "default": "0.01",

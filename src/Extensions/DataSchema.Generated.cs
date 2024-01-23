@@ -474,6 +474,8 @@ namespace DataSchema
     
         private string _remoteTransferRootPath = "";
     
+        private double _chargeTime = 0.2D;
+    
         private double _minimumPokeTime = 0.01D;
     
         private double _maximumPokeTime = 10D;
@@ -499,6 +501,7 @@ namespace DataSchema
             _animalId = other._animalId;
             _loggingRootPath = other._loggingRootPath;
             _remoteTransferRootPath = other._remoteTransferRootPath;
+            _chargeTime = other._chargeTime;
             _minimumPokeTime = other._minimumPokeTime;
             _maximumPokeTime = other._maximumPokeTime;
             _robocopyTimeInterval = other._robocopyTimeInterval;
@@ -554,6 +557,23 @@ namespace DataSchema
             set
             {
                 _remoteTransferRootPath = value;
+            }
+        }
+    
+        /// <summary>
+        /// How long to wait for active odor line to charge in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="chargeTime")]
+        [System.ComponentModel.DescriptionAttribute("How long to wait for active odor line to charge in seconds")]
+        public double ChargeTime
+        {
+            get
+            {
+                return _chargeTime;
+            }
+            set
+            {
+                _chargeTime = value;
             }
         }
     
@@ -708,6 +728,7 @@ namespace DataSchema
             stringBuilder.Append("animalId = " + _animalId + ", ");
             stringBuilder.Append("loggingRootPath = " + _loggingRootPath + ", ");
             stringBuilder.Append("remoteTransferRootPath = " + _remoteTransferRootPath + ", ");
+            stringBuilder.Append("chargeTime = " + _chargeTime + ", ");
             stringBuilder.Append("minimumPokeTime = " + _minimumPokeTime + ", ");
             stringBuilder.Append("maximumPokeTime = " + _maximumPokeTime + ", ");
             stringBuilder.Append("robocopyTimeInterval = " + _robocopyTimeInterval + ", ");
