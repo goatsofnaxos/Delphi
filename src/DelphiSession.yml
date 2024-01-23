@@ -13,6 +13,8 @@ metadata:
   maxVideoLength: 120
   minOdorDelivery: 0.1
   maxOdorDelivery: 8
+  switchTime1: 0.01
+  switchTime2: 0.02
   useVacuum: true
 
 cameraProperties:
