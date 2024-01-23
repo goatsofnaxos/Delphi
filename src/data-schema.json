@@ -74,6 +74,11 @@
                     "default": "",
                     "type": "string"
                 },
+                "chargeTime": {
+                    "description": "How long to wait for active odor line to charge in seconds",
+                    "default": "0.2",
+                    "type": "number"
+                },
                 "minimumPokeTime": {
                     "description": "Minimum poke time. Minimum time before a poke is considered 'active' in seconds",
                     "default": "0.01",
@@ -107,6 +112,26 @@
                 "maxOdorDelivery": {
                     "description": "Maximum allowed length of odor deliveries in seconds",
                     "default": "8",
+                    "type": "number"
+                },
+                "switchTime1": {
+                    "description": "How long after port valve close to turn off active odor in seconds",
+                    "default": "0.01",
+                    "type": "number"
+                },
+                "switchTime2": {
+                    "description": "How long after previous active odor closes to turn on active odor in seconds",
+                    "default": "0.02",
+                    "type": "number"
+                },
+                "vacuumDelay": {
+                    "description": "Initial wait time before opening vacuum in seconds",
+                    "default": "0.05",
+                    "type": "number"
+                },
+                "vacuumDuration": {
+                    "description": "Duration of vacuum in seconds",
+                    "default": "0.015",
                     "type": "number"
                 },
                 "useVacuum": {

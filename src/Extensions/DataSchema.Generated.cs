@@ -474,6 +474,8 @@ namespace DataSchema
     
         private string _remoteTransferRootPath = "";
     
+        private double _chargeTime = 0.2D;
+    
         private double _minimumPokeTime = 0.01D;
     
         private double _maximumPokeTime = 10D;
@@ -488,6 +490,14 @@ namespace DataSchema
     
         private double _maxOdorDelivery = 8D;
     
+        private double _switchTime1 = 0.01D;
+    
+        private double _switchTime2 = 0.02D;
+    
+        private double _vacuumDelay = 0.05D;
+    
+        private double _vacuumDuration = 0.015D;
+    
         private bool _useVacuum = true;
     
         public Metadata()
@@ -499,6 +509,7 @@ namespace DataSchema
             _animalId = other._animalId;
             _loggingRootPath = other._loggingRootPath;
             _remoteTransferRootPath = other._remoteTransferRootPath;
+            _chargeTime = other._chargeTime;
             _minimumPokeTime = other._minimumPokeTime;
             _maximumPokeTime = other._maximumPokeTime;
             _robocopyTimeInterval = other._robocopyTimeInterval;
@@ -506,6 +517,10 @@ namespace DataSchema
             _maxVideoLength = other._maxVideoLength;
             _minOdorDelivery = other._minOdorDelivery;
             _maxOdorDelivery = other._maxOdorDelivery;
+            _switchTime1 = other._switchTime1;
+            _switchTime2 = other._switchTime2;
+            _vacuumDelay = other._vacuumDelay;
+            _vacuumDuration = other._vacuumDuration;
             _useVacuum = other._useVacuum;
         }
     
@@ -554,6 +569,23 @@ namespace DataSchema
             set
             {
                 _remoteTransferRootPath = value;
+            }
+        }
+    
+        /// <summary>
+        /// How long to wait for active odor line to charge in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="chargeTime")]
+        [System.ComponentModel.DescriptionAttribute("How long to wait for active odor line to charge in seconds")]
+        public double ChargeTime
+        {
+            get
+            {
+                return _chargeTime;
+            }
+            set
+            {
+                _chargeTime = value;
             }
         }
     
@@ -677,6 +709,74 @@ namespace DataSchema
         }
     
         /// <summary>
+        /// How long after port valve close to turn off active odor in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="switchTime1")]
+        [System.ComponentModel.DescriptionAttribute("How long after port valve close to turn off active odor in seconds")]
+        public double SwitchTime1
+        {
+            get
+            {
+                return _switchTime1;
+            }
+            set
+            {
+                _switchTime1 = value;
+            }
+        }
+    
+        /// <summary>
+        /// How long after previous active odor closes to turn on active odor in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="switchTime2")]
+        [System.ComponentModel.DescriptionAttribute("How long after previous active odor closes to turn on active odor in seconds")]
+        public double SwitchTime2
+        {
+            get
+            {
+                return _switchTime2;
+            }
+            set
+            {
+                _switchTime2 = value;
+            }
+        }
+    
+        /// <summary>
+        /// Initial wait time before opening vacuum in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="vacuumDelay")]
+        [System.ComponentModel.DescriptionAttribute("Initial wait time before opening vacuum in seconds")]
+        public double VacuumDelay
+        {
+            get
+            {
+                return _vacuumDelay;
+            }
+            set
+            {
+                _vacuumDelay = value;
+            }
+        }
+    
+        /// <summary>
+        /// Duration of vacuum in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="vacuumDuration")]
+        [System.ComponentModel.DescriptionAttribute("Duration of vacuum in seconds")]
+        public double VacuumDuration
+        {
+            get
+            {
+                return _vacuumDuration;
+            }
+            set
+            {
+                _vacuumDuration = value;
+            }
+        }
+    
+        /// <summary>
         /// Whether to use vacuum line during odor presentations
         /// </summary>
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="useVacuum")]
@@ -708,6 +808,7 @@ namespace DataSchema
             stringBuilder.Append("animalId = " + _animalId + ", ");
             stringBuilder.Append("loggingRootPath = " + _loggingRootPath + ", ");
             stringBuilder.Append("remoteTransferRootPath = " + _remoteTransferRootPath + ", ");
+            stringBuilder.Append("chargeTime = " + _chargeTime + ", ");
             stringBuilder.Append("minimumPokeTime = " + _minimumPokeTime + ", ");
             stringBuilder.Append("maximumPokeTime = " + _maximumPokeTime + ", ");
             stringBuilder.Append("robocopyTimeInterval = " + _robocopyTimeInterval + ", ");
@@ -715,6 +816,10 @@ namespace DataSchema
             stringBuilder.Append("maxVideoLength = " + _maxVideoLength + ", ");
             stringBuilder.Append("minOdorDelivery = " + _minOdorDelivery + ", ");
             stringBuilder.Append("maxOdorDelivery = " + _maxOdorDelivery + ", ");
+            stringBuilder.Append("switchTime1 = " + _switchTime1 + ", ");
+            stringBuilder.Append("switchTime2 = " + _switchTime2 + ", ");
+            stringBuilder.Append("vacuumDelay = " + _vacuumDelay + ", ");
+            stringBuilder.Append("vacuumDuration = " + _vacuumDuration + ", ");
             stringBuilder.Append("useVacuum = " + _useVacuum);
             return true;
         }
