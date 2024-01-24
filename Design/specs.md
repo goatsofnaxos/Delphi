@@ -116,7 +116,8 @@
 	- the state of the VALVE_p valve (with text indicating the digital line on the expander board)
 	- the state of the poke beam (with text indicating the digital line on the expander board)
 	- Text displaying: 
-		- total number of pokes so far
+		- total number of pokes (that resulted in odor delivery) so far
+  		- total number of beam crossings so far (including pokes that resulted in odor delivery and pokes that didn't)
 		- current rule that’s being followed
 		- name of the current and next stimulus (A/B/C...)
 	- Buttons, or some way we can trigger events ourselves by clicking so that we can "break the beam", open one of the valves, etc...
