@@ -120,7 +120,7 @@
   		- total number of beam crossings so far (including pokes that resulted in odor delivery and pokes that didn't)
 		- current rule that’s being followed
 		- name of the current and next stimulus (A/B/C...)
-	- Buttons, or some way we can trigger events ourselves by clicking so that we can "break the beam", open one of the valves, etc...
+	- Buttons, or some way we can trigger events ourselves by clicking so that we can "break the beam", open one of the valves, etc... [make sure we can do that while task running so we can simulate an actual poke, get odor delivered, start video acquisition, switch to next odor after click off, etc...]
 - Video feed from Blackfly camera.
 	- If possible we would like to save video at ~100 Hz but if it makes things easier, the live feed can update at 10-20 Hz. 
 	- ROI (which pixels actually streamed to disk) drawn over video window
