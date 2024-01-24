@@ -104,7 +104,8 @@
 - Rule representation: so far all the rules and breaks we've thought of can be represented by a transition matrix, but you had mentioned a more flexible representation. We're up for anything as long as it doesn't slow down development too much as we are keen to get back to piloting the behaviors.
 - Rule switching. We'd like to be able to switch between rules and rule breaks (so in the ABC example, have the animal in ABC rule for a few days, then switch it to CBA). This should occur
 	- during the inter-poke interval: so if IR beam is being broken while user switches between rules, software should wait for IR beam to be restored before switching
- 	- in a manner that accounts for the most recently delivered stimulus: so if animal is in ABC rule and just received B, and the user switches to CBA rule, then the next odor the animal should receive is A  
+ 	- in a manner that accounts for the most recently delivered stimulus: so if animal is in ABC rule and just received B, and the user switches to CBA rule, then the next odor the animal should receive is A
+  	- ideally this would accommodate rule switches in which states in the previous rule do not exist in the next rule (e.g. Rule 1 ABCD --> Rule 2 AC). The system should be able to handle the case in which a state is lost and there is ambuiguity about which state to enter next (in this example, if the animal was in "B" at rule switch, the next state should be C, if the animal was in "D", the next state should be A; but both "B" and "D" are lost states and so this needs to somehow be programmically achieved.
 - See graphical interface below for how we’d like to control switching between rules during this behavior piloting phase. (Eventually this will be controled programatically but for now we want to be able to do this manually.)
 
 
