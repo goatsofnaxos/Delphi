@@ -2823,18 +2823,35 @@
               <Name>CameraController</Name>
               <Workflow>
                 <Nodes>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="Combinator">
-                      <Combinator xsi:type="spk:SpinnakerCapture">
-                        <spk:Index xsi:nil="true" />
-                        <spk:SerialNumber>23492582</spk:SerialNumber>
-                        <spk:ColorProcessing>Default</spk:ColorProcessing>
-                      </Combinator>
-                    </Builder>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="spk:SpinnakerCapture">
+                      <spk:Index xsi:nil="true" />
+                      <spk:SerialNumber>23492582</spk:SerialNumber>
+                      <spk:ColorProcessing>Default</spk:ColorProcessing>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Image</Selector>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>Events</Name>
+                  </Expression>
+                  <Expression xsi:type="p3:FilterRegister">
+                    <harp:FilterType>Include</harp:FilterType>
+                    <harp:Register xsi:type="p3:PwmRiseEvent" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="rx:PublishSubject">
+                    <Name>CameraStream</Name>
                   </Expression>
                   <Expression xsi:type="Disable">
-                    <Builder xsi:type="MemberSelector">
-                      <Selector>Image</Selector>
+                    <Builder xsi:type="Combinator">
+                      <Combinator xsi:type="cv:CameraCapture">
+                        <cv:Index>0</cv:Index>
+                        <cv:CaptureProperties />
+                      </Combinator>
                     </Builder>
                   </Expression>
                   <Expression xsi:type="Disable">
@@ -2857,25 +2874,6 @@
                     <Builder xsi:type="rx:PublishSubject">
                       <Name>CameraStream</Name>
                     </Builder>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="cv:CameraCapture">
-                      <cv:Index>0</cv:Index>
-                      <cv:CaptureProperties />
-                    </Combinator>
-                  </Expression>
-                  <Expression xsi:type="SubscribeSubject">
-                    <Name>Events</Name>
-                  </Expression>
-                  <Expression xsi:type="p3:FilterRegister">
-                    <harp:FilterType>Include</harp:FilterType>
-                    <harp:Register xsi:type="p3:PwmRiseEvent" />
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Zip" />
-                  </Expression>
-                  <Expression xsi:type="rx:PublishSubject">
-                    <Name>CameraStream</Name>
                   </Expression>
                   <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Boolean">
                     <rx:Name>CameraStreamEnabled</rx:Name>
