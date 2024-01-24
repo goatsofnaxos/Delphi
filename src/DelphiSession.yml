@@ -10,7 +10,7 @@ metadata:
   maximumPokeTime: 10
   robocopyTimeInterval: 3600
   showHarpLeds: false
-  maxVideoLength: 120
+  maxVideoLength: 20
   minOdorDelivery: 0.1
   maxOdorDelivery: 8
   switchTime1: 0.01
@@ -22,7 +22,7 @@ cameraProperties:
   preEventBufferFrames: 200
   postEventBufferFrames: 200
   bufferInterval: 1
-  
+
 lineMappings:
   odorMap:
     -   {name: "OdorA", line: 6}
