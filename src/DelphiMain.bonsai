@@ -14,6 +14,7 @@
                  xmlns:wie="clr-namespace:Bonsai.Windows.Input;assembly=Bonsai.Windows.Input"
                  xmlns:spk="clr-namespace:Bonsai.Spinnaker;assembly=Bonsai.Spinnaker"
                  xmlns:cv="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision"
+                 xmlns:aeon="clr-namespace:Aeon.Acquisition;assembly=Aeon.Acquisition"
                  xmlns="https://bonsai-rx.org/2018/workflow">
   <Workflow>
     <Nodes>
@@ -297,7 +298,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorB</Value>
+                            <Value>OdorC</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
@@ -335,7 +336,7 @@
                         <Expression xsi:type="p3:CreateMessage">
                           <harp:MessageType>Write</harp:MessageType>
                           <harp:Payload xsi:type="p3:CreateOutputSetPayload">
-                            <p3:OutputSet>Out7</p3:OutputSet>
+                            <p3:OutputSet>Out8</p3:OutputSet>
                           </harp:Payload>
                         </Expression>
                         <Expression xsi:type="rx:Condition">
@@ -897,7 +898,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorB</Value>
+                            <Value>OdorC</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -933,7 +934,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p2:TryGetValueOrDefault">
-                            <p2:Key>OdorB</p2:Key>
+                            <p2:Key>OdorC</p2:Key>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -1346,7 +1347,7 @@
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="rx:Delay">
-                                        <rx:DueTime>PT1S</rx:DueTime>
+                                        <rx:DueTime>PT0.1S</rx:DueTime>
                                       </Combinator>
                                     </Expression>
                                     <Expression xsi:type="SubscribeSubject">
@@ -1931,7 +1932,7 @@
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="rx:Delay">
-                                        <rx:DueTime>PT1S</rx:DueTime>
+                                        <rx:DueTime>PT0.1S</rx:DueTime>
                                       </Combinator>
                                     </Expression>
                                     <Expression xsi:type="SubscribeSubject">
@@ -2516,7 +2517,7 @@
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="rx:Delay">
-                                        <rx:DueTime>PT1S</rx:DueTime>
+                                        <rx:DueTime>PT0.1S</rx:DueTime>
                                       </Combinator>
                                     </Expression>
                                     <Expression xsi:type="SubscribeSubject">
@@ -2822,15 +2823,46 @@
               <Name>CameraController</Name>
               <Workflow>
                 <Nodes>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="spk:SpinnakerCapture">
-                      <spk:Index xsi:nil="true" />
-                      <spk:SerialNumber>23492582</spk:SerialNumber>
-                      <spk:ColorProcessing>Default</spk:ColorProcessing>
-                    </Combinator>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="Combinator">
+                      <Combinator xsi:type="spk:SpinnakerCapture">
+                        <spk:Index xsi:nil="true" />
+                        <spk:SerialNumber>23492582</spk:SerialNumber>
+                        <spk:ColorProcessing>Default</spk:ColorProcessing>
+                      </Combinator>
+                    </Builder>
                   </Expression>
-                  <Expression xsi:type="MemberSelector">
-                    <Selector>Image</Selector>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="MemberSelector">
+                      <Selector>Image</Selector>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="SubscribeSubject">
+                      <Name>Events</Name>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="p3:FilterRegister">
+                      <harp:FilterType>Include</harp:FilterType>
+                      <harp:Register xsi:type="p3:PwmRiseEvent" />
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Zip" />
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="rx:PublishSubject">
+                      <Name>CameraStream</Name>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:CameraCapture">
+                      <cv:Index>0</cv:Index>
+                      <cv:CaptureProperties />
+                    </Combinator>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
                     <Name>Events</Name>
@@ -3143,8 +3175,36 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="rx:Throttle">
-                            <rx:DueTime>PT0.5S</rx:DueTime>
+                            <rx:DueTime>PT1S</rx:DueTime>
                           </Combinator>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>SessionSettings</Name>
+                        </Expression>
+                        <Expression xsi:type="MemberSelector">
+                          <Selector>Metadata.MaxVideoLength</Selector>
+                        </Expression>
+                        <Expression xsi:type="scr:ExpressionTransform">
+                          <scr:Expression>TimeSpan.FromSeconds(it)</scr:Expression>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="DueTime" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Timer">
+                            <rx:DueTime>PT0S</rx:DueTime>
+                            <rx:Period>PT0S</rx:Period>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="BooleanProperty">
+                            <Value>true</Value>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Merge" />
                         </Expression>
                         <Expression xsi:type="rx:PublishSubject">
                           <Name>PokesComplete</Name>
@@ -3299,7 +3359,7 @@
                               </Expression>
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="cv:VideoWriter">
-                                  <cv:FileName>C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\Event-3788892279.23651.avi</cv:FileName>
+                                  <cv:FileName>C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\Event-3788956421.7095.avi</cv:FileName>
                                   <cv:Suffix>None</cv:Suffix>
                                   <cv:Buffered>true</cv:Buffered>
                                   <cv:Overwrite>false</cv:Overwrite>
@@ -3368,33 +3428,40 @@
                         <Edge From="7" To="8" Label="Source1" />
                         <Edge From="8" To="9" Label="Source1" />
                         <Edge From="9" To="10" Label="Source2" />
-                        <Edge From="10" To="11" Label="Source1" />
+                        <Edge From="10" To="17" Label="Source1" />
+                        <Edge From="11" To="12" Label="Source1" />
                         <Edge From="12" To="13" Label="Source1" />
                         <Edge From="13" To="14" Label="Source1" />
-                        <Edge From="15" To="28" Label="Source1" />
-                        <Edge From="16" To="18" Label="Source1" />
-                        <Edge From="17" To="18" Label="Source2" />
-                        <Edge From="18" To="19" Label="Source1" />
-                        <Edge From="19" To="28" Label="Source2" />
-                        <Edge From="20" To="22" Label="Source1" />
-                        <Edge From="21" To="22" Label="Source2" />
-                        <Edge From="22" To="26" Label="Source1" />
-                        <Edge From="23" To="24" Label="Source1" />
-                        <Edge From="24" To="25" Label="Source1" />
-                        <Edge From="25" To="26" Label="Source2" />
-                        <Edge From="26" To="27" Label="Source1" />
-                        <Edge From="27" To="28" Label="Source3" />
-                        <Edge From="28" To="29" Label="Source1" />
+                        <Edge From="14" To="15" Label="Source1" />
+                        <Edge From="15" To="16" Label="Source1" />
+                        <Edge From="16" To="17" Label="Source2" />
+                        <Edge From="17" To="18" Label="Source1" />
+                        <Edge From="19" To="20" Label="Source1" />
+                        <Edge From="20" To="21" Label="Source1" />
+                        <Edge From="22" To="35" Label="Source1" />
+                        <Edge From="23" To="25" Label="Source1" />
+                        <Edge From="24" To="25" Label="Source2" />
+                        <Edge From="25" To="26" Label="Source1" />
+                        <Edge From="26" To="35" Label="Source2" />
+                        <Edge From="27" To="29" Label="Source1" />
+                        <Edge From="28" To="29" Label="Source2" />
+                        <Edge From="29" To="33" Label="Source1" />
                         <Edge From="30" To="31" Label="Source1" />
                         <Edge From="31" To="32" Label="Source1" />
-                        <Edge From="32" To="33" Label="Source1" />
+                        <Edge From="32" To="33" Label="Source2" />
                         <Edge From="33" To="34" Label="Source1" />
-                        <Edge From="34" To="35" Label="Source1" />
-                        <Edge From="36" To="37" Label="Source1" />
+                        <Edge From="34" To="35" Label="Source3" />
+                        <Edge From="35" To="36" Label="Source1" />
                         <Edge From="37" To="38" Label="Source1" />
                         <Edge From="38" To="39" Label="Source1" />
                         <Edge From="39" To="40" Label="Source1" />
                         <Edge From="40" To="41" Label="Source1" />
+                        <Edge From="41" To="42" Label="Source1" />
+                        <Edge From="43" To="44" Label="Source1" />
+                        <Edge From="44" To="45" Label="Source1" />
+                        <Edge From="45" To="46" Label="Source1" />
+                        <Edge From="46" To="47" Label="Source1" />
+                        <Edge From="47" To="48" Label="Source1" />
                       </Edges>
                     </Workflow>
                   </Expression>
@@ -3405,20 +3472,24 @@
                   <Edge From="2" To="3" Label="Source1" />
                   <Edge From="3" To="4" Label="Source2" />
                   <Edge From="4" To="5" Label="Source1" />
-                  <Edge From="8" To="9" Label="Source1" />
-                  <Edge From="10" To="11" Label="Source1" />
-                  <Edge From="12" To="13" Label="Source1" />
-                  <Edge From="12" To="15" Label="Source1" />
+                  <Edge From="6" To="9" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source2" />
+                  <Edge From="9" To="10" Label="Source1" />
                   <Edge From="13" To="14" Label="Source1" />
                   <Edge From="15" To="16" Label="Source1" />
-                  <Edge From="17" To="21" Label="Source1" />
+                  <Edge From="17" To="18" Label="Source1" />
+                  <Edge From="17" To="20" Label="Source1" />
                   <Edge From="18" To="19" Label="Source1" />
-                  <Edge From="19" To="20" Label="Source1" />
-                  <Edge From="20" To="21" Label="Source2" />
-                  <Edge From="21" To="22" Label="Source1" />
+                  <Edge From="20" To="21" Label="Source1" />
+                  <Edge From="22" To="26" Label="Source1" />
                   <Edge From="23" To="24" Label="Source1" />
                   <Edge From="24" To="25" Label="Source1" />
-                  <Edge From="25" To="26" Label="Source1" />
+                  <Edge From="25" To="26" Label="Source2" />
+                  <Edge From="26" To="27" Label="Source1" />
+                  <Edge From="28" To="29" Label="Source1" />
+                  <Edge From="29" To="30" Label="Source1" />
+                  <Edge From="30" To="31" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -3460,7 +3531,7 @@
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:LogHarpState.bonsai">
               <LogName>Expander</LogName>
-              <Heartbeats />
+              <Heartbeats>Events</Heartbeats>
               <ClosingDuration xsi:nil="true" />
             </Expression>
           </Nodes>
@@ -3580,6 +3651,15 @@
       <Expression xsi:type="MulticastSubject">
         <Name>PortValveCommand</Name>
       </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Timer">
+          <rx:DueTime>PT0S</rx:DueTime>
+          <rx:Period>PT1S</rx:Period>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="aeon:AvailableMemory" />
+      </Expression>
     </Nodes>
     <Edges>
       <Edge From="0" To="1" Label="Source1" />
@@ -3598,6 +3678,7 @@
       <Edge From="19" To="20" Label="Source1" />
       <Edge From="20" To="21" Label="Source2" />
       <Edge From="21" To="22" Label="Source1" />
+      <Edge From="23" To="24" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
