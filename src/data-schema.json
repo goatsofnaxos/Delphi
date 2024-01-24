@@ -48,6 +48,11 @@
                 "postEventBufferFrames": {
                     "description": "The number of frames post-event to include in the event buffer",
                     "type": "integer"
+                },
+                "bufferInterval": {
+                    "description": "When saving event-buffered video, at least this interval (in seconds) must elapse before a new video writer is initialized. Necessary to prevent too many video writers initializing for fast inter-event times.",
+                    "default": 0.5,
+                    "type": "number"
                 }
             }
         }
@@ -68,6 +73,11 @@
                     "description": "The path of the remote folder to copy local data to, with time interval specified by robocopyTimeInterval",
                     "default": "",
                     "type": "string"
+                },
+                "chargeTime": {
+                    "description": "How long to wait for active odor line to charge in seconds",
+                    "default": "0.2",
+                    "type": "number"
                 },
                 "minimumPokeTime": {
                     "description": "Minimum poke time. Minimum time before a poke is considered 'active' in seconds",
@@ -94,9 +104,34 @@
                     "default": "120",
                     "type": "number"
                 },
+                "minOdorDelivery": {
+                    "description": "Minimum required length of odor deliveries in seconds",
+                    "default": "0.1",
+                    "type": "number"
+                },
                 "maxOdorDelivery": {
                     "description": "Maximum allowed length of odor deliveries in seconds",
                     "default": "8",
+                    "type": "number"
+                },
+                "switchTime1": {
+                    "description": "How long after port valve close to turn off active odor in seconds",
+                    "default": "0.01",
+                    "type": "number"
+                },
+                "switchTime2": {
+                    "description": "How long after previous active odor closes to turn on active odor in seconds",
+                    "default": "0.02",
+                    "type": "number"
+                },
+                "vacuumDelay": {
+                    "description": "Initial wait time before opening vacuum in seconds",
+                    "default": "0.05",
+                    "type": "number"
+                },
+                "vacuumDuration": {
+                    "description": "Duration of vacuum in seconds",
+                    "default": "0.015",
                     "type": "number"
                 },
                 "useVacuum": {
@@ -125,7 +160,6 @@
                     "type": "integer"
                 },
                 "auxLine": {
-                                    // TODO - more descriptive line name
                     "default": 0,
                     "minimum": 0,
                     "maximum": 1,
