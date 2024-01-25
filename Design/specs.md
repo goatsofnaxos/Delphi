@@ -200,3 +200,6 @@ graph TD
  	- Use 3 instead of 1 IR beams so that small deviations within the port that go into and out of the beam don't trigger separate pokes?
   	- Machine port out of metal so animal won't chew it?
 - Wide angle camera covering entire cage at low framerate to capture overal position, quiescence/activity, etc. Maybe design a much smaller food magazine?
+- Develop cage solution with no pellet bedding so mice can't throw bedding into the port and trigger a poke
+- Place port location higher in the wall of the cage so that it is less likely to be triggered by cage debris
+- Make the port a bit smaller so that it is less likely to be triggered by debris
