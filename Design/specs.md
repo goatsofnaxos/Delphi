@@ -195,3 +195,8 @@ graph TD
 **FUTURE**
 - Reduce time necessary to switch between odors to reduce refractory period between stimulated pokes.
 - Add a small & cheap  sensor (e.g. [Pololu #1483](https://www.pololu.com/product/1483)) at the nose port to monitor odor concentration over time. Possible to include it in-line downstream of the final (4-way) valve?
+- Odor port:
+	- Minimize distance between edge of port and IR sensor to make it as easy as possible for the animal to break the beam.
+ 	- Use 3 instead of 1 IR beams so that small deviations within the port that go into and out of the beam don't trigger separate pokes?
+  	- Machine port out of metal so animal won't chew it?
+- Wide angle camera covering entire cage at low framerate to capture overal position, quiescence/activity, etc. Maybe design a much smaller food magazine?
