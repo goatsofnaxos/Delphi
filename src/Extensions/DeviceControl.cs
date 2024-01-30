@@ -26,8 +26,6 @@ namespace Extensions.Extensions
             InitializeComponent();
 
             source.OnReceiveHarpMessage += (sender, e) => {
-                testLabel.Text = e.ToString();
-
                 // Detect changes to output state
                 if (e.Address == OutputState.Address) {
                     DigitalOutputState = OutputState.GetPayload(e);
