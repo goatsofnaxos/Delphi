@@ -6,11 +6,11 @@ metadata:
   animalId: plimbo
   loggingRootPath: C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\
   chargeTime: 0.2
-  minimumPokeTime: 1
+  minimumPokeTime: 0.1
   maximumPokeTime: 10
   robocopyTimeInterval: 3600
   showHarpLeds: false
-  maxVideoLength: 120
+  maxVideoLength: 20
   minOdorDelivery: 0.1
   maxOdorDelivery: 8
   switchTime1: 0.01
@@ -19,9 +19,9 @@ metadata:
 
 cameraProperties:
   imagingRate: 100
-  preEventBufferFrames: 200
-  postEventBufferFrames: 200
-  bufferInterval: 0.5
+  preEventBufferFrames: 20
+  postEventBufferFrames: 20
+  bufferInterval: 1
 
 lineMappings:
   odorMap:
