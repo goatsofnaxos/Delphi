@@ -228,7 +228,7 @@
                       <harp:VisualIndicators>On</harp:VisualIndicators>
                       <harp:Heartbeat>Disabled</harp:Heartbeat>
                       <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                      <harp:PortName>COM13</harp:PortName>
+                      <harp:PortName>COM3</harp:PortName>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="rx:PublishSubject">
@@ -299,7 +299,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorC</Value>
+                            <Value>OdorA</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
@@ -337,7 +337,7 @@
                         <Expression xsi:type="p3:CreateMessage">
                           <harp:MessageType>Write</harp:MessageType>
                           <harp:Payload xsi:type="p3:CreateOutputSetPayload">
-                            <p3:OutputSet>Out8</p3:OutputSet>
+                            <p3:OutputSet>Out6</p3:OutputSet>
                           </harp:Payload>
                         </Expression>
                         <Expression xsi:type="rx:Condition">
@@ -899,7 +899,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorC</Value>
+                            <Value>OdorA</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -935,7 +935,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p2:TryGetValueOrDefault">
-                            <p2:Key>OdorC</p2:Key>
+                            <p2:Key>OdorA</p2:Key>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -2824,35 +2824,18 @@
               <Name>CameraController</Name>
               <Workflow>
                 <Nodes>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="spk:SpinnakerCapture">
-                      <spk:Index xsi:nil="true" />
-                      <spk:SerialNumber>23492582</spk:SerialNumber>
-                      <spk:ColorProcessing>Default</spk:ColorProcessing>
-                    </Combinator>
-                  </Expression>
-                  <Expression xsi:type="MemberSelector">
-                    <Selector>Image</Selector>
-                  </Expression>
-                  <Expression xsi:type="SubscribeSubject">
-                    <Name>Events</Name>
-                  </Expression>
-                  <Expression xsi:type="p3:FilterRegister">
-                    <harp:FilterType>Include</harp:FilterType>
-                    <harp:Register xsi:type="p3:PwmRiseEvent" />
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Zip" />
-                  </Expression>
-                  <Expression xsi:type="rx:PublishSubject">
-                    <Name>CameraStream</Name>
-                  </Expression>
                   <Expression xsi:type="Disable">
                     <Builder xsi:type="Combinator">
-                      <Combinator xsi:type="cv:CameraCapture">
-                        <cv:Index>0</cv:Index>
-                        <cv:CaptureProperties />
+                      <Combinator xsi:type="spk:SpinnakerCapture">
+                        <spk:Index xsi:nil="true" />
+                        <spk:SerialNumber>23492582</spk:SerialNumber>
+                        <spk:ColorProcessing>Default</spk:ColorProcessing>
                       </Combinator>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="MemberSelector">
+                      <Selector>Image</Selector>
                     </Builder>
                   </Expression>
                   <Expression xsi:type="Disable">
@@ -2868,13 +2851,32 @@
                   </Expression>
                   <Expression xsi:type="Disable">
                     <Builder xsi:type="Combinator">
-                      <Combinator xsi:type="rx:Zip" />
+                      <Combinator xsi:type="rx:WithLatestFrom" />
                     </Builder>
                   </Expression>
                   <Expression xsi:type="Disable">
                     <Builder xsi:type="rx:PublishSubject">
                       <Name>CameraStream</Name>
                     </Builder>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:CameraCapture">
+                      <cv:Index>0</cv:Index>
+                      <cv:CaptureProperties />
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>Events</Name>
+                  </Expression>
+                  <Expression xsi:type="p3:FilterRegister">
+                    <harp:FilterType>Include</harp:FilterType>
+                    <harp:Register xsi:type="p3:PwmRiseEvent" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:WithLatestFrom" />
+                  </Expression>
+                  <Expression xsi:type="rx:PublishSubject">
+                    <Name>CameraStream</Name>
                   </Expression>
                   <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Boolean">
                     <rx:Name>CameraStreamEnabled</rx:Name>
@@ -3362,7 +3364,7 @@
                               </Expression>
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="cv:VideoWriter">
-                                  <cv:FileName>C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\\Event-3788977349.0575\Event-3788977349.0575.avi</cv:FileName>
+                                  <cv:FileName>C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\\Event-3789536259.6455\Event-3789536259.6455.avi</cv:FileName>
                                   <cv:Suffix>None</cv:Suffix>
                                   <cv:Buffered>true</cv:Buffered>
                                   <cv:Overwrite>false</cv:Overwrite>
@@ -3471,7 +3473,7 @@
                                 </PropertyMappings>
                               </Expression>
                               <Expression xsi:type="io:CsvWriter">
-                                <io:FileName>C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\\Event-3788977349.0575\FrameTimes.csv</io:FileName>
+                                <io:FileName>C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\\Event-3789536259.6455\FrameTimes.csv</io:FileName>
                                 <io:Append>false</io:Append>
                                 <io:Overwrite>false</io:Overwrite>
                                 <io:Suffix>None</io:Suffix>
@@ -3658,113 +3660,191 @@
           </Edges>
         </Workflow>
       </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="rx:Timer">
-          <rx:DueTime>PT0S</rx:DueTime>
-          <rx:Period>PT0S</rx:Period>
-        </Combinator>
+      <Expression xsi:type="ExternalizedMapping">
+        <Property Name="StopCameraStream" />
+        <Property Name="CloseAllLinesKey" />
+        <Property Name="OpenPortValveKey" />
+        <Property Name="ClosePortValveKey" />
+        <Property Name="PokeOnKey" />
+        <Property Name="PokeOffKey" />
       </Expression>
-      <Expression xsi:type="rx:SelectMany">
-        <Name>StartCameraStream</Name>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>ControlKeys</Name>
         <Workflow>
           <Nodes>
-            <Expression xsi:type="WorkflowInput">
-              <Name>Source1</Name>
-            </Expression>
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="State" />
-            </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p4:CameraCommand">
-                <p4:State>true</p4:State>
+              <Combinator xsi:type="rx:Timer">
+                <rx:DueTime>PT0S</rx:DueTime>
+                <rx:Period>PT0S</rx:Period>
               </Combinator>
             </Expression>
-            <Expression xsi:type="WorkflowOutput" />
-          </Nodes>
-          <Edges>
-            <Edge From="1" To="2" Label="Source1" />
-            <Edge From="2" To="3" Label="Source1" />
-          </Edges>
-        </Workflow>
-      </Expression>
-      <Expression xsi:type="ExternalizedMapping">
-        <Property Name="Filter" DisplayName="StopCameraStream" Category="ControlKeys" />
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="wie:KeyDown">
-          <wie:Filter>ShiftKey Space D0 P NumPad0 F1 Alt</wie:Filter>
-          <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="rx:SelectMany">
-        <Name>StopCameraStream</Name>
-        <Workflow>
-          <Nodes>
-            <Expression xsi:type="WorkflowInput">
-              <Name>Source1</Name>
+            <Expression xsi:type="rx:SelectMany">
+              <Name>StartCameraStream</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="State" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="p4:CameraCommand">
+                      <p4:State>true</p4:State>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                </Edges>
+              </Workflow>
             </Expression>
             <Expression xsi:type="ExternalizedMapping">
-              <Property Name="State" />
+              <Property Name="Filter" DisplayName="StopCameraStream" Category="ControlKeys" />
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p4:CameraCommand">
-                <p4:State>false</p4:State>
+              <Combinator xsi:type="wie:KeyDown">
+                <wie:Filter>ShiftKey Space D0 P NumPad0 F1 Alt</wie:Filter>
+                <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
               </Combinator>
             </Expression>
-            <Expression xsi:type="WorkflowOutput" />
+            <Expression xsi:type="rx:SelectMany">
+              <Name>StopCameraStream</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="ExternalizedMapping">
+                    <Property Name="State" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="p4:CameraCommand">
+                      <p4:State>false</p4:State>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Merge" />
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>CameraCommands</Name>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Filter" DisplayName="CloseAllLinesKey" Category="ControlKeys" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="wie:KeyDown">
+                <wie:Filter>LButton RButton Cancel A B C Alt</wie:Filter>
+                <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Unit" />
+            <Expression xsi:type="MulticastSubject">
+              <Name>CloseAllLines</Name>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Filter" DisplayName="OpenPortValveKey" Category="ControlKeys" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="wie:KeyDown">
+                <wie:Filter>ShiftKey P Shift</wie:Filter>
+                <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="BooleanProperty">
+                <Value>true</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Filter" DisplayName="ClosePortValveKey" Category="ControlKeys" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="wie:KeyDown">
+                <wie:Filter>ShiftKey P Alt</wie:Filter>
+                <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="BooleanProperty">
+                <Value>false</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Merge" />
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>PortValveCommand</Name>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Filter" DisplayName="PokeOnKey" Category="ControlKeys" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="wie:KeyDown">
+                <wie:Filter>RButton MButton XButton2 ShiftKey Menu Capital CapsLock B D F P R T V Shift</wie:Filter>
+                <wie:SuppressRepetitions>true</wie:SuppressRepetitions>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="BooleanProperty">
+                <Value>true</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>PokeOnset</Name>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Filter" DisplayName="PokeOffKey" Category="ControlKeys" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="wie:KeyUp">
+                <wie:Filter>RButton MButton XButton2 ShiftKey Menu Capital CapsLock B D F P R T V Shift</wie:Filter>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="BooleanProperty">
+                <Value>true</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>PokeOffset</Name>
+            </Expression>
           </Nodes>
           <Edges>
-            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="5" Label="Source1" />
             <Edge From="2" To="3" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="5" Label="Source2" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="8" To="9" Label="Source1" />
+            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="11" To="12" Label="Source1" />
+            <Edge From="12" To="13" Label="Source1" />
+            <Edge From="13" To="17" Label="Source1" />
+            <Edge From="14" To="15" Label="Source1" />
+            <Edge From="15" To="16" Label="Source1" />
+            <Edge From="16" To="17" Label="Source2" />
+            <Edge From="17" To="18" Label="Source1" />
+            <Edge From="19" To="20" Label="Source1" />
+            <Edge From="20" To="21" Label="Source1" />
+            <Edge From="21" To="22" Label="Source1" />
+            <Edge From="23" To="24" Label="Source1" />
+            <Edge From="24" To="25" Label="Source1" />
+            <Edge From="25" To="26" Label="Source1" />
           </Edges>
         </Workflow>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="rx:Merge" />
-      </Expression>
-      <Expression xsi:type="MulticastSubject">
-        <Name>CameraCommands</Name>
-      </Expression>
-      <Expression xsi:type="ExternalizedMapping">
-        <Property Name="Filter" DisplayName="CloseAllLinesKey" Category="ControlKeys" />
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="wie:KeyDown">
-          <wie:Filter>LButton RButton Cancel A B C Alt</wie:Filter>
-          <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="Unit" />
-      <Expression xsi:type="MulticastSubject">
-        <Name>CloseAllLines</Name>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="wie:KeyDown">
-          <wie:Filter>ShiftKey P Shift</wie:Filter>
-          <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="BooleanProperty">
-          <Value>true</Value>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="wie:KeyDown">
-          <wie:Filter>ShiftKey P Alt</wie:Filter>
-          <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="BooleanProperty">
-          <Value>false</Value>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="rx:Merge" />
-      </Expression>
-      <Expression xsi:type="MulticastSubject">
-        <Name>PortValveCommand</Name>
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="rx:Timer">
@@ -3780,20 +3860,7 @@
       <Edge From="0" To="1" Label="Source1" />
       <Edge From="2" To="3" Label="Source1" />
       <Edge From="6" To="7" Label="Source1" />
-      <Edge From="7" To="11" Label="Source1" />
       <Edge From="8" To="9" Label="Source1" />
-      <Edge From="9" To="10" Label="Source1" />
-      <Edge From="10" To="11" Label="Source2" />
-      <Edge From="11" To="12" Label="Source1" />
-      <Edge From="13" To="14" Label="Source1" />
-      <Edge From="14" To="15" Label="Source1" />
-      <Edge From="15" To="16" Label="Source1" />
-      <Edge From="17" To="18" Label="Source1" />
-      <Edge From="18" To="21" Label="Source1" />
-      <Edge From="19" To="20" Label="Source1" />
-      <Edge From="20" To="21" Label="Source2" />
-      <Edge From="21" To="22" Label="Source1" />
-      <Edge From="23" To="24" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
