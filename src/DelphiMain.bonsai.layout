@@ -32,8 +32,8 @@
         <Y>4</Y>
       </Location>
       <Size>
-        <Width>1979</Width>
-        <Height>1284</Height>
+        <Width>1019</Width>
+        <Height>699</Height>
       </Size>
       <WindowState>Normal</WindowState>
     </EditorDialogSettings>
@@ -382,8 +382,8 @@
         <Y>4</Y>
       </Location>
       <Size>
-        <Width>1979</Width>
-        <Height>1284</Height>
+        <Width>1019</Width>
+        <Height>699</Height>
       </Size>
       <WindowState>Normal</WindowState>
     </EditorDialogSettings>
@@ -418,8 +418,8 @@
             <Y>4</Y>
           </Location>
           <Size>
-            <Width>1979</Width>
-            <Height>1284</Height>
+            <Width>1019</Width>
+            <Height>699</Height>
           </Size>
           <WindowState>Normal</WindowState>
         </EditorDialogSettings>
@@ -900,8 +900,8 @@
             <Y>4</Y>
           </Location>
           <Size>
-            <Width>1979</Width>
-            <Height>1284</Height>
+            <Width>1019</Width>
+            <Height>699</Height>
           </Size>
           <WindowState>Normal</WindowState>
         </EditorDialogSettings>
@@ -1044,8 +1044,8 @@
                 <Y>4</Y>
               </Location>
               <Size>
-                <Width>1979</Width>
-                <Height>1284</Height>
+                <Width>1019</Width>
+                <Height>699</Height>
               </Size>
               <WindowState>Normal</WindowState>
             </EditorDialogSettings>
@@ -1324,8 +1324,8 @@
             <Y>4</Y>
           </Location>
           <Size>
-            <Width>1979</Width>
-            <Height>1284</Height>
+            <Width>1019</Width>
+            <Height>699</Height>
           </Size>
           <WindowState>Normal</WindowState>
         </EditorDialogSettings>
@@ -1351,114 +1351,6 @@
             <Size>
               <Width>0</Width>
               <Height>0</Height>
-            </Size>
-            <WindowState>Normal</WindowState>
-          </DialogSettings>
-          <DialogSettings>
-            <Visible>false</Visible>
-            <Location>
-              <X>0</X>
-              <Y>0</Y>
-            </Location>
-            <Size>
-              <Width>0</Width>
-              <Height>0</Height>
-            </Size>
-            <WindowState>Normal</WindowState>
-          </DialogSettings>
-          <DialogSettings>
-            <Visible>false</Visible>
-            <Location>
-              <X>0</X>
-              <Y>0</Y>
-            </Location>
-            <Size>
-              <Width>0</Width>
-              <Height>0</Height>
-            </Size>
-            <WindowState>Normal</WindowState>
-          </DialogSettings>
-          <DialogSettings>
-            <Visible>false</Visible>
-            <Location>
-              <X>0</X>
-              <Y>0</Y>
-            </Location>
-            <Size>
-              <Width>0</Width>
-              <Height>0</Height>
-            </Size>
-            <WindowState>Normal</WindowState>
-          </DialogSettings>
-          <DialogSettings>
-            <Visible>false</Visible>
-            <Location>
-              <X>0</X>
-              <Y>0</Y>
-            </Location>
-            <Size>
-              <Width>0</Width>
-              <Height>0</Height>
-            </Size>
-            <WindowState>Normal</WindowState>
-          </DialogSettings>
-          <DialogSettings>
-            <Visible>false</Visible>
-            <Location>
-              <X>0</X>
-              <Y>0</Y>
-            </Location>
-            <Size>
-              <Width>0</Width>
-              <Height>0</Height>
-            </Size>
-            <WindowState>Normal</WindowState>
-          </DialogSettings>
-          <DialogSettings>
-            <Visible>false</Visible>
-            <Location>
-              <X>0</X>
-              <Y>0</Y>
-            </Location>
-            <Size>
-              <Width>0</Width>
-              <Height>0</Height>
-            </Size>
-            <WindowState>Normal</WindowState>
-          </DialogSettings>
-          <DialogSettings>
-            <Visible>false</Visible>
-            <Location>
-              <X>0</X>
-              <Y>0</Y>
-            </Location>
-            <Size>
-              <Width>0</Width>
-              <Height>0</Height>
-            </Size>
-            <WindowState>Normal</WindowState>
-          </DialogSettings>
-          <DialogSettings>
-            <Visible>false</Visible>
-            <Location>
-              <X>24</X>
-              <Y>26</Y>
-            </Location>
-            <Size>
-              <Width>334</Width>
-              <Height>81</Height>
-            </Size>
-            <WindowState>Normal</WindowState>
-          </DialogSettings>
-          <DialogSettings>
-            <Visible>false</Visible>
-            <Location>
-              <X>630</X>
-              <Y>189</Y>
-            </Location>
-            <Size>
-              <Width>629</Width>
-              <Height>436</Height>
             </Size>
             <WindowState>Normal</WindowState>
           </DialogSettings>
@@ -1772,8 +1664,8 @@
         <Y>4</Y>
       </Location>
       <Size>
-        <Width>1979</Width>
-        <Height>1284</Height>
+        <Width>1019</Width>
+        <Height>699</Height>
       </Size>
       <WindowState>Normal</WindowState>
     </EditorDialogSettings>
@@ -1910,8 +1802,8 @@
         <Y>4</Y>
       </Location>
       <Size>
-        <Width>1979</Width>
-        <Height>1284</Height>
+        <Width>1019</Width>
+        <Height>699</Height>
       </Size>
       <WindowState>Normal</WindowState>
     </EditorDialogSettings>
@@ -2368,8 +2260,8 @@
         <Y>4</Y>
       </Location>
       <Size>
-        <Width>1979</Width>
-        <Height>1284</Height>
+        <Width>1019</Width>
+        <Height>699</Height>
       </Size>
       <WindowState>Normal</WindowState>
     </EditorDialogSettings>
