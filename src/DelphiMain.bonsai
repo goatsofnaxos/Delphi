@@ -299,7 +299,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorC</Value>
+                            <Value>OdorA</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
@@ -337,7 +337,7 @@
                         <Expression xsi:type="p3:CreateMessage">
                           <harp:MessageType>Write</harp:MessageType>
                           <harp:Payload xsi:type="p3:CreateOutputSetPayload">
-                            <p3:OutputSet>Out8</p3:OutputSet>
+                            <p3:OutputSet>Out6</p3:OutputSet>
                           </harp:Payload>
                         </Expression>
                         <Expression xsi:type="rx:Condition">
@@ -899,7 +899,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorC</Value>
+                            <Value>OdorA</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -935,7 +935,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p2:TryGetValueOrDefault">
-                            <p2:Key>OdorC</p2:Key>
+                            <p2:Key>OdorA</p2:Key>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -3784,6 +3784,39 @@
             <Expression xsi:type="MulticastSubject">
               <Name>PortValveCommand</Name>
             </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Filter" DisplayName="PokeOnKey" Category="ControlKeys" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="wie:KeyDown">
+                <wie:Filter>RButton MButton XButton2 ShiftKey Menu Capital CapsLock B D F P R T V Shift</wie:Filter>
+                <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="BooleanProperty">
+                <Value>true</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>PokeOnset</Name>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Filter" DisplayName="PokeOffKey" Category="ControlKeys" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="wie:KeyUp">
+                <wie:Filter>RButton MButton XButton2 ShiftKey Menu Capital CapsLock B D F P R T V Shift</wie:Filter>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="BooleanProperty">
+                <Value>true</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>PokeOffset</Name>
+            </Expression>
           </Nodes>
           <Edges>
             <Edge From="0" To="1" Label="Source1" />
@@ -3802,6 +3835,12 @@
             <Edge From="15" To="16" Label="Source1" />
             <Edge From="16" To="17" Label="Source2" />
             <Edge From="17" To="18" Label="Source1" />
+            <Edge From="19" To="20" Label="Source1" />
+            <Edge From="20" To="21" Label="Source1" />
+            <Edge From="21" To="22" Label="Source1" />
+            <Edge From="23" To="24" Label="Source1" />
+            <Edge From="24" To="25" Label="Source1" />
+            <Edge From="25" To="26" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
