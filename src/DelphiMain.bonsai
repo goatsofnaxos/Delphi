@@ -952,6 +952,7 @@
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p2:TryGetValueOrDefault">
                             <p2:Key>OdorA</p2:Key>
+                            <p2:DefaultString>DefaultState</p2:DefaultString>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="Combinator">
