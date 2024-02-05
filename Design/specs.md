@@ -136,7 +136,7 @@
 
 **LOGGING / POST-PROCESSING**
 - Raw log of all events to local hard drive
-- Regular copy (e.g every 1 minute or so) of the raw log to a second location on the network (that way we can access it during the experiment without interacting with the local log file). Use robocopy rather than move.
+- Regular copy (e.g every 1 minute or so) of the raw log to a second location on the network (that way we can access it during the experiment without interacting with the local log file). Use robocopy rather than move; make sure robocopy is called one last time upon halting the experiment.
 - Video logging. Ideally buffer the video stream so that we capture the moments surrounding each beam break. For each beam break, save a video beginning starting at t_videoPRE = 250 milliseconds before beam break start and ending at t_videoPOST =  500 milliseconds after beam break end. Note that sometimes we have very long pokes. If that’s going to pose problems, probably we should include a t_videoMAX = 10 seconds after which video logging is halted. Compression preferable if this won’t crash the system. 
 - A script to organize event data (post hoc) by poke, each time VALVE_p opened:
 	- stimulus number
