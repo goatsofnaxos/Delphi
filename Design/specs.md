@@ -138,19 +138,19 @@
 - Raw log of all events to local hard drive
 - Regular copy (e.g every 1 minute or so) of the raw log to a second location on the network (that way we can access it during the experiment without interacting with the local log file). Use robocopy rather than move; make sure robocopy is called one last time upon halting the experiment.
 - Video logging. Ideally buffer the video stream so that we capture the moments surrounding each beam break. For each beam break, save a video beginning starting at t_videoPRE = 250 milliseconds before beam break start and ending at t_videoPOST =  500 milliseconds after beam break end. Note that sometimes we have very long pokes. If that’s going to pose problems, probably we should include a t_videoMAX = 10 seconds after which video logging is halted. Compression preferable if this won’t crash the system. 
-- A script to organize event data (post hoc) by poke, each time VALVE_p opened:
-	- stimulus number
+- A script to organize event data (post hoc) by poke, each time beam cross occured:
+	- current rule (e.g. ABC, CBA…)
+	- current stimulus name (A/B/C)
+ 	- current harp expander digital line for VALVE_Sx (i.e. that was open during that poke)
 	- beam break number (note that sometimes there will be brief beam breaks without any stimulus delivered)
+ 	- odor stiulus number (n/a if no odor stimulus was delivered on this poke)
 	- time beam break started
 	- time beam break ended
-	- time VALVE_p opened
-	- time VALVE_p closed
-	- the VALVE_Sx that was open during that poke
-	- time current poke's VALVE_Sx closed
-	- time next poke’s VALVE_Sx opened
-	- current rule (e.g. ABC, CBA…)
-	- current stimulus (A/B/C)
-	- current Harp expander digital line
+	- time VALVE_p opened [if it opened during this beam break]
+	- time VALVE_p closed [if it opened during this beam break]
+	- time current poke's VALVE_Sx opened (prior to the poke)
+	- time current poke's VALVE_Sx closed (after the poke)
+	- time next poke’s VALVE_Sx opened (after the poke)
 - A script to organize video data (post hoc) by beam break, each time the IR beam was broken:
 	- filename should contain beam break number and stimulus number (if applicable)
 	- check for dropped frames
