@@ -158,7 +158,7 @@
 	- ideally. for convenience, the following text should be printed to the bottom of the video
 		- beam break number
 		- stimulus number (if applicable)
-		- time, frame by frame
+		- time, frame by frame (with t=0 at beam break)
 		- current rule
 		- current stimulus
 		- IR beam state (broken / not broken, perhaps represented by a grey vs white box), frame by frame
