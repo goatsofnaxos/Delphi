@@ -126,12 +126,12 @@
                 },
                 "vacuumDelay": {
                     "description": "Initial wait time before opening vacuum in seconds",
-                    "default": "0.05",
+                    "default": "0.005",
                     "type": "number"
                 },
                 "vacuumDuration": {
                     "description": "Duration of vacuum in seconds",
-                    "default": "0.015",
+                    "default": "0.05",
                     "type": "number"
                 },
                 "useVacuum": {
