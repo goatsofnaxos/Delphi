@@ -16,6 +16,8 @@ metadata:
   switchTime1: 0.01
   switchTime2: 0.02
   useVacuum: true
+  vacuumDelay: 0.005
+  vacuumDuration: 0.05
 
 cameraProperties:
   imagingRate: 100
