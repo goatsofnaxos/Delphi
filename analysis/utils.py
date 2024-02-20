@@ -6,6 +6,7 @@ import datetime
 import json
 from dotmap import DotMap
 from aeon.io.reader import Reader
+import aeon.io.api as api
 
 
 def load_json(reader, root):
@@ -38,9 +39,10 @@ class SessionData(Reader):
         with open(file) as fp:
             metadata = [json.loads(line) for line in fp]
 
-        data = [{"metadata": [DotMap(entry)]} for entry in metadata]
-        timestamps = [datetime.datetime.fromtimestamp(entry['seconds']) for entry in metadata]
-        timestamps = [t.replace(year=time.year) for t in timestamps]
+        data = {
+            "metadata": [DotMap(entry['value']) for entry in metadata],
+        }
+        timestamps = [api.aeon(entry['seconds']) for entry in metadata]
 
         return pd.DataFrame(data, index=[timestamps], columns=self.columns)
 
