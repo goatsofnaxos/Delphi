@@ -21,9 +21,8 @@ metadata:
 
 cameraProperties:
   imagingRate: 100
-  preEventBufferFrames: 20
-  postEventBufferFrames: 20
-  bufferInterval: 1
+  preEventTime: 2.5
+  postEventTime: 2.5
 
 lineMappings:
   odorMap:
