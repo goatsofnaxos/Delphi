@@ -193,13 +193,12 @@ graph TD
     FF -.OUT 5,6,7,8,9 > IN 4,5,6,7,8.->Y
 ```
 **FUTURE**
-- Reduce time necessary to switch between odors to reduce refractory period between stimulated pokes.
+-  [In proress] Reduce time necessary to switch between odors to reduce refractory period between stimulated pokes.
+- Wide angle camera covering entire cage to track  position in real-time, quiescence/activity, etc. For this, remove food magazine at the top (have foood on the ground) Maybe design a much smaller food magazine? [Note: Columbia cage tops are half-covered by a filter making this hard; maybe this is something to do at Allen, since it may be involved.]
+- Give animal toys / something to chew on, especially if food magazine is gone and poker is machined out of metal rather than plastic.
 - Add a small & cheap  sensor (e.g. [Pololu #1483](https://www.pololu.com/product/1483)) at the nose port to monitor odor concentration over time. Possible to include it in-line downstream of the final (4-way) valve?
 - Odor port:
-	- Minimize distance between edge of port and IR sensor to make it as easy as possible for the animal to break the beam.
  	- Use 3 instead of 1 IR beams so that small deviations within the port that go into and out of the beam don't trigger separate pokes?
-  	- Machine port out of metal so animal won't chew it?
-- Wide angle camera covering entire cage at low framerate to capture overal position, quiescence/activity, etc. Maybe design a much smaller food magazine?
-- Develop cage solution with no pellet bedding so mice can't throw bedding into the port and trigger a poke
-- Place port location higher in the wall of the cage so that it is less likely to be triggered by cage debris
+- Develop cage solution with no pellet bedding so mice can't throw bedding into the port and trigger a poke [so far: reducing bedding by 1/2 mostly eliminates the problem.]
+- Place port location higher in the wall of the cage so that it is less likely to be triggered by cage debris [doesn't seem necessary after all]
 - Make the port a bit smaller so that it is less likely to be triggered by debris
