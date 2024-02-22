@@ -41,17 +41,14 @@
                     "description": "The imaging rate in frames / s",
                     "type": "number"
                 },
-                "preEventBufferFrames": {
-                    "description": "The number of frames pre-event to include in the event buffer",
-                    "type": "integer"
+                "preEventTime": {
+                    "description": "The minimum amount of time pre-events to log in video (in seconds)",
+                    "default": 2.5,
+                    "type": "number"
                 },
-                "postEventBufferFrames": {
-                    "description": "The number of frames post-event to include in the event buffer",
-                    "type": "integer"
-                },
-                "bufferInterval": {
-                    "description": "When saving event-buffered video, at least this interval (in seconds) must elapse before a new video writer is initialized. Necessary to prevent too many video writers initializing for fast inter-event times.",
-                    "default": 0.5,
+                "postEventTime": {
+                    "description": "The minimum amount of time post-events to log in video (in seconds)",
+                    "default": 2.5,
                     "type": "number"
                 }
             }
