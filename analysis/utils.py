@@ -2,10 +2,11 @@ import harp
 import pandas as pd
 from glob import glob
 from pathlib import Path
-import datetime
+import os
 import json
 from dotmap import DotMap
-from aeon.io.reader import Reader
+from aeon.io.reader import Reader, Csv
+import aeon.io.api as api
 
 
 def load_json(reader, root):
@@ -22,6 +23,13 @@ def load(reader, root):
     return pd.concat(data)
 
 
+def load_video(reader, root):
+    root = Path(root)
+    pattern = f"{root.joinpath(root.name)}_*.csv"
+    data = [reader.read(Path(file)) for file in glob(pattern)]
+    return pd.concat(data)
+
+
 class SessionData(Reader):
     """Extracts metadata information from a settings .jsonl file."""
 
@@ -30,17 +38,30 @@ class SessionData(Reader):
 
     def read(self, file):
         """Returns metadata for the specified epoch."""
-        epoch_str = file.parts[-1]
-        date_str, time_str = epoch_str.split("T")
-        date_str = date_str.split("_")[1]
-        time_str = time_str.split(".")[0]
-        time = datetime.datetime.fromisoformat(date_str + "T" + time_str.replace("-", ":"))
         with open(file) as fp:
-            metadata = [json.loads(line) for line in fp]
+            metadata = [json.loads(line) for line in fp] 
 
-        data = [{"metadata": [DotMap(entry)]} for entry in metadata]
-        timestamps = [datetime.datetime.fromtimestamp(entry['seconds']) for entry in metadata]
-        timestamps = [t.replace(year=time.year) for t in timestamps]
+        data = {
+            "metadata": [DotMap(entry['value']) for entry in metadata]
+        }
+        timestamps = [api.aeon(entry['seconds']) for entry in metadata]
 
         return pd.DataFrame(data, index=[timestamps], columns=self.columns)
+    
 
+class Video(Csv):
+    """Extracts video frame metadata."""
+
+    def __init__(self, pattern="VideoData"):
+        super().__init__(pattern, columns=["hw_counter", "hw_timestamp", "_frame", "_path", "_epoch"])
+        self._rawcolumns = ["Time"] + self.columns[0:2]
+
+    def read(self, file):
+        """Reads video metadata from the specified file."""
+        data = pd.read_csv(file, header=0, names=self._rawcolumns)
+        data["_frame"] = data.index
+        data["_path"] = os.path.splitext(file)[0] + ".avi"
+        data["_epoch"] = file.parts[-3]
+        data["Time"] = data["Time"].transform(lambda x: api.aeon(x))
+        data.set_index("Time", inplace=True)
+        return data
