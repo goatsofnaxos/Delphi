@@ -68,8 +68,8 @@ def load_video(reader: Video, root: Path) -> pd.DataFrame:
 
 def concat_digi_events(series_low: pd.DataFrame, series_high: pd.DataFrame) -> pd.DataFrame:
     """Concatenate seperate high and low dataframes to produce on/off vector"""
-    data_off = series_low * 0
-    data_on = series_high * 1
+    data_off = series_low[series_low==True] * 0
+    data_on = series_high[series_high==True] * 1
     return pd.concat([data_off, data_on]).sort_index()
 
 
