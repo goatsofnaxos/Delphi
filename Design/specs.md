@@ -164,14 +164,14 @@
 		- IR beam state (broken / not broken, perhaps represented by a grey vs white box), frame by frame
 		- VALVE_p state (open / closed, perhaps represented by a grey vs white box), frame by frame
 
-**WIRING DIAGRAM**
+**WIRING DIAGRAM (Without Vacuum)**
 
 ```mermaid
 graph TD
     A[Nitrogen Tank] --> B[Flow Regulator 1]
     AA{Computer} -.-> BB{Harp Expander}
-    BB -.OUT0 > USB 3.-> CC{Blackfly Camera}
-    BB -.OUT1.-> DD{CoolDrive}
+    BB -.OUT1 > USB 3.-> CC{Blackfly Camera}
+    BB -.OUT0.-> DD{CoolDrive}
     EE{12 VDC} -.-> Y{Harp Passive Controller}
     EE -.-> DD
     DD -.-> E
@@ -192,6 +192,40 @@ graph TD
     BB <-.-> FF{Harp Expander Breakout}
     FF -.OUT 5,6,7,8,9 > IN 4,5,6,7,8.->Y
 ```
+
+**WIRING DIAGRAM (With Vacuum)**
+
+```mermaid
+graph TD
+    A[Nitrogen Tank] --> B[Flow Regulator 1]
+    AA{Computer} -.-> BB{Harp Expander}
+    BB -.OUT1 > USB 3.-> CC{Blackfly Camera}
+    BB -.OUT0.-> DD{CoolDrive}
+    EE{12 VDC} -.-> Y{Harp Passive Controller}
+    EE -.-> DD
+    DD -.-> E
+    BB -.OUT 2,3,4 > IN 1,2,3.-> Y
+    Y -.VALVE SB-SH > OUT 1-7.-> Q
+    Y -.VALVE SA > VAC Valve.->HH
+    A --> C[Flow Regulator 2]
+    C --> E[Port/Final Valve]
+    B --> D[Nitrogen Manifold]
+    D --> F[Odour Bottle 1-7]
+    F --> Q[Valve 1-7]
+    Q --> N[Odour Manifold]
+    N --> O(Exhaust)
+    N --> E
+    E --> P[Harp Poke]
+    E --> HH[Vacuum Valve]
+    HH --->|"Loose Seal"| O
+    HH --> KK[Flow Regulator 3]
+    KK --->|"Tight Seal"| II[Exhaust]
+    FF -.IN0 > DI, GND > GND, +5V > +5V.-> GG{Harp Poke Breakout}
+    GG -.-> P
+    BB <-.-> FF{Harp Expander Breakout}
+    FF -.OUT 5,6,7,8,9 > IN 4,5,6,7,8.->Y
+```
+
 **FUTURE**
 -  [In proress] Reduce time necessary to switch between odors to reduce refractory period between stimulated pokes.
 - Wide angle camera covering entire cage to track  position in real-time, quiescence/activity, etc. For this, remove food magazine at the top (have foood on the ground) Maybe design a much smaller food magazine? [Note: Columbia cage tops are half-covered by a filter making this hard; maybe this is something to do at Allen, since it may be involved.]
