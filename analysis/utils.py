@@ -25,7 +25,7 @@ class SessionData(Reader):
         }
         timestamps = [api.aeon(entry['seconds']) for entry in metadata]
 
-        return pd.DataFrame(data, index=[timestamps], columns=self.columns)
+        return pd.DataFrame(data, index=timestamps, columns=self.columns)
     
 
 class Video(Csv):
