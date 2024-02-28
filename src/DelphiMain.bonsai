@@ -242,7 +242,7 @@
                       <harp:VisualIndicators>On</harp:VisualIndicators>
                       <harp:Heartbeat>Disabled</harp:Heartbeat>
                       <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                      <harp:PortName>COM3</harp:PortName>
+                      <harp:PortName>COM6</harp:PortName>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="rx:PublishSubject">
@@ -450,7 +450,7 @@
                   </Expression>
                   <Expression xsi:type="HasFlag">
                     <Operand xsi:type="WorkflowProperty" TypeArguments="p3:AuxiliaryInputs">
-                      <Value>Aux1</Value>
+                      <Value>Aux0</Value>
                     </Operand>
                   </Expression>
                   <Expression xsi:type="rx:Condition">
@@ -2958,8 +2958,8 @@
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p3:ConfigurePwm">
                             <p3:PwmChannels>Pwm0</p3:PwmChannels>
-                            <p3:Frequency>100</p3:Frequency>
-                            <p3:DutyCycle>50</p3:DutyCycle>
+                            <p3:Frequency>60</p3:Frequency>
+                            <p3:DutyCycle>10</p3:DutyCycle>
                             <p3:PulseCount>0</p3:PulseCount>
                             <p3:TriggerSource>Software</p3:TriggerSource>
                             <p3:EventConfig>Enabled</p3:EventConfig>
@@ -3012,6 +3012,36 @@
                       </Edges>
                     </Workflow>
                   </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>Events</Name>
+                  </Expression>
+                  <Expression xsi:type="p3:Parse">
+                    <harp:Register xsi:type="p3:TimestampedPwmRiseEvent" />
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>SessionSettings</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>CameraProperties.ExposureTime</Selector>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="ExposureTime" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="aeon:SpinnakerCapture">
+                      <spk:Index xsi:nil="true" />
+                      <spk:SerialNumber>23604581</spk:SerialNumber>
+                      <spk:ColorProcessing>Default</spk:ColorProcessing>
+                      <aeon:ExposureTime>10000</aeon:ExposureTime>
+                      <aeon:Gain>0</aeon:Gain>
+                      <aeon:Binning>1</aeon:Binning>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="rx:PublishSubject">
+                    <Name>VideoFeed</Name>
+                  </Expression>
                 </Nodes>
                 <Edges>
                   <Edge From="1" To="2" Label="Source1" />
@@ -3019,6 +3049,12 @@
                   <Edge From="3" To="6" Label="Source1" />
                   <Edge From="4" To="5" Label="Source1" />
                   <Edge From="6" To="7" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source1" />
+                  <Edge From="9" To="13" Label="Source1" />
+                  <Edge From="10" To="11" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="12" To="13" Label="Source2" />
+                  <Edge From="13" To="14" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -3045,7 +3081,7 @@
               </PropertyMappings>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:LogController.bonsai">
-              <Path>C:\Users\erski\source\repos\zuckerman\Delphi\temp_data\</Path>
+              <Path>C:\Users\erski\source\repos\zuckerman\Delphi\temp_data</Path>
               <ChunkSize>1</ChunkSize>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
@@ -3120,6 +3156,22 @@
             <Expression xsi:type="MemberSelector">
               <Selector>CameraProperties.PostEventTime</Selector>
             </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>SessionSettings</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>CameraProperties.PreEventTime</Selector>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="Value" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="Add">
+              <Operand xsi:type="DoubleProperty">
+                <Value>2.5</Value>
+              </Operand>
+            </Expression>
             <Expression xsi:type="scr:ExpressionTransform">
               <scr:Expression>TimeSpan.FromSeconds(it)</scr:Expression>
             </Expression>
@@ -3142,19 +3194,7 @@
               <Name>PokeActivity</Name>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>Events</Name>
-            </Expression>
-            <Expression xsi:type="p3:Parse">
-              <harp:Register xsi:type="p3:TimestampedPwmRiseEvent" />
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="aeon:SpinnakerCapture">
-                <spk:Index xsi:nil="true" />
-                <spk:ColorProcessing>Default</spk:ColorProcessing>
-                <aeon:ExposureTime>19000</aeon:ExposureTime>
-                <aeon:Gain>0</aeon:Gain>
-                <aeon:Binning>1</aeon:Binning>
-              </Combinator>
+              <Name>VideoFeed</Name>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>SessionSettings</Name>
@@ -3172,7 +3212,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Delay">
-                <rx:DueTime>PT0S</rx:DueTime>
+                <rx:DueTime>PT2.5S</rx:DueTime>
               </Combinator>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
@@ -3216,7 +3256,7 @@
               <Heartbeats>Events</Heartbeats>
               <ClosingDuration xsi:nil="true" />
               <LogName>VideoData</LogName>
-              <FrameRate>50</FrameRate>
+              <FrameRate>60</FrameRate>
             </Expression>
           </Nodes>
           <Edges>
@@ -3236,28 +3276,30 @@
             <Edge From="17" To="18" Label="Source1" />
             <Edge From="19" To="20" Label="Source1" />
             <Edge From="20" To="21" Label="Source1" />
-            <Edge From="21" To="26" Label="Source1" />
+            <Edge From="21" To="30" Label="Source1" />
             <Edge From="22" To="23" Label="Source1" />
-            <Edge From="23" To="24" Label="Source1" />
+            <Edge From="23" To="27" Label="Source1" />
             <Edge From="24" To="25" Label="Source1" />
-            <Edge From="25" To="26" Label="Source2" />
-            <Edge From="26" To="27" Label="Source1" />
+            <Edge From="25" To="26" Label="Source1" />
+            <Edge From="26" To="27" Label="Source2" />
             <Edge From="27" To="28" Label="Source1" />
-            <Edge From="29" To="30" Label="Source1" />
+            <Edge From="28" To="29" Label="Source1" />
+            <Edge From="29" To="30" Label="Source2" />
             <Edge From="30" To="31" Label="Source1" />
-            <Edge From="31" To="36" Label="Source1" />
-            <Edge From="32" To="33" Label="Source1" />
-            <Edge From="33" To="34" Label="Source1" />
+            <Edge From="31" To="32" Label="Source1" />
+            <Edge From="33" To="38" Label="Source1" />
             <Edge From="34" To="35" Label="Source1" />
-            <Edge From="35" To="36" Label="Source2" />
-            <Edge From="36" To="38" Label="Source1" />
+            <Edge From="35" To="36" Label="Source1" />
+            <Edge From="36" To="37" Label="Source1" />
             <Edge From="37" To="38" Label="Source2" />
-            <Edge From="38" To="39" Label="Source1" />
-            <Edge From="39" To="40" Label="Source1" />
-            <Edge From="40" To="44" Label="Source1" />
+            <Edge From="38" To="40" Label="Source1" />
+            <Edge From="39" To="40" Label="Source2" />
+            <Edge From="40" To="41" Label="Source1" />
             <Edge From="41" To="42" Label="Source1" />
-            <Edge From="42" To="43" Label="Source1" />
-            <Edge From="43" To="44" Label="Source2" />
+            <Edge From="42" To="46" Label="Source1" />
+            <Edge From="43" To="44" Label="Source1" />
+            <Edge From="44" To="45" Label="Source1" />
+            <Edge From="45" To="46" Label="Source2" />
           </Edges>
         </Workflow>
       </Expression>
