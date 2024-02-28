@@ -20,7 +20,7 @@ metadata:
   vacuumDuration: 0.05
 
 cameraProperties:
-  imagingRate: 100
+  imagingRate: 60
   preEventTime: 2.5
   postEventTime: 2.5
 

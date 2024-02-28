@@ -2958,8 +2958,8 @@
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p3:ConfigurePwm">
                             <p3:PwmChannels>Pwm0</p3:PwmChannels>
-                            <p3:Frequency>100</p3:Frequency>
-                            <p3:DutyCycle>50</p3:DutyCycle>
+                            <p3:Frequency>60</p3:Frequency>
+                            <p3:DutyCycle>10</p3:DutyCycle>
                             <p3:PulseCount>0</p3:PulseCount>
                             <p3:TriggerSource>Software</p3:TriggerSource>
                             <p3:EventConfig>Enabled</p3:EventConfig>
@@ -3133,7 +3133,7 @@
             </Expression>
             <Expression xsi:type="Add">
               <Operand xsi:type="DoubleProperty">
-                <Value>0</Value>
+                <Value>2.5</Value>
               </Operand>
             </Expression>
             <Expression xsi:type="scr:ExpressionTransform">
@@ -3166,6 +3166,7 @@
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="aeon:SpinnakerCapture">
                 <spk:Index xsi:nil="true" />
+                <spk:SerialNumber>23604581</spk:SerialNumber>
                 <spk:ColorProcessing>Default</spk:ColorProcessing>
                 <aeon:ExposureTime>19000</aeon:ExposureTime>
                 <aeon:Gain>0</aeon:Gain>
