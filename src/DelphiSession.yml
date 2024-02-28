@@ -21,6 +21,7 @@ metadata:
 
 cameraProperties:
   imagingRate: 60
+  exposureTime: 10000
   preEventTime: 2.5
   postEventTime: 2.5
 

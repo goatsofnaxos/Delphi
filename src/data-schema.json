@@ -41,6 +41,11 @@
                     "description": "The imaging rate in frames / s",
                     "type": "number"
                 },
+                "exposureTime": {
+                    "default": 10000,
+                    "description": "The duration of each exposure in microseconds.",
+                    "type": "integer"
+                },
                 "preEventTime": {
                     "description": "The minimum amount of time pre-events to log in video (in seconds)",
                     "default": 2.5,
