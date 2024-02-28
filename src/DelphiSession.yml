@@ -4,7 +4,7 @@
 
 metadata:
   animalId: plimbo
-  loggingRootPath: C:\Users\erski\source\repos\zuckerman\Delphi\temp_data\
+  loggingRootPath: C:\Users\erski\source\repos\zuckerman\Delphi\temp_data
   chargeTime: 0.2
   minimumPokeTime: 0.1
   maximumPokeTime: 10
@@ -32,4 +32,4 @@ lineMappings:
     -   {name: "OdorD", line: 9}
   portLine: 0
   vacuumLine: 2
-  auxLine: 1
+  auxLine: 0
