@@ -124,15 +124,15 @@ The following need to be installed once on a fresh new system in order to analyz
     ```
     pip install --upgrade pip
     ```
- 4. Clone aeon_mecha into a separate directory 
+ 4. From the terminal run `pip install -r requirements.txt`
+ 5. Clone aeon_mecha into a separate directory 
     ```
     git clone https://github.com/SainsburyWellcomeCentre/aeon_mecha.git 
     ```
- 5. From the VS Code terminal, `cd` into the aeon_mecha directory and run:
+ 6. From the VS Code terminal, `cd` into the aeon_mecha directory and run:
     ```
     python -m pip install -e .
     ```
- 6. From the terminal run `pip install -r requirements.txt`
  7. In VS Code open an analysis notebook (.ipynb) and click "Select kernel" > Python Environments
    * Select .conda local environment
  8. Analysis notebooks should now be able to run. If you get an error saying a module can't be found, try restarting the kernel in the notebook editor.
