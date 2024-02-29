@@ -116,11 +116,14 @@ The following need to be installed once on a fresh new system in order to analyz
 
 #### Create local Environment
 
- 1. `Ctrl+Shift+P` in VS Code > Python: Create Environment
+ 1. Open the Delphi folder in VS Code
+ 2. `Ctrl+Shift+P` in VS Code > Python: Create Environment
    * Select Conda
    * Select Python 3.11 kernel
- 2. From the terminal run `conda install pip`
- 3. From the terminal run `pip install -r requirements.txt`
+ 3. Ensure pip is upgraded:
+    ```
+    pip install --upgrade pip
+    ```
  4. Clone aeon_mecha into a separate directory 
     ```
     git clone https://github.com/SainsburyWellcomeCentre/aeon_mecha.git 
@@ -129,6 +132,7 @@ The following need to be installed once on a fresh new system in order to analyz
     ```
     python -m pip install -e .
     ```
- 6. In VS Code open an analysis notebook (.ipynb) and click "Select kernel" > Python Environments
+ 6. From the terminal run `pip install -r requirements.txt`
+ 7. In VS Code open an analysis notebook (.ipynb) and click "Select kernel" > Python Environments
    * Select .conda local environment
- 7. Analysis notebooks should now be able to run
+ 8. Analysis notebooks should now be able to run
