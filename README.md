@@ -135,4 +135,4 @@ The following need to be installed once on a fresh new system in order to analyz
  6. From the terminal run `pip install -r requirements.txt`
  7. In VS Code open an analysis notebook (.ipynb) and click "Select kernel" > Python Environments
    * Select .conda local environment
- 8. Analysis notebooks should now be able to run
+ 8. Analysis notebooks should now be able to run. If you get an error saying a module can't be found, try restarting the kernel in the notebook editor.
