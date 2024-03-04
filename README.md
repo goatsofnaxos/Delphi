@@ -112,7 +112,7 @@ The following need to be installed once on a fresh new system in order to analyz
  * [Visual Studio Code](https://code.visualstudio.com/) (recommended for editing code scripts and git commits)
  * [Python Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
  * [Jupyter Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter)
- * A conda distributiion such as [Miniconda](https://docs.anaconda.com/free/miniconda/index.html)
+ * A conda distribution such as [Miniconda](https://docs.anaconda.com/free/miniconda/index.html)
 
 #### Create local Environment
 
