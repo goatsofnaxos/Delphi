@@ -111,11 +111,28 @@ The following need to be installed once on a fresh new system in order to analyz
 
  * [Visual Studio Code](https://code.visualstudio.com/) (recommended for editing code scripts and git commits)
  * [Python Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
- * [Python 3.11.7](https://www.python.org/downloads/release/python-3117/)
+ * [Jupyter Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter)
+ * A conda distribution such as [Miniconda](https://docs.anaconda.com/free/miniconda/index.html)
 
 #### Create local Environment
 
- 1. `Ctrl+Shift+P` in VS Code > Python: Create Environment
-   * Select .venv
+ 1. Open the Delphi folder in VS Code
+ 2. `Ctrl+Shift+P` in VS Code > Python: Create Environment
+   * Select Conda
    * Select Python 3.11 kernel
- 2. From the terminal run `pip install -r requirements.txt`
+ 3. Ensure pip is upgraded:
+    ```
+    pip install --upgrade pip
+    ```
+ 4. From the terminal run `pip install -r requirements.txt`
+ 5. Clone aeon_mecha into a separate directory 
+    ```
+    git clone https://github.com/SainsburyWellcomeCentre/aeon_mecha.git 
+    ```
+ 6. From the VS Code terminal, `cd` into the aeon_mecha directory and run:
+    ```
+    python -m pip install -e .
+    ```
+ 7. In VS Code open an analysis notebook (.ipynb) and click "Select kernel" > Python Environments
+   * Select .conda local environment
+ 8. Analysis notebooks should now be able to run. If you get an error saying a module can't be found, try restarting the kernel in the notebook editor.
