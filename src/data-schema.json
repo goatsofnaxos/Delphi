@@ -180,6 +180,17 @@
                     "minimum": 0,
                     "maximum": 1,
                     "type": "integer"
+                },
+                "cameraTriggerLine": {
+                    "default": "Pwm0ToOut1",
+                    "description": "Flag defining the mapping of PWM to output line.",
+                    "enum": [
+                        "None",
+                        "Pwm0ToOut1",
+                        "Pwm0ToOut2",
+                        "Pwm0ToOut3"
+                    ],
+                    "type": "string"
                 }
             }
         },

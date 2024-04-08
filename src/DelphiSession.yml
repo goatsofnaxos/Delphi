@@ -9,7 +9,6 @@ metadata:
   minimumPokeTime: 0.1
   maximumPokeTime: 10
   robocopyTimeInterval: 3600
-  showHarpLeds: false
   maxVideoLength: 20
   minOdorDelivery: 0.1
   maxOdorDelivery: 8
@@ -39,3 +38,4 @@ lineMappings:
   portLine: 0
   vacuumLine: 2
   auxLine: 0
+  cameraTriggerLine: Pwm0ToOut1

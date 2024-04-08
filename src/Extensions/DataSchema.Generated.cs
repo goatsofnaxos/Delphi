@@ -955,6 +955,8 @@ namespace DataSchema
     
         private int _auxLine = 0;
     
+        private LineMappingsCameraTriggerLine _cameraTriggerLine = DataSchema.LineMappingsCameraTriggerLine.Pwm0ToOut1;
+    
         public LineMappings()
         {
         }
@@ -965,6 +967,7 @@ namespace DataSchema
             _portLine = other._portLine;
             _vacuumLine = other._vacuumLine;
             _auxLine = other._auxLine;
+            _cameraTriggerLine = other._cameraTriggerLine;
         }
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
@@ -1020,6 +1023,24 @@ namespace DataSchema
             }
         }
     
+        /// <summary>
+        /// Flag defining the mapping of PWM to output line.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="cameraTriggerLine")]
+        [System.ComponentModel.DescriptionAttribute("Flag defining the mapping of PWM to output line.")]
+        public LineMappingsCameraTriggerLine CameraTriggerLine
+        {
+            get
+            {
+                return _cameraTriggerLine;
+            }
+            set
+            {
+                _cameraTriggerLine = value;
+            }
+        }
+    
         public System.IObservable<LineMappings> Process()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new LineMappings(this)));
@@ -1035,7 +1056,8 @@ namespace DataSchema
             stringBuilder.Append("odorMap = " + _odorMap + ", ");
             stringBuilder.Append("portLine = " + _portLine + ", ");
             stringBuilder.Append("vacuumLine = " + _vacuumLine + ", ");
-            stringBuilder.Append("auxLine = " + _auxLine);
+            stringBuilder.Append("auxLine = " + _auxLine + ", ");
+            stringBuilder.Append("cameraTriggerLine = " + _cameraTriggerLine);
             return true;
         }
     
@@ -1051,6 +1073,24 @@ namespace DataSchema
             stringBuilder.Append("}");
             return stringBuilder.ToString();
         }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
+    public enum LineMappingsCameraTriggerLine
+    {
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="None")]
+        None = 0,
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Pwm0ToOut1")]
+        Pwm0ToOut1 = 1,
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Pwm0ToOut2")]
+        Pwm0ToOut2 = 2,
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Pwm0ToOut3")]
+        Pwm0ToOut3 = 3,
     }
 
 
