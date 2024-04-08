@@ -2918,7 +2918,7 @@
                           <Name>SessionSettings</Name>
                         </Expression>
                         <Expression xsi:type="MemberSelector">
-                          <Selector>CameraProperties.PwmOutLine</Selector>
+                          <Selector>LineMappings.CameraTriggerLine</Selector>
                         </Expression>
                         <Expression xsi:type="PropertyMapping">
                           <PropertyMappings>
@@ -3011,7 +3011,7 @@
                           <Name>SessionSettings</Name>
                         </Expression>
                         <Expression xsi:type="MemberSelector">
-                          <Selector>CameraProperties.PwmOutLine</Selector>
+                          <Selector>LineMappings.CameraTriggerLine</Selector>
                         </Expression>
                         <Expression xsi:type="PropertyMapping">
                           <PropertyMappings>

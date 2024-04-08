@@ -51,17 +51,6 @@
                     "description": "The serial number of the Spinnaker camera to connect to.",
                     "type": "string"
                 },
-                "pwmOutLine": {
-                    "default": "Pwm0ToOut1",
-                    "description": "Flag defining the mapping of PWM to output line.",
-                    "enum": [
-                        "None",
-                        "Pwm0ToOut1",
-                        "Pwm0ToOut2",
-                        "Pwm0ToOut3"
-                    ],
-                    "type": "integer"
-                },
                 "preEventTime": {
                     "description": "The minimum amount of time pre-events to log in video (in seconds)",
                     "default": 2.5,
@@ -191,6 +180,17 @@
                     "minimum": 0,
                     "maximum": 1,
                     "type": "integer"
+                },
+                "cameraTriggerLine": {
+                    "default": "Pwm0ToOut1",
+                    "description": "Flag defining the mapping of PWM to output line.",
+                    "enum": [
+                        "None",
+                        "Pwm0ToOut1",
+                        "Pwm0ToOut2",
+                        "Pwm0ToOut3"
+                    ],
+                    "type": "string"
                 }
             }
         },
