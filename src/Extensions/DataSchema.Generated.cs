@@ -246,6 +246,8 @@ namespace DataSchema
     
         private string _serialNumber = "10000000";
     
+        private CameraPropertiesPwmOutLine _pwmOutLine = DataSchema.CameraPropertiesPwmOutLine.Pwm0ToOut1;
+    
         private double _preEventTime = 2.5D;
     
         private double _postEventTime = 2.5D;
@@ -259,6 +261,7 @@ namespace DataSchema
             _imagingRate = other._imagingRate;
             _exposureTime = other._exposureTime;
             _serialNumber = other._serialNumber;
+            _pwmOutLine = other._pwmOutLine;
             _preEventTime = other._preEventTime;
             _postEventTime = other._postEventTime;
         }
@@ -315,6 +318,24 @@ namespace DataSchema
         }
     
         /// <summary>
+        /// Flag defining the mapping of PWM to output line.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="pwmOutLine")]
+        [System.ComponentModel.DescriptionAttribute("Flag defining the mapping of PWM to output line.")]
+        public CameraPropertiesPwmOutLine PwmOutLine
+        {
+            get
+            {
+                return _pwmOutLine;
+            }
+            set
+            {
+                _pwmOutLine = value;
+            }
+        }
+    
+        /// <summary>
         /// The minimum amount of time pre-events to log in video (in seconds)
         /// </summary>
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="preEventTime")]
@@ -363,6 +384,7 @@ namespace DataSchema
             stringBuilder.Append("imagingRate = " + _imagingRate + ", ");
             stringBuilder.Append("exposureTime = " + _exposureTime + ", ");
             stringBuilder.Append("serialNumber = " + _serialNumber + ", ");
+            stringBuilder.Append("pwmOutLine = " + _pwmOutLine + ", ");
             stringBuilder.Append("preEventTime = " + _preEventTime + ", ");
             stringBuilder.Append("postEventTime = " + _postEventTime);
             return true;
@@ -582,6 +604,24 @@ namespace DataSchema
             stringBuilder.Append("}");
             return stringBuilder.ToString();
         }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
+    public enum CameraPropertiesPwmOutLine
+    {
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="None")]
+        None = 0,
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Pwm0ToOut1")]
+        Pwm0ToOut1 = 1,
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Pwm0ToOut2")]
+        Pwm0ToOut2 = 2,
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Pwm0ToOut3")]
+        Pwm0ToOut3 = 3,
     }
 
 
