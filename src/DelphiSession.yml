@@ -22,6 +22,7 @@ cameraProperties:
   imagingRate: 60
   exposureTime: 10000
   serialNumber: "23604581"
+  pwmOutLine: Pwm0ToOut1
   preEventTime: 2.5
   postEventTime: 2.5
 
