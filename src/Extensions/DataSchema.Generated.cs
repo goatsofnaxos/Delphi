@@ -9,7 +9,7 @@ namespace DataSchema
 {
     #pragma warning disable // Disable all warnings
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class LineMapping
@@ -95,7 +95,7 @@ namespace DataSchema
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class LineCommand
@@ -173,7 +173,7 @@ namespace DataSchema
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class CameraCommand
@@ -234,7 +234,7 @@ namespace DataSchema
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class CameraProperties
@@ -243,6 +243,8 @@ namespace DataSchema
         private double _imagingRate;
     
         private int _exposureTime = 10000;
+    
+        private string _serialNumber = "10000000";
     
         private double _preEventTime = 2.5D;
     
@@ -256,6 +258,7 @@ namespace DataSchema
         {
             _imagingRate = other._imagingRate;
             _exposureTime = other._exposureTime;
+            _serialNumber = other._serialNumber;
             _preEventTime = other._preEventTime;
             _postEventTime = other._postEventTime;
         }
@@ -291,6 +294,23 @@ namespace DataSchema
             set
             {
                 _exposureTime = value;
+            }
+        }
+    
+        /// <summary>
+        /// The serial number of the Spinnaker camera to connect to.
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="serialNumber")]
+        [System.ComponentModel.DescriptionAttribute("The serial number of the Spinnaker camera to connect to.")]
+        public string SerialNumber
+        {
+            get
+            {
+                return _serialNumber;
+            }
+            set
+            {
+                _serialNumber = value;
             }
         }
     
@@ -342,6 +362,7 @@ namespace DataSchema
         {
             stringBuilder.Append("imagingRate = " + _imagingRate + ", ");
             stringBuilder.Append("exposureTime = " + _exposureTime + ", ");
+            stringBuilder.Append("serialNumber = " + _serialNumber + ", ");
             stringBuilder.Append("preEventTime = " + _preEventTime + ", ");
             stringBuilder.Append("postEventTime = " + _postEventTime);
             return true;
@@ -362,7 +383,93 @@ namespace DataSchema
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
+    [Bonsai.CombinatorAttribute()]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    public partial class HarpProperties
+    {
+    
+        private string _comPort = "COM3";
+    
+        private bool _showHarpLeds = false;
+    
+        public HarpProperties()
+        {
+        }
+    
+        protected HarpProperties(HarpProperties other)
+        {
+            _comPort = other._comPort;
+            _showHarpLeds = other._showHarpLeds;
+        }
+    
+        /// <summary>
+        /// COM port to connect HARP board.
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="comPort")]
+        [System.ComponentModel.DescriptionAttribute("COM port to connect HARP board.")]
+        public string ComPort
+        {
+            get
+            {
+                return _comPort;
+            }
+            set
+            {
+                _comPort = value;
+            }
+        }
+    
+        /// <summary>
+        /// Whether HARP device LEDs should be on
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="showHarpLeds")]
+        [System.ComponentModel.DescriptionAttribute("Whether HARP device LEDs should be on")]
+        public bool ShowHarpLeds
+        {
+            get
+            {
+                return _showHarpLeds;
+            }
+            set
+            {
+                _showHarpLeds = value;
+            }
+        }
+    
+        public System.IObservable<HarpProperties> Process()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new HarpProperties(this)));
+        }
+    
+        public System.IObservable<HarpProperties> Process<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new HarpProperties(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("comPort = " + _comPort + ", ");
+            stringBuilder.Append("showHarpLeds = " + _showHarpLeds);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class DelphiSession
@@ -374,6 +481,8 @@ namespace DataSchema
     
         private CameraProperties _cameraProperties;
     
+        private HarpProperties _harpProperties;
+    
         public DelphiSession()
         {
         }
@@ -383,6 +492,7 @@ namespace DataSchema
             _metadata = other._metadata;
             _lineMappings = other._lineMappings;
             _cameraProperties = other._cameraProperties;
+            _harpProperties = other._harpProperties;
         }
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
@@ -427,6 +537,20 @@ namespace DataSchema
             }
         }
     
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="harpProperties")]
+        public HarpProperties HarpProperties
+        {
+            get
+            {
+                return _harpProperties;
+            }
+            set
+            {
+                _harpProperties = value;
+            }
+        }
+    
         public System.IObservable<DelphiSession> Process()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new DelphiSession(this)));
@@ -441,7 +565,8 @@ namespace DataSchema
         {
             stringBuilder.Append("metadata = " + _metadata + ", ");
             stringBuilder.Append("lineMappings = " + _lineMappings + ", ");
-            stringBuilder.Append("cameraProperties = " + _cameraProperties);
+            stringBuilder.Append("cameraProperties = " + _cameraProperties + ", ");
+            stringBuilder.Append("harpProperties = " + _harpProperties);
             return true;
         }
     
@@ -460,7 +585,7 @@ namespace DataSchema
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class Metadata
@@ -479,8 +604,6 @@ namespace DataSchema
         private double _maximumPokeTime = 10D;
     
         private double _robocopyTimeInterval = 3600D;
-    
-        private bool _showHarpLeds = false;
     
         private double _maxVideoLength = 120D;
     
@@ -511,7 +634,6 @@ namespace DataSchema
             _minimumPokeTime = other._minimumPokeTime;
             _maximumPokeTime = other._maximumPokeTime;
             _robocopyTimeInterval = other._robocopyTimeInterval;
-            _showHarpLeds = other._showHarpLeds;
             _maxVideoLength = other._maxVideoLength;
             _minOdorDelivery = other._minOdorDelivery;
             _maxOdorDelivery = other._maxOdorDelivery;
@@ -635,23 +757,6 @@ namespace DataSchema
             set
             {
                 _robocopyTimeInterval = value;
-            }
-        }
-    
-        /// <summary>
-        /// Whether HARP device LEDs should be on
-        /// </summary>
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="showHarpLeds")]
-        [System.ComponentModel.DescriptionAttribute("Whether HARP device LEDs should be on")]
-        public bool ShowHarpLeds
-        {
-            get
-            {
-                return _showHarpLeds;
-            }
-            set
-            {
-                _showHarpLeds = value;
             }
         }
     
@@ -810,7 +915,6 @@ namespace DataSchema
             stringBuilder.Append("minimumPokeTime = " + _minimumPokeTime + ", ");
             stringBuilder.Append("maximumPokeTime = " + _maximumPokeTime + ", ");
             stringBuilder.Append("robocopyTimeInterval = " + _robocopyTimeInterval + ", ");
-            stringBuilder.Append("showHarpLeds = " + _showHarpLeds + ", ");
             stringBuilder.Append("maxVideoLength = " + _maxVideoLength + ", ");
             stringBuilder.Append("minOdorDelivery = " + _minOdorDelivery + ", ");
             stringBuilder.Append("maxOdorDelivery = " + _maxOdorDelivery + ", ");
@@ -837,7 +941,7 @@ namespace DataSchema
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class LineMappings
@@ -953,7 +1057,7 @@ namespace DataSchema
     /// <summary>
     /// Serializes a sequence of data model objects into YAML strings.
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute("Serializes a sequence of data model objects into YAML strings.")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
@@ -990,6 +1094,11 @@ namespace DataSchema
             return Process<CameraProperties>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<HarpProperties> source)
+        {
+            return Process<HarpProperties>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<DelphiSession> source)
         {
             return Process<DelphiSession>(source);
@@ -1010,7 +1119,7 @@ namespace DataSchema
     /// <summary>
     /// Deserializes a sequence of YAML strings into data model objects.
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.3.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute("Deserializes a sequence of YAML strings into data model objects.")]
     [System.ComponentModel.DefaultPropertyAttribute("Type")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
@@ -1018,6 +1127,7 @@ namespace DataSchema
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineCommand>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraCommand>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraProperties>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpProperties>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiSession>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Metadata>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineMappings>))]

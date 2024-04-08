@@ -46,6 +46,11 @@
                     "description": "The duration of each exposure in microseconds.",
                     "type": "integer"
                 },
+                "serialNumber": {
+                    "default": "10000000",
+                    "description": "The serial number of the Spinnaker camera to connect to.",
+                    "type": "string"
+                },
                 "preEventTime": {
                     "description": "The minimum amount of time pre-events to log in video (in seconds)",
                     "default": 2.5,
@@ -55,6 +60,20 @@
                     "description": "The minimum amount of time post-events to log in video (in seconds)",
                     "default": 2.5,
                     "type": "number"
+                }
+            }
+        },
+        "harpProperties": {
+            "properties": {
+                "comPort": {
+                    "default": "COM3",
+                    "description": "COM port to connect HARP board.",
+                    "type": "string"
+                },
+                "showHarpLeds": {
+                    "description": "Whether HARP device LEDs should be on",
+                    "default": "false",
+                    "type": "boolean"
                 }
             }
         }
@@ -95,11 +114,6 @@
                     "description": "Interval between robocopy initiations in seconds",
                     "default": "3600",
                     "type": "number"
-                },
-                "showHarpLeds": {
-                    "description": "Whether HARP device LEDs should be on",
-                    "default": "false",
-                    "type": "boolean"
                 },
                 "maxVideoLength": {
                     "description": "Maximum allowed length of individual video files in seconds",
@@ -171,6 +185,9 @@
         },
         "cameraProperties": {
             "$ref": "#/definitions/cameraProperties"
+        },
+        "harpProperties": {
+            "$ref": "#/definitions/harpProperties"
         }
     },
     "title": "DelphiSession",
