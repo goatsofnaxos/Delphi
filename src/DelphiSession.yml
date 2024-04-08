@@ -22,8 +22,13 @@ metadata:
 cameraProperties:
   imagingRate: 60
   exposureTime: 10000
+  serialNumber: "23604581"
   preEventTime: 2.5
   postEventTime: 2.5
+
+harpProperties:
+  comPort: COM6
+  showHarpLeds: false
 
 lineMappings:
   odorMap:
