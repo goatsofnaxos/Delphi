@@ -62,6 +62,20 @@
                     "type": "number"
                 }
             }
+        },
+        "harpProperties": {
+            "properties": {
+                "comPort": {
+                    "default": "COM3",
+                    "description": "COM port to connect HARP board.",
+                    "type": "string"
+                },
+                "showHarpLeds": {
+                    "description": "Whether HARP device LEDs should be on",
+                    "default": "false",
+                    "type": "boolean"
+                }
+            }
         }
     },
     "properties": {
@@ -100,11 +114,6 @@
                     "description": "Interval between robocopy initiations in seconds",
                     "default": "3600",
                     "type": "number"
-                },
-                "showHarpLeds": {
-                    "description": "Whether HARP device LEDs should be on",
-                    "default": "false",
-                    "type": "boolean"
                 },
                 "maxVideoLength": {
                     "description": "Maximum allowed length of individual video files in seconds",
@@ -176,6 +185,9 @@
         },
         "cameraProperties": {
             "$ref": "#/definitions/cameraProperties"
+        },
+        "harpProperties": {
+            "$ref": "#/definitions/harpProperties"
         }
     },
     "title": "DelphiSession",
