@@ -228,6 +228,7 @@ graph TD
 
 **FUTURE**
 -  [In proress] Reduce time necessary to switch between odors to reduce refractory period between stimulated pokes.
+-  Probabilistic transitions in state machine (e.g. to present odors in random order).
 - Wide angle camera covering entire cage to track  position in real-time, quiescence/activity, etc. For this, remove food magazine at the top (have foood on the ground) Maybe design a much smaller food magazine? [Note: Columbia cage tops are half-covered by a filter making this hard; maybe this is something to do at Allen, since it may be involved.]
 - When have real-time tracking, make stimulus deliver conditional on head being close to port--this will eliminate the vast majority of spurious odor deliveries due to bedding.
 - Give animal toys / something to chew on, especially if food magazine is gone and poker is machined out of metal rather than plastic.
