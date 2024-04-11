@@ -27,7 +27,7 @@ cameraProperties:
   postEventTime: 2.5
 
 harpProperties:
-  comPort: COM6
+  comPort: COM4
   showHarpLeds: false
 
 lineMappings:
