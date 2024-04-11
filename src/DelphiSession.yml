@@ -4,7 +4,7 @@
 
 metadata:
   animalId: plimbo
-  loggingRootPath: C:\Users\Delphi1983\Delphi\temp_data
+  loggingRootPath: C:\Users\neurogears\Documents\DataTests\temp_data
   chargeTime: 0.2
   minimumPokeTime: 0.1
   maximumPokeTime: 10
@@ -26,7 +26,7 @@ cameraProperties:
   postEventTime: 2.5
 
 harpProperties:
-  comPort: COM6
+  comPort: COM4
   showHarpLeds: false
 
 lineMappings:
