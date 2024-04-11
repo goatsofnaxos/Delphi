@@ -20,10 +20,26 @@ namespace Extensions.Extensions
         DigitalOutputs DigitalOutputState = DigitalOutputs.None;
         AuxiliaryInputs AuxiliaryInputState = AuxiliaryInputs.None;
 
+        Label[] lineLabels;
+
         public DeviceControl(DeviceVisualInterface source)
         {
             Source = source;
             InitializeComponent();
+
+            lineLabels = new Label[10]
+            {
+                lineLabel0,
+                lineLabel1,
+                lineLabel2,
+                lineLabel3,
+                lineLabel4,
+                lineLabel5,
+                lineLabel6,
+                lineLabel7,
+                lineLabel8,
+                lineLabel9,
+            };
 
             source.OnReceiveHarpMessage += (sender, e) => {
                 // Detect changes to output state
@@ -69,6 +85,14 @@ namespace Extensions.Extensions
             };
         }
 
+        private void ClearLineLabels()
+        {
+            for (int i = 0; i < lineLabels.Length; i++)
+            {
+                lineLabels[i].Text = String.Format("line{0}", i.ToString());
+            }
+        }
+
         // TODO - horrible, there's a better way to do this
         private void UpdateDigitalOutputVisuals() {
             lineButton0.BackColor = DigitalOutputState.HasFlag(DigitalOutputs.Out0) ? Color.White : Color.Gray;
@@ -90,7 +114,7 @@ namespace Extensions.Extensions
 
         private void DeviceControl_Load(object sender, EventArgs e)
         {
-
+            ClearLineLabels();
         }
 
         private void testLabel_Click(object sender, EventArgs e)
