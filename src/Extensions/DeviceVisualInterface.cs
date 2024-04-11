@@ -16,6 +16,7 @@ using DataSchema;
 public class DeviceVisualInterface
 {
     public event EventHandler<HarpMessage> OnReceiveHarpMessage;
+    public event EventHandler<DelphiSession> OnReceiveSessionChange;
     public event EventHandler<string> OnReceiveRuleChange;
     public event EventHandler<string> OnReceiveStateChange;
     public event EventHandler<int> OnReceivePokeCountChange;
@@ -66,6 +67,15 @@ public class DeviceVisualInterface
             );
 
             // TODO - all these observers should probably be replaced by a single RuleState/poke observer, could have this as a data class in the schema
+            var sessionObserver = Observer.Create<DelphiSession>(   
+                message =>
+                {
+                    OnReceiveSessionChange.Invoke(this, message);
+                },
+                observer.OnError,
+                () => { }
+            );
+
             var ruleObserver = Observer.Create<string>(
                 message =>
                 {
@@ -113,7 +123,8 @@ public class DeviceVisualInterface
                 rule.SubscribeSafe(ruleObserver),
                 state.SubscribeSafe(stateObserver),
                 pokeCount.SubscribeSafe(pokeCountObserver),
-                odorCount.SubscribeSafe(odorCountObserver)
+                odorCount.SubscribeSafe(odorCountObserver),
+                session.SubscribeSafe(sessionObserver)
             );
         });
     }
