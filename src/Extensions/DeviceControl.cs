@@ -87,7 +87,7 @@ namespace Extensions.Extensions
             };
 
             // Detect odor count change
-            source.OnReceiveOdorCountChange += (sender, e) =>
+            source.OnReceiveStimCountChange += (sender, e) =>
             {
                 odorCountLabel.Text = e.ToString();
             };

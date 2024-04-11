@@ -332,7 +332,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorB</Value>
+                            <Value>OdorA</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
@@ -370,7 +370,7 @@
                         <Expression xsi:type="p3:CreateMessage">
                           <harp:MessageType>Write</harp:MessageType>
                           <harp:Payload xsi:type="p3:CreateOutputSetPayload">
-                            <p3:OutputSet>Out7</p3:OutputSet>
+                            <p3:OutputSet>Out6</p3:OutputSet>
                           </harp:Payload>
                         </Expression>
                         <Expression xsi:type="rx:Condition">
@@ -745,6 +745,23 @@
                       </Edges>
                     </Workflow>
                   </Expression>
+                  <Expression xsi:type="rx:Condition">
+                    <Name>OpenCommand</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="rx:BehaviorSubject">
+                    <Name>PortOnsets</Name>
+                  </Expression>
                   <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Boolean">
                     <rx:Name>VacuumValveCommand</rx:Name>
                   </Expression>
@@ -896,7 +913,9 @@
                   <Edge From="36" To="37" Label="Source1" />
                   <Edge From="38" To="39" Label="Source1" />
                   <Edge From="40" To="41" Label="Source1" />
+                  <Edge From="40" To="42" Label="Source1" />
                   <Edge From="42" To="43" Label="Source1" />
+                  <Edge From="44" To="45" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -961,7 +980,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorB</Value>
+                            <Value>OdorA</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -997,7 +1016,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p2:TryGetValueOrDefault">
-                            <p2:Key>OdorB</p2:Key>
+                            <p2:Key>OdorA</p2:Key>
                             <p2:DefaultString>DefaultState</p2:DefaultString>
                           </Combinator>
                         </Expression>
@@ -3412,91 +3431,14 @@
           </Edges>
         </Workflow>
       </Expression>
-      <Expression xsi:type="GroupWorkflow">
-        <Name>DelphiVisualizer</Name>
-        <Workflow>
-          <Nodes>
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Name" DisplayName="EventsInSubject" />
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>Events</Name>
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>SessionSettings</Name>
-            </Expression>
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Name" DisplayName="RuleSettingsSubject" />
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>RuleSettings</Name>
-            </Expression>
-            <Expression xsi:type="MemberSelector">
-              <Selector>RuleAlias</Selector>
-            </Expression>
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Name" DisplayName="CurrentStateSubject" />
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>CurrentState</Name>
-            </Expression>
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Name" DisplayName="PokeOnsetSubject" />
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>PokeOnset</Name>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="IntProperty">
-                <Value>1</Value>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="rx:Accumulate" />
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Name" DisplayName="OdorOnsetSubject" />
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>LineOnsets</Name>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="IntProperty">
-                <Value>1</Value>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="rx:Accumulate" />
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p2:DeviceVisualInterface" />
-            </Expression>
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Name" DisplayName="EventsOutSubject" />
-            </Expression>
-            <Expression xsi:type="MulticastSubject">
-              <Name>Commands</Name>
-            </Expression>
-            <Expression xsi:type="WorkflowOutput" />
-          </Nodes>
-          <Edges>
-            <Edge From="0" To="1" Label="Source1" />
-            <Edge From="1" To="16" Label="Source1" />
-            <Edge From="2" To="16" Label="Source2" />
-            <Edge From="3" To="4" Label="Source1" />
-            <Edge From="4" To="5" Label="Source1" />
-            <Edge From="5" To="16" Label="Source3" />
-            <Edge From="6" To="7" Label="Source1" />
-            <Edge From="7" To="16" Label="Source4" />
-            <Edge From="8" To="9" Label="Source1" />
-            <Edge From="9" To="10" Label="Source1" />
-            <Edge From="10" To="11" Label="Source1" />
-            <Edge From="11" To="16" Label="Source5" />
-            <Edge From="12" To="13" Label="Source1" />
-            <Edge From="13" To="14" Label="Source1" />
-            <Edge From="14" To="15" Label="Source1" />
-            <Edge From="15" To="16" Label="Source6" />
-            <Edge From="16" To="18" Label="Source1" />
-            <Edge From="17" To="18" Label="Source2" />
-            <Edge From="18" To="19" Label="Source1" />
-          </Edges>
-        </Workflow>
+      <Expression xsi:type="IncludeWorkflow" Path="Extensions\DelphiVisualizer.bonsai">
+        <EventsInSubject>Events</EventsInSubject>
+        <SessionSettingsSubject>SessionSettings</SessionSettingsSubject>
+        <RuleSettingsSubject>RuleSettings</RuleSettingsSubject>
+        <CurrentStateSubject>CurrentState</CurrentStateSubject>
+        <PokeOnsetSubject>PokeOnset</PokeOnsetSubject>
+        <StimOnsetSubject>PortOnsets</StimOnsetSubject>
+        <EventsOutSubject>Commands</EventsOutSubject>
       </Expression>
       <Expression xsi:type="VisualizerMapping" />
       <Expression xsi:type="SubscribeSubject">

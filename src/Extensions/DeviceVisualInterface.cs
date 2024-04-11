@@ -20,7 +20,7 @@ public class DeviceVisualInterface
     public event EventHandler<string> OnReceiveRuleChange;
     public event EventHandler<string> OnReceiveStateChange;
     public event EventHandler<int> OnReceivePokeCountChange;
-    public event EventHandler<int> OnReceiveOdorCountChange;
+    public event EventHandler<int> OnReceiveStimCountChange;
 
     public event EventHandler<HarpMessage> Command;
 
@@ -53,7 +53,7 @@ public class DeviceVisualInterface
         });
     }
 
-    public IObservable<HarpMessage> Process(IObservable<HarpMessage> source, IObservable<DelphiSession> session, IObservable<string> rule, IObservable<string> state, IObservable<int> pokeCount, IObservable<int> odorCount)
+    public IObservable<HarpMessage> Process(IObservable<HarpMessage> source, IObservable<DelphiSession> session, IObservable<string> rule, IObservable<string> state, IObservable<int> pokeCount, IObservable<int> stimCount)
     {
         return Observable.Create<HarpMessage>(observer => {
 
@@ -103,10 +103,10 @@ public class DeviceVisualInterface
                 observer.OnCompleted
             );
 
-            var odorCountObserver = Observer.Create<int>(
+            var stimCountObserver = Observer.Create<int>(
                 message =>
                 {
-                    OnReceiveOdorCountChange.Invoke(this, message);
+                    OnReceiveStimCountChange.Invoke(this, message);
                 },
                 observer.OnError,
                 observer.OnCompleted
@@ -123,7 +123,7 @@ public class DeviceVisualInterface
                 rule.SubscribeSafe(ruleObserver),
                 state.SubscribeSafe(stateObserver),
                 pokeCount.SubscribeSafe(pokeCountObserver),
-                odorCount.SubscribeSafe(odorCountObserver),
+                stimCount.SubscribeSafe(stimCountObserver),
                 session.SubscribeSafe(sessionObserver)
             );
         });

@@ -55,14 +55,14 @@
             this.auxInState1 = new System.Windows.Forms.RadioButton();
             this.setAuxInput0Button = new System.Windows.Forms.Button();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.odorCountHeaderLabel = new System.Windows.Forms.Label();
+            this.odorCountLabel = new System.Windows.Forms.Label();
             this.pokeCountLabel = new System.Windows.Forms.Label();
             this.pokeCountHeaderLabel = new System.Windows.Forms.Label();
             this.currentStateLabel = new System.Windows.Forms.Label();
             this.currentRuleLabel = new System.Windows.Forms.Label();
             this.currentRuleHeaderLabel = new System.Windows.Forms.Label();
             this.currentStateHeaderLabel = new System.Windows.Forms.Label();
-            this.odorCountLabel = new System.Windows.Forms.Label();
-            this.odorCountHeaderLabel = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.setAuxInputButton0.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -421,6 +421,30 @@
             this.tableLayoutPanel2.TabIndex = 4;
             this.tableLayoutPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel2_Paint);
             // 
+            // odorCountHeaderLabel
+            // 
+            this.odorCountHeaderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.odorCountHeaderLabel.AutoSize = true;
+            this.odorCountHeaderLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.odorCountHeaderLabel.Location = new System.Drawing.Point(48, 64);
+            this.odorCountHeaderLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.odorCountHeaderLabel.Name = "odorCountHeaderLabel";
+            this.odorCountHeaderLabel.Size = new System.Drawing.Size(74, 20);
+            this.odorCountHeaderLabel.TabIndex = 7;
+            this.odorCountHeaderLabel.Text = "stimulus count";
+            // 
+            // odorCountLabel
+            // 
+            this.odorCountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.odorCountLabel.AutoSize = true;
+            this.odorCountLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.odorCountLabel.Location = new System.Drawing.Point(250, 64);
+            this.odorCountLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.odorCountLabel.Name = "odorCountLabel";
+            this.odorCountLabel.Size = new System.Drawing.Size(10, 20);
+            this.odorCountLabel.TabIndex = 6;
+            this.odorCountLabel.Text = ".";
+            // 
             // pokeCountLabel
             // 
             this.pokeCountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
@@ -493,30 +517,6 @@
             this.currentStateHeaderLabel.Size = new System.Drawing.Size(69, 24);
             this.currentStateHeaderLabel.TabIndex = 1;
             this.currentStateHeaderLabel.Text = "current state:";
-            // 
-            // odorCountLabel
-            // 
-            this.odorCountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.odorCountLabel.AutoSize = true;
-            this.odorCountLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.odorCountLabel.Location = new System.Drawing.Point(250, 64);
-            this.odorCountLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.odorCountLabel.Name = "odorCountLabel";
-            this.odorCountLabel.Size = new System.Drawing.Size(10, 20);
-            this.odorCountLabel.TabIndex = 6;
-            this.odorCountLabel.Text = ".";
-            // 
-            // odorCountHeaderLabel
-            // 
-            this.odorCountHeaderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.odorCountHeaderLabel.AutoSize = true;
-            this.odorCountHeaderLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.odorCountHeaderLabel.Location = new System.Drawing.Point(56, 64);
-            this.odorCountHeaderLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.odorCountHeaderLabel.Name = "odorCountHeaderLabel";
-            this.odorCountHeaderLabel.Size = new System.Drawing.Size(58, 20);
-            this.odorCountHeaderLabel.TabIndex = 7;
-            this.odorCountHeaderLabel.Text = "odor count";
             // 
             // DeviceControl
             // 
