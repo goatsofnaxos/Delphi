@@ -9,6 +9,7 @@ using System.Reactive.Disposables;
 using System.Reactive;
 using Extensions.Extensions;
 using System.Runtime.CompilerServices;
+using DataSchema;
 
 [Combinator]
 [TypeVisualizer(typeof(DeviceVisualizer))]
@@ -51,7 +52,7 @@ public class DeviceVisualInterface
         });
     }
 
-    public IObservable<HarpMessage> Process(IObservable<HarpMessage> source, IObservable<string> rule, IObservable<string> state, IObservable<int> pokeCount, IObservable<int> odorCount)
+    public IObservable<HarpMessage> Process(IObservable<HarpMessage> source, IObservable<DelphiSession> session, IObservable<string> rule, IObservable<string> state, IObservable<int> pokeCount, IObservable<int> odorCount)
     {
         return Observable.Create<HarpMessage>(observer => {
 
