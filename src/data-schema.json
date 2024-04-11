@@ -86,7 +86,7 @@
                     "type": "string"
                 },
                 "loggingRootPath": {
-                    "description": "The local root foleder to save data for this session",
+                    "description": "The local root folder to save data for this session",
                     "default": "",
                     "type": "string"
                 },
