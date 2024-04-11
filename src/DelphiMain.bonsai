@@ -258,10 +258,10 @@
                       <harp:OperationMode>Standby</harp:OperationMode>
                       <harp:OperationLed>On</harp:OperationLed>
                       <harp:DumpRegisters>false</harp:DumpRegisters>
-                      <harp:VisualIndicators>On</harp:VisualIndicators>
+                      <harp:VisualIndicators>Off</harp:VisualIndicators>
                       <harp:Heartbeat>Disabled</harp:Heartbeat>
                       <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                      <harp:PortName>COM6</harp:PortName>
+                      <harp:PortName>COM4</harp:PortName>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="rx:PublishSubject">
@@ -3167,7 +3167,7 @@
               </PropertyMappings>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:LogController.bonsai">
-              <Path>C:\Users\Delphi1983\Delphi\temp_data</Path>
+              <Path>C:\Users\neurogears\Documents\DataTests\temp_data</Path>
               <ChunkSize>1</ChunkSize>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
