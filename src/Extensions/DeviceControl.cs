@@ -61,6 +61,12 @@ namespace Extensions.Extensions
             {
                 pokeCountLabel.Text = e.ToString();
             };
+
+            // Detect odor count change
+            source.OnReceiveOdorCountChange += (sender, e) =>
+            {
+                odorCountLabel.Text = e.ToString();
+            };
         }
 
         // TODO - horrible, there's a better way to do this
@@ -178,6 +184,11 @@ namespace Extensions.Extensions
         }
 
         private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void currentRuleHeaderLabel_Click(object sender, EventArgs e)
         {
 
         }

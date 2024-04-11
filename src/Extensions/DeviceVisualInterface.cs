@@ -18,6 +18,7 @@ public class DeviceVisualInterface
     public event EventHandler<string> OnReceiveRuleChange;
     public event EventHandler<string> OnReceiveStateChange;
     public event EventHandler<int> OnReceivePokeCountChange;
+    public event EventHandler<int> OnReceiveOdorCountChange;
 
     public event EventHandler<HarpMessage> Command;
 
@@ -50,7 +51,7 @@ public class DeviceVisualInterface
         });
     }
 
-    public IObservable<HarpMessage> Process(IObservable<HarpMessage> source, IObservable<string> rule, IObservable<string> state, IObservable<int> pokeCount)
+    public IObservable<HarpMessage> Process(IObservable<HarpMessage> source, IObservable<string> rule, IObservable<string> state, IObservable<int> pokeCount, IObservable<int> odorCount)
     {
         return Observable.Create<HarpMessage>(observer => {
 
@@ -91,6 +92,15 @@ public class DeviceVisualInterface
                 observer.OnCompleted
             );
 
+            var odorCountObserver = Observer.Create<int>(
+                message =>
+                {
+                    OnReceiveOdorCountChange.Invoke(this, message);
+                },
+                observer.OnError,
+                observer.OnCompleted
+            );
+
             var outputObservable = Observable.FromEventPattern<HarpMessage>(
                 handler => Command += handler,
                 handler => Command -= handler
@@ -101,7 +111,8 @@ public class DeviceVisualInterface
                 source.SubscribeSafe(sourceObserver),
                 rule.SubscribeSafe(ruleObserver),
                 state.SubscribeSafe(stateObserver),
-                pokeCount.SubscribeSafe(pokeCountObserver)
+                pokeCount.SubscribeSafe(pokeCountObserver),
+                odorCount.SubscribeSafe(odorCountObserver)
             );
         });
     }

@@ -480,6 +480,7 @@
             this.currentRuleHeaderLabel.Size = new System.Drawing.Size(63, 24);
             this.currentRuleHeaderLabel.TabIndex = 0;
             this.currentRuleHeaderLabel.Text = "current rule:";
+            this.currentRuleHeaderLabel.Click += new System.EventHandler(this.currentRuleHeaderLabel_Click);
             // 
             // currentStateHeaderLabel
             // 
