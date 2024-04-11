@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Harp.OutputExpander;
+using DataSchema;
 
 namespace Extensions.Extensions
 {
@@ -20,10 +21,26 @@ namespace Extensions.Extensions
         DigitalOutputs DigitalOutputState = DigitalOutputs.None;
         AuxiliaryInputs AuxiliaryInputState = AuxiliaryInputs.None;
 
+        Label[] lineLabels;
+
         public DeviceControl(DeviceVisualInterface source)
         {
             Source = source;
             InitializeComponent();
+
+            lineLabels = new Label[10]
+            {
+                lineLabel0,
+                lineLabel1,
+                lineLabel2,
+                lineLabel3,
+                lineLabel4,
+                lineLabel5,
+                lineLabel6,
+                lineLabel7,
+                lineLabel8,
+                lineLabel9,
+            };
 
             source.OnReceiveHarpMessage += (sender, e) => {
                 // Detect changes to output state
@@ -44,6 +61,13 @@ namespace Extensions.Extensions
                 }
             };
 
+            // Detect session change
+            source.OnReceiveSessionChange += (sender, e) =>
+            {
+                ClearLineLabels();
+                UpdateLineLabels(e);
+            };
+
             // Detect session rule change
             source.OnReceiveRuleChange += (sender, e) =>
             {
@@ -61,6 +85,32 @@ namespace Extensions.Extensions
             {
                 pokeCountLabel.Text = e.ToString();
             };
+
+            // Detect odor count change
+            source.OnReceiveStimCountChange += (sender, e) =>
+            {
+                odorCountLabel.Text = e.ToString();
+            };
+        }
+
+        private void ClearLineLabels()
+        {
+            for (int i = 0; i < lineLabels.Length; i++)
+            {
+                //lineLabels[i].Text = String.Format("line{0}", i.ToString());
+                lineLabels[i].Text = "";
+            }
+        }
+
+        private void UpdateLineLabels(DelphiSession session) {
+            var lineMappings = session.LineMappings;
+
+            foreach (LineMapping mapping in lineMappings.OdorMap) {
+                lineLabels[mapping.Line].Text = mapping.Name;
+            }
+
+            lineLabels[lineMappings.PortLine].Text = "Port";
+            lineLabels[lineMappings.VacuumLine].Text = "Vacuum";
         }
 
         // TODO - horrible, there's a better way to do this
@@ -84,7 +134,7 @@ namespace Extensions.Extensions
 
         private void DeviceControl_Load(object sender, EventArgs e)
         {
-
+            //ClearLineLabels();
         }
 
         private void testLabel_Click(object sender, EventArgs e)
@@ -173,6 +223,16 @@ namespace Extensions.Extensions
         }
 
         private void setAuxInput1Button_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void currentRuleHeaderLabel_Click(object sender, EventArgs e)
         {
 
         }

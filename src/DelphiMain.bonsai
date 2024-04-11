@@ -332,7 +332,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorD</Value>
+                            <Value>OdorA</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
@@ -443,6 +443,27 @@
                         <Edge From="20" To="21" Label="Source1" />
                       </Edges>
                     </Workflow>
+                  </Expression>
+                  <Expression xsi:type="rx:Condition">
+                    <Name>OpenCommand</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="MemberSelector">
+                          <Selector>State</Selector>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="rx:BehaviorSubject">
+                    <Name>LineOnsets</Name>
                   </Expression>
                   <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Boolean">
                     <rx:Name>CurrentPokeState</rx:Name>
@@ -724,6 +745,23 @@
                       </Edges>
                     </Workflow>
                   </Expression>
+                  <Expression xsi:type="rx:Condition">
+                    <Name>OpenCommand</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="rx:BehaviorSubject">
+                    <Name>PortOnsets</Name>
+                  </Expression>
                   <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Boolean">
                     <rx:Name>VacuumValveCommand</rx:Name>
                   </Expression>
@@ -857,23 +895,27 @@
                   <Edge From="15" To="16" Label="Source1" />
                   <Edge From="17" To="18" Label="Source1" />
                   <Edge From="18" To="19" Label="Source1" />
-                  <Edge From="21" To="22" Label="Source1" />
-                  <Edge From="22" To="27" Label="Source1" />
+                  <Edge From="18" To="20" Label="Source1" />
+                  <Edge From="20" To="21" Label="Source1" />
                   <Edge From="23" To="24" Label="Source1" />
-                  <Edge From="24" To="25" Label="Source1" />
+                  <Edge From="24" To="29" Label="Source1" />
                   <Edge From="25" To="26" Label="Source1" />
-                  <Edge From="26" To="27" Label="Source2" />
+                  <Edge From="26" To="27" Label="Source1" />
                   <Edge From="27" To="28" Label="Source1" />
-                  <Edge From="27" To="32" Label="Source1" />
-                  <Edge From="28" To="29" Label="Source1" />
+                  <Edge From="28" To="29" Label="Source2" />
                   <Edge From="29" To="30" Label="Source1" />
+                  <Edge From="29" To="34" Label="Source1" />
                   <Edge From="30" To="31" Label="Source1" />
+                  <Edge From="31" To="32" Label="Source1" />
                   <Edge From="32" To="33" Label="Source1" />
-                  <Edge From="33" To="34" Label="Source1" />
                   <Edge From="34" To="35" Label="Source1" />
+                  <Edge From="35" To="36" Label="Source1" />
                   <Edge From="36" To="37" Label="Source1" />
                   <Edge From="38" To="39" Label="Source1" />
                   <Edge From="40" To="41" Label="Source1" />
+                  <Edge From="40" To="42" Label="Source1" />
+                  <Edge From="42" To="43" Label="Source1" />
+                  <Edge From="44" To="45" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -3397,9 +3439,11 @@
       </Expression>
       <Expression xsi:type="IncludeWorkflow" Path="Extensions\DelphiVisualizer.bonsai">
         <EventsInSubject>Events</EventsInSubject>
+        <SessionSettingsSubject>SessionSettings</SessionSettingsSubject>
         <RuleSettingsSubject>RuleSettings</RuleSettingsSubject>
         <CurrentStateSubject>CurrentState</CurrentStateSubject>
         <PokeOnsetSubject>PokeOnset</PokeOnsetSubject>
+        <StimOnsetSubject>PortOnsets</StimOnsetSubject>
         <EventsOutSubject>Commands</EventsOutSubject>
       </Expression>
       <Expression xsi:type="VisualizerMapping" />
