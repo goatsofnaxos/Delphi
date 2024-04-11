@@ -32,8 +32,8 @@
         <Y>4</Y>
       </Location>
       <Size>
-        <Width>1019</Width>
-        <Height>699</Height>
+        <Width>1979</Width>
+        <Height>1284</Height>
       </Size>
       <WindowState>Normal</WindowState>
     </EditorDialogSettings>
@@ -382,8 +382,8 @@
         <Y>4</Y>
       </Location>
       <Size>
-        <Width>1019</Width>
-        <Height>699</Height>
+        <Width>1979</Width>
+        <Height>1284</Height>
       </Size>
       <WindowState>Normal</WindowState>
     </EditorDialogSettings>
@@ -406,8 +406,8 @@
             <Y>4</Y>
           </Location>
           <Size>
-            <Width>1019</Width>
-            <Height>699</Height>
+            <Width>1979</Width>
+            <Height>1284</Height>
           </Size>
           <WindowState>Normal</WindowState>
         </EditorDialogSettings>
@@ -960,12 +960,24 @@
             <Y>4</Y>
           </Location>
           <Size>
-            <Width>1019</Width>
-            <Height>699</Height>
+            <Width>1979</Width>
+            <Height>1284</Height>
           </Size>
           <WindowState>Normal</WindowState>
         </EditorDialogSettings>
         <EditorVisualizerLayout>
+          <DialogSettings>
+            <Visible>false</Visible>
+            <Location>
+              <X>0</X>
+              <Y>0</Y>
+            </Location>
+            <Size>
+              <Width>0</Width>
+              <Height>0</Height>
+            </Size>
+            <WindowState>Normal</WindowState>
+          </DialogSettings>
           <DialogSettings>
             <Visible>false</Visible>
             <Location>
@@ -1104,8 +1116,8 @@
                 <Y>4</Y>
               </Location>
               <Size>
-                <Width>1019</Width>
-                <Height>699</Height>
+                <Width>1979</Width>
+                <Height>1284</Height>
               </Size>
               <WindowState>Normal</WindowState>
             </EditorDialogSettings>
@@ -1384,8 +1396,8 @@
             <Y>4</Y>
           </Location>
           <Size>
-            <Width>1019</Width>
-            <Height>699</Height>
+            <Width>1979</Width>
+            <Height>1284</Height>
           </Size>
           <WindowState>Normal</WindowState>
         </EditorDialogSettings>
@@ -1468,8 +1480,8 @@
                 <Y>4</Y>
               </Location>
               <Size>
-                <Width>1019</Width>
-                <Height>699</Height>
+                <Width>1979</Width>
+                <Height>1284</Height>
               </Size>
               <WindowState>Normal</WindowState>
             </EditorDialogSettings>
@@ -1638,8 +1650,8 @@
                 <Y>4</Y>
               </Location>
               <Size>
-                <Width>1019</Width>
-                <Height>699</Height>
+                <Width>1979</Width>
+                <Height>1284</Height>
               </Size>
               <WindowState>Normal</WindowState>
             </EditorDialogSettings>
@@ -2040,8 +2052,8 @@
         <Y>4</Y>
       </Location>
       <Size>
-        <Width>1019</Width>
-        <Height>699</Height>
+        <Width>1979</Width>
+        <Height>1284</Height>
       </Size>
       <WindowState>Normal</WindowState>
     </EditorDialogSettings>
@@ -2100,8 +2112,8 @@
             <Y>4</Y>
           </Location>
           <Size>
-            <Width>1019</Width>
-            <Height>699</Height>
+            <Width>1979</Width>
+            <Height>1284</Height>
           </Size>
           <WindowState>Normal</WindowState>
         </EditorDialogSettings>
@@ -2827,10 +2839,6 @@
           <Height>276</Height>
         </Size>
         <WindowState>Normal</WindowState>
-        <VisualizerTypeName>Bonsai.Vision.Design.IplImageVisualizer</VisualizerTypeName>
-        <VisualizerSettings>
-          <IplImageVisualizer />
-        </VisualizerSettings>
       </DialogSettings>
     </EditorVisualizerLayout>
   </DialogSettings>
@@ -2845,10 +2853,6 @@
       <Height>331</Height>
     </Size>
     <WindowState>Normal</WindowState>
-    <VisualizerTypeName>Extensions.Extensions.DeviceVisualizer</VisualizerTypeName>
-    <VisualizerSettings>
-      <DeviceVisualizer />
-    </VisualizerSettings>
   </DialogSettings>
   <DialogSettings>
     <Visible>false</Visible>
@@ -2901,8 +2905,8 @@
   <DialogSettings>
     <Visible>true</Visible>
     <Location>
-      <X>267</X>
-      <Y>173</Y>
+      <X>-1279</X>
+      <Y>472</Y>
     </Location>
     <Size>
       <Width>786</Width>
@@ -2959,8 +2963,8 @@
         <Y>4</Y>
       </Location>
       <Size>
-        <Width>1019</Width>
-        <Height>699</Height>
+        <Width>1979</Width>
+        <Height>1284</Height>
       </Size>
       <WindowState>Normal</WindowState>
     </EditorDialogSettings>
