@@ -332,7 +332,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorA</Value>
+                            <Value>OdorD</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
@@ -943,7 +943,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorB</Value>
+                            <Value>OdorA</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -979,7 +979,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p2:TryGetValueOrDefault">
-                            <p2:Key>OdorB</p2:Key>
+                            <p2:Key>OdorA</p2:Key>
                             <p2:DefaultString>DefaultState</p2:DefaultString>
                           </Combinator>
                         </Expression>
