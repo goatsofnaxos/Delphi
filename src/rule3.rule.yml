@@ -5,5 +5,13 @@
 ruleAlias: Rule3
 
 stateDefinitions:
-  -   {name: "OdorA", transitionsTo: "OdorA"}
+  -   {name: "OdorA", transitionsTo: "OdorA2"}
+  -   {name: "OdorA2", transitionsTo: "OdorB"}
+  -   {name: "OdorB", transitionsTo: "OdorB2"}
+  -   {name: "OdorB2", transitionsTo: "OdorC"}
+  -   {name: "OdorC", transitionsTo: "OdorC2"}
+  -   {name: "OdorC2", transitionsTo: "OdorB3"}
+  -   {name: "OdorB3", transitionsTo: "OdorD"}
+  -   {name: "OdorD", transitionsTo: "OdorE"}
+  -   {name: "OdorE", transitionsTo: "OdorA"}
   -   {name: "DefaultState", transitionsTo: "OdorA"}
