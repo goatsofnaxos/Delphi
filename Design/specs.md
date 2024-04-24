@@ -22,7 +22,7 @@
 		- Clicking the circle (poke IR beam state) simulates a beam break in software, again, with same color convention as for squares/triangle
 		- *Assign each odor valve to number keys on keyboard (e.g. valve 1 = key 1, valve 2 = key 2,...) so we can turn it on and off with the keys. Same with port valve (key "p" would control the on/off stage of the port valve)
 - Video
-	- 100 Hz frame rate
+	- 60 Hz frame rate
 	- Realtime display at any frame rate >= 20Hz
 	- ROI (which pixels actually streamed to disk) drawn over video window
 	- Buffering the 100 Hz stream and save frames conditional on beam breaks (real or simulated)
