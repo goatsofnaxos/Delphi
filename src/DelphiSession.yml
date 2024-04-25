@@ -4,7 +4,8 @@
 
 metadata:
   animalId: plimbo
-  loggingRootPath: C:\Users\Delphi1983\DELETE
+  loggingRootPath: C:\Users\Delphi1983\Delphi\temp_data
+  remoteTransferRootPath: Z:\remote_data
   chargeTime: 0.2
   minimumPokeTime: 0.01
   maximumPokeTime: 10

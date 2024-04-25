@@ -24,6 +24,9 @@ The following need to be installed once on a fresh new system in order to bootst
 
  Now navigate into Delphi/.bonsai and run the `Setup.ps1` script (on Windows right-click > Run with powershell). Once all dependencies have been restored Bonsai can be launched in a local environment from the `.exe` in this folder.
 
+ ### Setting up the Python environment
+ A local Python environment is used within the Delphi workflow for certain subprocesses (e.g. robocopy of data). This is separate to the Python environment used for postprocessing and data analysis. To activate this environment after cloning the repo, navigate to Delphi/.python and run the `setup.ps1` script (on Windows right-click > Run with powershell).
+
  ### Session Settings
  Experiment parameters are based on two data schemas `data-schema` and `rule-schema`. `data-schema` defines global experiment parameters such as animal ID information, logging paths, odor delivery times etc. `rule-schema` defines the experiment state machine with rules for how different states transition to each other. Implementations of these schemas are defined in `.yml` files provided by the user that are then loaded in Bonsai to set up experiment parameters.
 
@@ -104,6 +107,14 @@ It is important to always define a DefaultState transition rule, as this is the 
 
 ### Running an experiment
 To run an experiment, run the Bonsai application from the local environment and open DelphiMain.bonsai. Use the property grid to select the desired experiment parameter file and starting rule file. If the rule file is changed while the experiment is running, Bonsai will attempt to find a transition from its current state in the new rule file. If no transition is defined for that state in the new rule, or any of the states no longer exist in the new rule - Bonsai will transition to the default state.
+
+### Data transfer
+The main Delphi workflow periodically copies logged data with [Robocopy](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/robocopy) to a new data location (can be a local or remote destination). The parameters for this transfer are set via the schema .yml:
+  - `loggingRootPath`: where data is immediately logged
+  - `remoteTransferRootPath`: where data should be transferred
+  - `robocopyTimeInterval`: the time interval (in seconds) that Robocopy should be activated.
+
+Note also that exiting the workflow process with the exit trigger key will initiate Robocopy.
 
 ### Analysis Prerequisites
 
