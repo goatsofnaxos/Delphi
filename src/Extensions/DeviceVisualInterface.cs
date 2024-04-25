@@ -9,15 +9,18 @@ using System.Reactive.Disposables;
 using System.Reactive;
 using Extensions.Extensions;
 using System.Runtime.CompilerServices;
+using DataSchema;
 
 [Combinator]
 [TypeVisualizer(typeof(DeviceVisualizer))]
 public class DeviceVisualInterface
 {
     public event EventHandler<HarpMessage> OnReceiveHarpMessage;
+    public event EventHandler<DelphiSession> OnReceiveSessionChange;
     public event EventHandler<string> OnReceiveRuleChange;
     public event EventHandler<string> OnReceiveStateChange;
     public event EventHandler<int> OnReceivePokeCountChange;
+    public event EventHandler<int> OnReceiveStimCountChange;
 
     public event EventHandler<HarpMessage> Command;
 
@@ -50,7 +53,7 @@ public class DeviceVisualInterface
         });
     }
 
-    public IObservable<HarpMessage> Process(IObservable<HarpMessage> source, IObservable<string> rule, IObservable<string> state, IObservable<int> pokeCount)
+    public IObservable<HarpMessage> Process(IObservable<HarpMessage> source, IObservable<DelphiSession> session, IObservable<string> rule, IObservable<string> state, IObservable<int> pokeCount, IObservable<int> stimCount)
     {
         return Observable.Create<HarpMessage>(observer => {
 
@@ -64,6 +67,15 @@ public class DeviceVisualInterface
             );
 
             // TODO - all these observers should probably be replaced by a single RuleState/poke observer, could have this as a data class in the schema
+            var sessionObserver = Observer.Create<DelphiSession>(   
+                message =>
+                {
+                    OnReceiveSessionChange.Invoke(this, message);
+                },
+                observer.OnError,
+                () => { }
+            );
+
             var ruleObserver = Observer.Create<string>(
                 message =>
                 {
@@ -91,6 +103,15 @@ public class DeviceVisualInterface
                 observer.OnCompleted
             );
 
+            var stimCountObserver = Observer.Create<int>(
+                message =>
+                {
+                    OnReceiveStimCountChange.Invoke(this, message);
+                },
+                observer.OnError,
+                observer.OnCompleted
+            );
+
             var outputObservable = Observable.FromEventPattern<HarpMessage>(
                 handler => Command += handler,
                 handler => Command -= handler
@@ -101,7 +122,9 @@ public class DeviceVisualInterface
                 source.SubscribeSafe(sourceObserver),
                 rule.SubscribeSafe(ruleObserver),
                 state.SubscribeSafe(stateObserver),
-                pokeCount.SubscribeSafe(pokeCountObserver)
+                pokeCount.SubscribeSafe(pokeCountObserver),
+                stimCount.SubscribeSafe(stimCountObserver),
+                session.SubscribeSafe(sessionObserver)
             );
         });
     }

@@ -7,7 +7,7 @@ metadata:
   loggingRootPath: C:\Users\Delphi1983\Delphi\temp_data
   remoteTransferRootPath: Z:\remote_data
   chargeTime: 0.2
-  minimumPokeTime: 0.1
+  minimumPokeTime: 0.01
   maximumPokeTime: 10
   robocopyTimeInterval: 3600
   maxVideoLength: 20
@@ -15,27 +15,31 @@ metadata:
   maxOdorDelivery: 8
   switchTime1: 0.01
   switchTime2: 0.02
-  useVacuum: true
+  useVacuum: false
   vacuumDelay: 0.005
   vacuumDuration: 0.05
 
 cameraProperties:
   imagingRate: 60
   exposureTime: 10000
-  serialNumber: "23604581"
+  serialNumber: "23492582"
   preEventTime: 2.5
   postEventTime: 2.5
 
 harpProperties:
-  comPort: COM6
+  comPort: COM8
   showHarpLeds: false
 
 lineMappings:
   odorMap:
     -   {name: "OdorA", line: 6}
+    -   {name: "OdorA2", line: 6}
     -   {name: "OdorB", line: 7}
+    -   {name: "OdorB2", line: 7}
+    -   {name: "OdorB3", line: 7}
     -   {name: "OdorC", line: 8}
-    -   {name: "OdorD", line: 9}
+    -   {name: "OdorC2", line: 8}
+
   portLine: 0
   vacuumLine: 2
   auxLine: 0

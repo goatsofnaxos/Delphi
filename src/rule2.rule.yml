@@ -5,7 +5,7 @@
 ruleAlias: Rule2
 
 stateDefinitions:
-  -   {name: "OdorA", transitionsTo: "OdorB"}
-  -   {name: "OdorB", transitionsTo: "OdorA"}
+  -   {name: "OdorA", transitionsTo: "OdorA2"}
+  -   {name: "OdorA2", transitionsTo: "OdorC"}
   -   {name: "OdorC", transitionsTo: "OdorA"}
   -   {name: "DefaultState", transitionsTo: "OdorA"}

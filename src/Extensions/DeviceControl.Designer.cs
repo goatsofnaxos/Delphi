@@ -55,6 +55,8 @@
             this.auxInState1 = new System.Windows.Forms.RadioButton();
             this.setAuxInput0Button = new System.Windows.Forms.Button();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.odorCountHeaderLabel = new System.Windows.Forms.Label();
+            this.odorCountLabel = new System.Windows.Forms.Label();
             this.pokeCountLabel = new System.Windows.Forms.Label();
             this.pokeCountHeaderLabel = new System.Windows.Forms.Label();
             this.currentStateLabel = new System.Windows.Forms.Label();
@@ -102,7 +104,7 @@
             this.tableLayoutPanel1.Controls.Add(this.lineButton7, 7, 1);
             this.tableLayoutPanel1.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(16, 19);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -113,7 +115,7 @@
             // lineButton9
             // 
             this.lineButton9.Location = new System.Drawing.Point(308, 42);
-            this.lineButton9.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lineButton9.Margin = new System.Windows.Forms.Padding(2);
             this.lineButton9.Name = "lineButton9";
             this.lineButton9.Size = new System.Drawing.Size(29, 19);
             this.lineButton9.TabIndex = 18;
@@ -123,7 +125,7 @@
             // lineButton8
             // 
             this.lineButton8.Location = new System.Drawing.Point(274, 42);
-            this.lineButton8.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lineButton8.Margin = new System.Windows.Forms.Padding(2);
             this.lineButton8.Name = "lineButton8";
             this.lineButton8.Size = new System.Drawing.Size(29, 19);
             this.lineButton8.TabIndex = 17;
@@ -244,7 +246,7 @@
             // 
             this.lineButton0.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.lineButton0.Location = new System.Drawing.Point(2, 42);
-            this.lineButton0.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lineButton0.Margin = new System.Windows.Forms.Padding(2);
             this.lineButton0.Name = "lineButton0";
             this.lineButton0.Size = new System.Drawing.Size(29, 19);
             this.lineButton0.TabIndex = 0;
@@ -254,7 +256,7 @@
             // lineButton1
             // 
             this.lineButton1.Location = new System.Drawing.Point(36, 42);
-            this.lineButton1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lineButton1.Margin = new System.Windows.Forms.Padding(2);
             this.lineButton1.Name = "lineButton1";
             this.lineButton1.Size = new System.Drawing.Size(29, 19);
             this.lineButton1.TabIndex = 1;
@@ -264,7 +266,7 @@
             // lineButton2
             // 
             this.lineButton2.Location = new System.Drawing.Point(70, 42);
-            this.lineButton2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lineButton2.Margin = new System.Windows.Forms.Padding(2);
             this.lineButton2.Name = "lineButton2";
             this.lineButton2.Size = new System.Drawing.Size(29, 19);
             this.lineButton2.TabIndex = 2;
@@ -274,7 +276,7 @@
             // lineButton3
             // 
             this.lineButton3.Location = new System.Drawing.Point(104, 42);
-            this.lineButton3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lineButton3.Margin = new System.Windows.Forms.Padding(2);
             this.lineButton3.Name = "lineButton3";
             this.lineButton3.Size = new System.Drawing.Size(29, 19);
             this.lineButton3.TabIndex = 3;
@@ -284,7 +286,7 @@
             // lineButton4
             // 
             this.lineButton4.Location = new System.Drawing.Point(138, 42);
-            this.lineButton4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lineButton4.Margin = new System.Windows.Forms.Padding(2);
             this.lineButton4.Name = "lineButton4";
             this.lineButton4.Size = new System.Drawing.Size(29, 19);
             this.lineButton4.TabIndex = 4;
@@ -294,7 +296,7 @@
             // lineButton5
             // 
             this.lineButton5.Location = new System.Drawing.Point(172, 42);
-            this.lineButton5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lineButton5.Margin = new System.Windows.Forms.Padding(2);
             this.lineButton5.Name = "lineButton5";
             this.lineButton5.Size = new System.Drawing.Size(29, 19);
             this.lineButton5.TabIndex = 5;
@@ -304,7 +306,7 @@
             // lineButton6
             // 
             this.lineButton6.Location = new System.Drawing.Point(206, 42);
-            this.lineButton6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lineButton6.Margin = new System.Windows.Forms.Padding(2);
             this.lineButton6.Name = "lineButton6";
             this.lineButton6.Size = new System.Drawing.Size(29, 19);
             this.lineButton6.TabIndex = 6;
@@ -314,7 +316,7 @@
             // lineButton7
             // 
             this.lineButton7.Location = new System.Drawing.Point(240, 42);
-            this.lineButton7.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lineButton7.Margin = new System.Windows.Forms.Padding(2);
             this.lineButton7.Name = "lineButton7";
             this.lineButton7.Size = new System.Drawing.Size(29, 19);
             this.lineButton7.TabIndex = 7;
@@ -331,7 +333,7 @@
             this.setAuxInputButton0.Controls.Add(this.auxInState1, 1, 1);
             this.setAuxInputButton0.Controls.Add(this.setAuxInput0Button, 0, 0);
             this.setAuxInputButton0.Location = new System.Drawing.Point(16, 118);
-            this.setAuxInputButton0.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.setAuxInputButton0.Margin = new System.Windows.Forms.Padding(2);
             this.setAuxInputButton0.Name = "setAuxInputButton0";
             this.setAuxInputButton0.RowCount = 2;
             this.setAuxInputButton0.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -344,7 +346,7 @@
             // 
             this.setAuxInput1Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.setAuxInput1Button.Location = new System.Drawing.Point(227, 2);
-            this.setAuxInput1Button.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.setAuxInput1Button.Margin = new System.Windows.Forms.Padding(2);
             this.setAuxInput1Button.Name = "setAuxInput1Button";
             this.setAuxInput1Button.Size = new System.Drawing.Size(56, 22);
             this.setAuxInput1Button.TabIndex = 3;
@@ -358,7 +360,7 @@
             this.auxInState0.AutoSize = true;
             this.auxInState0.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.auxInState0.Location = new System.Drawing.Point(41, 28);
-            this.auxInState0.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.auxInState0.Margin = new System.Windows.Forms.Padding(2);
             this.auxInState0.Name = "auxInState0";
             this.auxInState0.Size = new System.Drawing.Size(88, 22);
             this.auxInState0.TabIndex = 0;
@@ -374,7 +376,7 @@
             this.auxInState1.AutoSize = true;
             this.auxInState1.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.auxInState1.Location = new System.Drawing.Point(211, 28);
-            this.auxInState1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.auxInState1.Margin = new System.Windows.Forms.Padding(2);
             this.auxInState1.Name = "auxInState1";
             this.auxInState1.Size = new System.Drawing.Size(88, 22);
             this.auxInState1.TabIndex = 1;
@@ -387,7 +389,7 @@
             // 
             this.setAuxInput0Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.setAuxInput0Button.Location = new System.Drawing.Point(57, 2);
-            this.setAuxInput0Button.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.setAuxInput0Button.Margin = new System.Windows.Forms.Padding(2);
             this.setAuxInput0Button.Name = "setAuxInput0Button";
             this.setAuxInput0Button.Size = new System.Drawing.Size(56, 22);
             this.setAuxInput0Button.TabIndex = 2;
@@ -399,6 +401,8 @@
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Controls.Add(this.odorCountHeaderLabel, 0, 3);
+            this.tableLayoutPanel2.Controls.Add(this.odorCountLabel, 0, 3);
             this.tableLayoutPanel2.Controls.Add(this.pokeCountLabel, 1, 2);
             this.tableLayoutPanel2.Controls.Add(this.pokeCountHeaderLabel, 0, 2);
             this.tableLayoutPanel2.Controls.Add(this.currentStateLabel, 1, 1);
@@ -406,21 +410,47 @@
             this.tableLayoutPanel2.Controls.Add(this.currentRuleHeaderLabel, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.currentStateHeaderLabel, 0, 1);
             this.tableLayoutPanel2.Location = new System.Drawing.Point(16, 196);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 3;
+            this.tableLayoutPanel2.RowCount = 4;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(340, 56);
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(340, 84);
             this.tableLayoutPanel2.TabIndex = 4;
+            this.tableLayoutPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel2_Paint);
+            // 
+            // odorCountHeaderLabel
+            // 
+            this.odorCountHeaderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.odorCountHeaderLabel.AutoSize = true;
+            this.odorCountHeaderLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.odorCountHeaderLabel.Location = new System.Drawing.Point(48, 64);
+            this.odorCountHeaderLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.odorCountHeaderLabel.Name = "odorCountHeaderLabel";
+            this.odorCountHeaderLabel.Size = new System.Drawing.Size(74, 20);
+            this.odorCountHeaderLabel.TabIndex = 7;
+            this.odorCountHeaderLabel.Text = "stimulus count";
+            // 
+            // odorCountLabel
+            // 
+            this.odorCountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.odorCountLabel.AutoSize = true;
+            this.odorCountLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.odorCountLabel.Location = new System.Drawing.Point(250, 64);
+            this.odorCountLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.odorCountLabel.Name = "odorCountLabel";
+            this.odorCountLabel.Size = new System.Drawing.Size(10, 20);
+            this.odorCountLabel.TabIndex = 6;
+            this.odorCountLabel.Text = ".";
             // 
             // pokeCountLabel
             // 
             this.pokeCountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.pokeCountLabel.AutoSize = true;
             this.pokeCountLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.pokeCountLabel.Location = new System.Drawing.Point(250, 40);
+            this.pokeCountLabel.Location = new System.Drawing.Point(250, 48);
             this.pokeCountLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.pokeCountLabel.Name = "pokeCountLabel";
             this.pokeCountLabel.Size = new System.Drawing.Size(10, 16);
@@ -432,7 +462,7 @@
             this.pokeCountHeaderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.pokeCountHeaderLabel.AutoSize = true;
             this.pokeCountHeaderLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.pokeCountHeaderLabel.Location = new System.Drawing.Point(53, 40);
+            this.pokeCountHeaderLabel.Location = new System.Drawing.Point(53, 48);
             this.pokeCountHeaderLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.pokeCountHeaderLabel.Name = "pokeCountHeaderLabel";
             this.pokeCountHeaderLabel.Size = new System.Drawing.Size(64, 16);
@@ -444,10 +474,10 @@
             this.currentStateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.currentStateLabel.AutoSize = true;
             this.currentStateLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.currentStateLabel.Location = new System.Drawing.Point(250, 20);
+            this.currentStateLabel.Location = new System.Drawing.Point(250, 24);
             this.currentStateLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.currentStateLabel.Name = "currentStateLabel";
-            this.currentStateLabel.Size = new System.Drawing.Size(10, 20);
+            this.currentStateLabel.Size = new System.Drawing.Size(10, 24);
             this.currentStateLabel.TabIndex = 3;
             this.currentStateLabel.Text = ".";
             // 
@@ -459,7 +489,7 @@
             this.currentRuleLabel.Location = new System.Drawing.Point(250, 0);
             this.currentRuleLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.currentRuleLabel.Name = "currentRuleLabel";
-            this.currentRuleLabel.Size = new System.Drawing.Size(10, 20);
+            this.currentRuleLabel.Size = new System.Drawing.Size(10, 24);
             this.currentRuleLabel.TabIndex = 2;
             this.currentRuleLabel.Text = ".";
             // 
@@ -471,19 +501,20 @@
             this.currentRuleHeaderLabel.Location = new System.Drawing.Point(53, 0);
             this.currentRuleHeaderLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.currentRuleHeaderLabel.Name = "currentRuleHeaderLabel";
-            this.currentRuleHeaderLabel.Size = new System.Drawing.Size(63, 20);
+            this.currentRuleHeaderLabel.Size = new System.Drawing.Size(63, 24);
             this.currentRuleHeaderLabel.TabIndex = 0;
             this.currentRuleHeaderLabel.Text = "current rule:";
+            this.currentRuleHeaderLabel.Click += new System.EventHandler(this.currentRuleHeaderLabel_Click);
             // 
             // currentStateHeaderLabel
             // 
             this.currentStateHeaderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.currentStateHeaderLabel.AutoSize = true;
             this.currentStateHeaderLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.currentStateHeaderLabel.Location = new System.Drawing.Point(50, 20);
+            this.currentStateHeaderLabel.Location = new System.Drawing.Point(50, 24);
             this.currentStateHeaderLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.currentStateHeaderLabel.Name = "currentStateHeaderLabel";
-            this.currentStateHeaderLabel.Size = new System.Drawing.Size(69, 20);
+            this.currentStateHeaderLabel.Size = new System.Drawing.Size(69, 24);
             this.currentStateHeaderLabel.TabIndex = 1;
             this.currentStateHeaderLabel.Text = "current state:";
             // 
@@ -496,9 +527,9 @@
             this.Controls.Add(this.setAuxInputButton0);
             this.Controls.Add(this.tableLayoutPanel1);
             this.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "DeviceControl";
-            this.Size = new System.Drawing.Size(376, 287);
+            this.Size = new System.Drawing.Size(376, 311);
             this.Load += new System.EventHandler(this.DeviceControl_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
@@ -544,5 +575,7 @@
         private System.Windows.Forms.Label currentRuleLabel;
         private System.Windows.Forms.Label pokeCountLabel;
         private System.Windows.Forms.Label pokeCountHeaderLabel;
+        private System.Windows.Forms.Label odorCountHeaderLabel;
+        private System.Windows.Forms.Label odorCountLabel;
     }
 }
