@@ -2,6 +2,8 @@
 
 Delphi workflow
 
+![](https://github.com/goatsofnaxos/Checklists/blob/main/box_green.png)
+
 ### Acquisition Prerequisites
 
 The following need to be installed once on a fresh new system in order to bootstrap the Bonsai environment correctly:
