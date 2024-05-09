@@ -2,7 +2,7 @@
 
 Delphi workflow
 
-![](https://github.com/goatsofnaxos/Checklists/blob/main/box_green.png)
+![](https://github.com/goatsofnaxos/Delphi/blob/main/orestes-apollo-delphi.png)
 
 ### Acquisition Prerequisites
 
