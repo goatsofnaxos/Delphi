@@ -167,30 +167,32 @@
 **WIRING DIAGRAM (Without Vacuum)**
 
 ```mermaid
-graph TD
-    A[Nitrogen Tank] --> B[Flow Regulator 1]
-    AA{Computer} -.-> BB{Harp Expander}
-    BB -.OUT1 > USB 3.-> CC{Blackfly Camera}
-    BB -.OUT0.-> DD{CoolDrive}
-    EE{12 VDC} -.-> Y{Harp Passive Controller}
-    EE -.-> DD
-    DD -.-> E
-    BB -.OUT 2,3,4 > IN 1,2,3.-> Y
-    Y -.VALVE SA-SH > OUT 1-8.-> Q
-    A --> C[Flow Regulator 2]
-    C --> E[Port/Final Valve]
-    B --> D[Nitrogen Manifold]
-    D --> F[Odour Bottle 1-8]
-    F --> Q[Valve 1-8]
-    Q --> N[Odour Manifold]
-    N --> O(Exhaust)
-    N --> E
-    E --> P[Harp Poke]
-    E --> O
-    FF -.IN0 > DI, GND > GND, +5V > +5V.-> GG{Harp Poke Breakout}
+flowchart TD
+    A["Nitrogen Tank 1"] --> B["Flow Regulator 1"]
+    HH["Nitrogen Tank 2"] --> C["Flow Regulator 2"]
+    AA{"Computer"} -.-> BB{"Harp Output Expander Box"}
+    BB -. OUT1 > Blackfly USB 3 .-> CC{"Blackfly Camera"}
+    BB -. OUT0 > Cooldrive .-> DD{"CoolDrive"}
+    EE{"12 VDC Power Source"} -.-> Y{"Harp Passive Controller"} & DD
+    DD -.-> E["Port/Final Valve"]
+    BB -. OUT 2,3,4 > IN 1,2,3 .-> Y
+    Y -. OUT 1-8 > VALVE SA-SH .-> Q["Lee Valve 1-8"]
+    C --> E
+    B --> D["8-way Manifold"]
+    D --> F["Odour Bottle 1-8"]
+    F --> Q
+    Q --> N["Odour Manifold"]
+    N --> O("Exhaust") & E
+    E --> P["Harp Poke"] & O
+    FF{"Harp Expander Breakout"} -. IN0 > DI, GND > GND, +5V > +5V .-> GG{"Harp Poke Breakout"}
     GG -.-> P
-    BB <-.-> FF{Harp Expander Breakout}
-    FF -.OUT 5,6,7,8,9 > IN 4,5,6,7,8.->Y
+    BB <-.-> FF
+    FF -. OUT 5,6,7,8,9 > IN 4,5,6,7,8 .-> Y
+    style BB fill:#000000,color:#FFFFFF
+    style DD fill:#FFCDD2
+    style Y fill:#C8E6C9
+    style FF fill:#000000,color:#FFFFFF
+    style GG stroke:#C8E6C9,fill:#C8E6C9
 ```
 
 **WIRING DIAGRAM (With Vacuum)**
