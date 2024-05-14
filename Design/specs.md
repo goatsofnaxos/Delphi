@@ -196,34 +196,38 @@ graph TD
 **WIRING DIAGRAM (With Vacuum)**
 
 ```mermaid
-graph TD
-    A[Nitrogen Tank] --> B[Flow Regulator 1]
-    AA{Computer} -.-> BB{Harp Expander}
-    BB -.OUT1 > USB 3.-> CC{Blackfly Camera}
-    BB -.OUT0.-> DD{CoolDrive}
-    EE{12 VDC} -.-> Y{Harp Passive Controller}
-    EE -.-> DD
-    DD -.-> E
-    BB -.OUT 2,3,4 > IN 1,2,3.-> Y
-    Y -.VALVE SB-SH > OUT 1-7.-> Q
-    Y -.VALVE SA > VAC Valve.->HH
-    A --> C[Flow Regulator 2]
-    C --> E[Port/Final Valve]
-    B --> D[Nitrogen Manifold]
-    D --> F[Odour Bottle 1-7]
-    F --> Q[Valve 1-7]
-    Q --> N[Odour Manifold]
-    N --> O(Exhaust)
-    N --> E
-    E --> P[Harp Poke]
-    E --> HH[Vacuum Valve]
-    HH --->|"Loose Seal"| O
-    HH --> KK[Flow Regulator 3]
-    KK --->|"Tight Seal"| II[Exhaust]
-    FF -.IN0 > DI, GND > GND, +5V > +5V.-> GG{Harp Poke Breakout}
+flowchart TD
+    A["Nitrogen Tank 1"] --> B["Flow Regulator 1"]
+    LL["Nitrogen Tank 2"] --> C["Flow Regulator 2"]
+    AA{"Computer"} -.-> BB{"Harp Output Expander Box"}
+    BB -. OUT1 > Blackfly USB3 .-> CC{"Blackfly Camera"}
+    BB -. OUT0 .-> DD{"CoolDrive"}
+    EE{"12 VDC Power Source"} -.-> Y{"Harp Passive Controller"} & DD
+    DD -.-> E["Port/Final Valve"]
+    BB -. OUT 2,3,4 > IN 1,2,3 .-> Y
+    Y -. OUT 2-8 > VALVE SB-SH .-> Q["Lee Valve 1-7"]
+    Y -. OUT 1 > VALVE SA .-> HH["Vacuum Valve"]
+    C -- Air --> E
+    B --> D["8-way Manifold"]
+    D --> F["Odour Bottle 1-7"]
+    F --> Q
+    Q --> N["Odour Manifold"]
+    N --> O("Exhaust")
+    N -- Odour --> E
+    E --> P["Harp Poke"] & HH
+    HH -- Loose Seal ---> O
+    HH --> KK["Flow Regulator 3"]
+    KK -- Tight Seal ---> II["Exhaust"]
+    FF{"Harp Expander Breakout"} -. IN0 > DI, GND > GND, +5V > +5V .-> GG{"Harp Poke Breakout"}
     GG -.-> P
-    BB <-.-> FF{Harp Expander Breakout}
-    FF -.OUT 5,6,7,8,9 > IN 4,5,6,7,8.->Y
+    BB <-.-> FF
+    FF -. OUT 5,6,7,8,9 > IN 4,5,6,7,8 .-> Y
+    style BB fill:#000000,color:#FFFFFF
+    style DD fill:#FFCDD2
+    style Y stroke:none,fill:#C8E6C9
+    style P fill:#C8E6C9
+    style FF color:#FFFFFF,fill:#000000,stroke:#000000
+    style GG stroke:#C8E6C9,fill:#C8E6C9
 ```
 
 **FUTURE**
