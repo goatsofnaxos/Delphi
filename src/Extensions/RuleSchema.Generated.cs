@@ -42,7 +42,11 @@ namespace RuleSchema
             }
         }
     
+        /// <summary>
+        /// Denominator for the probability fraction. Probaility given as 1/this number
+        /// </summary>
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="probability")]
+        [System.ComponentModel.DescriptionAttribute("Denominator for the probability fraction. Probaility given as 1/this number")]
         public double Probability
         {
             get
