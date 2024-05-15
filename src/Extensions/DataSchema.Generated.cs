@@ -615,9 +615,11 @@ namespace DataSchema
     
         private double _switchTime2 = 0.02D;
     
-        private double _vacuumDelay = 0.005D;
+        private double _vacuumDelay = 0.025D;
     
-        private double _vacuumDuration = 0.05D;
+        private double _portValveCycleTime = 0.025D;
+    
+        private double _vacuumDuration = 0.07D;
     
         private bool _useVacuum = true;
     
@@ -640,6 +642,7 @@ namespace DataSchema
             _switchTime1 = other._switchTime1;
             _switchTime2 = other._switchTime2;
             _vacuumDelay = other._vacuumDelay;
+            _portValveCycleTime = other._portValveCycleTime;
             _vacuumDuration = other._vacuumDuration;
             _useVacuum = other._useVacuum;
         }
@@ -658,10 +661,10 @@ namespace DataSchema
         }
     
         /// <summary>
-        /// The local root foleder to save data for this session
+        /// The local root folder to save data for this session
         /// </summary>
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="loggingRootPath")]
-        [System.ComponentModel.DescriptionAttribute("The local root foleder to save data for this session")]
+        [System.ComponentModel.DescriptionAttribute("The local root folder to save data for this session")]
         public string LoggingRootPath
         {
             get
@@ -846,10 +849,10 @@ namespace DataSchema
         }
     
         /// <summary>
-        /// Initial wait time before opening vacuum in seconds
+        /// Initial wait time in seconds before cycling port valve after vacuum initiated
         /// </summary>
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="vacuumDelay")]
-        [System.ComponentModel.DescriptionAttribute("Initial wait time before opening vacuum in seconds")]
+        [System.ComponentModel.DescriptionAttribute("Initial wait time in seconds before cycling port valve after vacuum initiated")]
         public double VacuumDelay
         {
             get
@@ -863,10 +866,27 @@ namespace DataSchema
         }
     
         /// <summary>
-        /// Duration of vacuum in seconds
+        /// Length of port valve cycle in seconds
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="portValveCycleTime")]
+        [System.ComponentModel.DescriptionAttribute("Length of port valve cycle in seconds")]
+        public double PortValveCycleTime
+        {
+            get
+            {
+                return _portValveCycleTime;
+            }
+            set
+            {
+                _portValveCycleTime = value;
+            }
+        }
+    
+        /// <summary>
+        /// Duration of vacuum in seconds after port valve cycle
         /// </summary>
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="vacuumDuration")]
-        [System.ComponentModel.DescriptionAttribute("Duration of vacuum in seconds")]
+        [System.ComponentModel.DescriptionAttribute("Duration of vacuum in seconds after port valve cycle")]
         public double VacuumDuration
         {
             get
@@ -921,6 +941,7 @@ namespace DataSchema
             stringBuilder.Append("switchTime1 = " + _switchTime1 + ", ");
             stringBuilder.Append("switchTime2 = " + _switchTime2 + ", ");
             stringBuilder.Append("vacuumDelay = " + _vacuumDelay + ", ");
+            stringBuilder.Append("portValveCycleTime = " + _portValveCycleTime + ", ");
             stringBuilder.Append("vacuumDuration = " + _vacuumDuration + ", ");
             stringBuilder.Append("useVacuum = " + _useVacuum);
             return true;
