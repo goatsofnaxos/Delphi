@@ -141,13 +141,18 @@
                     "type": "number"
                 },
                 "vacuumDelay": {
-                    "description": "Initial wait time before opening vacuum in seconds",
-                    "default": "0.005",
+                    "description": "Initial wait time in seconds before cycling port valve after vacuum initiated",
+                    "default": "0.025",
+                    "type": "number"
+                },
+                "portValveCycleTime": {
+                    "description": "Length of port valve cycle in seconds",
+                    "default": "0.025",
                     "type": "number"
                 },
                 "vacuumDuration": {
-                    "description": "Duration of vacuum in seconds",
-                    "default": "0.05",
+                    "description": "Duration of vacuum in seconds after port valve cycle",
+                    "default": "0.07",
                     "type": "number"
                 },
                 "useVacuum": {
