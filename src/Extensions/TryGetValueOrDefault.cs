@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using RuleSchema;
 
 [Combinator]
 [Description("")]
@@ -20,6 +21,16 @@ public class TryGetValueOrDefault
             bool contained = value.TryGetValue(Key, out element);
             
             return contained ? element : DefaultString;
+        });
+    }
+
+    public IObservable<string> Process(IObservable<IDictionary<string, List<StateProbability>>> source)
+    {
+        return source.Select(value => {
+            List<StateProbability> element;
+            bool contained = value.TryGetValue(Key, out element);
+            
+            return contained ? Utils.GetRandomState(element) : DefaultString;
         });
     }
 }

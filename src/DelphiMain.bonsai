@@ -29,7 +29,7 @@
         <Name>InitializeSettings</Name>
         <Workflow>
           <Nodes>
-            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="scg:IDictionary(sys:String,sys:String)">
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="scg:IDictionary(sys:String,scg:List(p1:StateProbability))">
               <rx:Name>TransitionLookup</rx:Name>
             </Expression>
             <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:DelphiRule">
@@ -331,7 +331,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorC</Value>
+                            <Value>OdorB</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
@@ -369,7 +369,7 @@
                         <Expression xsi:type="p3:CreateMessage">
                           <harp:MessageType>Write</harp:MessageType>
                           <harp:Payload xsi:type="p3:CreateOutputSetPayload">
-                            <p3:OutputSet>Out8</p3:OutputSet>
+                            <p3:OutputSet>Out7</p3:OutputSet>
                           </harp:Payload>
                         </Expression>
                         <Expression xsi:type="rx:Condition">
@@ -968,7 +968,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorC</Value>
+                            <Value>OdorB</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -1004,7 +1004,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p2:TryGetValueOrDefault">
-                            <p2:Key>OdorC</p2:Key>
+                            <p2:Key>OdorB</p2:Key>
                             <p2:DefaultString>DefaultState</p2:DefaultString>
                           </Combinator>
                         </Expression>
