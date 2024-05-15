@@ -14,6 +14,7 @@
                  xmlns:p5="clr-namespace:System.Reactive;assembly=System.Reactive.Core"
                  xmlns:wie="clr-namespace:Bonsai.Windows.Input;assembly=Bonsai.Windows.Input"
                  xmlns:spk="clr-namespace:Bonsai.Spinnaker;assembly=Bonsai.Spinnaker"
+                 xmlns:cv="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision"
                  xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
                  xmlns:viz="clr-namespace:Bonsai.Design.Visualizers;assembly=Bonsai.Design.Visualizers"
                  xmlns="https://bonsai-rx.org/2018/workflow">
@@ -329,7 +330,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorC</Value>
+                            <Value>OdorC2</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
@@ -1404,6 +1405,63 @@
                   <Expression xsi:type="rx:PublishSubject">
                     <Name>VideoFeed</Name>
                   </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>VideoFeed</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Value.Image</Selector>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:Grayscale" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:Threshold">
+                      <cv:ThresholdValue>59</cv:ThresholdValue>
+                      <cv:MaxValue>255</cv:MaxValue>
+                      <cv:ThresholdType>BinaryInv</cv:ThresholdType>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="cv:RoiActivity">
+                      <cv:Regions>
+                        <cv:ArrayOfPoint>
+                          <cv:Point>
+                            <cv:X>1088</cv:X>
+                            <cv:Y>399</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>1250</cv:X>
+                            <cv:Y>399</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>1250</cv:X>
+                            <cv:Y>638</cv:Y>
+                          </cv:Point>
+                          <cv:Point>
+                            <cv:X>1088</cv:X>
+                            <cv:Y>638</cv:Y>
+                          </cv:Point>
+                        </cv:ArrayOfPoint>
+                      </cv:Regions>
+                      <cv:Operation>Sum</cv:Operation>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Index">
+                    <Operand xsi:type="IntProperty">
+                      <Value>0</Value>
+                    </Operand>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Activity.Val0</Selector>
+                  </Expression>
+                  <Expression xsi:type="GreaterThan">
+                    <Operand xsi:type="DoubleProperty">
+                      <Value>1500000</Value>
+                    </Operand>
+                  </Expression>
+                  <Expression xsi:type="rx:PublishSubject">
+                    <Name>RoiThreshold</Name>
+                  </Expression>
                 </Nodes>
                 <Edges>
                   <Edge From="1" To="2" Label="Source1" />
@@ -1424,6 +1482,14 @@
                   <Edge From="19" To="20" Label="Source1" />
                   <Edge From="20" To="21" Label="Source1" />
                   <Edge From="21" To="22" Label="Source1" />
+                  <Edge From="23" To="24" Label="Source1" />
+                  <Edge From="24" To="25" Label="Source1" />
+                  <Edge From="25" To="26" Label="Source1" />
+                  <Edge From="26" To="27" Label="Source1" />
+                  <Edge From="27" To="28" Label="Source1" />
+                  <Edge From="28" To="29" Label="Source1" />
+                  <Edge From="29" To="30" Label="Source1" />
+                  <Edge From="30" To="31" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>

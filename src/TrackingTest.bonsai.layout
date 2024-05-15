@@ -3,61 +3,26 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  >
   <DialogSettings>
-    <Visible>false</Visible>
-    <Location>
-      <X>-55</X>
-      <Y>128</Y>
-    </Location>
-    <Size>
-      <Width>586</Width>
-      <Height>534</Height>
-    </Size>
-    <WindowState>Normal</WindowState>
-  </DialogSettings>
-  <DialogSettings>
     <Visible>true</Visible>
     <Location>
-      <X>168</X>
-      <Y>182</Y>
+      <X>602</X>
+      <Y>264</Y>
     </Location>
     <Size>
       <Width>334</Width>
       <Height>278</Height>
     </Size>
     <WindowState>Normal</WindowState>
-    <VisualizerTypeName>Bonsai.Vision.Design.IplImageVisualizer</VisualizerTypeName>
+    <VisualizerTypeName>Bonsai.Vision.Design.FileCaptureVisualizer</VisualizerTypeName>
     <VisualizerSettings>
-      <IplImageVisualizer>
-        <MashupSettings>
-          <Source>7</Source>
-          <VisualizerTypeName>Bonsai.Vision.Design.PointOverlay</VisualizerTypeName>
-          <VisualizerSettings>
-            <PointOverlay>
-              <Tracking>None</Tracking>
-              <Capacity>1</Capacity>
-            </PointOverlay>
-          </VisualizerSettings>
-        </MashupSettings>
-      </IplImageVisualizer>
+      <FileCaptureVisualizer />
     </VisualizerSettings>
   </DialogSettings>
   <DialogSettings>
-    <Visible>false</Visible>
+    <Visible>true</Visible>
     <Location>
-      <X>0</X>
-      <Y>0</Y>
-    </Location>
-    <Size>
-      <Width>0</Width>
-      <Height>0</Height>
-    </Size>
-    <WindowState>Normal</WindowState>
-  </DialogSettings>
-  <DialogSettings>
-    <Visible>false</Visible>
-    <Location>
-      <X>144</X>
-      <Y>156</Y>
+      <X>602</X>
+      <Y>482</Y>
     </Location>
     <Size>
       <Width>334</Width>
@@ -84,6 +49,18 @@
   <DialogSettings>
     <Visible>false</Visible>
     <Location>
+      <X>144</X>
+      <Y>156</Y>
+    </Location>
+    <Size>
+      <Width>334</Width>
+      <Height>278</Height>
+    </Size>
+    <WindowState>Normal</WindowState>
+  </DialogSettings>
+  <DialogSettings>
+    <Visible>false</Visible>
+    <Location>
       <X>0</X>
       <Y>0</Y>
     </Location>
@@ -96,8 +73,20 @@
   <DialogSettings>
     <Visible>false</Visible>
     <Location>
-      <X>120</X>
-      <Y>130</Y>
+      <X>0</X>
+      <Y>0</Y>
+    </Location>
+    <Size>
+      <Width>0</Width>
+      <Height>0</Height>
+    </Size>
+    <WindowState>Normal</WindowState>
+  </DialogSettings>
+  <DialogSettings>
+    <Visible>true</Visible>
+    <Location>
+      <X>182</X>
+      <Y>477</Y>
     </Location>
     <Size>
       <Width>334</Width>
@@ -120,10 +109,6 @@
       <Height>64</Height>
     </Size>
     <WindowState>Normal</WindowState>
-    <VisualizerTypeName>Bonsai.Vision.Design.PointVisualizer</VisualizerTypeName>
-    <VisualizerSettings>
-      <PointVisualizer />
-    </VisualizerSettings>
   </DialogSettings>
   <DialogSettings>
     <Visible>false</Visible>
@@ -178,7 +163,7 @@
     <WindowState>Normal</WindowState>
   </DialogSettings>
   <DialogSettings>
-    <Visible>true</Visible>
+    <Visible>false</Visible>
     <Location>
       <X>440</X>
       <Y>295</Y>
@@ -188,15 +173,6 @@
       <Height>278</Height>
     </Size>
     <WindowState>Normal</WindowState>
-    <VisualizerTypeName>Bonsai.Vision.Design.ScalarVisualizer</VisualizerTypeName>
-    <VisualizerSettings>
-      <ScalarVisualizer>
-        <Capacity>640</Capacity>
-        <Min>0</Min>
-        <Max>3000000</Max>
-        <AutoScale>true</AutoScale>
-      </ScalarVisualizer>
-    </VisualizerSettings>
   </DialogSettings>
   <DialogSettings>
     <Visible>false</Visible>
@@ -213,8 +189,8 @@
   <DialogSettings>
     <Visible>true</Visible>
     <Location>
-      <X>912</X>
-      <Y>298</Y>
+      <X>505</X>
+      <Y>175</Y>
     </Location>
     <Size>
       <Width>413</Width>
