@@ -4,8 +4,8 @@
 
 metadata:
   animalId: plimbo
-  loggingRootPath: C:\Users\Delphi1983\Delphi\temp_data
-  remoteTransferRootPath: Z:\remote_data
+  loggingRootPath: C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data
+  remoteTransferRootPath: C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data_remote
   chargeTime: 0.2
   minimumPokeTime: 0.01
   maximumPokeTime: 10
@@ -15,19 +15,19 @@ metadata:
   maxOdorDelivery: 8
   switchTime1: 0.01
   switchTime2: 0.02
-  useVacuum: false
+  useVacuum: true
   vacuumDelay: 0.005
   vacuumDuration: 0.05
 
 cameraProperties:
   imagingRate: 60
   exposureTime: 10000
-  serialNumber: "23492582"
+  serialNumber: "23604583"
   preEventTime: 2.5
   postEventTime: 2.5
 
 harpProperties:
-  comPort: COM8
+  comPort: COM13
   showHarpLeds: false
 
 lineMappings:
