@@ -39,6 +39,7 @@ lineMappings:
     -   {name: "OdorB3", line: 7}
     -   {name: "OdorC", line: 8}
     -   {name: "OdorC2", line: 8}
+    -   {name: "OdorD", line: 9}
 
   portLine: 0
   vacuumLine: 2
