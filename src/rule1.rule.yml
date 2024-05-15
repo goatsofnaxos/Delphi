@@ -5,7 +5,4 @@
 ruleAlias: Rule1
 
 stateDefinitions:
-  -   {name: "OdorA", transitionsTo: "OdorB"}
-  -   {name: "OdorB", transitionsTo: "OdorC"}
-  -   {name: "OdorC", transitionsTo: "OdorA"}
-  -   {name: "DefaultState", transitionsTo: "OdorA"}
+  -   {name: "OdorA", transitionsTo: [{name: "OdorB", probability: 0.5}, {name: "OdorC", probability: 0.5}]}

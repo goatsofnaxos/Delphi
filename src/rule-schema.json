@@ -8,7 +8,22 @@
                     "type": "string"
                 },
                 "transitionsTo": {
+                    "items": {
+                        "$ref": "#/definitions/stateProbability"
+                    },
+                    "type": "array"
+                }
+            }
+        },
+        "stateProbability": {
+            "properties": {
+                "name": {
                     "type": "string"
+                },
+                "probability": {
+                    "type":"number",
+                    "maximum": 1,
+                    "minimum": 0
                 }
             }
         }
