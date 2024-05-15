@@ -219,7 +219,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Delay">
-                <rx:DueTime>PT0.02S</rx:DueTime>
+                <rx:DueTime>PT0.025S</rx:DueTime>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:SelectMany">
@@ -253,7 +253,7 @@
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:Delay">
-                      <rx:DueTime>PT0S</rx:DueTime>
+                      <rx:DueTime>PT0.025S</rx:DueTime>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
@@ -364,7 +364,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Delay">
-                <rx:DueTime>PT0.2S</rx:DueTime>
+                <rx:DueTime>PT0.07S</rx:DueTime>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:SelectMany">
@@ -484,6 +484,9 @@
                   <Expression xsi:type="MulticastSubject">
                     <Name>PortValveCommand</Name>
                   </Expression>
+                  <Expression xsi:type="MulticastSubject">
+                    <Name>StimulusDelivered</Name>
+                  </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:Take">
                       <rx:Count>1</rx:Count>
@@ -496,6 +499,7 @@
                   <Edge From="1" To="2" Label="Source1" />
                   <Edge From="2" To="3" Label="Source1" />
                   <Edge From="3" To="4" Label="Source1" />
+                  <Edge From="4" To="5" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>

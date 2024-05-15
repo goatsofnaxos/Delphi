@@ -49,7 +49,7 @@
         <Property Name="Name" DisplayName="StimOnsetSubject" />
       </Expression>
       <Expression xsi:type="SubscribeSubject">
-        <Name>PortOnsets</Name>
+        <Name>StimulusDelivered</Name>
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="IntProperty">
