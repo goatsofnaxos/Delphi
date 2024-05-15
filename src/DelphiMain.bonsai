@@ -152,7 +152,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Take">
-                <rx:Count>7</rx:Count>
+                <rx:Count>8</rx:Count>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:ToDictionary">
@@ -331,7 +331,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorA</Value>
+                            <Value>OdorC</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
@@ -369,7 +369,7 @@
                         <Expression xsi:type="p3:CreateMessage">
                           <harp:MessageType>Write</harp:MessageType>
                           <harp:Payload xsi:type="p3:CreateOutputSetPayload">
-                            <p3:OutputSet>Out6</p3:OutputSet>
+                            <p3:OutputSet>Out8</p3:OutputSet>
                           </harp:Payload>
                         </Expression>
                         <Expression xsi:type="rx:Condition">
@@ -400,7 +400,7 @@
                         <Expression xsi:type="p3:CreateMessage">
                           <harp:MessageType>Write</harp:MessageType>
                           <harp:Payload xsi:type="p3:CreateOutputClearPayload">
-                            <p3:OutputClear>Out8</p3:OutputClear>
+                            <p3:OutputClear>Out9</p3:OutputClear>
                           </harp:Payload>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -576,7 +576,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="rx:Take">
-                            <rx:Count>7</rx:Count>
+                            <rx:Count>8</rx:Count>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="rx:SelectMany">
@@ -593,7 +593,7 @@
                               </Expression>
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="p4:LineCommand">
-                                  <p4:LineName>OdorC2</p4:LineName>
+                                  <p4:LineName>OdorD</p4:LineName>
                                   <p4:State>false</p4:State>
                                 </Combinator>
                               </Expression>
@@ -968,7 +968,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorA</Value>
+                            <Value>OdorC</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -1004,7 +1004,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p2:TryGetValueOrDefault">
-                            <p2:Key>OdorA</p2:Key>
+                            <p2:Key>OdorC</p2:Key>
                             <p2:DefaultString>DefaultState</p2:DefaultString>
                           </Combinator>
                         </Expression>
@@ -1411,20 +1411,20 @@
                       <cv:Regions>
                         <cv:ArrayOfPoint>
                           <cv:Point>
-                            <cv:X>1088</cv:X>
-                            <cv:Y>399</cv:Y>
+                            <cv:X>485</cv:X>
+                            <cv:Y>722</cv:Y>
                           </cv:Point>
                           <cv:Point>
-                            <cv:X>1250</cv:X>
-                            <cv:Y>399</cv:Y>
+                            <cv:X>647</cv:X>
+                            <cv:Y>722</cv:Y>
                           </cv:Point>
                           <cv:Point>
-                            <cv:X>1250</cv:X>
-                            <cv:Y>638</cv:Y>
+                            <cv:X>647</cv:X>
+                            <cv:Y>961</cv:Y>
                           </cv:Point>
                           <cv:Point>
-                            <cv:X>1088</cv:X>
-                            <cv:Y>638</cv:Y>
+                            <cv:X>485</cv:X>
+                            <cv:Y>961</cv:Y>
                           </cv:Point>
                         </cv:ArrayOfPoint>
                       </cv:Regions>
