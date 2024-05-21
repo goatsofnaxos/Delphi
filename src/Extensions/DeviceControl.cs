@@ -66,6 +66,7 @@ namespace Extensions.Extensions
             {
                 ClearLineLabels();
                 UpdateLineLabels(e);
+                currentAnimalLabel.Text = e.Metadata.AnimalId;
             };
 
             // Detect session rule change
@@ -233,6 +234,11 @@ namespace Extensions.Extensions
         }
 
         private void currentRuleHeaderLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void currentAnimalLabel_Click(object sender, EventArgs e)
         {
 
         }
