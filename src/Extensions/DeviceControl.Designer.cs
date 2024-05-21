@@ -55,16 +55,17 @@
             this.auxInState1 = new System.Windows.Forms.RadioButton();
             this.setAuxInput0Button = new System.Windows.Forms.Button();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.currentAnimalLabel = new System.Windows.Forms.Label();
+            this.currentAnimalHeaderLabel = new System.Windows.Forms.Label();
             this.odorCountHeaderLabel = new System.Windows.Forms.Label();
             this.odorCountLabel = new System.Windows.Forms.Label();
-            this.pokeCountLabel = new System.Windows.Forms.Label();
             this.pokeCountHeaderLabel = new System.Windows.Forms.Label();
-            this.currentStateLabel = new System.Windows.Forms.Label();
-            this.currentRuleLabel = new System.Windows.Forms.Label();
-            this.currentRuleHeaderLabel = new System.Windows.Forms.Label();
+            this.pokeCountLabel = new System.Windows.Forms.Label();
             this.currentStateHeaderLabel = new System.Windows.Forms.Label();
-            this.currentAnimalHeaderLabel = new System.Windows.Forms.Label();
-            this.currentAnimalLabel = new System.Windows.Forms.Label();
+            this.currentStateLabel = new System.Windows.Forms.Label();
+            this.currentRuleHeaderLabel = new System.Windows.Forms.Label();
+            this.currentRuleLabel = new System.Windows.Forms.Label();
+            this.stopButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.setAuxInputButton0.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -426,6 +427,31 @@
             this.tableLayoutPanel2.TabIndex = 4;
             this.tableLayoutPanel2.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel2_Paint);
             // 
+            // currentAnimalLabel
+            // 
+            this.currentAnimalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.currentAnimalLabel.AutoSize = true;
+            this.currentAnimalLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.currentAnimalLabel.Location = new System.Drawing.Point(250, 0);
+            this.currentAnimalLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.currentAnimalLabel.Name = "currentAnimalLabel";
+            this.currentAnimalLabel.Size = new System.Drawing.Size(10, 21);
+            this.currentAnimalLabel.TabIndex = 5;
+            this.currentAnimalLabel.Text = ".";
+            this.currentAnimalLabel.Click += new System.EventHandler(this.currentAnimalLabel_Click);
+            // 
+            // currentAnimalHeaderLabel
+            // 
+            this.currentAnimalHeaderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.currentAnimalHeaderLabel.AutoSize = true;
+            this.currentAnimalHeaderLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.currentAnimalHeaderLabel.Location = new System.Drawing.Point(47, 0);
+            this.currentAnimalHeaderLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.currentAnimalHeaderLabel.Name = "currentAnimalHeaderLabel";
+            this.currentAnimalHeaderLabel.Size = new System.Drawing.Size(76, 21);
+            this.currentAnimalHeaderLabel.TabIndex = 5;
+            this.currentAnimalHeaderLabel.Text = "current animal:";
+            // 
             // odorCountHeaderLabel
             // 
             this.odorCountHeaderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
@@ -450,18 +476,6 @@
             this.odorCountLabel.TabIndex = 6;
             this.odorCountLabel.Text = ".";
             // 
-            // pokeCountLabel
-            // 
-            this.pokeCountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.pokeCountLabel.AutoSize = true;
-            this.pokeCountLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.pokeCountLabel.Location = new System.Drawing.Point(250, 58);
-            this.pokeCountLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.pokeCountLabel.Name = "pokeCountLabel";
-            this.pokeCountLabel.Size = new System.Drawing.Size(10, 20);
-            this.pokeCountLabel.TabIndex = 5;
-            this.pokeCountLabel.Text = ".";
-            // 
             // pokeCountHeaderLabel
             // 
             this.pokeCountHeaderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
@@ -474,6 +488,30 @@
             this.pokeCountHeaderLabel.TabIndex = 4;
             this.pokeCountHeaderLabel.Text = "poke count:";
             // 
+            // pokeCountLabel
+            // 
+            this.pokeCountLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.pokeCountLabel.AutoSize = true;
+            this.pokeCountLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.pokeCountLabel.Location = new System.Drawing.Point(250, 58);
+            this.pokeCountLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.pokeCountLabel.Name = "pokeCountLabel";
+            this.pokeCountLabel.Size = new System.Drawing.Size(10, 20);
+            this.pokeCountLabel.TabIndex = 5;
+            this.pokeCountLabel.Text = ".";
+            // 
+            // currentStateHeaderLabel
+            // 
+            this.currentStateHeaderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.currentStateHeaderLabel.AutoSize = true;
+            this.currentStateHeaderLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.currentStateHeaderLabel.Location = new System.Drawing.Point(50, 42);
+            this.currentStateHeaderLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.currentStateHeaderLabel.Name = "currentStateHeaderLabel";
+            this.currentStateHeaderLabel.Size = new System.Drawing.Size(69, 16);
+            this.currentStateHeaderLabel.TabIndex = 1;
+            this.currentStateHeaderLabel.Text = "current state:";
+            // 
             // currentStateLabel
             // 
             this.currentStateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
@@ -485,18 +523,6 @@
             this.currentStateLabel.Size = new System.Drawing.Size(10, 16);
             this.currentStateLabel.TabIndex = 3;
             this.currentStateLabel.Text = ".";
-            // 
-            // currentRuleLabel
-            // 
-            this.currentRuleLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.currentRuleLabel.AutoSize = true;
-            this.currentRuleLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.currentRuleLabel.Location = new System.Drawing.Point(250, 21);
-            this.currentRuleLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.currentRuleLabel.Name = "currentRuleLabel";
-            this.currentRuleLabel.Size = new System.Drawing.Size(10, 21);
-            this.currentRuleLabel.TabIndex = 2;
-            this.currentRuleLabel.Text = ".";
             // 
             // currentRuleHeaderLabel
             // 
@@ -511,55 +537,41 @@
             this.currentRuleHeaderLabel.Text = "current rule:";
             this.currentRuleHeaderLabel.Click += new System.EventHandler(this.currentRuleHeaderLabel_Click);
             // 
-            // currentStateHeaderLabel
+            // currentRuleLabel
             // 
-            this.currentStateHeaderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.currentStateHeaderLabel.AutoSize = true;
-            this.currentStateHeaderLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.currentStateHeaderLabel.Location = new System.Drawing.Point(50, 42);
-            this.currentStateHeaderLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.currentStateHeaderLabel.Name = "currentStateHeaderLabel";
-            this.currentStateHeaderLabel.Size = new System.Drawing.Size(69, 16);
-            this.currentStateHeaderLabel.TabIndex = 1;
-            this.currentStateHeaderLabel.Text = "current state:";
+            this.currentRuleLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.currentRuleLabel.AutoSize = true;
+            this.currentRuleLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.currentRuleLabel.Location = new System.Drawing.Point(250, 21);
+            this.currentRuleLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.currentRuleLabel.Name = "currentRuleLabel";
+            this.currentRuleLabel.Size = new System.Drawing.Size(10, 21);
+            this.currentRuleLabel.TabIndex = 2;
+            this.currentRuleLabel.Text = ".";
             // 
-            // currentAnimalHeaderLabel
+            // stopButton
             // 
-            this.currentAnimalHeaderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.currentAnimalHeaderLabel.AutoSize = true;
-            this.currentAnimalHeaderLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.currentAnimalHeaderLabel.Location = new System.Drawing.Point(47, 0);
-            this.currentAnimalHeaderLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.currentAnimalHeaderLabel.Name = "currentAnimalHeaderLabel";
-            this.currentAnimalHeaderLabel.Size = new System.Drawing.Size(76, 21);
-            this.currentAnimalHeaderLabel.TabIndex = 5;
-            this.currentAnimalHeaderLabel.Text = "current animal:";
-            // 
-            // currentAnimalLabel
-            // 
-            this.currentAnimalLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.currentAnimalLabel.AutoSize = true;
-            this.currentAnimalLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.currentAnimalLabel.Location = new System.Drawing.Point(250, 0);
-            this.currentAnimalLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.currentAnimalLabel.Name = "currentAnimalLabel";
-            this.currentAnimalLabel.Size = new System.Drawing.Size(10, 21);
-            this.currentAnimalLabel.TabIndex = 5;
-            this.currentAnimalLabel.Text = ".";
-            this.currentAnimalLabel.Click += new System.EventHandler(this.currentAnimalLabel_Click);
+            this.stopButton.Location = new System.Drawing.Point(149, 313);
+            this.stopButton.Name = "stopButton";
+            this.stopButton.Size = new System.Drawing.Size(75, 23);
+            this.stopButton.TabIndex = 5;
+            this.stopButton.Text = "STOP";
+            this.stopButton.UseVisualStyleBackColor = true;
+            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
             // 
             // DeviceControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.Controls.Add(this.stopButton);
             this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.setAuxInputButton0);
             this.Controls.Add(this.tableLayoutPanel1);
             this.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "DeviceControl";
-            this.Size = new System.Drawing.Size(376, 311);
+            this.Size = new System.Drawing.Size(376, 351);
             this.Load += new System.EventHandler(this.DeviceControl_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
@@ -609,5 +621,6 @@
         private System.Windows.Forms.Label odorCountLabel;
         private System.Windows.Forms.Label currentAnimalLabel;
         private System.Windows.Forms.Label currentAnimalHeaderLabel;
+        private System.Windows.Forms.Button stopButton;
     }
 }
