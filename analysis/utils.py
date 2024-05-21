@@ -49,21 +49,21 @@ class Video(Csv):
 def load_json(reader: SessionData, root: Path) -> pd.DataFrame:
     root = Path(root)
     pattern = f"{root.joinpath(root.name)}_*.jsonl"
-    data = [reader.read(Path(file)) for file in glob(pattern)]
+    data = [reader.read(Path(file)) for file in sorted(glob(pattern))]
     return pd.concat(data)
 
 
 def load(reader: Reader, root: Path) -> pd.DataFrame:
     root = Path(root)
     pattern = f"{root.joinpath(root.name)}_{reader.register.address}_*.bin"
-    data = [reader.read(file) for file in glob(pattern)]
+    data = [reader.read(file) for file in sorted(glob(pattern))]
     return pd.concat(data)
 
 
 def load_video(reader: Video, root: Path) -> pd.DataFrame:
     root = Path(root)
     pattern = f"{root.joinpath(root.name)}_*.csv"
-    data = [reader.read(Path(file)) for file in glob(pattern)]
+    data = [reader.read(Path(file)) for file in sorted(glob(pattern))]
     return pd.concat(data)
 
 def concat_digi_events(series_low: pd.DataFrame, series_high: pd.DataFrame) -> pd.DataFrame:
