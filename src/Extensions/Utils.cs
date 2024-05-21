@@ -10,7 +10,7 @@ public static class Utils {
     public static string GetRandomState(List<StateProbability> stateProbabilities) {
 
         var totalProbability = stateProbabilities.Sum(x => 1.0 / x.Probability);
-        if (totalProbability != 1) {
+        if (totalProbability < 0.9999999999999 || totalProbability > 1.0000000000001) {
             throw new ArgumentException("Total probability must sum to 1");
         }
 
