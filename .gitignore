@@ -18,3 +18,4 @@ Packages
 *.jsonl
 
 *.mp4
+/src/LocalRules
