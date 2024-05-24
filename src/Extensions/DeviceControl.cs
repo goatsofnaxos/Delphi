@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Harp.OutputExpander;
 using DataSchema;
+using Bonsai.Harp;
+using System.Net;
 
 namespace Extensions.Extensions
 {
@@ -66,6 +68,7 @@ namespace Extensions.Extensions
             {
                 ClearLineLabels();
                 UpdateLineLabels(e);
+                currentAnimalLabel.Text = e.Metadata.AnimalId;
             };
 
             // Detect session rule change
@@ -235,6 +238,32 @@ namespace Extensions.Extensions
         private void currentRuleHeaderLabel_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void currentAnimalLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void stopButton_Click(object sender, EventArgs e)
+        {
+            byte[] messageBytes;
+
+            var pack = ((byte)MessageType.Write + 5 + 88 + byte.MaxValue) + (int)PayloadType.U8 + 0;
+            byte b = (byte)pack;
+
+            messageBytes = new byte[7]
+            {
+                (byte)MessageType.Write,
+                5,
+                88,
+                byte.MaxValue,
+                (byte)PayloadType.U8,
+                0,
+                b
+            };
+
+            Source.DoCommand(new HarpMessage(messageBytes));
         }
     }
 }
