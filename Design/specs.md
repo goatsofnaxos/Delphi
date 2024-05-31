@@ -232,6 +232,11 @@ flowchart TD
     style GG stroke:#C8E6C9,fill:#C8E6C9
 ```
 
+
+**Vacuum ON/OFF Timing Comparison**
+![image](https://github.com/goatsofnaxos/Delphi/assets/148108582/3438a723-974e-40a6-a16a-2ef9622c78a3)
+
+
 **FUTURE**
 -  [In proress] Reduce time necessary to switch between odors to reduce refractory period between stimulated pokes.
 -  Probabilistic transitions in state machine (e.g. to present odors in random order).
