@@ -2725,6 +2725,44 @@
         <viz:RowStyles />
         <viz:CellSpans />
       </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>ExitTrigger</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi:type="harp:FilterRegister">
+              <harp:FilterType>Include</harp:FilterType>
+              <harp:Register xsi:type="harp:FilterRegisterAddress">
+                <harp:Address>88</harp:Address>
+              </harp:Register>
+            </Expression>
+            <Expression xsi:type="Unit" />
+            <Expression xsi:type="MulticastSubject">
+              <Name>StartRobocopy</Name>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>CloseAllLines</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Take">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="5" Label="Source1" />
+            <Edge From="5" To="6" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="WorkflowOutput" />
       <Expression xsi:type="ExternalizedMapping">
         <Property Name="StopCameraStream" />
         <Property Name="CloseAllLinesKey" />
@@ -2927,52 +2965,12 @@
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="aeon:AvailableMemory" />
       </Expression>
-      <Expression xsi:type="ExternalizedMapping">
-        <Property Name="ExitTriggerKey" />
-      </Expression>
-      <Expression xsi:type="GroupWorkflow">
-        <Name>ExitTrigger</Name>
-        <Workflow>
-          <Nodes>
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Filter" DisplayName="ExitTriggerKey" Category="ControlKeys" />
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="wie:KeyDown">
-                <wie:Filter>Escape</wie:Filter>
-                <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="Unit" />
-            <Expression xsi:type="MulticastSubject">
-              <Name>StartRobocopy</Name>
-            </Expression>
-            <Expression xsi:type="MulticastSubject">
-              <Name>CloseAllLines</Name>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="rx:Take">
-                <rx:Count>1</rx:Count>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="WorkflowOutput" />
-          </Nodes>
-          <Edges>
-            <Edge From="0" To="1" Label="Source1" />
-            <Edge From="1" To="2" Label="Source1" />
-            <Edge From="2" To="3" Label="Source1" />
-            <Edge From="3" To="4" Label="Source1" />
-            <Edge From="4" To="5" Label="Source1" />
-            <Edge From="5" To="6" Label="Source1" />
-          </Edges>
-        </Workflow>
-      </Expression>
-      <Expression xsi:type="WorkflowOutput" />
     </Nodes>
     <Edges>
       <Edge From="0" To="1" Label="Source1" />
       <Edge From="2" To="3" Label="Source1" />
       <Edge From="5" To="6" Label="Source1" />
+      <Edge From="5" To="11" Label="Source1" />
       <Edge From="6" To="10" Label="Source1" />
       <Edge From="7" To="8" Label="Source1" />
       <Edge From="8" To="9" Label="Source1" />
@@ -2980,7 +2978,6 @@
       <Edge From="11" To="12" Label="Source1" />
       <Edge From="13" To="14" Label="Source1" />
       <Edge From="15" To="16" Label="Source1" />
-      <Edge From="16" To="17" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
