@@ -2441,7 +2441,7 @@
                     </PropertyMappings>
                   </Expression>
                   <Expression xsi:type="io:CsvWriter">
-                    <io:FileName>C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\2024-06-03T12-32-18\LogName\LogName_2024-06-03T12-32-17.bin</io:FileName>
+                    <io:FileName>C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data\2024-06-03T12-32-51\LocalTime\LocalTime_2024-06-03T12-32-51.csv</io:FileName>
                     <io:Append>false</io:Append>
                     <io:Overwrite>false</io:Overwrite>
                     <io:Suffix>None</io:Suffix>
