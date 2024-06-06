@@ -51,62 +51,44 @@
       <Expression xsi:type="SubscribeSubject">
         <Name>Commands</Name>
       </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="SubscribeSubject">
-          <Name>SessionSettings</Name>
-        </Builder>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>SessionSettings</Name>
       </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="MemberSelector">
-          <Selector>HarpProperties.ComPort</Selector>
-        </Builder>
+      <Expression xsi:type="MemberSelector">
+        <Selector>HarpProperties.ComPort</Selector>
       </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="PropertyMapping">
-          <PropertyMappings>
-            <Property Name="PortName" />
-          </PropertyMappings>
-        </Builder>
+      <Expression xsi:type="PropertyMapping">
+        <PropertyMappings>
+          <Property Name="PortName" />
+        </PropertyMappings>
       </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="SubscribeSubject">
-          <Name>SessionSettings</Name>
-        </Builder>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>SessionSettings</Name>
       </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="MemberSelector">
-          <Selector>HarpProperties.ShowHarpLeds</Selector>
-        </Builder>
+      <Expression xsi:type="MemberSelector">
+        <Selector>HarpProperties.ShowHarpLeds</Selector>
       </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="Combinator">
-          <Combinator xsi:type="p1:BooleanToLedState" />
-        </Builder>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="p1:BooleanToLedState" />
       </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="PropertyMapping">
-          <PropertyMappings>
-            <Property Name="VisualIndicators" />
-          </PropertyMappings>
-        </Builder>
+      <Expression xsi:type="PropertyMapping">
+        <PropertyMappings>
+          <Property Name="VisualIndicators" />
+        </PropertyMappings>
       </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="Combinator">
-          <Combinator xsi:type="p2:Device">
-            <harp:OperationMode>Standby</harp:OperationMode>
-            <harp:OperationLed>On</harp:OperationLed>
-            <harp:DumpRegisters>false</harp:DumpRegisters>
-            <harp:VisualIndicators>Off</harp:VisualIndicators>
-            <harp:Heartbeat>Disabled</harp:Heartbeat>
-            <harp:IgnoreErrors>false</harp:IgnoreErrors>
-            <harp:PortName>COM13</harp:PortName>
-          </Combinator>
-        </Builder>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="p2:Device">
+          <harp:OperationMode>Standby</harp:OperationMode>
+          <harp:OperationLed>On</harp:OperationLed>
+          <harp:DumpRegisters>false</harp:DumpRegisters>
+          <harp:VisualIndicators>Off</harp:VisualIndicators>
+          <harp:Heartbeat>Disabled</harp:Heartbeat>
+          <harp:IgnoreErrors>false</harp:IgnoreErrors>
+          <harp:PortName>COM13</harp:PortName>
+        </Combinator>
       </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="rx:PublishSubject">
-          <Name>Events</Name>
-        </Builder>
+      <Expression xsi:type="rx:PublishSubject">
+        <Name>Events</Name>
       </Expression>
       <Expression xsi:type="Unit" />
       <Expression xsi:type="Combinator">
@@ -134,7 +116,7 @@
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="rx:Delay">
-          <rx:DueTime>PT1S</rx:DueTime>
+          <rx:DueTime>PT0.01S</rx:DueTime>
         </Combinator>
       </Expression>
       <Expression xsi:type="p2:CreateMessage">
