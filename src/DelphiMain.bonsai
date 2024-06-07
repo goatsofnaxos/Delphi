@@ -40,7 +40,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:LoadSessionSettings">
-                <p2:Path>DelphiSession.yml</p2:Path>
+                <p2:Path>LocalRules\DelphiSession.yml</p2:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="Combinator">
@@ -218,6 +218,32 @@
                       <rx:DueTime>PT1S</rx:DueTime>
                     </Combinator>
                   </Expression>
+                  <Expression xsi:type="Unit" />
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="p3:ConfigurePwm">
+                      <p3:PwmChannels>Pwm2</p3:PwmChannels>
+                      <p3:Frequency>500</p3:Frequency>
+                      <p3:DutyCycle>10</p3:DutyCycle>
+                      <p3:PulseCount>0</p3:PulseCount>
+                      <p3:TriggerSource>Software</p3:TriggerSource>
+                      <p3:EventConfig>Enabled</p3:EventConfig>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="p3:CreateMessage">
+                    <harp:MessageType>Write</harp:MessageType>
+                    <harp:Payload xsi:type="p3:CreatePwmAndStimEnablePayload">
+                      <p3:PwmAndStimEnable>Pwm2ToOut9</p3:PwmAndStimEnable>
+                    </harp:Payload>
+                  </Expression>
+                  <Expression xsi:type="p3:CreateMessage">
+                    <harp:MessageType>Write</harp:MessageType>
+                    <harp:Payload xsi:type="p3:CreatePwmStartPayload">
+                      <p3:PwmStart>Pwm2</p3:PwmStart>
+                    </harp:Payload>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Merge" />
+                  </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:Concat" />
                   </Expression>
@@ -260,7 +286,7 @@
                       <harp:VisualIndicators>Off</harp:VisualIndicators>
                       <harp:Heartbeat>Disabled</harp:Heartbeat>
                       <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                      <harp:PortName>COM13</harp:PortName>
+                      <harp:PortName>COM4</harp:PortName>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="rx:PublishSubject">
@@ -331,7 +357,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorC</Value>
+                            <Value>OdorA</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
@@ -369,7 +395,7 @@
                         <Expression xsi:type="p3:CreateMessage">
                           <harp:MessageType>Write</harp:MessageType>
                           <harp:Payload xsi:type="p3:CreateOutputSetPayload">
-                            <p3:OutputSet>Out8</p3:OutputSet>
+                            <p3:OutputSet>Out6</p3:OutputSet>
                           </harp:Payload>
                         </Expression>
                         <Expression xsi:type="rx:Condition">
@@ -864,41 +890,48 @@
                 </Nodes>
                 <Edges>
                   <Edge From="0" To="1" Label="Source1" />
-                  <Edge From="1" To="5" Label="Source1" />
+                  <Edge From="1" To="10" Label="Source1" />
                   <Edge From="2" To="3" Label="Source1" />
                   <Edge From="3" To="4" Label="Source1" />
-                  <Edge From="4" To="5" Label="Source2" />
+                  <Edge From="4" To="10" Label="Source2" />
                   <Edge From="5" To="6" Label="Source1" />
-                  <Edge From="7" To="15" Label="Source1" />
-                  <Edge From="8" To="9" Label="Source1" />
-                  <Edge From="9" To="10" Label="Source1" />
-                  <Edge From="10" To="15" Label="Source2" />
-                  <Edge From="11" To="12" Label="Source1" />
-                  <Edge From="12" To="13" Label="Source1" />
+                  <Edge From="6" To="7" Label="Source1" />
+                  <Edge From="6" To="9" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="7" To="9" Label="Source2" />
+                  <Edge From="8" To="9" Label="Source3" />
+                  <Edge From="9" To="10" Label="Source3" />
+                  <Edge From="10" To="11" Label="Source1" />
+                  <Edge From="12" To="20" Label="Source1" />
                   <Edge From="13" To="14" Label="Source1" />
-                  <Edge From="14" To="15" Label="Source3" />
-                  <Edge From="15" To="16" Label="Source1" />
+                  <Edge From="14" To="15" Label="Source1" />
+                  <Edge From="15" To="20" Label="Source2" />
+                  <Edge From="16" To="17" Label="Source1" />
                   <Edge From="17" To="18" Label="Source1" />
                   <Edge From="18" To="19" Label="Source1" />
-                  <Edge From="18" To="20" Label="Source1" />
+                  <Edge From="19" To="20" Label="Source3" />
                   <Edge From="20" To="21" Label="Source1" />
+                  <Edge From="22" To="23" Label="Source1" />
                   <Edge From="23" To="24" Label="Source1" />
-                  <Edge From="24" To="29" Label="Source1" />
+                  <Edge From="23" To="25" Label="Source1" />
                   <Edge From="25" To="26" Label="Source1" />
-                  <Edge From="26" To="27" Label="Source1" />
-                  <Edge From="27" To="28" Label="Source1" />
-                  <Edge From="28" To="29" Label="Source2" />
-                  <Edge From="29" To="30" Label="Source1" />
+                  <Edge From="28" To="29" Label="Source1" />
                   <Edge From="29" To="34" Label="Source1" />
                   <Edge From="30" To="31" Label="Source1" />
                   <Edge From="31" To="32" Label="Source1" />
                   <Edge From="32" To="33" Label="Source1" />
+                  <Edge From="33" To="34" Label="Source2" />
                   <Edge From="34" To="35" Label="Source1" />
+                  <Edge From="34" To="39" Label="Source1" />
                   <Edge From="35" To="36" Label="Source1" />
                   <Edge From="36" To="37" Label="Source1" />
-                  <Edge From="38" To="39" Label="Source1" />
+                  <Edge From="37" To="38" Label="Source1" />
+                  <Edge From="39" To="40" Label="Source1" />
                   <Edge From="40" To="41" Label="Source1" />
+                  <Edge From="41" To="42" Label="Source1" />
                   <Edge From="43" To="44" Label="Source1" />
+                  <Edge From="45" To="46" Label="Source1" />
+                  <Edge From="48" To="49" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -968,7 +1001,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorC</Value>
+                            <Value>OdorA</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -1004,7 +1037,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p2:TryGetValueOrDefault">
-                            <p2:Key>OdorC</p2:Key>
+                            <p2:Key>OdorA</p2:Key>
                             <p2:DefaultString>DefaultState</p2:DefaultString>
                           </Combinator>
                         </Expression>
@@ -1533,7 +1566,7 @@
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="rx:Delay">
-                                        <rx:DueTime>PT0.01S</rx:DueTime>
+                                        <rx:DueTime>PT0.02S</rx:DueTime>
                                       </Combinator>
                                     </Expression>
                                     <Expression xsi:type="rx:SelectMany">
@@ -2260,7 +2293,7 @@
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="aeon:SpinnakerCapture">
                       <spk:Index xsi:nil="true" />
-                      <spk:SerialNumber>23604583</spk:SerialNumber>
+                      <spk:SerialNumber>23032828</spk:SerialNumber>
                       <spk:ColorProcessing>Default</spk:ColorProcessing>
                       <aeon:ExposureTime>10000</aeon:ExposureTime>
                       <aeon:Gain>0</aeon:Gain>
