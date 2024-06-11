@@ -222,7 +222,7 @@
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="p3:ConfigurePwm">
                       <p3:PwmChannels>Pwm2</p3:PwmChannels>
-                      <p3:Frequency>500</p3:Frequency>
+                      <p3:Frequency>1000</p3:Frequency>
                       <p3:DutyCycle>10</p3:DutyCycle>
                       <p3:PulseCount>0</p3:PulseCount>
                       <p3:TriggerSource>Software</p3:TriggerSource>
