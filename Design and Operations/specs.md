@@ -50,6 +50,9 @@
 - Have it so that experiment paramaters file allows user to choose between 'normal' mode and 'vacuum' mode.
 - Make sure that UI displays if the configuration is running in normal mode (8 odor stimuli) vs vacuum mode (7 odor stimuli, one vacuum line).
 
+**Vacuum ON/OFF Timing Comparison**
+![image](https://github.com/goatsofnaxos/Delphi/assets/148108582/3438a723-974e-40a6-a16a-2ef9622c78a3)
+
 
 **TIMEOUTS**
 - Maxmimum odor delivery time: 10 seconds (specified in experiment definition file)
@@ -232,10 +235,6 @@ flowchart TD
     style FF color:#FFFFFF,fill:#000000,stroke:#000000
     style GG stroke:#C8E6C9,fill:#C8E6C9
 ```
-
-
-**Vacuum ON/OFF Timing Comparison**
-![image](https://github.com/goatsofnaxos/Delphi/assets/148108582/3438a723-974e-40a6-a16a-2ef9622c78a3)
 
 
 **FUTURE**
