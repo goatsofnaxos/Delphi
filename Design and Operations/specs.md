@@ -43,11 +43,15 @@
 
 **VACUUM FUNCTION**
 - As an optional operating mode: flush previous trial's odor and pull next trials odor through the line upstream of the final valve by opening a valve that opens to a vacuum (valve placed downstream of final valve)
-        - After t_switch2 (next stimulus valve opening), wait t_vac1 = 5 milliseconds then open VALVE_VAC.
-        - Then after t_vac2 = 15 milliseconds close VALVE_VAC.
-  	- Only when vaccum closed can VALVE_P be opened!
+        - After the final valve closes, wait switchTime1 = 35 milliseconds then close the odor valve (VALVE_Sx) that has been open.
+        - Wait switchTime2 = 5 milliseconds then open VALVE_VAC.
+  	- Wait vacuumDelay = 25 milliseconds then open VALVE_p for portValveCycleTime = 25 milliseconds. Open the next odor valve (VALVE_Sx) at the same time as VALVE_p closing.
+  	- Wait vacuumDuration = 70 milliseconds then close VALVE_VAC. VALVE_p can open anytime in response to a poke after the vacuum closes.
 - Have it so that experiment paramaters file allows user to choose between 'normal' mode and 'vacuum' mode.
 - Make sure that UI displays if the configuration is running in normal mode (8 odor stimuli) vs vacuum mode (7 odor stimuli, one vacuum line).
+
+**Vacuum ON/OFF Timing Comparison**
+![image](https://github.com/goatsofnaxos/Delphi/assets/148108582/3438a723-974e-40a6-a16a-2ef9622c78a3)
 
 
 **TIMEOUTS**
@@ -231,10 +235,6 @@ flowchart TD
     style FF color:#FFFFFF,fill:#000000,stroke:#000000
     style GG stroke:#C8E6C9,fill:#C8E6C9
 ```
-
-
-**Vacuum ON/OFF Timing Comparison**
-![image](https://github.com/goatsofnaxos/Delphi/assets/148108582/3438a723-974e-40a6-a16a-2ef9622c78a3)
 
 
 **FUTURE**
