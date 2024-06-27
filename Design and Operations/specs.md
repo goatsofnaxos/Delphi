@@ -191,7 +191,7 @@ flowchart TD
     FF{"Harp Expander Breakout"} -. IN0 > DI, GND > GND, +5V > +5V .-> GG{"Harp Poke Breakout"}
     GG -.-> P
     BB <-.-> FF
-    FF -. OUT 5,6,7,8,9 > IN 4,5,6,7,8 .-> Y
+    FF -. OUT 5,6,7,8 > IN 4,5,6,7 .-> Y
     style BB fill:#000000,color:#FFFFFF
     style DD fill:#FFCDD2
     style Y fill:#C8E6C9
@@ -207,7 +207,7 @@ flowchart TD
     LL["Nitrogen Tank 2"] --> C["Flow Regulator 2"]
     AA{"Computer"} -.-> BB{"Harp Output Expander Box"}
     BB -. OUT1 > Blackfly USB3 .-> CC{"Blackfly Camera"}
-    BB -. OUT0 .-> DD{"CoolDrive"}
+    BB -. OUT0 > Cooldrive .-> DD{"CoolDrive"}
     EE{"12 VDC Power Source"} -.-> Y{"Harp Passive Controller"} & DD
     DD -.-> E["Port/Final Valve"]
     BB -. OUT 2,3,4 > IN 1,2,3 .-> Y
@@ -218,16 +218,17 @@ flowchart TD
     D --> F["Odour Bottle 1-7"]
     F --> Q
     Q --> N["Odour Manifold"]
-    N --> O("Exhaust")
-    N -- Odour --> E
-    E --> P["Harp Poke"] & HH
+    N -- Loose seal --> O("Exhaust")
+    N -- Tubing length: 87mm --> E
+    E -- Tubing length: 43mm --> P["Harp Poke"]
+    E --> HH
     HH -- Loose Seal ---> O
     HH --> KK["Flow Regulator 3"]
     KK -- Tight Seal ---> II["Exhaust"]
     FF{"Harp Expander Breakout"} -. IN0 > DI, GND > GND, +5V > +5V .-> GG{"Harp Poke Breakout"}
     GG -.-> P
     BB <-.-> FF
-    FF -. OUT 5,6,7,8,9 > IN 4,5,6,7,8 .-> Y
+    FF -. OUT 5,6,7,8 > IN 4,5,6,7 .-> Y
     style BB fill:#000000,color:#FFFFFF
     style DD fill:#FFCDD2
     style Y stroke:none,fill:#C8E6C9
