@@ -51,7 +51,8 @@
 - Make sure that UI displays if the configuration is running in normal mode (8 odor stimuli) vs vacuum mode (7 odor stimuli, one vacuum line).
 
 **Vacuum ON/OFF Timing Comparison**
-![image](https://github.com/goatsofnaxos/Delphi/assets/148108582/3438a723-974e-40a6-a16a-2ef9622c78a3)
+<img width="1136" alt="Screenshot 2024-06-27 at 11 45 24 AM" src="https://github.com/goatsofnaxos/Delphi/assets/148108582/68538e6c-df14-41b2-a442-e080b0fae839">
+
 
 
 **TIMEOUTS**
