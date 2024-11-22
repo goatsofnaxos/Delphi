@@ -603,6 +603,8 @@ namespace DataSchema
     
         private double _maximumPokeTime = 10D;
     
+        private bool _robocopyEnabled = true;
+    
         private double _robocopyTimeInterval = 3600D;
     
         private double _maxVideoLength = 120D;
@@ -635,6 +637,7 @@ namespace DataSchema
             _chargeTime = other._chargeTime;
             _minimumPokeTime = other._minimumPokeTime;
             _maximumPokeTime = other._maximumPokeTime;
+            _robocopyEnabled = other._robocopyEnabled;
             _robocopyTimeInterval = other._robocopyTimeInterval;
             _maxVideoLength = other._maxVideoLength;
             _minOdorDelivery = other._minOdorDelivery;
@@ -743,6 +746,23 @@ namespace DataSchema
             set
             {
                 _maximumPokeTime = value;
+            }
+        }
+    
+        /// <summary>
+        /// Whether to enable robocopy remote transfer
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="robocopyEnabled")]
+        [System.ComponentModel.DescriptionAttribute("Whether to enable robocopy remote transfer")]
+        public bool RobocopyEnabled
+        {
+            get
+            {
+                return _robocopyEnabled;
+            }
+            set
+            {
+                _robocopyEnabled = value;
             }
         }
     
@@ -934,6 +954,7 @@ namespace DataSchema
             stringBuilder.Append("chargeTime = " + _chargeTime + ", ");
             stringBuilder.Append("minimumPokeTime = " + _minimumPokeTime + ", ");
             stringBuilder.Append("maximumPokeTime = " + _maximumPokeTime + ", ");
+            stringBuilder.Append("robocopyEnabled = " + _robocopyEnabled + ", ");
             stringBuilder.Append("robocopyTimeInterval = " + _robocopyTimeInterval + ", ");
             stringBuilder.Append("maxVideoLength = " + _maxVideoLength + ", ");
             stringBuilder.Append("minOdorDelivery = " + _minOdorDelivery + ", ");

@@ -110,6 +110,11 @@
                     "default": "10",
                     "type": "number"
                 },
+                "robocopyEnabled": {
+                    "description": "Whether to enable robocopy remote transfer",
+                    "default": "True",
+                    "type": "boolean"
+                },
                 "robocopyTimeInterval": {
                     "description": "Interval between robocopy initiations in seconds",
                     "default": "3600",
