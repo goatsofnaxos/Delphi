@@ -124,9 +124,10 @@ Note also that exiting the workflow process with the exit trigger key will initi
 The following need to be installed once on a fresh new system in order to analyze data acquired with Delphi:
 
  * [Visual Studio Code](https://code.visualstudio.com/) (recommended for editing code scripts and git commits)
+ * A Conda distribution such as [Miniconda](https://docs.anaconda.com/free/miniconda/index.html)
  * [Python Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
+   * This extension needs to be made aware of the Conda installation. To do so, navigate to the extension settings. Under the section **Python: Conda Path**, enter the full path to the conda.bat executable.
  * [Jupyter Extension for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter)
- * A conda distribution such as [Miniconda](https://docs.anaconda.com/free/miniconda/index.html)
 
 #### Create local Environment
 
