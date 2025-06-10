@@ -9,7 +9,7 @@ metadata:
   odorTransitionTime: 1000
   vacuumSetupTime: 1000
   finalValveEnergizedTime: 1000
-  minimumPokeTime: 1000
+  minimumPokeTime: 100
 
 harpProperties:
   comPort: COM3
