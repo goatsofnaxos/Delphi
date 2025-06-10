@@ -19,44 +19,30 @@
             <Expression xsi:type="rx:BehaviorSubject" TypeArguments="harp:HarpMessage">
               <rx:Name>Commands</rx:Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="SubscribeSubject">
-                <Name>SessionSettings</Name>
-              </Builder>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>SessionSettings</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="MemberSelector">
-                <Selector>HarpProperties.ComPort</Selector>
-              </Builder>
+            <Expression xsi:type="MemberSelector">
+              <Selector>HarpProperties.ComPort</Selector>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="PropertyMapping">
-                <PropertyMappings>
-                  <Property Name="PortName" />
-                </PropertyMappings>
-              </Builder>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="PortName" />
+              </PropertyMappings>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="SubscribeSubject">
-                <Name>SessionSettings</Name>
-              </Builder>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>SessionSettings</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="MemberSelector">
-                <Selector>HarpProperties.ShowHarpLeds</Selector>
-              </Builder>
+            <Expression xsi:type="MemberSelector">
+              <Selector>HarpProperties.ShowHarpLeds</Selector>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="Combinator">
-                <Combinator xsi:type="p1:BooleanToLedState" />
-              </Builder>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p1:BooleanToLedState" />
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="PropertyMapping">
-                <PropertyMappings>
-                  <Property Name="VisualIndicators" />
-                </PropertyMappings>
-              </Builder>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="VisualIndicators" />
+              </PropertyMappings>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="harp:Device">
