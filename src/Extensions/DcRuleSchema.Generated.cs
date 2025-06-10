@@ -15,7 +15,7 @@ namespace DcRuleSchema
     public partial class StateDefinition
     {
     
-        private int _name;
+        private int _odor;
     
         private int _transitionsTo;
     
@@ -25,20 +25,20 @@ namespace DcRuleSchema
     
         protected StateDefinition(StateDefinition other)
         {
-            _name = other._name;
+            _odor = other._odor;
             _transitionsTo = other._transitionsTo;
         }
     
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="name")]
-        public int Name
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="odor")]
+        public int Odor
         {
             get
             {
-                return _name;
+                return _odor;
             }
             set
             {
-                _name = value;
+                _odor = value;
             }
         }
     
@@ -67,7 +67,7 @@ namespace DcRuleSchema
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
-            stringBuilder.Append("name = " + _name + ", ");
+            stringBuilder.Append("odor = " + _odor + ", ");
             stringBuilder.Append("transitionsTo = " + _transitionsTo);
             return true;
         }
@@ -95,7 +95,7 @@ namespace DcRuleSchema
     
         private string _ruleAlias = "undefined";
     
-        private System.Collections.Generic.List<object> _stateDefinitions = new System.Collections.Generic.List<object>();
+        private System.Collections.Generic.List<StateDefinition> _stateDefinitions = new System.Collections.Generic.List<StateDefinition>();
     
         public DelphiRuleDc()
         {
@@ -126,7 +126,7 @@ namespace DcRuleSchema
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="stateDefinitions")]
-        public System.Collections.Generic.List<object> StateDefinitions
+        public System.Collections.Generic.List<StateDefinition> StateDefinitions
         {
             get
             {

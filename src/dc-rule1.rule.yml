@@ -1,0 +1,10 @@
+%YAML 1.1
+---
+# yaml-language-server: $schema=dc-rule-schema.json
+
+ruleAlias: Rule1
+
+stateDefinitions:
+  - {odor: 0, transitionsTo: 1}
+  - {odor: 1, transitionsTo: 2}
+  - {odor: 2, transitionsTo: 0}

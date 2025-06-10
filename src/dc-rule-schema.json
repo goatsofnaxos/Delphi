@@ -4,7 +4,7 @@
     "definitions": {
         "stateDefinition": {
             "properties": {
-                "name": {
+                "odor": {
                     "type": "integer"
                 },
                 "transitionsTo": {
@@ -20,7 +20,7 @@
             "type": "string"
         },
         "stateDefinitions": {
-            "additionalProperties": {
+            "items": {
                 "$ref": "#/definitions/stateDefinition"
             },
             "type": "array"
