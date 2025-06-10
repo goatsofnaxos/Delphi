@@ -1,0 +1,31 @@
+{
+    "$id": "h...",
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "definitions": {
+        "stateDefinition": {
+            "properties": {
+                "name": {
+                    "type": "integer"
+                },
+                "transitionsTo": {
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "properties": {
+        "ruleAlias": {
+            "description": "The name or alias of this rule",
+            "default": "undefined",
+            "type": "string"
+        },
+        "stateDefinitions": {
+            "additionalProperties": {
+                "$ref": "#/definitions/stateDefinition"
+            },
+            "type": "array"
+        }
+    },
+    "title": "DelphiRuleDc",
+    "type": "object"
+}

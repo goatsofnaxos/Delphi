@@ -1,0 +1,59 @@
+{
+    "$id": "h...",
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "definitions": { 
+        "harpProperties": {
+            "properties": {
+                "comPort": {
+                    "default": "COM3",
+                    "description": "COM port to connect HARP board.",
+                    "type": "string"
+                },
+                "showHarpLeds": {
+                    "description": "Whether HARP device LEDs should be on",
+                    "default": "false",
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "properties": {
+        "metadata": {
+            "properties": {
+                "animalId": {
+                    "default": "",
+                    "type": "string"
+                },
+                "vacuumCloseTime": {
+                    "type": "integer",
+                    "default": 1000
+                },
+                "odorDeliveryTime": {
+                    "type": "integer",
+                    "default": 1000
+                },
+                "odorTransitionTime": {
+                    "type": "integer",
+                    "default": 1000
+                },
+                "vacuumSetupTime": {
+                    "type": "integer",
+                    "default": 1000
+                },
+                "finalValveEnergizedTime": {
+                    "type": "integer",
+                    "default": 1000
+                },
+                "minimumPokeTime": {
+                    "type": "integer",
+                    "default": 1000
+                }
+            }
+        },
+        "harpProperties": {
+            "$ref": "#/definitions/harpProperties"
+        }
+    },
+    "title": "DelphiSessionDc",
+    "type": "object"
+}

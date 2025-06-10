@@ -1,0 +1,16 @@
+%YAML 1.1
+---
+# yaml-language-server: $schema=dc-data-schema.json
+
+metadata:
+  animalId: plimbo
+  vacuumCloseTime: 1000
+  odorDeliveryTime: 1000
+  odorTransitionTime: 1000
+  vacuumSetupTime: 1000
+  finalValveEnergizedTime: 1000
+  minimumPokeTime: 1000
+
+harpProperties:
+  comPort: COM3
+  showHarpLeds: false
