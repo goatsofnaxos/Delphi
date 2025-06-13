@@ -16,7 +16,7 @@ The following need to be installed once on a fresh new system in order to bootst
  * [Git for Windows](https://gitforwindows.org/) (recommended for cloning and manipulating this repository)
  * [Visual C++ Redistributable for Visual Studio 2012](https://www.microsoft.com/en-us/download/details.aspx?id=30679) (native dependency for OpenCV)
  * [FTDI D2XX COM Port Driver 2.12.28](https://ftdichip.com/drivers/d2xx-drivers/) (serial port drivers for HARP devices)
-   * To download the installer, click *available as a setup executable*.
+   * To download the installer, scroll down, and click *available as a setup executable*.
  * [Spinnaker SDK 1.29.0.5](https://www.flir.co.uk/support/products/spinnaker-sdk/#Downloads) (device drivers for FLIR cameras, sign in required, look in the archived stable versions for 1.29.0.5 64-bit full install)
  * [Github Desktop](https://desktop.github.com/download/) (convenient for testing different PRs)
  * [Python](https://www.python.org/downloads/)
@@ -82,7 +82,6 @@ lineMappings:
     -   {name: "OdorA", line: 5}
     -   {name: "OdorB", line: 6}
     -   {name: "OdorC", line: 7}
-    -   {name: "OdorD", line: 8}
   portLine: 0
   vacuumLine: 2
   auxLine: 1
