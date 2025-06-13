@@ -68,7 +68,8 @@ metadata:
   switchTime1: 0.035
   switchTime2: 0.025
   useVacuum: true
-  *There are more parameters to set now. Refer to "Checklist_HIW3_2024_updated....docx" file in Delphi > Design and Operations > Running the experiment
+  *There are more parameters to set now. Refer to "Checklist_HIW3_2024_updated....docx" file in
+   Delphi > Design and Operations > Running the experiment
 
 cameraProperties:
   imagingRate: 100
