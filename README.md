@@ -6,9 +6,10 @@ Delphi workflow
 
 ### Acquisition Prerequisites
 
-The following need to be installed once on a fresh new system in order to bootstrap the Bonsai environment correctly:
+The following need to be installed once on a fresh new system in order to bootstrap the Bonsai environment correctly (always check after each download that it has been completed):
 
- * Windows 10 or greater
+
+ * Windows 10 or greater (Windows 11 after 9/2025)
  * [Visual Studio Code](https://code.visualstudio.com/) (recommended for editing code scripts and git commits)
  * [.NET 8.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
  * [.NET Framework 4.7.2 Developer Pack](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net472-developer-pack-offline-installer) (required for intellisense when editing code scripts)
@@ -17,6 +18,8 @@ The following need to be installed once on a fresh new system in order to bootst
  * [FTDI D2XX COM Port Driver 2.12.28](https://ftdichip.com/drivers/d2xx-drivers/) (serial port drivers for HARP devices)
    * To download the installer, click *available as a setup executable*.
  * [Spinnaker SDK 1.29.0.5](https://www.flir.co.uk/support/products/spinnaker-sdk/#Downloads) (device drivers for FLIR cameras, sign in required, look in the archived stable versions for 1.29.0.5 64-bit full install)
+ * [Github Desktop](https://desktop.github.com/download/) (convenient for testing different PRs)
+ * [Python](https://www.python.org/downloads/)
 
  ### Setting up the Bonsai environment
  To set up a Bonsai environment for running Delphi, use the terminal to clone the repo into a local folder:
@@ -52,7 +55,7 @@ The `data-schema` has three main groups of parameters to define: general metadat
 
 ```
 metadata:
-  animalId: plimbo
+  animalId: CK001
   loggingRootPath: C:\Users\user\data\
   chargeTime: 0.2
   minimumPokeTime: 0.1
@@ -62,9 +65,10 @@ metadata:
   maxVideoLength: 20
   minOdorDelivery: 0.1
   maxOdorDelivery: 8
-  switchTime1: 0.01
-  switchTime2: 0.02
+  switchTime1: 0.035
+  switchTime2: 0.025
   useVacuum: true
+  *There are more parameters to set now. Refer to "Checklist_HIW3_2024_updated....docx" file in Delphi > Design and Operations > Running the experiment
 
 cameraProperties:
   imagingRate: 100
@@ -74,10 +78,10 @@ cameraProperties:
 
 lineMappings:
   odorMap:
-    -   {name: "OdorA", line: 6}
-    -   {name: "OdorB", line: 7}
-    -   {name: "OdorC", line: 8}
-    -   {name: "OdorD", line: 9}
+    -   {name: "OdorA", line: 5}
+    -   {name: "OdorB", line: 6}
+    -   {name: "OdorC", line: 7}
+    -   {name: "OdorD", line: 8}
   portLine: 0
   vacuumLine: 2
   auxLine: 1
@@ -135,11 +139,11 @@ The following need to be installed once on a fresh new system in order to analyz
  2. `Ctrl+Shift+P` in VS Code > Python: Create Environment
    * Select Conda
    * Select Python 3.11 kernel
- 3. Ensure pip is upgraded:
+ 3. Ensure pip is upgraded by typying this into VSCode terminal:
     ```
     pip install --upgrade pip
     ```
- 4. From the terminal run `pip install -r requirements.txt`
+ 4. From the VSCode terminal run `pip install -r requirements.txt`
  5. Clone aeon_mecha into a separate directory 
     ```
     git clone https://github.com/SainsburyWellcomeCentre/aeon_mecha.git 
