@@ -11,7 +11,7 @@ using RuleSchema;
 [WorkflowElementCategory(ElementCategory.Transform)]
 public class UpdateTransitionState
 {
-    public IObservable<IDictionary<string, List<StateProbability>>> Process(IObservable<Tuple<Tuple<StateProbability, string>, Tuple<IDictionary<string, List<StateProbability>>, IDictionary<string, List<StateProbability>>>>> source)
+    public IObservable<IDictionary<string, List<string>>> Process(IObservable<Tuple<Tuple<string, string>, Tuple<IDictionary<string, List<string>>, IDictionary<string, List<string>>>>> source)
     {
         return source.Select(value =>
         {
@@ -22,7 +22,7 @@ public class UpdateTransitionState
 
             // remove the requested transition from the transition state
             updatedTransitionState[initiatingState]
-                .Remove(updatedTransitionState[initiatingState].Where(x => x.Name == requestedTransition.Name).First());
+                .Remove(updatedTransitionState[initiatingState].Where(x => x == requestedTransition).First());
 
             // if the available transitions at that key are now empty, reset from the original transition dict
             if (updatedTransitionState[initiatingState].Count == 0)

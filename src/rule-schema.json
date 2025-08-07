@@ -2,17 +2,6 @@
     "$id": "h...",
     "$schema": "https://json-schema.org/draft-07/schema",
     "definitions": {
-        "stateProbability": {
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "probability": {
-                    "description": "Denominator for the probability fraction. Probaility given as 1/this number",
-                    "type":"number"
-                }
-            }
-        },
         "stateDefinition": {
             "properties": {
                 "name": {
@@ -20,7 +9,7 @@
                 },
                 "transitionsTo": {
                     "items": {
-                        "$ref": "#/definitions/stateProbability"
+                        "type": "string"
                     },
                     "type": "array"
                 }

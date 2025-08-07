@@ -11,7 +11,7 @@ using RuleSchema;
 [WorkflowElementCategory(ElementCategory.Transform)]
 public class UniformSampleStateProbabilities
 {
-    public IObservable<StateProbability> Process(IObservable<List<StateProbability>> source)
+    public IObservable<string> Process(IObservable<List<string>> source)
     {
         return source.Select(value => Utils.GetUniformStateProbability(value));
     }

@@ -287,10 +287,10 @@
       <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:DelphiRule">
         <rx:Name>RuleSettings</rx:Name>
       </Expression>
-      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="scg:IDictionary(sys:String,scg:List(p1:StateProbability))">
+      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="scg:IDictionary(sys:String,scg:List(sys:String))">
         <rx:Name>TransitionLookup</rx:Name>
       </Expression>
-      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="scg:IDictionary(sys:String,scg:List(p1:StateProbability))">
+      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="scg:IDictionary(sys:String,scg:List(sys:String))">
         <rx:Name>TransitionLookupState</rx:Name>
       </Expression>
       <Expression xsi:type="ExternalizedMapping">
@@ -403,7 +403,7 @@
             </Expression>
             <Expression xsi:type="Index">
               <Operand xsi:type="StringProperty">
-                <Value>OdorC</Value>
+                <Value>OdorA</Value>
               </Operand>
             </Expression>
             <Expression xsi:type="Combinator">
@@ -439,7 +439,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:TryGetValueOrDefault">
-                <p2:Key>OdorC</p2:Key>
+                <p2:Key>OdorA</p2:Key>
                 <p2:DefaultString>DefaultState</p2:DefaultString>
               </Combinator>
             </Expression>
@@ -514,7 +514,7 @@
         <Combinator xsi:type="rx:Zip" />
       </Expression>
       <Expression xsi:type="MemberSelector">
-        <Selector>Item2.Item1.Name</Selector>
+        <Selector>Item2.Item1</Selector>
       </Expression>
       <Expression xsi:type="MulticastSubject">
         <Name>BeginState</Name>
