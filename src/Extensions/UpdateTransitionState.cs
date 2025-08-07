@@ -20,20 +20,16 @@ public class UpdateTransitionState
             var requestedTransition = value.Item1.Item1;
             var initiatingState = value.Item1.Item2;
 
-            Console.WriteLine("Iteration");
-            Console.WriteLine(originalTransition.GetHashCode());
-            Console.WriteLine(updatedTransitionState.GetHashCode());
-            Console.WriteLine(updatedTransitionState[initiatingState].Count);
-
             // remove the requested transition from the transition state
             updatedTransitionState[initiatingState]
                 .Remove(updatedTransitionState[initiatingState].Where(x => x.Name == requestedTransition.Name).First());
+
+            Console.WriteLine(updatedTransitionState[initiatingState].Count);
 
             // if the available transitions at that key are now empty, reset from the original transition dict
             if (updatedTransitionState[initiatingState].Count == 0)
             {
                 updatedTransitionState[initiatingState] = originalTransition[initiatingState].ToList();
-                Console.WriteLine(updatedTransitionState[initiatingState].Count);
             }
 
             return updatedTransitionState;
