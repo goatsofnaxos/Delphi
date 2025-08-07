@@ -9,10 +9,10 @@ using RuleSchema;
 [Combinator]
 [Description("")]
 [WorkflowElementCategory(ElementCategory.Transform)]
-public class PickWeightedState
+public class UniformSampleStateProbabilities
 {
-    public IObservable<string> Process(IObservable<List<StateProbability>> source)
+    public IObservable<string> Process(IObservable<List<string>> source)
     {
-        return source.Select(value => Utils.GetRandomState(value));
+        return source.Select(value => Utils.GetUniformStateProbability(value));
     }
 }

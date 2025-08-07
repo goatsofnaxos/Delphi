@@ -14,14 +14,14 @@ public class TryGetValueOrDefault
     public string Key {get; set;}
     public string DefaultString {get; set;}
 
-    public IObservable<List<StateProbability>> Process(IObservable<IDictionary<string, List<StateProbability>>> source)
+    public IObservable<List<string>> Process(IObservable<IDictionary<string, List<string>>> source)
     {
         return source.Select(value => {
-            List<StateProbability> element;
+            List<string> element;
             bool contained = value.TryGetValue(Key, out element);
             
-            return contained ? element : new List<StateProbability> {
-                new StateProbability { Name = DefaultString, Probability = 1}
+            return contained ? element : new List<string> {
+                DefaultString
             };
         });
     }

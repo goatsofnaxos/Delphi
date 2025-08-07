@@ -9,89 +9,7 @@ namespace RuleSchema
 {
     #pragma warning disable // Disable all warnings
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.4.0.0 (YamlDotNet v13.0.0.0)")]
-    [Bonsai.CombinatorAttribute()]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    public partial class StateProbability
-    {
-    
-        private string _name;
-    
-        private double _probability;
-    
-        public StateProbability()
-        {
-        }
-    
-        protected StateProbability(StateProbability other)
-        {
-            _name = other._name;
-            _probability = other._probability;
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="name")]
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
-    
-        /// <summary>
-        /// Denominator for the probability fraction. Probaility given as 1/this number
-        /// </summary>
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="probability")]
-        [System.ComponentModel.DescriptionAttribute("Denominator for the probability fraction. Probaility given as 1/this number")]
-        public double Probability
-        {
-            get
-            {
-                return _probability;
-            }
-            set
-            {
-                _probability = value;
-            }
-        }
-    
-        public System.IObservable<StateProbability> Process()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new StateProbability(this)));
-        }
-    
-        public System.IObservable<StateProbability> Process<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new StateProbability(this));
-        }
-    
-        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
-            stringBuilder.Append("name = " + _name + ", ");
-            stringBuilder.Append("probability = " + _probability);
-            return true;
-        }
-    
-        public override string ToString()
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" { ");
-            if (PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append("}");
-            return stringBuilder.ToString();
-        }
-    }
-
-
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.4.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class StateDefinition
@@ -99,7 +17,7 @@ namespace RuleSchema
     
         private string _name;
     
-        private System.Collections.Generic.List<StateProbability> _transitionsTo = new System.Collections.Generic.List<StateProbability>();
+        private System.Collections.Generic.List<string> _transitionsTo = new System.Collections.Generic.List<string>();
     
         public StateDefinition()
         {
@@ -126,7 +44,7 @@ namespace RuleSchema
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="transitionsTo")]
-        public System.Collections.Generic.List<StateProbability> TransitionsTo
+        public System.Collections.Generic.List<string> TransitionsTo
         {
             get
             {
@@ -170,13 +88,15 @@ namespace RuleSchema
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.4.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     public partial class DelphiRule
     {
     
         private string _ruleAlias = "undefined";
+    
+        private bool _sampleWithReplacement = true;
     
         private System.Collections.Generic.List<StateDefinition> _stateDefinitions = new System.Collections.Generic.List<StateDefinition>();
     
@@ -187,6 +107,7 @@ namespace RuleSchema
         protected DelphiRule(DelphiRule other)
         {
             _ruleAlias = other._ruleAlias;
+            _sampleWithReplacement = other._sampleWithReplacement;
             _stateDefinitions = other._stateDefinitions;
         }
     
@@ -204,6 +125,24 @@ namespace RuleSchema
             set
             {
                 _ruleAlias = value;
+            }
+        }
+    
+        /// <summary>
+        /// Defines whether state transitions should be sample with (true) or without (false) replacement
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="sampleWithReplacement")]
+        [System.ComponentModel.DescriptionAttribute("Defines whether state transitions should be sample with (true) or without (false)" +
+            " replacement")]
+        public bool SampleWithReplacement
+        {
+            get
+            {
+                return _sampleWithReplacement;
+            }
+            set
+            {
+                _sampleWithReplacement = value;
             }
         }
     
@@ -234,6 +173,7 @@ namespace RuleSchema
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("ruleAlias = " + _ruleAlias + ", ");
+            stringBuilder.Append("sampleWithReplacement = " + _sampleWithReplacement + ", ");
             stringBuilder.Append("stateDefinitions = " + _stateDefinitions);
             return true;
         }
@@ -256,7 +196,7 @@ namespace RuleSchema
     /// <summary>
     /// Serializes a sequence of data model objects into YAML strings.
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.4.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute("Serializes a sequence of data model objects into YAML strings.")]
     [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
@@ -271,11 +211,6 @@ namespace RuleSchema
                     .Build();
                 return System.Reactive.Linq.Observable.Select(source, value => serializer.Serialize(value)); 
             });
-        }
-
-        public System.IObservable<string> Process(System.IObservable<StateProbability> source)
-        {
-            return Process<StateProbability>(source);
         }
 
         public System.IObservable<string> Process(System.IObservable<StateDefinition> source)
@@ -293,11 +228,10 @@ namespace RuleSchema
     /// <summary>
     /// Deserializes a sequence of YAML strings into data model objects.
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.4.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute("Deserializes a sequence of YAML strings into data model objects.")]
     [System.ComponentModel.DefaultPropertyAttribute("Type")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StateProbability>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StateDefinition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiRule>))]
     public partial class DeserializeFromYaml : Bonsai.Expressions.SingleArgumentExpressionBuilder
