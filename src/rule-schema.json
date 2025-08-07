@@ -22,6 +22,11 @@
             "default": "undefined",
             "type": "string"
         },
+        "sampleWithReplacement": {
+            "type": "boolean",
+            "description": "Defines whether state transitions should be sample with (true) or without (false) replacement",
+            "default": "true"
+        },
         "stateDefinitions": {
             "items": {
                 "$ref": "#/definitions/stateDefinition"

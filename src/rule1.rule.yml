@@ -3,7 +3,7 @@
 # yaml-language-server: $schema=rule-schema.json
 
 ruleAlias: Rule1
-
+sampleWithReplacement: true
 stateDefinitions:
   -   {name: "OdorA", transitionsTo: ["DefaultState"]}
   -   {name: "OdorB", transitionsTo: ["DefaultState"]}

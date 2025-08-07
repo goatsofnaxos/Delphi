@@ -96,6 +96,8 @@ namespace RuleSchema
     
         private string _ruleAlias = "undefined";
     
+        private bool _sampleWithReplacement = true;
+    
         private System.Collections.Generic.List<StateDefinition> _stateDefinitions = new System.Collections.Generic.List<StateDefinition>();
     
         public DelphiRule()
@@ -105,6 +107,7 @@ namespace RuleSchema
         protected DelphiRule(DelphiRule other)
         {
             _ruleAlias = other._ruleAlias;
+            _sampleWithReplacement = other._sampleWithReplacement;
             _stateDefinitions = other._stateDefinitions;
         }
     
@@ -122,6 +125,24 @@ namespace RuleSchema
             set
             {
                 _ruleAlias = value;
+            }
+        }
+    
+        /// <summary>
+        /// Defines whether state transitions should be sample with (true) or without (false) replacement
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="sampleWithReplacement")]
+        [System.ComponentModel.DescriptionAttribute("Defines whether state transitions should be sample with (true) or without (false)" +
+            " replacement")]
+        public bool SampleWithReplacement
+        {
+            get
+            {
+                return _sampleWithReplacement;
+            }
+            set
+            {
+                _sampleWithReplacement = value;
             }
         }
     
@@ -152,6 +173,7 @@ namespace RuleSchema
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("ruleAlias = " + _ruleAlias + ", ");
+            stringBuilder.Append("sampleWithReplacement = " + _sampleWithReplacement + ", ");
             stringBuilder.Append("stateDefinitions = " + _stateDefinitions);
             return true;
         }
