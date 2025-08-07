@@ -24,8 +24,6 @@ public class UpdateTransitionState
             updatedTransitionState[initiatingState]
                 .Remove(updatedTransitionState[initiatingState].Where(x => x.Name == requestedTransition.Name).First());
 
-            Console.WriteLine(updatedTransitionState[initiatingState].Count);
-
             // if the available transitions at that key are now empty, reset from the original transition dict
             if (updatedTransitionState[initiatingState].Count == 0)
             {
