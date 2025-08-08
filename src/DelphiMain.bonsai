@@ -1046,7 +1046,7 @@
                           <Name>StateName</Name>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
-                          <Name>TransitionLookup</Name>
+                          <Name>TransitionLookupState</Name>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
                           <Name>StateComplete</Name>
