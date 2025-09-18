@@ -1,0 +1,46 @@
+%YAML 1.1
+---
+# yaml-language-server: $schema=data-schema.json
+
+metadata:
+  animalId: 2025082204
+  loggingRootPath: C:/Users/bvw8415/Delphi/HIW3/2025082204/
+  remoteTransferRootPath: C:/Users/bvw8415/OneDrive - Northwestern University/Andrew Jacob Pixley Fink - FinkLab-SharedDrive/DATA/Behavior/Delphi/RobocopyHIW/
+  chargeTime: 0.2
+  minimumPokeTime: 0.01
+  maximumPokeTime: 10
+  robocopyTimeInterval: 3600
+  maxVideoLength: 20
+  minOdorDelivery: 0.1
+  maxOdorDelivery: 8
+  switchTime1: 0.01
+  switchTime2: 0.02
+  useVacuum: true
+  vacuumDelay: 0.025
+  portValveCycleTime: 0.025
+  vacuumDuration: 0.07
+
+cameraProperties:
+  imagingRate: 60
+  exposureTime: 10000
+  serialNumber: "23604583"
+  preEventTime: 2.5
+  postEventTime: 2.5
+
+harpProperties:
+  comPort: COM5
+  showHarpLeds: false
+
+lineMappings:
+  odorMap:
+    -   {name: "OdorA1", line: 3}
+    -   {name: "OdorA2", line: 4}
+    -   {name: "OdorB1", line: 5}
+    -   {name: "OdorB2", line: 6}
+    -   {name: "OdorC1", line: 7}
+    -   {name: "OdorC2", line: 8}
+
+  portLine: 0
+  vacuumLine: 2
+  auxLine: 0
+  cameraTriggerLine: Pwm0ToOut1
