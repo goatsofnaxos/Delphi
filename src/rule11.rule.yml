@@ -1,0 +1,16 @@
+%YAML 1.1
+---
+# yaml-language-server: $schema=rule-schema.json
+
+ruleAlias: Rule11
+sampleWithReplacement: true
+stateDefinitions:
+  -   {name: "OdorA1", transitionsTo: ["OdorA2"]}
+  -   {name: "OdorA2", transitionsTo: ["DefaultStateA"]}
+  -   {name: "OdorB1", transitionsTo: ["OdorB2"]}
+  -   {name: "OdorB2", transitionsTo: ["DefaultStateB"]}
+  -   {name: "OdorC1", transitionsTo: ["OdorC2"]}
+  -   {name: "OdorC2", transitionsTo: ["DefaultStateC"]}
+  -   {name: "DefaultStateA", transitionsTo: ["OdorB1", "OdorC1"]}
+  -   {name: "DefaultStateB", transitionsTo: ["OdorA1", "OdorC1"]}
+  -   {name: "DefaultStateC", transitionsTo: ["OdorA1", "OdorB1"]}
