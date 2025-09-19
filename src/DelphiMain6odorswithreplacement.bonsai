@@ -43,7 +43,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:LoadSessionSettings">
-                <p2:Path> </p2:Path>
+                <p2:Path>DelphiSession4.yml</p2:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="Combinator">
