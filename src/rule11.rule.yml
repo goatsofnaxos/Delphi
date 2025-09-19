@@ -14,3 +14,4 @@ stateDefinitions:
   -   {name: "DefaultStateA", transitionsTo: ["OdorB1", "OdorC1"]}
   -   {name: "DefaultStateB", transitionsTo: ["OdorA1", "OdorC1"]}
   -   {name: "DefaultStateC", transitionsTo: ["OdorA1", "OdorB1"]}
+  -   {name: "DefaultState", transitionsTo: ["OdorA1", "OdorB1", "OdorC1"]}
