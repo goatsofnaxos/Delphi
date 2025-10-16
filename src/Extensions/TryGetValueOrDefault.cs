@@ -16,10 +16,11 @@ public class TryGetValueOrDefault
 
     public IObservable<List<string>> Process(IObservable<IDictionary<string, List<string>>> source)
     {
-        return source.Select(value => {
+        return source.Select(value =>
+        {
             List<string> element;
             bool contained = value.TryGetValue(Key, out element);
-            
+
             return contained ? element : new List<string> {
                 DefaultString
             };

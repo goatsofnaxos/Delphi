@@ -9,67 +9,85 @@ namespace RuleSchema
 {
     #pragma warning disable // Disable all warnings
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
-    [Bonsai.CombinatorAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    public partial class StateDefinition
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class DelphiRule
     {
     
-        private string _name;
+        private string _ruleAlias;
     
-        private System.Collections.Generic.List<string> _transitionsTo = new System.Collections.Generic.List<string>();
+        private bool _sampleWithoutReplacement;
     
-        public StateDefinition()
+        private System.Collections.Generic.List<StateDefinition> _stateDefinitions;
+    
+        public DelphiRule()
         {
+            _stateDefinitions = new System.Collections.Generic.List<StateDefinition>();
         }
     
-        protected StateDefinition(StateDefinition other)
+        protected DelphiRule(DelphiRule other)
         {
-            _name = other._name;
-            _transitionsTo = other._transitionsTo;
+            _ruleAlias = other._ruleAlias;
+            _sampleWithoutReplacement = other._sampleWithoutReplacement;
+            _stateDefinitions = other._stateDefinitions;
         }
     
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="name")]
-        public string Name
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="rule_alias")]
+        public string RuleAlias
         {
             get
             {
-                return _name;
+                return _ruleAlias;
             }
             set
             {
-                _name = value;
+                _ruleAlias = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="sample_without_replacement")]
+        public bool SampleWithoutReplacement
+        {
+            get
+            {
+                return _sampleWithoutReplacement;
+            }
+            set
+            {
+                _sampleWithoutReplacement = value;
             }
         }
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="transitionsTo")]
-        public System.Collections.Generic.List<string> TransitionsTo
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="state_definitions")]
+        public System.Collections.Generic.List<StateDefinition> StateDefinitions
         {
             get
             {
-                return _transitionsTo;
+                return _stateDefinitions;
             }
             set
             {
-                _transitionsTo = value;
+                _stateDefinitions = value;
             }
         }
     
-        public System.IObservable<StateDefinition> Process()
+        public System.IObservable<DelphiRule> Generate()
         {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new StateDefinition(this)));
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new DelphiRule(this)));
         }
     
-        public System.IObservable<StateDefinition> Process<TSource>(System.IObservable<TSource> source)
+        public System.IObservable<DelphiRule> Generate<TSource>(System.IObservable<TSource> source)
         {
-            return System.Reactive.Linq.Observable.Select(source, _ => new StateDefinition(this));
+            return System.Reactive.Linq.Observable.Select(source, _ => new DelphiRule(this));
         }
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
-            stringBuilder.Append("name = " + _name + ", ");
-            stringBuilder.Append("transitionsTo = " + _transitionsTo);
+            stringBuilder.Append("RuleAlias = " + _ruleAlias + ", ");
+            stringBuilder.Append("SampleWithoutReplacement = " + _sampleWithoutReplacement + ", ");
+            stringBuilder.Append("StateDefinitions = " + _stateDefinitions);
             return true;
         }
     
@@ -88,93 +106,148 @@ namespace RuleSchema
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
-    [Bonsai.CombinatorAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    public partial class DelphiRule
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class StateDefinition
     {
     
-        private string _ruleAlias = "undefined";
+        private string _name;
     
-        private bool _sampleWithReplacement = true;
+        private int _odorIndex;
     
-        private System.Collections.Generic.List<StateDefinition> _stateDefinitions = new System.Collections.Generic.List<StateDefinition>();
+        private System.Collections.Generic.List<string> _transitionsTo;
     
-        public DelphiRule()
+        public StateDefinition()
         {
+            _transitionsTo = new System.Collections.Generic.List<string>();
         }
     
-        protected DelphiRule(DelphiRule other)
+        protected StateDefinition(StateDefinition other)
         {
-            _ruleAlias = other._ruleAlias;
-            _sampleWithReplacement = other._sampleWithReplacement;
-            _stateDefinitions = other._stateDefinitions;
+            _name = other._name;
+            _odorIndex = other._odorIndex;
+            _transitionsTo = other._transitionsTo;
         }
     
-        /// <summary>
-        /// The name or alias of this rule
-        /// </summary>
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ruleAlias")]
-        [System.ComponentModel.DescriptionAttribute("The name or alias of this rule")]
-        public string RuleAlias
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="name")]
+        public string Name
         {
             get
             {
-                return _ruleAlias;
+                return _name;
             }
             set
             {
-                _ruleAlias = value;
+                _name = value;
             }
         }
     
-        /// <summary>
-        /// Defines whether state transitions should be sample with (true) or without (false) replacement
-        /// </summary>
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="sampleWithReplacement")]
-        [System.ComponentModel.DescriptionAttribute("Defines whether state transitions should be sample with (true) or without (false)" +
-            " replacement")]
-        public bool SampleWithReplacement
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="odor_index")]
+        public int OdorIndex
         {
             get
             {
-                return _sampleWithReplacement;
+                return _odorIndex;
             }
             set
             {
-                _sampleWithReplacement = value;
+                _odorIndex = value;
             }
         }
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="stateDefinitions")]
-        public System.Collections.Generic.List<StateDefinition> StateDefinitions
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="transitions_to")]
+        public System.Collections.Generic.List<string> TransitionsTo
         {
             get
             {
-                return _stateDefinitions;
+                return _transitionsTo;
             }
             set
             {
-                _stateDefinitions = value;
+                _transitionsTo = value;
             }
         }
     
-        public System.IObservable<DelphiRule> Process()
+        public System.IObservable<StateDefinition> Generate()
         {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new DelphiRule(this)));
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new StateDefinition(this)));
         }
     
-        public System.IObservable<DelphiRule> Process<TSource>(System.IObservable<TSource> source)
+        public System.IObservable<StateDefinition> Generate<TSource>(System.IObservable<TSource> source)
         {
-            return System.Reactive.Linq.Observable.Select(source, _ => new DelphiRule(this));
+            return System.Reactive.Linq.Observable.Select(source, _ => new StateDefinition(this));
         }
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
-            stringBuilder.Append("ruleAlias = " + _ruleAlias + ", ");
-            stringBuilder.Append("sampleWithReplacement = " + _sampleWithReplacement + ", ");
-            stringBuilder.Append("stateDefinitions = " + _stateDefinitions);
+            stringBuilder.Append("Name = " + _name + ", ");
+            stringBuilder.Append("OdorIndex = " + _odorIndex + ", ");
+            stringBuilder.Append("TransitionsTo = " + _transitionsTo);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class RuleSchema
+    {
+    
+        private DelphiRule _rule;
+    
+        public RuleSchema()
+        {
+            _rule = new DelphiRule();
+        }
+    
+        protected RuleSchema(RuleSchema other)
+        {
+            _rule = other._rule;
+        }
+    
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="rule")]
+        public DelphiRule Rule
+        {
+            get
+            {
+                return _rule;
+            }
+            set
+            {
+                _rule = value;
+            }
+        }
+    
+        public System.IObservable<RuleSchema> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new RuleSchema(this)));
+        }
+    
+        public System.IObservable<RuleSchema> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new RuleSchema(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("Rule = " + _rule);
             return true;
         }
     
@@ -196,10 +269,10 @@ namespace RuleSchema
     /// <summary>
     /// Serializes a sequence of data model objects into YAML strings.
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute("Serializes a sequence of data model objects into YAML strings.")]
-    [Bonsai.CombinatorAttribute()]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
+    [Bonsai.CombinatorAttribute()]
     public partial class SerializeToYaml
     {
     
@@ -213,14 +286,19 @@ namespace RuleSchema
             });
         }
 
+        public System.IObservable<string> Process(System.IObservable<DelphiRule> source)
+        {
+            return Process<DelphiRule>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<StateDefinition> source)
         {
             return Process<StateDefinition>(source);
         }
 
-        public System.IObservable<string> Process(System.IObservable<DelphiRule> source)
+        public System.IObservable<string> Process(System.IObservable<RuleSchema> source)
         {
-            return Process<DelphiRule>(source);
+            return Process<RuleSchema>(source);
         }
     }
 
@@ -228,18 +306,19 @@ namespace RuleSchema
     /// <summary>
     /// Deserializes a sequence of YAML strings into data model objects.
     /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.2.0.0 (YamlDotNet v13.0.0.0)")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute("Deserializes a sequence of YAML strings into data model objects.")]
     [System.ComponentModel.DefaultPropertyAttribute("Type")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StateDefinition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiRule>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StateDefinition>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RuleSchema>))]
     public partial class DeserializeFromYaml : Bonsai.Expressions.SingleArgumentExpressionBuilder
     {
     
         public DeserializeFromYaml()
         {
-            Type = new Bonsai.Expressions.TypeMapping<DelphiRule>();
+            Type = new Bonsai.Expressions.TypeMapping<RuleSchema>();
         }
 
         public Bonsai.Expressions.TypeMapping Type { get; set; }

@@ -39,4 +39,4 @@ if __name__ == "__main__":
 
     rule_schema = RuleSchema.model_json_schema()
     Path("src\schemas\\rule-schema.json").write_text(json.dumps(rule_schema, indent=2))
-    os.system("dotnet bonsai.sgen ""src\schemas\\\rule-schema.json"" -o src\Extensions --serializer yaml")
+    os.system("dotnet bonsai.sgen ""src\schemas\\rule-schema.json"" -o src\Extensions --serializer yaml")
