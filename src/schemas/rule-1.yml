@@ -4,8 +4,8 @@ rule:
   rule_alias: Standard
   sample_without_replacement: false
   state_definitions: [
-    {name: DefaultState, odor_index: 0, transitions_to: [OdorA]},
-    {name: OdorA, odor_index: 1, transitions_to: [OdorB]},
-    {name: OdorB, odor_index: 2, transitions_to: [OdorC]},
-    {name: OdorC, odor_index: 3, transitions_to: [OdorA]}
+    {name: DefaultState, odor_index: 5, transitions_to: [OdorA]},
+    {name: OdorA, odor_index: 0, transitions_to: [OdorB]},
+    {name: OdorB, odor_index: 1, transitions_to: [OdorC]},
+    {name: OdorC, odor_index: 2, transitions_to: [OdorA]}
   ]

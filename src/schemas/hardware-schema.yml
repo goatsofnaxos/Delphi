@@ -8,4 +8,4 @@ delphi_controller:
   odor_transition_time_us: 100000
   poke_pin: 22
   vacuum_setup_time_us: 100000
-  com_port: COM3
+  com_port: COM10
