@@ -1,0 +1,42 @@
+import json
+import numpy as np
+from typing import Annotated, Literal, Union, List
+from pydantic import BaseModel, Field, RootModel
+from enum import Enum
+from pathlib import Path
+import os
+
+class DelphiController(BaseModel):
+    final_valve_energized_time_us: int = Field(ge=0)
+    max_odor_delivery_time_us: int = Field(ge=0)
+    min_poke_time_us: int = Field(ge=0)
+    min_odor_delivery_time_us: int = Field(ge=0)
+    odor_transition_time_us: int = Field(ge=0)
+    poke_pin: int = Field(default=22, ge=0)
+    vacuum_setup_time_us: int = Field(ge=0)
+    com_port: str
+
+class HardwareSchema(BaseModel):
+    delphi_controller: DelphiController
+
+class StateDefinition(BaseModel):
+    name: str
+    odor_index: int
+    transitions_to: List[str]
+
+class DelphiRule(BaseModel):
+    rule_alias: str
+    sample_without_replacement: bool
+    state_definitions: List[StateDefinition]
+
+class RuleSchema(BaseModel):
+    rule: DelphiRule
+
+if __name__ == "__main__":
+    hardware_schema = HardwareSchema.model_json_schema()
+    Path("src\schemas\hardware-schema.json").write_text(json.dumps(hardware_schema, indent=2))
+    os.system("dotnet bonsai.sgen ""src\schemas\hardware-schema.json"" -o src\Extensions --serializer yaml")
+
+    rule_schema = RuleSchema.model_json_schema()
+    Path("src\schemas\\rule-schema.json").write_text(json.dumps(rule_schema, indent=2))
+    os.system("dotnet bonsai.sgen ""src\schemas\\\rule-schema.json"" -o src\Extensions --serializer yaml")

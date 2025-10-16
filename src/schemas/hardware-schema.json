@@ -1,0 +1,69 @@
+{
+  "$defs": {
+    "DelphiController": {
+      "properties": {
+        "final_valve_energized_time_us": {
+          "minimum": 0,
+          "title": "Final Valve Energized Time Us",
+          "type": "integer"
+        },
+        "max_odor_delivery_time_us": {
+          "minimum": 0,
+          "title": "Max Odor Delivery Time Us",
+          "type": "integer"
+        },
+        "min_poke_time_us": {
+          "minimum": 0,
+          "title": "Min Poke Time Us",
+          "type": "integer"
+        },
+        "min_odor_delivery_time_us": {
+          "minimum": 0,
+          "title": "Min Odor Delivery Time Us",
+          "type": "integer"
+        },
+        "odor_transition_time_us": {
+          "minimum": 0,
+          "title": "Odor Transition Time Us",
+          "type": "integer"
+        },
+        "poke_pin": {
+          "default": 22,
+          "minimum": 0,
+          "title": "Poke Pin",
+          "type": "integer"
+        },
+        "vacuum_setup_time_us": {
+          "minimum": 0,
+          "title": "Vacuum Setup Time Us",
+          "type": "integer"
+        },
+        "com_port": {
+          "title": "Com Port",
+          "type": "string"
+        }
+      },
+      "required": [
+        "final_valve_energized_time_us",
+        "max_odor_delivery_time_us",
+        "min_poke_time_us",
+        "min_odor_delivery_time_us",
+        "odor_transition_time_us",
+        "vacuum_setup_time_us",
+        "com_port"
+      ],
+      "title": "DelphiController",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "delphi_controller": {
+      "$ref": "#/$defs/DelphiController"
+    }
+  },
+  "required": [
+    "delphi_controller"
+  ],
+  "title": "HardwareSchema",
+  "type": "object"
+}

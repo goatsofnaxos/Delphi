@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=hardware-schema.json
+
+delphi_controller:
+  final_valve_energized_time_us: 1000000
+  max_odor_delivery_time_us: 4000000
+  min_poke_time_us: 50000
+  min_odor_delivery_time_us: 500000
+  odor_transition_time_us: 100000
+  poke_pin: 22
+  vacuum_setup_time_us: 100000
+  com_port: COM3

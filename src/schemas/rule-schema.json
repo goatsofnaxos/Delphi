@@ -1,0 +1,66 @@
+{
+  "$defs": {
+    "DelphiRule": {
+      "properties": {
+        "rule_alias": {
+          "title": "Rule Alias",
+          "type": "string"
+        },
+        "sample_without_replacement": {
+          "title": "Sample Without Replacement",
+          "type": "boolean"
+        },
+        "state_definitions": {
+          "items": {
+            "$ref": "#/$defs/StateDefinition"
+          },
+          "title": "State Definitions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "rule_alias",
+        "sample_without_replacement",
+        "state_definitions"
+      ],
+      "title": "DelphiRule",
+      "type": "object"
+    },
+    "StateDefinition": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "odor_index": {
+          "title": "Odor Index",
+          "type": "integer"
+        },
+        "transitions_to": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Transitions To",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "odor_index",
+        "transitions_to"
+      ],
+      "title": "StateDefinition",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "rule": {
+      "$ref": "#/$defs/DelphiRule"
+    }
+  },
+  "required": [
+    "rule"
+  ],
+  "title": "RuleSchema",
+  "type": "object"
+}
