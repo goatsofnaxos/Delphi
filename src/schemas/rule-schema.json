@@ -6,8 +6,8 @@
           "title": "Rule Alias",
           "type": "string"
         },
-        "sample_without_replacement": {
-          "title": "Sample Without Replacement",
+        "sample_with_replacement": {
+          "title": "Sample With Replacement",
           "type": "boolean"
         },
         "init_odor_index": {
@@ -24,7 +24,7 @@
       },
       "required": [
         "rule_alias",
-        "sample_without_replacement",
+        "sample_with_replacement",
         "init_odor_index",
         "state_definitions"
       ],

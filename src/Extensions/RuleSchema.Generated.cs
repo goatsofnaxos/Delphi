@@ -17,7 +17,7 @@ namespace RuleSchema
     
         private string _ruleAlias;
     
-        private bool _sampleWithoutReplacement;
+        private bool _sampleWithReplacement;
     
         private int _initOdorIndex;
     
@@ -31,7 +31,7 @@ namespace RuleSchema
         protected DelphiRule(DelphiRule other)
         {
             _ruleAlias = other._ruleAlias;
-            _sampleWithoutReplacement = other._sampleWithoutReplacement;
+            _sampleWithReplacement = other._sampleWithReplacement;
             _initOdorIndex = other._initOdorIndex;
             _stateDefinitions = other._stateDefinitions;
         }
@@ -49,16 +49,16 @@ namespace RuleSchema
             }
         }
     
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="sample_without_replacement")]
-        public bool SampleWithoutReplacement
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="sample_with_replacement")]
+        public bool SampleWithReplacement
         {
             get
             {
-                return _sampleWithoutReplacement;
+                return _sampleWithReplacement;
             }
             set
             {
-                _sampleWithoutReplacement = value;
+                _sampleWithReplacement = value;
             }
         }
     
@@ -102,7 +102,7 @@ namespace RuleSchema
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("RuleAlias = " + _ruleAlias + ", ");
-            stringBuilder.Append("SampleWithoutReplacement = " + _sampleWithoutReplacement + ", ");
+            stringBuilder.Append("SampleWithReplacement = " + _sampleWithReplacement + ", ");
             stringBuilder.Append("InitOdorIndex = " + _initOdorIndex + ", ");
             stringBuilder.Append("StateDefinitions = " + _stateDefinitions);
             return true;
