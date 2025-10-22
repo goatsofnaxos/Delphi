@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=hardware-schema.json
 
-logging_root_path: C:/TempData
-remote_transfer_root_path: Z:/TempData
+logging_root_path: C:\Users\delphi_basement\Delphi\temp_data
+remote_transfer_root_path: Z:\TempData
 
 delphi_controller:
   final_valve_energized_time_us: 1000000
@@ -11,9 +11,9 @@ delphi_controller:
   odor_transition_time_us: 100000
   poke_pin: 22
   vacuum_setup_time_us: 100000
-  com_port: COM10
+  com_port: COM4
 
 camera_settings:
   frame_rate: 60
   duty_cycle: 0.5
-  serial_number: test
+  serial_number: '25294881'

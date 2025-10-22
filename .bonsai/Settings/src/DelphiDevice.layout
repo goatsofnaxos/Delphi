@@ -1,2 +1,78 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<VisualizerLayout Version="2.9.0" />
+<VisualizerLayout Version="2.9.0">
+  <WindowSettings Index="3">
+    <NestedLayout>
+      <WindowSettings Index="27">
+        <Location>
+          <X>1171</X>
+          <Y>663</Y>
+        </Location>
+        <Size>
+          <Width>336</Width>
+          <Height>194</Height>
+        </Size>
+        <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
+        <VisualizerSettings>
+          <ObjectTextVisualizer />
+        </VisualizerSettings>
+      </WindowSettings>
+    </NestedLayout>
+  </WindowSettings>
+  <WindowSettings Index="7">
+    <Location>
+      <X>1447</X>
+      <Y>242</Y>
+    </Location>
+    <Size>
+      <Width>336</Width>
+      <Height>163</Height>
+    </Size>
+    <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
+    <VisualizerSettings>
+      <ObjectTextVisualizer />
+    </VisualizerSettings>
+  </WindowSettings>
+  <WindowSettings Index="16">
+    <Visible>false</Visible>
+    <Location>
+      <X>631</X>
+      <Y>407</Y>
+    </Location>
+    <Size>
+      <Width>336</Width>
+      <Height>282</Height>
+    </Size>
+    <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
+    <VisualizerSettings>
+      <ObjectTextVisualizer />
+    </VisualizerSettings>
+  </WindowSettings>
+  <WindowSettings Index="17">
+    <Location>
+      <X>675</X>
+      <Y>190</Y>
+    </Location>
+    <Size>
+      <Width>452</Width>
+      <Height>374</Height>
+    </Size>
+    <VisualizerTypeName>Bonsai.Vision.Design.IplImageVisualizer</VisualizerTypeName>
+    <VisualizerSettings>
+      <IplImageVisualizer />
+    </VisualizerSettings>
+  </WindowSettings>
+  <WindowSettings Index="18">
+    <Location>
+      <X>1118</X>
+      <Y>245</Y>
+    </Location>
+    <Size>
+      <Width>336</Width>
+      <Height>344</Height>
+    </Size>
+    <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
+    <VisualizerSettings>
+      <ObjectTextVisualizer />
+    </VisualizerSettings>
+  </WindowSettings>
+</VisualizerLayout>

@@ -3,7 +3,7 @@
 rule:
   rule_alias: Standard
   init_odor_index: 5
-  sample_without_replacement: false
+  sample_without_replacement: true
   state_definitions: [
     {name: DefaultState, odor_index: 5, transitions_to: [OdorA]},
     {name: OdorA, odor_index: 0, transitions_to: [OdorB]},
