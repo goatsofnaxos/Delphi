@@ -291,6 +291,10 @@ namespace HardwareSchema
     public partial class HardwareSchema
     {
     
+        private string _loggingRootPath;
+    
+        private string _remoteTransferRootPath;
+    
         private DelphiController _delphiController;
     
         private CameraSettings _cameraSettings;
@@ -303,8 +307,36 @@ namespace HardwareSchema
     
         protected HardwareSchema(HardwareSchema other)
         {
+            _loggingRootPath = other._loggingRootPath;
+            _remoteTransferRootPath = other._remoteTransferRootPath;
             _delphiController = other._delphiController;
             _cameraSettings = other._cameraSettings;
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="logging_root_path")]
+        public string LoggingRootPath
+        {
+            get
+            {
+                return _loggingRootPath;
+            }
+            set
+            {
+                _loggingRootPath = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="remote_transfer_root_path")]
+        public string RemoteTransferRootPath
+        {
+            get
+            {
+                return _remoteTransferRootPath;
+            }
+            set
+            {
+                _remoteTransferRootPath = value;
+            }
         }
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
@@ -347,6 +379,8 @@ namespace HardwareSchema
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
+            stringBuilder.Append("LoggingRootPath = " + _loggingRootPath + ", ");
+            stringBuilder.Append("RemoteTransferRootPath = " + _remoteTransferRootPath + ", ");
             stringBuilder.Append("DelphiController = " + _delphiController + ", ");
             stringBuilder.Append("CameraSettings = " + _cameraSettings);
             return true;

@@ -22,6 +22,8 @@ class CameraSettings(BaseModel):
     serial_number: str
 
 class HardwareSchema(BaseModel):
+    logging_root_path: str
+    remote_transfer_root_path: str
     delphi_controller: DelphiController
     camera_settings: CameraSettings
 

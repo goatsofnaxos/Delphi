@@ -1,5 +1,8 @@
 # yaml-language-server: $schema=hardware-schema.json
 
+logging_root_path: C:/TempData
+remote_transfer_root_path: Z:/TempData
+
 delphi_controller:
   final_valve_energized_time_us: 1000000
   max_odor_delivery_time_us: 4000000
