@@ -12,11 +12,16 @@
           "minimum": 0,
           "title": "Duty Cycle",
           "type": "number"
+        },
+        "serial_number": {
+          "title": "Serial Number",
+          "type": "string"
         }
       },
       "required": [
         "frame_rate",
-        "duty_cycle"
+        "duty_cycle",
+        "serial_number"
       ],
       "title": "CameraSettings",
       "type": "object"

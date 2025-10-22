@@ -19,6 +19,8 @@ namespace HardwareSchema
     
         private double _dutyCycle;
     
+        private string _serialNumber;
+    
         public CameraSettings()
         {
         }
@@ -27,6 +29,7 @@ namespace HardwareSchema
         {
             _frameRate = other._frameRate;
             _dutyCycle = other._dutyCycle;
+            _serialNumber = other._serialNumber;
         }
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="frame_rate")]
@@ -55,6 +58,19 @@ namespace HardwareSchema
             }
         }
     
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="serial_number")]
+        public string SerialNumber
+        {
+            get
+            {
+                return _serialNumber;
+            }
+            set
+            {
+                _serialNumber = value;
+            }
+        }
+    
         public System.IObservable<CameraSettings> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new CameraSettings(this)));
@@ -68,7 +84,8 @@ namespace HardwareSchema
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("FrameRate = " + _frameRate + ", ");
-            stringBuilder.Append("DutyCycle = " + _dutyCycle);
+            stringBuilder.Append("DutyCycle = " + _dutyCycle + ", ");
+            stringBuilder.Append("SerialNumber = " + _serialNumber);
             return true;
         }
     

@@ -13,3 +13,4 @@ delphi_controller:
 camera_settings:
   frame_rate: 60
   duty_cycle: 0.5
+  serial_number: test
