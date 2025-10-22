@@ -19,6 +19,8 @@ namespace RuleSchema
     
         private bool _sampleWithoutReplacement;
     
+        private int _initOdorIndex;
+    
         private System.Collections.Generic.List<StateDefinition> _stateDefinitions;
     
         public DelphiRule()
@@ -30,6 +32,7 @@ namespace RuleSchema
         {
             _ruleAlias = other._ruleAlias;
             _sampleWithoutReplacement = other._sampleWithoutReplacement;
+            _initOdorIndex = other._initOdorIndex;
             _stateDefinitions = other._stateDefinitions;
         }
     
@@ -56,6 +59,19 @@ namespace RuleSchema
             set
             {
                 _sampleWithoutReplacement = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="init_odor_index")]
+        public int InitOdorIndex
+        {
+            get
+            {
+                return _initOdorIndex;
+            }
+            set
+            {
+                _initOdorIndex = value;
             }
         }
     
@@ -87,6 +103,7 @@ namespace RuleSchema
         {
             stringBuilder.Append("RuleAlias = " + _ruleAlias + ", ");
             stringBuilder.Append("SampleWithoutReplacement = " + _sampleWithoutReplacement + ", ");
+            stringBuilder.Append("InitOdorIndex = " + _initOdorIndex + ", ");
             stringBuilder.Append("StateDefinitions = " + _stateDefinitions);
             return true;
         }

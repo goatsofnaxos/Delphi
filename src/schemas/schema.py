@@ -27,6 +27,7 @@ class StateDefinition(BaseModel):
 class DelphiRule(BaseModel):
     rule_alias: str
     sample_without_replacement: bool
+    init_odor_index: int
     state_definitions: List[StateDefinition]
 
 class RuleSchema(BaseModel):

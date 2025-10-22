@@ -10,6 +10,10 @@
           "title": "Sample Without Replacement",
           "type": "boolean"
         },
+        "init_odor_index": {
+          "title": "Init Odor Index",
+          "type": "integer"
+        },
         "state_definitions": {
           "items": {
             "$ref": "#/$defs/StateDefinition"
@@ -21,6 +25,7 @@
       "required": [
         "rule_alias",
         "sample_without_replacement",
+        "init_odor_index",
         "state_definitions"
       ],
       "title": "DelphiRule",
