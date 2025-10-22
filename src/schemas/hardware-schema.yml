@@ -9,3 +9,7 @@ delphi_controller:
   poke_pin: 22
   vacuum_setup_time_us: 100000
   com_port: COM10
+
+camera_settings:
+  frame_rate: 60
+  duty_cycle: 0.5

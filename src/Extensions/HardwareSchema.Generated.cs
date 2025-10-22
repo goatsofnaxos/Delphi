@@ -12,6 +12,84 @@ namespace HardwareSchema
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class CameraSettings
+    {
+    
+        private int _frameRate;
+    
+        private double _dutyCycle;
+    
+        public CameraSettings()
+        {
+        }
+    
+        protected CameraSettings(CameraSettings other)
+        {
+            _frameRate = other._frameRate;
+            _dutyCycle = other._dutyCycle;
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="frame_rate")]
+        public int FrameRate
+        {
+            get
+            {
+                return _frameRate;
+            }
+            set
+            {
+                _frameRate = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="duty_cycle")]
+        public double DutyCycle
+        {
+            get
+            {
+                return _dutyCycle;
+            }
+            set
+            {
+                _dutyCycle = value;
+            }
+        }
+    
+        public System.IObservable<CameraSettings> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new CameraSettings(this)));
+        }
+    
+        public System.IObservable<CameraSettings> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new CameraSettings(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("FrameRate = " + _frameRate + ", ");
+            stringBuilder.Append("DutyCycle = " + _dutyCycle);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
     public partial class DelphiController
     {
     
@@ -198,14 +276,18 @@ namespace HardwareSchema
     
         private DelphiController _delphiController;
     
+        private CameraSettings _cameraSettings;
+    
         public HardwareSchema()
         {
             _delphiController = new DelphiController();
+            _cameraSettings = new CameraSettings();
         }
     
         protected HardwareSchema(HardwareSchema other)
         {
             _delphiController = other._delphiController;
+            _cameraSettings = other._cameraSettings;
         }
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
@@ -222,6 +304,20 @@ namespace HardwareSchema
             }
         }
     
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="camera_settings")]
+        public CameraSettings CameraSettings
+        {
+            get
+            {
+                return _cameraSettings;
+            }
+            set
+            {
+                _cameraSettings = value;
+            }
+        }
+    
         public System.IObservable<HardwareSchema> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new HardwareSchema(this)));
@@ -234,7 +330,8 @@ namespace HardwareSchema
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
-            stringBuilder.Append("DelphiController = " + _delphiController);
+            stringBuilder.Append("DelphiController = " + _delphiController + ", ");
+            stringBuilder.Append("CameraSettings = " + _cameraSettings);
             return true;
         }
     
@@ -273,6 +370,11 @@ namespace HardwareSchema
             });
         }
 
+        public System.IObservable<string> Process(System.IObservable<CameraSettings> source)
+        {
+            return Process<CameraSettings>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<DelphiController> source)
         {
             return Process<DelphiController>(source);
@@ -292,6 +394,7 @@ namespace HardwareSchema
     [System.ComponentModel.DescriptionAttribute("Deserializes a sequence of YAML strings into data model objects.")]
     [System.ComponentModel.DefaultPropertyAttribute("Type")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HardwareSchema>))]
     public partial class DeserializeFromYaml : Bonsai.Expressions.SingleArgumentExpressionBuilder

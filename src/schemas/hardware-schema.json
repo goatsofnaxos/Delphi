@@ -1,5 +1,26 @@
 {
   "$defs": {
+    "CameraSettings": {
+      "properties": {
+        "frame_rate": {
+          "minimum": 0,
+          "title": "Frame Rate",
+          "type": "integer"
+        },
+        "duty_cycle": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Duty Cycle",
+          "type": "number"
+        }
+      },
+      "required": [
+        "frame_rate",
+        "duty_cycle"
+      ],
+      "title": "CameraSettings",
+      "type": "object"
+    },
     "DelphiController": {
       "properties": {
         "final_valve_energized_time_us": {
@@ -59,10 +80,14 @@
   "properties": {
     "delphi_controller": {
       "$ref": "#/$defs/DelphiController"
+    },
+    "camera_settings": {
+      "$ref": "#/$defs/CameraSettings"
     }
   },
   "required": [
-    "delphi_controller"
+    "delphi_controller",
+    "camera_settings"
   ],
   "title": "HardwareSchema",
   "type": "object"

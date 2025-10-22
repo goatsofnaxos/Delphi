@@ -16,8 +16,13 @@ class DelphiController(BaseModel):
     vacuum_setup_time_us: int = Field(ge=0)
     com_port: str
 
+class CameraSettings(BaseModel):
+    frame_rate: int = Field(ge=0)
+    duty_cycle: float = Field(ge=0, le=1)
+
 class HardwareSchema(BaseModel):
     delphi_controller: DelphiController
+    camera_settings: CameraSettings
 
 class StateDefinition(BaseModel):
     name: str
