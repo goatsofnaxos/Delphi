@@ -45,7 +45,7 @@
       </WindowSettings>
     </NestedLayout>
   </WindowSettings>
-  <WindowSettings Index="7">
+  <WindowSettings Index="15">
     <Visible>false</Visible>
     <Location>
       <X>1378</X>
@@ -60,7 +60,7 @@
       <ObjectTextVisualizer />
     </VisualizerSettings>
   </WindowSettings>
-  <WindowSettings Index="18">
+  <WindowSettings Index="20">
     <Visible>false</Visible>
     <Location>
       <X>1008</X>

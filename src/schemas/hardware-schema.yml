@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=hardware-schema.json
 
 logging_root_path: C:\Users\delphi_basement\Delphi\temp_data
-remote_transfer_root_path: Z:\TempData
+remote_transfer_root_path: C:\Users\delphi_basement\Northwestern University\finklab_sharepoint - Delphi_backup\rec_411
 
 delphi_controller:
   final_valve_energized_time_us: 1000000
