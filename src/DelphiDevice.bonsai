@@ -644,7 +644,7 @@
             <Expression xsi:type="p3:CreateMessage">
               <harp:MessageType>Write</harp:MessageType>
               <harp:Payload xsi:type="p3:CreateQueuedOdorIndexPayload">
-                <p3:QueuedOdorIndex>2</p3:QueuedOdorIndex>
+                <p3:QueuedOdorIndex>0</p3:QueuedOdorIndex>
               </harp:Payload>
             </Expression>
             <Expression xsi:type="MulticastSubject">
@@ -767,7 +767,7 @@
                   </Expression>
                   <Expression xsi:type="Index">
                     <Operand xsi:type="StringProperty">
-                      <Value>OdorC</Value>
+                      <Value>OdorA</Value>
                     </Operand>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
@@ -832,7 +832,7 @@
                   </Expression>
                   <Expression xsi:type="Index">
                     <Operand xsi:type="StringProperty">
-                      <Value>OdorC</Value>
+                      <Value>OdorA</Value>
                     </Operand>
                   </Expression>
                   <Expression xsi:type="MemberSelector">

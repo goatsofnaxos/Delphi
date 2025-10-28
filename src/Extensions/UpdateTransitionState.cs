@@ -39,7 +39,12 @@ public class UpdateTransitionState
         return source.Select(value =>
         {
             var originalTransition = value.Item2.Item1;
-            var updatedTransitionState = value.Item2.Item2.ToDictionary(entry => entry.Key, entry => entry.Value);
+            var updatedTransitionState = value.Item2.Item2.ToDictionary(entry => entry.Key, entry => new StateDefinition
+            {
+                Name = entry.Value.Name,
+                OdorIndex = entry.Value.OdorIndex,
+                TransitionsTo = entry.Value.TransitionsTo.ToList()
+            });
             var requestedTransition = value.Item1.Item1;
             var initiatingState = value.Item1.Item2;
 
@@ -50,7 +55,18 @@ public class UpdateTransitionState
             // if the available transitions at that key are now empty, reset from the original transition dict
             if (updatedTransitionState[initiatingState].TransitionsTo.Count == 0)
             {
+                Console.WriteLine("Exhausted transitions");
                 updatedTransitionState[initiatingState] = originalTransition[initiatingState];
+            }
+
+            foreach (var kvp in updatedTransitionState)
+            {
+                Console.WriteLine("(" + kvp.Key + ")");
+                Console.WriteLine("----");
+                foreach (var v in kvp.Value.TransitionsTo)
+                {
+                    Console.WriteLine(v);
+                }
             }
 
             return updatedTransitionState;
