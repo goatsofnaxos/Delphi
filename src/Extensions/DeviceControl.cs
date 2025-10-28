@@ -67,8 +67,8 @@ namespace Extensions.Extensions
             source.OnReceiveSessionChange += (sender, e) =>
             {
                 ClearLineLabels();
-                UpdateLineLabels(e);
-                currentAnimalLabel.Text = e.Metadata.AnimalId;
+                // UpdateLineLabels(e);
+                currentAnimalLabel.Text = e.AnimalId;
             };
 
             // Detect session rule change

@@ -5,8 +5,8 @@ rule:
   init_odor_index: 5
   sample_with_replacement: true
   state_definitions: [
-    {name: DefaultState, odor_index: 5, transitions_to: [OdorA]},
-    {name: OdorA, odor_index: 0, transitions_to: [OdorB]},
-    {name: OdorB, odor_index: 1, transitions_to: [OdorC]},
-    {name: OdorC, odor_index: 2, transitions_to: [DefaultState]}
+    {name: DefaultState, odor_name: Default, transitions_to: [OdorA]},
+    {name: OdorA, odor_name: OdorA, transitions_to: [OdorB]},
+    {name: OdorB, odor_name: OdorB, transitions_to: [OdorC]},
+    {name: OdorC, odor_name: OdorC, transitions_to: [DefaultState]}
   ]

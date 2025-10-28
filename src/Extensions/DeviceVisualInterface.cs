@@ -10,13 +10,14 @@ using System.Reactive;
 using Extensions.Extensions;
 using System.Runtime.CompilerServices;
 using DataSchema;
+using HardwareSchema;
 
 [Combinator]
 [TypeVisualizer(typeof(DeviceVisualizer))]
 public class DeviceVisualInterface
 {
     public event EventHandler<HarpMessage> OnReceiveHarpMessage;
-    public event EventHandler<DelphiSession> OnReceiveSessionChange;
+    public event EventHandler<HardwareSchema.HardwareSchema> OnReceiveSessionChange;
     public event EventHandler<string> OnReceiveRuleChange;
     public event EventHandler<string> OnReceiveStateChange;
     public event EventHandler<int> OnReceivePokeCountChange;
@@ -53,7 +54,7 @@ public class DeviceVisualInterface
         });
     }
 
-    public IObservable<HarpMessage> Process(IObservable<HarpMessage> source, IObservable<DelphiSession> session, IObservable<string> rule, IObservable<string> state, IObservable<int> pokeCount, IObservable<int> stimCount)
+    public IObservable<HarpMessage> Process(IObservable<HarpMessage> source, IObservable<HardwareSchema.HardwareSchema> session, IObservable<string> rule, IObservable<string> state, IObservable<int> pokeCount, IObservable<int> stimCount)
     {
         return Observable.Create<HarpMessage>(observer => {
 
@@ -67,7 +68,7 @@ public class DeviceVisualInterface
             );
 
             // TODO - all these observers should probably be replaced by a single RuleState/poke observer, could have this as a data class in the schema
-            var sessionObserver = Observer.Create<DelphiSession>(   
+            var sessionObserver = Observer.Create<HardwareSchema.HardwareSchema>(   
                 message =>
                 {
                     OnReceiveSessionChange.Invoke(this, message);

@@ -80,9 +80,31 @@
       ],
       "title": "DelphiController",
       "type": "object"
+    },
+    "LineMapping": {
+      "properties": {
+        "odor_name": {
+          "title": "Odor Name",
+          "type": "string"
+        },
+        "odor_index": {
+          "title": "Odor Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "odor_name",
+        "odor_index"
+      ],
+      "title": "LineMapping",
+      "type": "object"
     }
   },
   "properties": {
+    "animal_id": {
+      "title": "Animal Id",
+      "type": "string"
+    },
     "logging_root_path": {
       "title": "Logging Root Path",
       "type": "string"
@@ -96,13 +118,22 @@
     },
     "camera_settings": {
       "$ref": "#/$defs/CameraSettings"
+    },
+    "line_mappings": {
+      "items": {
+        "$ref": "#/$defs/LineMapping"
+      },
+      "title": "Line Mappings",
+      "type": "array"
     }
   },
   "required": [
+    "animal_id",
     "logging_root_path",
     "remote_transfer_root_path",
     "delphi_controller",
-    "camera_settings"
+    "camera_settings",
+    "line_mappings"
   ],
   "title": "HardwareSchema",
   "type": "object"

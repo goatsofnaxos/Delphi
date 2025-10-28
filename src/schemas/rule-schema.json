@@ -37,9 +37,9 @@
           "title": "Name",
           "type": "string"
         },
-        "odor_index": {
-          "title": "Odor Index",
-          "type": "integer"
+        "odor_name": {
+          "title": "Odor Name",
+          "type": "string"
         },
         "transitions_to": {
           "items": {
@@ -51,7 +51,7 @@
       },
       "required": [
         "name",
-        "odor_index",
+        "odor_name",
         "transitions_to"
       ],
       "title": "StateDefinition",

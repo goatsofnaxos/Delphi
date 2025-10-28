@@ -21,15 +21,21 @@ class CameraSettings(BaseModel):
     duty_cycle: float = Field(ge=0, le=1)
     serial_number: str
 
+class LineMapping(BaseModel):
+    odor_name: str
+    odor_index: int
+
 class HardwareSchema(BaseModel):
+    animal_id: str
     logging_root_path: str
     remote_transfer_root_path: str
     delphi_controller: DelphiController
     camera_settings: CameraSettings
+    line_mappings: List[LineMapping]
 
 class StateDefinition(BaseModel):
     name: str
-    odor_index: int
+    odor_name: str
     transitions_to: List[str]
 
 class DelphiRule(BaseModel):

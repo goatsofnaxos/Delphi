@@ -131,7 +131,7 @@ namespace RuleSchema
     
         private string _name;
     
-        private int _odorIndex;
+        private string _odorName;
     
         private System.Collections.Generic.List<string> _transitionsTo;
     
@@ -143,7 +143,7 @@ namespace RuleSchema
         protected StateDefinition(StateDefinition other)
         {
             _name = other._name;
-            _odorIndex = other._odorIndex;
+            _odorName = other._odorName;
             _transitionsTo = other._transitionsTo;
         }
     
@@ -160,16 +160,16 @@ namespace RuleSchema
             }
         }
     
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="odor_index")]
-        public int OdorIndex
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="odor_name")]
+        public string OdorName
         {
             get
             {
-                return _odorIndex;
+                return _odorName;
             }
             set
             {
-                _odorIndex = value;
+                _odorName = value;
             }
         }
     
@@ -200,7 +200,7 @@ namespace RuleSchema
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("Name = " + _name + ", ");
-            stringBuilder.Append("OdorIndex = " + _odorIndex + ", ");
+            stringBuilder.Append("OdorName = " + _odorName + ", ");
             stringBuilder.Append("TransitionsTo = " + _transitionsTo);
             return true;
         }
