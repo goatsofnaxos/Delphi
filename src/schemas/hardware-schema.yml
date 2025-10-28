@@ -3,12 +3,16 @@
 animal_id: plimbo
 logging_root_path: C:\Users\delphi_basement\Delphi\temp_data
 remote_transfer_root_path: C:\Users\delphi_basement\Northwestern University\finklab_sharepoint - Delphi_backup\rec_411
-line_mappings: [
-  {odor_name: OdorA, odor_index: 0},
-  {odor_name: OdorB, odor_index: 1},
-  {odor_name: OdorC, odor_index: 2},
-  {odor_name: Default, odor_index: 5}
-]
+mappings: 
+  odor_mappings: [
+    {odor_name: OdorA, odor_index: 0},
+    {odor_name: OdorB, odor_index: 1},
+    {odor_name: OdorC, odor_index: 2},
+    {odor_name: Default, odor_index: 5}
+  ]
+  port_line: 0
+  vacuum_line: 1
+
 delphi_controller:
   final_valve_energized_time_us: 1000000
   max_odor_delivery_time_us: 4000000

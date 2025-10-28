@@ -366,6 +366,103 @@ namespace HardwareSchema
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class LineMappings
+    {
+    
+        private System.Collections.Generic.List<LineMapping> _odorMappings;
+    
+        private int _portLine;
+    
+        private int _vacuumLine;
+    
+        public LineMappings()
+        {
+            _odorMappings = new System.Collections.Generic.List<LineMapping>();
+        }
+    
+        protected LineMappings(LineMappings other)
+        {
+            _odorMappings = other._odorMappings;
+            _portLine = other._portLine;
+            _vacuumLine = other._vacuumLine;
+        }
+    
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="odor_mappings")]
+        public System.Collections.Generic.List<LineMapping> OdorMappings
+        {
+            get
+            {
+                return _odorMappings;
+            }
+            set
+            {
+                _odorMappings = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="port_line")]
+        public int PortLine
+        {
+            get
+            {
+                return _portLine;
+            }
+            set
+            {
+                _portLine = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="vacuum_line")]
+        public int VacuumLine
+        {
+            get
+            {
+                return _vacuumLine;
+            }
+            set
+            {
+                _vacuumLine = value;
+            }
+        }
+    
+        public System.IObservable<LineMappings> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new LineMappings(this)));
+        }
+    
+        public System.IObservable<LineMappings> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new LineMappings(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("OdorMappings = " + _odorMappings + ", ");
+            stringBuilder.Append("PortLine = " + _portLine + ", ");
+            stringBuilder.Append("VacuumLine = " + _vacuumLine);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
     public partial class HardwareSchema
     {
     
@@ -379,13 +476,13 @@ namespace HardwareSchema
     
         private CameraSettings _cameraSettings;
     
-        private System.Collections.Generic.List<LineMapping> _lineMappings;
+        private LineMappings _mappings;
     
         public HardwareSchema()
         {
             _delphiController = new DelphiController();
             _cameraSettings = new CameraSettings();
-            _lineMappings = new System.Collections.Generic.List<LineMapping>();
+            _mappings = new LineMappings();
         }
     
         protected HardwareSchema(HardwareSchema other)
@@ -395,7 +492,7 @@ namespace HardwareSchema
             _remoteTransferRootPath = other._remoteTransferRootPath;
             _delphiController = other._delphiController;
             _cameraSettings = other._cameraSettings;
-            _lineMappings = other._lineMappings;
+            _mappings = other._mappings;
         }
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="animal_id")]
@@ -466,16 +563,16 @@ namespace HardwareSchema
         }
     
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="line_mappings")]
-        public System.Collections.Generic.List<LineMapping> LineMappings
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="mappings")]
+        public LineMappings Mappings
         {
             get
             {
-                return _lineMappings;
+                return _mappings;
             }
             set
             {
-                _lineMappings = value;
+                _mappings = value;
             }
         }
     
@@ -496,7 +593,7 @@ namespace HardwareSchema
             stringBuilder.Append("RemoteTransferRootPath = " + _remoteTransferRootPath + ", ");
             stringBuilder.Append("DelphiController = " + _delphiController + ", ");
             stringBuilder.Append("CameraSettings = " + _cameraSettings + ", ");
-            stringBuilder.Append("LineMappings = " + _lineMappings);
+            stringBuilder.Append("Mappings = " + _mappings);
             return true;
         }
     
@@ -550,6 +647,11 @@ namespace HardwareSchema
             return Process<LineMapping>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<LineMappings> source)
+        {
+            return Process<LineMappings>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<HardwareSchema> source)
         {
             return Process<HardwareSchema>(source);
@@ -567,6 +669,7 @@ namespace HardwareSchema
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineMapping>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LineMappings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HardwareSchema>))]
     public partial class DeserializeFromYaml : Bonsai.Expressions.SingleArgumentExpressionBuilder
     {

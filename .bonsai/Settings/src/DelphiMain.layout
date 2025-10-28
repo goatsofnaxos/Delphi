@@ -1,2 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<VisualizerLayout Version="2.9.0" />
+<VisualizerLayout Version="2.9.0">
+  <WindowSettings Index="23">
+    <Visible>false</Visible>
+    <Location>
+      <X>829</X>
+      <Y>304</Y>
+    </Location>
+    <Size>
+      <Width>392</Width>
+      <Height>390</Height>
+    </Size>
+    <VisualizerTypeName>Extensions.Extensions.DeviceVisualizer</VisualizerTypeName>
+    <VisualizerSettings>
+      <DeviceVisualizer />
+    </VisualizerSettings>
+  </WindowSettings>
+</VisualizerLayout>

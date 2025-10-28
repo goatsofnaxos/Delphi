@@ -67,7 +67,7 @@ namespace Extensions.Extensions
             source.OnReceiveSessionChange += (sender, e) =>
             {
                 ClearLineLabels();
-                // UpdateLineLabels(e);
+                UpdateLineLabels(e);
                 currentAnimalLabel.Text = e.AnimalId;
             };
 
@@ -105,11 +105,11 @@ namespace Extensions.Extensions
             }
         }
 
-        private void UpdateLineLabels(DelphiSession session) {
-            var lineMappings = session.LineMappings;
+        private void UpdateLineLabels(HardwareSchema.HardwareSchema session) {
+            var lineMappings = session.Mappings;
 
-            foreach (LineMapping mapping in lineMappings.OdorMap) {
-                lineLabels[mapping.Line].Text = mapping.Name;
+            foreach (HardwareSchema.LineMapping mapping in lineMappings.OdorMappings) {
+                lineLabels[mapping.OdorIndex + 2].Text = mapping.OdorName;
             }
 
             lineLabels[lineMappings.PortLine].Text = "Port";

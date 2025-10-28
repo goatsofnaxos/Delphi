@@ -25,13 +25,18 @@ class LineMapping(BaseModel):
     odor_name: str
     odor_index: int
 
+class LineMappings(BaseModel):
+    odor_mappings: List[LineMapping]
+    port_line: int
+    vacuum_line: int
+
 class HardwareSchema(BaseModel):
     animal_id: str
     logging_root_path: str
     remote_transfer_root_path: str
     delphi_controller: DelphiController
     camera_settings: CameraSettings
-    line_mappings: List[LineMapping]
+    mappings: LineMappings
 
 class StateDefinition(BaseModel):
     name: str

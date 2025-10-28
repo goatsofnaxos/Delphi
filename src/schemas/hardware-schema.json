@@ -98,6 +98,32 @@
       ],
       "title": "LineMapping",
       "type": "object"
+    },
+    "LineMappings": {
+      "properties": {
+        "odor_mappings": {
+          "items": {
+            "$ref": "#/$defs/LineMapping"
+          },
+          "title": "Odor Mappings",
+          "type": "array"
+        },
+        "port_line": {
+          "title": "Port Line",
+          "type": "integer"
+        },
+        "vacuum_line": {
+          "title": "Vacuum Line",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "odor_mappings",
+        "port_line",
+        "vacuum_line"
+      ],
+      "title": "LineMappings",
+      "type": "object"
     }
   },
   "properties": {
@@ -119,12 +145,8 @@
     "camera_settings": {
       "$ref": "#/$defs/CameraSettings"
     },
-    "line_mappings": {
-      "items": {
-        "$ref": "#/$defs/LineMapping"
-      },
-      "title": "Line Mappings",
-      "type": "array"
+    "mappings": {
+      "$ref": "#/$defs/LineMappings"
     }
   },
   "required": [
@@ -133,7 +155,7 @@
     "remote_transfer_root_path",
     "delphi_controller",
     "camera_settings",
-    "line_mappings"
+    "mappings"
   ],
   "title": "HardwareSchema",
   "type": "object"
