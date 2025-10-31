@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=hardware-schema.json
 
 animal_id: plimbo
-logging_root_path: C:\Users\delphi_basement\Delphi\temp_data
-remote_transfer_root_path: C:\Users\delphi_basement\Northwestern University\finklab_sharepoint - Delphi_backup\rec_411
+logging_root_path: C:\temp_data
+remote_transfer_root_path: C:\temp_data
 mappings: 
   odor_mappings: [
     {odor_name: OdorA, odor_index: 0},

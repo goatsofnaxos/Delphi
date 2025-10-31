@@ -208,11 +208,6 @@
             <Expression xsi:type="rx:BehaviorSubject" TypeArguments="harp:HarpMessage">
               <rx:Name>DelphiCommands</rx:Name>
             </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="rx:Delay">
-                <rx:DueTime>PT0.1S</rx:DueTime>
-              </Combinator>
-            </Expression>
             <Expression xsi:type="ExternalizedMapping">
               <Property Name="Name" DisplayName="ControllerSettings" />
             </Expression>
@@ -242,6 +237,11 @@
               <Name>DelphiEvents</Name>
             </Expression>
             <Expression xsi:type="Unit" />
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Delay">
+                <rx:DueTime>PT2S</rx:DueTime>
+              </Combinator>
+            </Expression>
             <Expression xsi:type="GroupWorkflow">
               <Name>DisableFSM</Name>
               <Workflow>
@@ -734,13 +734,13 @@
             </Expression>
           </Nodes>
           <Edges>
-            <Edge From="0" To="1" Label="Source1" />
-            <Edge From="1" To="6" Label="Source1" />
+            <Edge From="0" To="5" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
             <Edge From="2" To="3" Label="Source1" />
             <Edge From="3" To="4" Label="Source1" />
-            <Edge From="4" To="5" Label="Source1" />
-            <Edge From="5" To="6" Label="Source2" />
-            <Edge From="6" To="7" Label="Source1" />
+            <Edge From="4" To="5" Label="Source2" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
             <Edge From="8" To="9" Label="Source1" />
             <Edge From="9" To="10" Label="Source1" />
             <Edge From="10" To="11" Label="Source1" />
@@ -1599,13 +1599,19 @@
           <Name>StopCamera</Name>
         </Builder>
       </Expression>
-      <Expression xsi:type="SubscribeSubject">
-        <Name>DelphiEvents</Name>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="SubscribeSubject">
+          <Name>DelphiEvents</Name>
+        </Builder>
       </Expression>
-      <Expression xsi:type="p3:Parse">
-        <harp:Register xsi:type="p3:QueuedOdorIndex" />
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="p3:Parse">
+          <harp:Register xsi:type="p3:QueuedOdorIndex" />
+        </Builder>
       </Expression>
-      <Expression xsi:type="VisualizerMapping" />
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="VisualizerMapping" />
+      </Expression>
       <Expression xsi:type="Disable">
         <Builder xsi:type="SubscribeSubject">
           <Name>VideoFeed</Name>
@@ -1619,106 +1625,124 @@
       <Expression xsi:type="Disable">
         <Builder xsi:type="VisualizerMapping" />
       </Expression>
-      <Expression xsi:type="SubscribeSubject">
-        <Name>DelphiEvents</Name>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="SubscribeSubject">
+          <Name>DelphiEvents</Name>
+        </Builder>
       </Expression>
-      <Expression xsi:type="VisualizerMapping" />
-      <Expression xsi:type="viz:TableLayoutPanelBuilder">
-        <viz:ColumnCount>3</viz:ColumnCount>
-        <viz:RowCount>1</viz:RowCount>
-        <viz:ColumnStyles />
-        <viz:RowStyles />
-        <viz:CellSpans />
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="VisualizerMapping" />
       </Expression>
-      <Expression xsi:type="GroupWorkflow">
-        <Name>DelphiVisualizer</Name>
-        <Workflow>
-          <Nodes>
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Name" DisplayName="EventsInSubject" />
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>DelphiEvents</Name>
-            </Expression>
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Name" DisplayName="SessionSettingsSubject" />
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>HardwareSchema</Name>
-            </Expression>
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Name" DisplayName="RuleSettingsSubject" />
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>RuleSettings</Name>
-            </Expression>
-            <Expression xsi:type="MemberSelector">
-              <Selector>Rule.RuleAlias</Selector>
-            </Expression>
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Name" DisplayName="CurrentStateSubject" />
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>CurrentState</Name>
-            </Expression>
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Name" DisplayName="PokeOnsetSubject" />
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>PokeOnset</Name>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="IntProperty">
-                <Value>1</Value>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="rx:Accumulate" />
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Name" DisplayName="StimOnsetSubject" />
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>StimulusDelivered</Name>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="IntProperty">
-                <Value>1</Value>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="rx:Accumulate" />
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p5:DeviceVisualInterface" />
-            </Expression>
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Name" DisplayName="EventsOutSubject" />
-            </Expression>
-            <Expression xsi:type="MulticastSubject">
-              <Name>DelphiCommands</Name>
-            </Expression>
-            <Expression xsi:type="WorkflowOutput" />
-          </Nodes>
-          <Edges>
-            <Edge From="0" To="1" Label="Source1" />
-            <Edge From="1" To="17" Label="Source1" />
-            <Edge From="2" To="3" Label="Source1" />
-            <Edge From="3" To="17" Label="Source2" />
-            <Edge From="4" To="5" Label="Source1" />
-            <Edge From="5" To="6" Label="Source1" />
-            <Edge From="6" To="17" Label="Source3" />
-            <Edge From="7" To="8" Label="Source1" />
-            <Edge From="8" To="17" Label="Source4" />
-            <Edge From="9" To="10" Label="Source1" />
-            <Edge From="10" To="11" Label="Source1" />
-            <Edge From="11" To="12" Label="Source1" />
-            <Edge From="12" To="17" Label="Source5" />
-            <Edge From="13" To="14" Label="Source1" />
-            <Edge From="14" To="15" Label="Source1" />
-            <Edge From="15" To="16" Label="Source1" />
-            <Edge From="16" To="17" Label="Source6" />
-            <Edge From="17" To="19" Label="Source1" />
-            <Edge From="18" To="19" Label="Source2" />
-            <Edge From="19" To="20" Label="Source1" />
-          </Edges>
-        </Workflow>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="viz:TableLayoutPanelBuilder">
+          <viz:ColumnCount>3</viz:ColumnCount>
+          <viz:RowCount>1</viz:RowCount>
+          <viz:ColumnStyles />
+          <viz:RowStyles />
+          <viz:CellSpans />
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="GroupWorkflow">
+          <Name>DelphiVisualizer</Name>
+          <Workflow>
+            <Nodes>
+              <Expression xsi:type="ExternalizedMapping">
+                <Property Name="Name" DisplayName="EventsInSubject" />
+              </Expression>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>DelphiEvents</Name>
+              </Expression>
+              <Expression xsi:type="ExternalizedMapping">
+                <Property Name="Name" DisplayName="SessionSettingsSubject" />
+              </Expression>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>HardwareSchema</Name>
+              </Expression>
+              <Expression xsi:type="ExternalizedMapping">
+                <Property Name="Name" DisplayName="RuleSettingsSubject" />
+              </Expression>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>RuleSettings</Name>
+              </Expression>
+              <Expression xsi:type="MemberSelector">
+                <Selector>Rule.RuleAlias</Selector>
+              </Expression>
+              <Expression xsi:type="ExternalizedMapping">
+                <Property Name="Name" DisplayName="CurrentStateSubject" />
+              </Expression>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>CurrentState</Name>
+              </Expression>
+              <Expression xsi:type="ExternalizedMapping">
+                <Property Name="Name" DisplayName="PokeOnsetSubject" />
+              </Expression>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>PokeOnset</Name>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="IntProperty">
+                  <Value>1</Value>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="rx:Accumulate" />
+              <Expression xsi:type="ExternalizedMapping">
+                <Property Name="Name" DisplayName="StimOnsetSubject" />
+              </Expression>
+              <Expression xsi:type="SubscribeSubject">
+                <Name>StimulusDelivered</Name>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="IntProperty">
+                  <Value>1</Value>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="rx:Accumulate" />
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="p5:DeviceVisualInterface" />
+              </Expression>
+              <Expression xsi:type="ExternalizedMapping">
+                <Property Name="Name" DisplayName="EventsOutSubject" />
+              </Expression>
+              <Expression xsi:type="MulticastSubject">
+                <Name>DelphiCommands</Name>
+              </Expression>
+              <Expression xsi:type="WorkflowOutput" />
+            </Nodes>
+            <Edges>
+              <Edge From="0" To="1" Label="Source1" />
+              <Edge From="1" To="17" Label="Source1" />
+              <Edge From="2" To="3" Label="Source1" />
+              <Edge From="3" To="17" Label="Source2" />
+              <Edge From="4" To="5" Label="Source1" />
+              <Edge From="5" To="6" Label="Source1" />
+              <Edge From="6" To="17" Label="Source3" />
+              <Edge From="7" To="8" Label="Source1" />
+              <Edge From="8" To="17" Label="Source4" />
+              <Edge From="9" To="10" Label="Source1" />
+              <Edge From="10" To="11" Label="Source1" />
+              <Edge From="11" To="12" Label="Source1" />
+              <Edge From="12" To="17" Label="Source5" />
+              <Edge From="13" To="14" Label="Source1" />
+              <Edge From="14" To="15" Label="Source1" />
+              <Edge From="15" To="16" Label="Source1" />
+              <Edge From="16" To="17" Label="Source6" />
+              <Edge From="17" To="19" Label="Source1" />
+              <Edge From="18" To="19" Label="Source2" />
+              <Edge From="19" To="20" Label="Source1" />
+            </Edges>
+          </Workflow>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="SubscribeSubject">
+          <Name>ControllerReady</Name>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="rx:SubscribeWhen" />
+        </Builder>
       </Expression>
     </Nodes>
     <Edges>
@@ -1737,6 +1761,8 @@
       <Edge From="19" To="22" Label="Source2" />
       <Edge From="20" To="21" Label="Source1" />
       <Edge From="21" To="22" Label="Source3" />
+      <Edge From="23" To="25" Label="Source1" />
+      <Edge From="24" To="25" Label="Source2" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>

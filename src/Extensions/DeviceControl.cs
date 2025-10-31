@@ -12,6 +12,7 @@ using Harp.OutputExpander;
 using DataSchema;
 using Bonsai.Harp;
 using System.Net;
+using AllenNeuralDynamics.DelphiController;
 
 namespace Extensions.Extensions
 {
