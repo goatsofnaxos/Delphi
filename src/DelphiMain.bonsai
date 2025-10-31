@@ -4,14 +4,14 @@
                  xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
                  xmlns:p1="clr-namespace:HardwareSchema;assembly=Extensions"
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
-                 xmlns:p2="clr-namespace:RuleSchema;assembly=Extensions"
+                 xmlns:p2="clr-namespace:;assembly=Extensions"
+                 xmlns:p3="clr-namespace:RuleSchema;assembly=Extensions"
                  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
                  xmlns:sys="clr-namespace:System;assembly=mscorlib"
                  xmlns:harp="clr-namespace:Bonsai.Harp;assembly=Bonsai.Harp"
-                 xmlns:p3="clr-namespace:AllenNeuralDynamics.DelphiController;assembly=AllenNeuralDynamics.DelphiController"
-                 xmlns:p4="clr-namespace:System.Reactive;assembly=System.Reactive.Core"
+                 xmlns:p4="clr-namespace:AllenNeuralDynamics.DelphiController;assembly=AllenNeuralDynamics.DelphiController"
+                 xmlns:p5="clr-namespace:System.Reactive;assembly=System.Reactive.Core"
                  xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
-                 xmlns:p5="clr-namespace:;assembly=Extensions"
                  xmlns:aeon="clr-namespace:Aeon.Acquisition;assembly=Aeon.Acquisition"
                  xmlns:spk="clr-namespace:Bonsai.Spinnaker;assembly=Bonsai.Spinnaker"
                  xmlns:wie="clr-namespace:Bonsai.Windows.Input;assembly=Bonsai.Windows.Input"
@@ -50,19 +50,14 @@
               <Property Name="Path" DisplayName="RuleSettings" />
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="io:ReadAllText">
-                <io:Path>schemas\rule-1.yml</io:Path>
+              <Combinator xsi:type="p2:RuleSelector">
+                <p2:Path>schemas\rule-2.yml</p2:Path>
               </Combinator>
             </Expression>
-            <Expression xsi:type="p2:DeserializeFromYaml">
-              <p2:Type xsi:type="TypeMapping" TypeArguments="p2:RuleSchema" />
+            <Expression xsi:type="p3:DeserializeFromYaml">
+              <p3:Type xsi:type="TypeMapping" TypeArguments="p3:RuleSchema" />
             </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="rx:Take">
-                <rx:Count>1</rx:Count>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="rx:AsyncSubject">
+            <Expression xsi:type="rx:BehaviorSubject">
               <Name>RuleSettings</Name>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
@@ -74,10 +69,10 @@
             <Expression xsi:type="rx:AsyncSubject">
               <Name>ControllerSettings</Name>
             </Expression>
-            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="scg:IDictionary(sys:String,p2:StateDefinition)">
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="scg:IDictionary(sys:String,p3:StateDefinition)">
               <rx:Name>StateDictionary</rx:Name>
             </Expression>
-            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="scg:IDictionary(sys:String,p2:StateDefinition)">
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="scg:IDictionary(sys:String,p3:StateDefinition)">
               <rx:Name>TransitionState</rx:Name>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
@@ -112,7 +107,7 @@
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:Take">
-                      <rx:Count>4</rx:Count>
+                      <rx:Count>3</rx:Count>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="rx:ToDictionary">
@@ -148,12 +143,11 @@
             <Edge From="5" To="6" Label="Source1" />
             <Edge From="6" To="7" Label="Source1" />
             <Edge From="7" To="8" Label="Source1" />
-            <Edge From="8" To="9" Label="Source1" />
+            <Edge From="9" To="10" Label="Source1" />
             <Edge From="10" To="11" Label="Source1" />
-            <Edge From="11" To="12" Label="Source1" />
+            <Edge From="14" To="15" Label="Source1" />
             <Edge From="15" To="16" Label="Source1" />
             <Edge From="16" To="17" Label="Source1" />
-            <Edge From="17" To="18" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -210,10 +204,10 @@
                       <rx:DueTime>PT0.1S</rx:DueTime>
                     </Combinator>
                   </Expression>
-                  <Expression xsi:type="p3:CreateMessage">
+                  <Expression xsi:type="p4:CreateMessage">
                     <harp:MessageType>Write</harp:MessageType>
-                    <harp:Payload xsi:type="p3:CreateFSMStatePayload">
-                      <p3:FSMState>0</p3:FSMState>
+                    <harp:Payload xsi:type="p4:CreateFSMStatePayload">
+                      <p4:FSMState>0</p4:FSMState>
                     </harp:Payload>
                   </Expression>
                   <Expression xsi:type="MulticastSubject">
@@ -241,10 +235,10 @@
                       <rx:DueTime>PT0.1S</rx:DueTime>
                     </Combinator>
                   </Expression>
-                  <Expression xsi:type="p3:CreateMessage">
+                  <Expression xsi:type="p4:CreateMessage">
                     <harp:MessageType>Write</harp:MessageType>
-                    <harp:Payload xsi:type="p3:CreateEnableValveLedsPayload">
-                      <p3:EnableValveLeds>1</p3:EnableValveLeds>
+                    <harp:Payload xsi:type="p4:CreateEnableValveLedsPayload">
+                      <p4:EnableValveLeds>1</p4:EnableValveLeds>
                     </harp:Payload>
                   </Expression>
                   <Expression xsi:type="MulticastSubject">
@@ -283,10 +277,10 @@
                       <Property Name="MinimumPokeTimeUS" />
                     </PropertyMappings>
                   </Expression>
-                  <Expression xsi:type="p3:CreateMessage">
+                  <Expression xsi:type="p4:CreateMessage">
                     <harp:MessageType>Write</harp:MessageType>
-                    <harp:Payload xsi:type="p3:CreateMinimumPokeTimeUSPayload">
-                      <p3:MinimumPokeTimeUS>50000</p3:MinimumPokeTimeUS>
+                    <harp:Payload xsi:type="p4:CreateMinimumPokeTimeUSPayload">
+                      <p4:MinimumPokeTimeUS>50000</p4:MinimumPokeTimeUS>
                     </harp:Payload>
                   </Expression>
                   <Expression xsi:type="MulticastSubject">
@@ -328,10 +322,10 @@
                       <Property Name="MinOdorDeliveryTimeUS" />
                     </PropertyMappings>
                   </Expression>
-                  <Expression xsi:type="p3:CreateMessage">
+                  <Expression xsi:type="p4:CreateMessage">
                     <harp:MessageType>Write</harp:MessageType>
-                    <harp:Payload xsi:type="p3:CreateMinOdorDeliveryTimeUSPayload">
-                      <p3:MinOdorDeliveryTimeUS>500000</p3:MinOdorDeliveryTimeUS>
+                    <harp:Payload xsi:type="p4:CreateMinOdorDeliveryTimeUSPayload">
+                      <p4:MinOdorDeliveryTimeUS>500000</p4:MinOdorDeliveryTimeUS>
                     </harp:Payload>
                   </Expression>
                   <Expression xsi:type="MulticastSubject">
@@ -373,10 +367,10 @@
                       <Property Name="FinalValveEnergizedTimeUS" />
                     </PropertyMappings>
                   </Expression>
-                  <Expression xsi:type="p3:CreateMessage">
+                  <Expression xsi:type="p4:CreateMessage">
                     <harp:MessageType>Write</harp:MessageType>
-                    <harp:Payload xsi:type="p3:CreateFinalValveEnergizedTimeUSPayload">
-                      <p3:FinalValveEnergizedTimeUS>1000000</p3:FinalValveEnergizedTimeUS>
+                    <harp:Payload xsi:type="p4:CreateFinalValveEnergizedTimeUSPayload">
+                      <p4:FinalValveEnergizedTimeUS>1000000</p4:FinalValveEnergizedTimeUS>
                     </harp:Payload>
                   </Expression>
                   <Expression xsi:type="MulticastSubject">
@@ -418,10 +412,10 @@
                       <Property Name="VacuumSetupTimeUS" />
                     </PropertyMappings>
                   </Expression>
-                  <Expression xsi:type="p3:CreateMessage">
+                  <Expression xsi:type="p4:CreateMessage">
                     <harp:MessageType>Write</harp:MessageType>
-                    <harp:Payload xsi:type="p3:CreateVacuumSetupTimeUSPayload">
-                      <p3:VacuumSetupTimeUS>100000</p3:VacuumSetupTimeUS>
+                    <harp:Payload xsi:type="p4:CreateVacuumSetupTimeUSPayload">
+                      <p4:VacuumSetupTimeUS>100000</p4:VacuumSetupTimeUS>
                     </harp:Payload>
                   </Expression>
                   <Expression xsi:type="MulticastSubject">
@@ -463,10 +457,10 @@
                       <Property Name="OdorTransitionTimeUS" />
                     </PropertyMappings>
                   </Expression>
-                  <Expression xsi:type="p3:CreateMessage">
+                  <Expression xsi:type="p4:CreateMessage">
                     <harp:MessageType>Write</harp:MessageType>
-                    <harp:Payload xsi:type="p3:CreateOdorTransitionTimeUSPayload">
-                      <p3:OdorTransitionTimeUS>100000</p3:OdorTransitionTimeUS>
+                    <harp:Payload xsi:type="p4:CreateOdorTransitionTimeUSPayload">
+                      <p4:OdorTransitionTimeUS>100000</p4:OdorTransitionTimeUS>
                     </harp:Payload>
                   </Expression>
                   <Expression xsi:type="MulticastSubject">
@@ -508,10 +502,10 @@
                       <Property Name="PokePin" />
                     </PropertyMappings>
                   </Expression>
-                  <Expression xsi:type="p3:CreateMessage">
+                  <Expression xsi:type="p4:CreateMessage">
                     <harp:MessageType>Write</harp:MessageType>
-                    <harp:Payload xsi:type="p3:CreatePokePinPayload">
-                      <p3:PokePin>22</p3:PokePin>
+                    <harp:Payload xsi:type="p4:CreatePokePinPayload">
+                      <p4:PokePin>22</p4:PokePin>
                     </harp:Payload>
                   </Expression>
                   <Expression xsi:type="MulticastSubject">
@@ -542,10 +536,10 @@
                       <rx:DueTime>PT0.1S</rx:DueTime>
                     </Combinator>
                   </Expression>
-                  <Expression xsi:type="p3:CreateMessage">
+                  <Expression xsi:type="p4:CreateMessage">
                     <harp:MessageType>Write</harp:MessageType>
-                    <harp:Payload xsi:type="p3:CreatePokePinInvertedPayload">
-                      <p3:PokePinInverted>1</p3:PokePinInverted>
+                    <harp:Payload xsi:type="p4:CreatePokePinInvertedPayload">
+                      <p4:PokePinInverted>1</p4:PokePinInverted>
                     </harp:Payload>
                   </Expression>
                   <Expression xsi:type="MulticastSubject">
@@ -584,10 +578,10 @@
                       <Property Name="MaxOdorDeliveryTimeUS" />
                     </PropertyMappings>
                   </Expression>
-                  <Expression xsi:type="p3:CreateMessage">
+                  <Expression xsi:type="p4:CreateMessage">
                     <harp:MessageType>Write</harp:MessageType>
-                    <harp:Payload xsi:type="p3:CreateMaxOdorDeliveryTimeUSPayload">
-                      <p3:MaxOdorDeliveryTimeUS>4000000</p3:MaxOdorDeliveryTimeUS>
+                    <harp:Payload xsi:type="p4:CreateMaxOdorDeliveryTimeUSPayload">
+                      <p4:MaxOdorDeliveryTimeUS>4000000</p4:MaxOdorDeliveryTimeUS>
                     </harp:Payload>
                   </Expression>
                   <Expression xsi:type="MulticastSubject">
@@ -618,13 +612,13 @@
             <Expression xsi:type="ExternalizedMapping">
               <Property Name="Name" DisplayName="InitiateFSM" />
             </Expression>
-            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p4:Unit">
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p5:Unit">
               <rx:Name>InitiateFSM</rx:Name>
             </Expression>
-            <Expression xsi:type="p3:CreateMessage">
+            <Expression xsi:type="p4:CreateMessage">
               <harp:MessageType>Write</harp:MessageType>
-              <harp:Payload xsi:type="p3:CreateFSMStatePayload">
-                <p3:FSMState>1</p3:FSMState>
+              <harp:Payload xsi:type="p4:CreateFSMStatePayload">
+                <p4:FSMState>1</p4:FSMState>
               </harp:Payload>
             </Expression>
             <Expression xsi:type="MulticastSubject">
@@ -641,10 +635,10 @@
                 <Property Name="QueuedOdorIndex" Selector="it" />
               </PropertyMappings>
             </Expression>
-            <Expression xsi:type="p3:CreateMessage">
+            <Expression xsi:type="p4:CreateMessage">
               <harp:MessageType>Write</harp:MessageType>
-              <harp:Payload xsi:type="p3:CreateQueuedOdorIndexPayload">
-                <p3:QueuedOdorIndex>0</p3:QueuedOdorIndex>
+              <harp:Payload xsi:type="p4:CreateQueuedOdorIndexPayload">
+                <p4:QueuedOdorIndex>0</p4:QueuedOdorIndex>
               </harp:Payload>
             </Expression>
             <Expression xsi:type="MulticastSubject">
@@ -763,13 +757,14 @@
                   </Expression>
                   <Expression xsi:type="PropertyMapping">
                     <PropertyMappings>
-                      <Property Name="Value" />
+                      <Property Name="Key" />
                     </PropertyMappings>
                   </Expression>
-                  <Expression xsi:type="Index">
-                    <Operand xsi:type="StringProperty">
-                      <Value>OdorA</Value>
-                    </Operand>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="p2:TryLookupOrDefault">
+                      <p2:DefaultState>DefaultState</p2:DefaultState>
+                      <p2:Key>OdorA</p2:Key>
+                    </Combinator>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
                     <Selector>OdorIndex</Selector>
@@ -780,8 +775,8 @@
                   <Expression xsi:type="SubscribeSubject">
                     <Name>DelphiEvents</Name>
                   </Expression>
-                  <Expression xsi:type="p3:Parse">
-                    <harp:Register xsi:type="p3:QueuedOdorIndex" />
+                  <Expression xsi:type="p4:Parse">
+                    <harp:Register xsi:type="p4:QueuedOdorIndex" />
                   </Expression>
                   <Expression xsi:type="rx:Condition">
                     <Name>OdorConsumed</Name>
@@ -834,10 +829,10 @@
                       </Edges>
                     </Workflow>
                   </Expression>
-                  <Expression xsi:type="p3:CreateMessage">
+                  <Expression xsi:type="p4:CreateMessage">
                     <harp:MessageType>Write</harp:MessageType>
-                    <harp:Payload xsi:type="p3:CreateForceFSMPayload">
-                      <p3:ForceFSM>1</p3:ForceFSM>
+                    <harp:Payload xsi:type="p4:CreateForceFSMPayload">
+                      <p4:ForceFSM>1</p4:ForceFSM>
                     </harp:Payload>
                   </Expression>
                   <Expression xsi:type="MulticastSubject">
@@ -860,13 +855,14 @@
                   </Expression>
                   <Expression xsi:type="PropertyMapping">
                     <PropertyMappings>
-                      <Property Name="Value" />
+                      <Property Name="Key" />
                     </PropertyMappings>
                   </Expression>
-                  <Expression xsi:type="Index">
-                    <Operand xsi:type="StringProperty">
-                      <Value>OdorA</Value>
-                    </Operand>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="p2:TryLookupOrDefault">
+                      <p2:DefaultState>DefaultState</p2:DefaultState>
+                      <p2:Key>OdorA</p2:Key>
+                    </Combinator>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
                     <Selector>TransitionsTo</Selector>
@@ -918,7 +914,7 @@
               <Selector>TransitionState</Selector>
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p5:UniformSampleStateProbabilities" />
+              <Combinator xsi:type="p2:UniformSampleStateProbabilities" />
             </Expression>
             <Expression xsi:type="rx:Condition">
               <Name>SampleWithoutReplacement</Name>
@@ -964,7 +960,7 @@
               <Combinator xsi:type="rx:WithLatestFrom" />
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p5:UpdateTransitionState" />
+              <Combinator xsi:type="p2:UpdateTransitionState" />
             </Expression>
             <Expression xsi:type="MulticastSubject">
               <Name>TransitionState</Name>
@@ -1048,13 +1044,13 @@
           <Name>CameraController</Name>
           <Workflow>
             <Nodes>
-              <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p4:Unit">
+              <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p5:Unit">
                 <rx:Name>StartCamera</rx:Name>
               </Expression>
-              <Expression xsi:type="p3:CreateMessage">
+              <Expression xsi:type="p4:CreateMessage">
                 <harp:MessageType>Write</harp:MessageType>
-                <harp:Payload xsi:type="p3:CreateCamPinPayload">
-                  <p3:CamPin>26</p3:CamPin>
+                <harp:Payload xsi:type="p4:CreateCamPinPayload">
+                  <p4:CamPin>26</p4:CamPin>
                 </harp:Payload>
               </Expression>
               <Expression xsi:type="MulticastSubject">
@@ -1071,10 +1067,10 @@
                   <Property Name="FrameRate" />
                 </PropertyMappings>
               </Expression>
-              <Expression xsi:type="p3:CreateMessage">
+              <Expression xsi:type="p4:CreateMessage">
                 <harp:MessageType>Write</harp:MessageType>
-                <harp:Payload xsi:type="p3:CreateFrameRatePayload">
-                  <p3:FrameRate>60</p3:FrameRate>
+                <harp:Payload xsi:type="p4:CreateFrameRatePayload">
+                  <p4:FrameRate>60</p4:FrameRate>
                 </harp:Payload>
               </Expression>
               <Expression xsi:type="MulticastSubject">
@@ -1091,10 +1087,10 @@
                   <Property Name="DutyCycle" />
                 </PropertyMappings>
               </Expression>
-              <Expression xsi:type="p3:CreateMessage">
+              <Expression xsi:type="p4:CreateMessage">
                 <harp:MessageType>Write</harp:MessageType>
-                <harp:Payload xsi:type="p3:CreateDutyCyclePayload">
-                  <p3:DutyCycle>0.5</p3:DutyCycle>
+                <harp:Payload xsi:type="p4:CreateDutyCyclePayload">
+                  <p4:DutyCycle>0.5</p4:DutyCycle>
                 </harp:Payload>
               </Expression>
               <Expression xsi:type="MulticastSubject">
@@ -1105,22 +1101,22 @@
                   <rx:DueTime>PT0.1S</rx:DueTime>
                 </Combinator>
               </Expression>
-              <Expression xsi:type="p3:CreateMessage">
+              <Expression xsi:type="p4:CreateMessage">
                 <harp:MessageType>Write</harp:MessageType>
-                <harp:Payload xsi:type="p3:CreateEnableCamTriggerPayload">
-                  <p3:EnableCamTrigger>1</p3:EnableCamTrigger>
+                <harp:Payload xsi:type="p4:CreateEnableCamTriggerPayload">
+                  <p4:EnableCamTrigger>1</p4:EnableCamTrigger>
                 </harp:Payload>
               </Expression>
               <Expression xsi:type="MulticastSubject">
                 <Name>DelphiCommands</Name>
               </Expression>
-              <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p4:Unit">
+              <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p5:Unit">
                 <rx:Name>StopCamera</rx:Name>
               </Expression>
-              <Expression xsi:type="p3:CreateMessage">
+              <Expression xsi:type="p4:CreateMessage">
                 <harp:MessageType>Write</harp:MessageType>
-                <harp:Payload xsi:type="p3:CreateEnableCamTriggerPayload">
-                  <p3:EnableCamTrigger>0</p3:EnableCamTrigger>
+                <harp:Payload xsi:type="p4:CreateEnableCamTriggerPayload">
+                  <p4:EnableCamTrigger>0</p4:EnableCamTrigger>
                 </harp:Payload>
               </Expression>
               <Expression xsi:type="MulticastSubject">
@@ -1129,8 +1125,8 @@
               <Expression xsi:type="SubscribeSubject">
                 <Name>DelphiEvents</Name>
               </Expression>
-              <Expression xsi:type="p3:Parse">
-                <harp:Register xsi:type="p3:TimestampedCamPinState" />
+              <Expression xsi:type="p4:Parse">
+                <harp:Register xsi:type="p4:TimestampedCamPinState" />
               </Expression>
               <Expression xsi:type="SubscribeSubject">
                 <Name>HardwareSchema</Name>
@@ -1286,7 +1282,7 @@
               </Builder>
             </Expression>
             <Expression xsi:type="Disable">
-              <Builder xsi:type="rx:BehaviorSubject" TypeArguments="p4:Unit">
+              <Builder xsi:type="rx:BehaviorSubject" TypeArguments="p5:Unit">
                 <rx:Name>StartRobocopy</rx:Name>
               </Builder>
             </Expression>
@@ -1417,8 +1413,8 @@
       <Expression xsi:type="SubscribeSubject">
         <Name>DelphiEvents</Name>
       </Expression>
-      <Expression xsi:type="p3:Parse">
-        <harp:Register xsi:type="p3:QueuedOdorIndex" />
+      <Expression xsi:type="p4:Parse">
+        <harp:Register xsi:type="p4:QueuedOdorIndex" />
       </Expression>
       <Expression xsi:type="VisualizerMapping" />
       <Expression xsi:type="SubscribeSubject">
