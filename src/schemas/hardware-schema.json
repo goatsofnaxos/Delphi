@@ -8,20 +8,30 @@
           "type": "integer"
         },
         "duty_cycle": {
-          "maximum": 1,
-          "minimum": 0,
+          "maximum": 1.0,
+          "minimum": 0.0,
           "title": "Duty Cycle",
           "type": "number"
         },
         "serial_number": {
           "title": "Serial Number",
           "type": "string"
+        },
+        "ffmpeg_input": {
+          "title": "Ffmpeg Input",
+          "type": "string"
+        },
+        "ffmpeg_output": {
+          "title": "Ffmpeg Output",
+          "type": "string"
         }
       },
       "required": [
         "frame_rate",
         "duty_cycle",
-        "serial_number"
+        "serial_number",
+        "ffmpeg_input",
+        "ffmpeg_output"
       ],
       "title": "CameraSettings",
       "type": "object"

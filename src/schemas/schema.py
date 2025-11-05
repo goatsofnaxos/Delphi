@@ -20,6 +20,8 @@ class CameraSettings(BaseModel):
     frame_rate: int = Field(ge=0)
     duty_cycle: float = Field(ge=0, le=1)
     serial_number: str
+    ffmpeg_input: str
+    ffmpeg_output: str
 
 class HardwareSchema(BaseModel):
     logging_root_path: str

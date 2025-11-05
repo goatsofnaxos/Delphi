@@ -4,16 +4,18 @@ logging_root_path: C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data
 remote_transfer_root_path: C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data_remote
 
 delphi_controller:
-  final_valve_energized_time_us: 1000000
-  max_odor_delivery_time_us: 4000000
-  min_poke_time_us: 50000
-  min_odor_delivery_time_us: 500000
-  odor_transition_time_us: 100000
+  final_valve_energized_time_us: 110000
+  max_odor_delivery_time_us: 10000000
+  min_poke_time_us: 10000
+  min_odor_delivery_time_us: 10000
+  odor_transition_time_us: 20000
   poke_pin: 22
-  vacuum_setup_time_us: 100000
-  com_port: COM3
+  vacuum_setup_time_us: 10000
+  com_port: COM18
 
 camera_settings:
   frame_rate: 60
   duty_cycle: 0.5
   serial_number: '25294881'
+  ffmpeg_input: -colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear
+  ffmpeg_output: -vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_nvenc -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune hq -preset p4 -rc vbr -cq 12 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M

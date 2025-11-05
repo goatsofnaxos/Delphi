@@ -21,6 +21,10 @@ namespace HardwareSchema
     
         private string _serialNumber;
     
+        private string _ffmpegInput;
+    
+        private string _ffmpegOutput;
+    
         public CameraSettings()
         {
         }
@@ -30,6 +34,8 @@ namespace HardwareSchema
             _frameRate = other._frameRate;
             _dutyCycle = other._dutyCycle;
             _serialNumber = other._serialNumber;
+            _ffmpegInput = other._ffmpegInput;
+            _ffmpegOutput = other._ffmpegOutput;
         }
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="frame_rate")]
@@ -71,6 +77,32 @@ namespace HardwareSchema
             }
         }
     
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ffmpeg_input")]
+        public string FfmpegInput
+        {
+            get
+            {
+                return _ffmpegInput;
+            }
+            set
+            {
+                _ffmpegInput = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ffmpeg_output")]
+        public string FfmpegOutput
+        {
+            get
+            {
+                return _ffmpegOutput;
+            }
+            set
+            {
+                _ffmpegOutput = value;
+            }
+        }
+    
         public System.IObservable<CameraSettings> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new CameraSettings(this)));
@@ -85,7 +117,9 @@ namespace HardwareSchema
         {
             stringBuilder.Append("FrameRate = " + _frameRate + ", ");
             stringBuilder.Append("DutyCycle = " + _dutyCycle + ", ");
-            stringBuilder.Append("SerialNumber = " + _serialNumber);
+            stringBuilder.Append("SerialNumber = " + _serialNumber + ", ");
+            stringBuilder.Append("FfmpegInput = " + _ffmpegInput + ", ");
+            stringBuilder.Append("FfmpegOutput = " + _ffmpegOutput);
             return true;
         }
     
