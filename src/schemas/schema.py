@@ -17,6 +17,7 @@ class DelphiController(BaseModel):
     com_port: str
 
 class CameraSettings(BaseModel):
+    camera_name: str
     frame_rate: int = Field(ge=0)
     duty_cycle: float = Field(ge=0, le=1)
     serial_number: str

@@ -15,6 +15,8 @@ namespace HardwareSchema
     public partial class CameraSettings
     {
     
+        private string _cameraName;
+    
         private int _frameRate;
     
         private double _dutyCycle;
@@ -31,11 +33,25 @@ namespace HardwareSchema
     
         protected CameraSettings(CameraSettings other)
         {
+            _cameraName = other._cameraName;
             _frameRate = other._frameRate;
             _dutyCycle = other._dutyCycle;
             _serialNumber = other._serialNumber;
             _ffmpegInput = other._ffmpegInput;
             _ffmpegOutput = other._ffmpegOutput;
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="camera_name")]
+        public string CameraName
+        {
+            get
+            {
+                return _cameraName;
+            }
+            set
+            {
+                _cameraName = value;
+            }
         }
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="frame_rate")]
@@ -115,6 +131,7 @@ namespace HardwareSchema
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
+            stringBuilder.Append("CameraName = " + _cameraName + ", ");
             stringBuilder.Append("FrameRate = " + _frameRate + ", ");
             stringBuilder.Append("DutyCycle = " + _dutyCycle + ", ");
             stringBuilder.Append("SerialNumber = " + _serialNumber + ", ");

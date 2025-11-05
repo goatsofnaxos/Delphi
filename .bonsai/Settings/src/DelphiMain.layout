@@ -1,67 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VisualizerLayout Version="2.9.0">
-  <WindowSettings Index="1">
+  <WindowSettings Index="24">
     <Visible>false</Visible>
     <Location>
-      <X>168</X>
+      <X>182</X>
       <Y>182</Y>
     </Location>
     <Size>
-      <Width>334</Width>
-      <Height>64</Height>
-    </Size>
-    <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
-    <VisualizerSettings>
-      <ObjectTextVisualizer />
-    </VisualizerSettings>
-    <NestedLayout>
-      <WindowSettings Index="6">
-        <Visible>false</Visible>
-        <Location>
-          <X>168</X>
-          <Y>182</Y>
-        </Location>
-        <Size>
-          <Width>729</Width>
-          <Height>183</Height>
-        </Size>
-        <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
-        <VisualizerSettings>
-          <ObjectTextVisualizer />
-        </VisualizerSettings>
-      </WindowSettings>
-    </NestedLayout>
-  </WindowSettings>
-  <WindowSettings Index="3">
-    <NestedLayout>
-      <WindowSettings Index="15">
-        <NestedLayout>
-          <WindowSettings Index="25">
-            <Location>
-              <X>574</X>
-              <Y>470</Y>
-            </Location>
-            <Size>
-              <Width>605</Width>
-              <Height>159</Height>
-            </Size>
-            <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
-            <VisualizerSettings>
-              <ObjectTextVisualizer />
-            </VisualizerSettings>
-          </WindowSettings>
-        </NestedLayout>
-      </WindowSettings>
-    </NestedLayout>
-  </WindowSettings>
-  <WindowSettings Index="24">
-    <Location>
-      <X>650</X>
-      <Y>169</Y>
-    </Location>
-    <Size>
-      <Width>538</Width>
-      <Height>340</Height>
+      <Width>503</Width>
+      <Height>626</Height>
     </Size>
     <VisualizerTypeName>Bonsai.Design.Visualizers.TableLayoutPanelVisualizer</VisualizerTypeName>
     <VisualizerSettings>
@@ -85,6 +32,17 @@
           <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
           <VisualizerSettings>
             <ObjectTextVisualizer />
+          </VisualizerSettings>
+        </MashupSettings>
+        <MashupSettings>
+          <Source>22</Source>
+          <VisualizerTypeName>AllenNeuralDynamics.Core.Design.IplImageRotateVisualizer</VisualizerTypeName>
+          <VisualizerSettings>
+            <IplImageRotateVisualizer>
+              <InvertHorizontal>false</InvertHorizontal>
+              <InvertVertical>false</InvertVertical>
+              <RotateAngle>0</RotateAngle>
+            </IplImageRotateVisualizer>
           </VisualizerSettings>
         </MashupSettings>
       </TableLayoutPanelVisualizer>
