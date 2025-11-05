@@ -14,6 +14,7 @@
                  xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
                  xmlns:aeon="clr-namespace:Aeon.Acquisition;assembly=Aeon.Acquisition"
                  xmlns:spk="clr-namespace:Bonsai.Spinnaker;assembly=Bonsai.Spinnaker"
+                 xmlns:p6="clr-namespace:AllenNeuralDynamics.Core;assembly=AllenNeuralDynamics.Core"
                  xmlns:wie="clr-namespace:Bonsai.Windows.Input;assembly=Bonsai.Windows.Input"
                  xmlns:viz="clr-namespace:Bonsai.Design.Visualizers;assembly=Bonsai.Design.Visualizers"
                  xmlns="https://bonsai-rx.org/2018/workflow">
@@ -1199,14 +1200,6 @@
               <ChunkSize>1</ChunkSize>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>DelphiEvents</Name>
-            </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:LogHarpState.bonsai">
-              <LogName>DelphiEvents</LogName>
-              <Heartbeats>DelphiEvents</Heartbeats>
-              <ClosingDuration xsi:nil="true" />
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
               <Name>HardwareSchema</Name>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
@@ -1218,7 +1211,7 @@
             <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
               <Name>DelphiEvents</Name>
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:LogJson.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="Extensions\LogJson.bonsai">
               <Heartbeats />
               <ClosingDuration xsi:nil="true" />
               <LogName>HardwareSettings</LogName>
@@ -1240,7 +1233,7 @@
             <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
               <Name>DelphiEvents</Name>
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:LogJson.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="Extensions\LogJson.bonsai">
               <Heartbeats />
               <ClosingDuration xsi:nil="true" />
               <LogName>RuleSettings</LogName>
@@ -1251,59 +1244,510 @@
               </Combinator>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>VideoFeed</Name>
+              <Name>PathPrefix</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p6:AppendModalitySuffix">
+                <p6:Modality>BehaviorVideos</p6:Modality>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:Defer">
+              <Name>BehaviorVideos</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Take">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="rx:AsyncSubject">
+                    <Name>PathPrefix</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>VideoFeed</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>HardwareSchema</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>CameraSettings.FrameRate</Selector>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="FrameRate" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>HardwareSchema</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>CameraSettings.FfmpegInput</Selector>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="InputArguments" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>HardwareSchema</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>CameraSettings.FfmpegOutput</Selector>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="OutputArguments" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>HardwareSchema</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>CameraSettings.CameraName</Selector>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="LogName" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="IncludeWorkflow" Path="Extensions\LogVideo.bonsai">
+                    <Heartbeats>DelphiEvents</Heartbeats>
+                    <ClosingDuration xsi:nil="true" />
+                    <LogName>PortCamera</LogName>
+                    <FrameRate>60</FrameRate>
+                    <OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_nvenc -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune hq -preset p4 -rc vbr -cq 12 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</OutputArguments>
+                    <InputArguments>-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear</InputArguments>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="3" To="16" Label="Source1" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source1" />
+                  <Edge From="6" To="16" Label="Source2" />
+                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source1" />
+                  <Edge From="9" To="16" Label="Source3" />
+                  <Edge From="10" To="11" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="12" To="16" Label="Source4" />
+                  <Edge From="13" To="14" Label="Source1" />
+                  <Edge From="14" To="15" Label="Source1" />
+                  <Edge From="15" To="16" Label="Source5" />
+                </Edges>
+              </Workflow>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>HardwareSchema</Name>
+              <Name>PathPrefix</Name>
             </Expression>
-            <Expression xsi:type="MemberSelector">
-              <Selector>CameraSettings.FrameRate</Selector>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p6:AppendModalitySuffix">
+                <p6:Modality>Behavior</p6:Modality>
+              </Combinator>
             </Expression>
-            <Expression xsi:type="PropertyMapping">
-              <PropertyMappings>
-                <Property Name="FrameRate" />
-              </PropertyMappings>
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>HardwareSchema</Name>
-            </Expression>
-            <Expression xsi:type="MemberSelector">
-              <Selector>CameraSettings.FfmpegInput</Selector>
-            </Expression>
-            <Expression xsi:type="PropertyMapping">
-              <PropertyMappings>
-                <Property Name="InputArguments" />
-              </PropertyMappings>
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>HardwareSchema</Name>
-            </Expression>
-            <Expression xsi:type="MemberSelector">
-              <Selector>CameraSettings.FfmpegOutput</Selector>
-            </Expression>
-            <Expression xsi:type="PropertyMapping">
-              <PropertyMappings>
-                <Property Name="OutputArguments" />
-              </PropertyMappings>
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>HardwareSchema</Name>
-            </Expression>
-            <Expression xsi:type="MemberSelector">
-              <Selector>CameraSettings.CameraName</Selector>
-            </Expression>
-            <Expression xsi:type="PropertyMapping">
-              <PropertyMappings>
-                <Property Name="LogName" />
-              </PropertyMappings>
-            </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="Extensions\LogVideo.bonsai">
-              <Heartbeats>DelphiEvents</Heartbeats>
-              <ClosingDuration xsi:nil="true" />
-                <LogName>VideoData</LogName>
-              <FrameRate>60</FrameRate>
-              <OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_nvenc -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune hq -preset p4 -rc vbr -cq 12 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</OutputArguments>
-              <InputArguments>-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear</InputArguments>
+            <Expression xsi:type="rx:Defer">
+              <Name>Behavior</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Take">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="rx:AsyncSubject">
+                    <Name>PathPrefix</Name>
+                  </Expression>
+                  <Expression xsi:type="GroupWorkflow">
+                    <Name>HarpLogging</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>DelphiEvents</Name>
+                        </Expression>
+                        <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:LogHarpState.bonsai">
+                          <LogName>DelphiController</LogName>
+                          <Heartbeats>DelphiEvents</Heartbeats>
+                          <ClosingDuration xsi:nil="true" />
+                        </Expression>
+                        <Expression xsi:type="GroupWorkflow">
+                          <Name>DelphiControllerPath</Name>
+                          <Workflow>
+                            <Nodes>
+                              <Expression xsi:type="SubscribeSubject">
+                                <Name>PathPrefix</Name>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="StringProperty">
+                                  <Value>DelphiController</Value>
+                                </Combinator>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="rx:Take">
+                                  <rx:Count>1</rx:Count>
+                                </Combinator>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="StringProperty">
+                                  <Value>device.yml</Value>
+                                </Combinator>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="rx:Take">
+                                  <rx:Count>1</rx:Count>
+                                </Combinator>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="rx:Zip" />
+                              </Expression>
+                              <Expression xsi:type="Format">
+                                <Format>{0}\{1}\{2}</Format>
+                                <Selector>Item1,Item2,Item3</Selector>
+                              </Expression>
+                              <Expression xsi:type="WorkflowOutput" />
+                            </Nodes>
+                            <Edges>
+                              <Edge From="0" To="5" Label="Source1" />
+                              <Edge From="1" To="2" Label="Source1" />
+                              <Edge From="2" To="5" Label="Source2" />
+                              <Edge From="3" To="4" Label="Source1" />
+                              <Edge From="4" To="5" Label="Source3" />
+                              <Edge From="5" To="6" Label="Source1" />
+                              <Edge From="6" To="7" Label="Source1" />
+                            </Edges>
+                          </Workflow>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="Path" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="GroupWorkflow">
+                          <Name>HarpDelphiControllerGetMetadata</Name>
+                          <Workflow>
+                            <Nodes>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="StringProperty">
+                                  <Value>%YAML 1.1
+---
+# yaml-language-server: $schema=https://harp-tech.org/draft-02/schema/device.json
+device: DelphiController
+whoAmI: 1407
+firmwareVersion: "0.0.0"
+hardwareTargets: "1.0.0"
+registers:
+    ValveState:
+        address: 32
+        type: U16
+        maskType: ValveMask
+        access: Write
+        description: "Set the enabled/disabled state (enabled = 1) of all valves"
+    ValvesSet:
+        address: 33
+        type: U16
+        maskType: ValveMask
+        access: Write
+        description: "Write a 1 to any bit to enable the corresponding valve."
+    ValvesClear:
+        address: 34
+        type: U16
+        maskType: ValveMask
+        access: Write
+        description: "Write a 1 to any bit to disable the corresponding valve."
+    ValveConfig0: &amp;valveConfig
+        address: 35
+        type: U8
+        length: 12
+        access: Write
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve0."
+    ValveConfig1:
+        &lt;&lt;: *valveConfig
+        address: 36
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve1."
+    ValveConfig2:
+        &lt;&lt;: *valveConfig
+        address: 37
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve2."
+    ValveConfig3:
+        &lt;&lt;: *valveConfig
+        address: 38
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve3."
+    ValveConfig4:
+        &lt;&lt;: *valveConfig
+        address: 39
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve4."
+    ValveConfig5:
+        &lt;&lt;: *valveConfig
+        address: 40
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve5."
+    ValveConfig6:
+        &lt;&lt;: *valveConfig
+        address: 41
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve6."
+    ValveConfig7:
+        &lt;&lt;: *valveConfig
+        address: 42
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve7."
+    ValveConfig8:
+        &lt;&lt;: *valveConfig
+        address: 43
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve8."
+    ValveConfig9:
+        &lt;&lt;: *valveConfig
+        address: 44
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve9."
+    ValveConfig10:
+        &lt;&lt;: *valveConfig
+        address: 45
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve10."
+    ValveConfig11:
+        &lt;&lt;: *valveConfig
+        address: 46
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve11."
+    ValveConfig12:
+        &lt;&lt;: *valveConfig
+        address: 47
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve12."
+    ValveConfig13:
+        &lt;&lt;: *valveConfig
+        address: 48
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve13."
+    ValveConfig14:
+        &lt;&lt;: *valveConfig
+        address: 49
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve14."
+    ValveConfig15:
+        &lt;&lt;: *valveConfig
+        address: 50
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve15."
+    AuxGPIODir:
+        address: 51
+        type: U8
+        maskType: AuxGPIOMask
+        access: Write
+        description: "Specify each auxiliary GPIO pin as an input (0) or output (1)."
+    AuxGPIOState:
+        address: 52
+        type: U8
+        maskType: AuxGPIOMask
+        access: Write
+        description: "Set the state (one or off) of any auxiliary GPIO pins specified as outputs."
+    AuxGPIOSet:
+        address: 53
+        type: U8
+        maskType: AuxGPIOMask
+        access: Write
+        description: "When writing a 1 to any bit, turn on the specified auxiliary GPIO pins specified as outputs."
+    AuxGPIOClear:
+        address: 54
+        type: U8
+        maskType: AuxGPIOMask
+        access: Write
+        description: "When writing a 1 to any bit, Turn off the specified auxiliary GPIO pins specified as outputs."
+    AuxGPIOInputRiseEvent:
+        address: 55
+        type: U8
+        maskType: AuxGPIOMask
+        access: Event
+        description: ""
+    AuxGPIOInputFallEvent:
+        address: 56
+        type: U8
+        maskType: AuxGPIOMask
+        access: Event
+        description: ""
+    AuxGPIORisingInputs:
+        address: 57
+        type: U8
+        maskType: AuxGPIOMask
+        access: Write
+        description: ""
+    AuxGPIOFallingInputs:
+        address: 58
+        type: U8
+        maskType: AuxGPIOMask
+        access: Write
+        description: ""
+    PokePin:
+        address: 59
+        type: U8
+        access: Write
+        description: "which poke ports are active."
+    PokePinInverted:
+        address: 60
+        type: U8
+        access: Write
+        description: "Which poke ports are inverted (i.e: transition from HIGH to LOW when a poke occurs)."
+    PokeState:
+        address: 61
+        type: U8
+        access: Event
+        description: "The state of the poke port. An event will be triggered given a poke/ beam break that is greater than the min poke time."
+    RawPokeState:
+        address: 62
+        type: U8
+        access: Event
+        description: "The raw state of the poke pin. Events will be triggered at the onset of a beam break (1) and offset (0)."
+    PokeDometer:
+        address: 63
+        type: U32
+        access: Read
+        description: "number of mouse pokes per port since boot or reset."
+    FSMState:
+        address: 64
+        type: U8
+        access: Write
+        description: "Enable (1) (aka reset) or Disable (0) the poke handling state machine. Note that QueuedOdorIndex must be specified first. Disabling and then enabling a previously-enabled FSM will reset it to its starting state."
+    ForceFSM:
+        address: 65
+        type: U8
+        access: Write
+        description: "Force the poke handling state machine to iterate as if handling a mouse poke. PokeDometers are not incremented."
+    QueuedOdorIndex:
+        address: 66
+        type: S8
+        access: Write
+        description: "Queued odor (value: odor valve index) that will be delievered to the odor port given a register poke. After an odor has been dispensed, the register will be set to -1, which indicates that a new odor is needed"
+    VacuumCloseTimeUS:
+        address: 67
+        type: U32
+        access: Write
+        description: "Time alotted (in microseconds) for the vacuum valve to close."
+    MinOdorDeliveryTimeUS:
+        address: 68
+        type: U32
+        access: Write
+        description: "Minimum time alotted (in microseconds) for the odor delivery state."
+    MaxOdorDeliveryTimeUS:
+        address: 69
+        type: U32
+        access: Write
+        description: "Maximum time alotted (in microseconds) for the odor delivery state."
+    OdorTransitionTimeUS:
+        address: 70
+        type: U32
+        access: Write
+        description: "Time alotted (in microseconds) before the vacuum turns on to remove the current odor."
+    VacuumSetupTimeUS:
+        address: 71
+        type: U32
+        access: Write
+        description: "Time alotted (in microseconds) for the vacuum to open."
+    FinalValveEnergizedTimeUS:
+        address: 72
+        type: U32
+        access: Write
+        description: "Time alotted (in microseconds) for the final valve to open and remain on."
+    MinimumPokeTimeUS:
+        address: 73
+        type: U32
+        access: Write
+        description: "Minimum time (in microseconds) necessary for a mouse poke port beam to be broken before being interpretted as a poke."
+    CamPin:
+        address: 74
+        type: U8
+        access: Write
+        description: "The GPIO output pin used for camera triggering. Default pin is 26."
+    CamPinState:
+        address: 75
+        type: U8
+        access: Event
+        description: "Event is initiated when a rising edge of the camera triggered signal (PWM) is detected. The actual value of the pin doesn't change."
+    FrameRate:
+        address: 76
+        type: U32
+        access: Write
+        description: "Set the frame rate of the camera trigger/ frequency of the PWM signal."
+    DutyCycle:
+        address: 77
+        type: Float
+        access: Write
+        description: "Set the duty cycle of the PWM. Default and recommend is 0.5 for producing a square wave."
+    EnableCamTrigger:
+        address: 78
+        type: U8
+        access: Write
+        description: "Enable (1) and disable (0) camera triggering/ the PWM signal."
+    EnableValveLeds:
+        address: 79
+        type: U8
+        access: Write
+        description: "Enable (1) and disable (0) valve LEDs."
+
+groupMasks:
+    ValveMask:
+        description: "Valve that can be configured/enabled/disabled"
+        values:
+            Valve0: 0x0
+            Valve1: 0x1
+            Valve2: 0x2
+            Valve3: 0x3
+            Valve4: 0x4
+            Valve5: 0x5
+            Valve6: 0x6
+            Valve7: 0x7
+            Valve8: 0x8
+            Valve9: 0x9
+            Valve10: 0xA
+            Valve11: 0xB
+            Valve12: 0xC
+            Valve13: 0xD
+            Valve14: 0xE
+            Valve15: 0xF
+    AuxGPIOMask:
+        description: "Auxiliary GPIO index."
+        values:
+            AuxGPIO0: 0x0
+            AuxGPIO1: 0x1
+            AuxGPIO2: 0x2
+            AuxGPIO3: 0x3
+            AuxGPIO4: 0x4
+            AuxGPIO5: 0x5
+            AuxGPIO6: 0x6
+            AuxGPIO7: 0x7</Value>
+                                </Combinator>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="rx:Take">
+                                  <rx:Count>1</rx:Count>
+                                </Combinator>
+                              </Expression>
+                              <Expression xsi:type="WorkflowOutput" />
+                            </Nodes>
+                            <Edges>
+                              <Edge From="0" To="1" Label="Source1" />
+                              <Edge From="1" To="2" Label="Source1" />
+                            </Edges>
+                          </Workflow>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="io:WriteAllText">
+                            <io:Path>D:\Data\2025-11-05T23-19-11\behavior\DelphiController\device.yml</io:Path>
+                            <io:Overwrite>false</io:Overwrite>
+                            <io:Append>false</io:Append>
+                          </Combinator>
+                        </Expression>
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                        <Edge From="2" To="3" Label="Source1" />
+                        <Edge From="3" To="5" Label="Source1" />
+                        <Edge From="4" To="5" Label="Source2" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                </Edges>
+              </Workflow>
             </Expression>
             <Expression xsi:type="Disable">
               <Builder xsi:type="Combinator">
@@ -1390,33 +1834,23 @@
             <Edge From="0" To="1" Label="Source1" />
             <Edge From="1" To="2" Label="Source1" />
             <Edge From="2" To="3" Label="Source1" />
-            <Edge From="4" To="5" Label="Source1" />
-            <Edge From="6" To="8" Label="Source1" />
-            <Edge From="7" To="8" Label="Source2" />
+            <Edge From="4" To="6" Label="Source1" />
+            <Edge From="5" To="6" Label="Source2" />
+            <Edge From="6" To="7" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
             <Edge From="8" To="9" Label="Source1" />
-            <Edge From="9" To="10" Label="Source1" />
-            <Edge From="10" To="11" Label="Source1" />
-            <Edge From="12" To="14" Label="Source1" />
-            <Edge From="13" To="14" Label="Source2" />
+            <Edge From="10" To="12" Label="Source1" />
+            <Edge From="11" To="12" Label="Source2" />
+            <Edge From="12" To="13" Label="Source1" />
+            <Edge From="13" To="14" Label="Source1" />
             <Edge From="14" To="15" Label="Source1" />
-            <Edge From="15" To="16" Label="Source1" />
             <Edge From="16" To="17" Label="Source1" />
-            <Edge From="18" To="31" Label="Source1" />
+            <Edge From="17" To="18" Label="Source1" />
             <Edge From="19" To="20" Label="Source1" />
             <Edge From="20" To="21" Label="Source1" />
-            <Edge From="21" To="31" Label="Source2" />
             <Edge From="22" To="23" Label="Source1" />
             <Edge From="23" To="24" Label="Source1" />
-            <Edge From="24" To="31" Label="Source3" />
             <Edge From="25" To="26" Label="Source1" />
-            <Edge From="26" To="27" Label="Source1" />
-            <Edge From="27" To="31" Label="Source4" />
-            <Edge From="28" To="29" Label="Source1" />
-            <Edge From="29" To="30" Label="Source1" />
-            <Edge From="30" To="31" Label="Source5" />
-            <Edge From="32" To="33" Label="Source1" />
-            <Edge From="33" To="34" Label="Source1" />
-            <Edge From="35" To="36" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
