@@ -52,7 +52,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:RuleSelector">
-                <p2:Path>schemas\rule-2.yml</p2:Path>
+                <p2:Path>schemas\rule-3.yml</p2:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="p3:DeserializeFromYaml">
@@ -108,7 +108,7 @@
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:Take">
-                      <rx:Count>3</rx:Count>
+                      <rx:Count>2</rx:Count>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="rx:ToDictionary">
@@ -186,7 +186,7 @@
                 <harp:VisualIndicators>On</harp:VisualIndicators>
                 <harp:Heartbeat>Enabled</harp:Heartbeat>
                 <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                <harp:PortName>COM3</harp:PortName>
+                <harp:PortName>COM5</harp:PortName>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:PublishSubject">
@@ -1044,89 +1044,24 @@
         <Name>CameraController</Name>
         <Workflow>
           <Nodes>
-            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p5:Unit">
-              <rx:Name>StartCamera</rx:Name>
-            </Expression>
-            <Expression xsi:type="p4:CreateMessage">
-              <harp:MessageType>Write</harp:MessageType>
-              <harp:Payload xsi:type="p4:CreateCamPinPayload">
-                <p4:CamPin>26</p4:CamPin>
-              </harp:Payload>
-            </Expression>
-            <Expression xsi:type="MulticastSubject">
-              <Name>DelphiCommands</Name>
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>HardwareSchema</Name>
-            </Expression>
-            <Expression xsi:type="MemberSelector">
-              <Selector>CameraSettings.FrameRate</Selector>
-            </Expression>
-            <Expression xsi:type="PropertyMapping">
-              <PropertyMappings>
-                <Property Name="FrameRate" />
-              </PropertyMappings>
-            </Expression>
-            <Expression xsi:type="p4:CreateMessage">
-              <harp:MessageType>Write</harp:MessageType>
-              <harp:Payload xsi:type="p4:CreateFrameRatePayload">
-                <p4:FrameRate>60</p4:FrameRate>
-              </harp:Payload>
-            </Expression>
-            <Expression xsi:type="MulticastSubject">
-              <Name>DelphiCommands</Name>
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>HardwareSchema</Name>
-            </Expression>
-            <Expression xsi:type="MemberSelector">
-              <Selector>CameraSettings.DutyCycle</Selector>
-            </Expression>
-            <Expression xsi:type="PropertyMapping">
-              <PropertyMappings>
-                <Property Name="DutyCycle" />
-              </PropertyMappings>
-            </Expression>
-            <Expression xsi:type="p4:CreateMessage">
-              <harp:MessageType>Write</harp:MessageType>
-              <harp:Payload xsi:type="p4:CreateDutyCyclePayload">
-                <p4:DutyCycle>0.5</p4:DutyCycle>
-              </harp:Payload>
-            </Expression>
-            <Expression xsi:type="MulticastSubject">
-              <Name>DelphiCommands</Name>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="rx:Delay">
-                <rx:DueTime>PT0.1S</rx:DueTime>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="p4:CreateMessage">
-              <harp:MessageType>Write</harp:MessageType>
-              <harp:Payload xsi:type="p4:CreateEnableCamTriggerPayload">
-                <p4:EnableCamTrigger>1</p4:EnableCamTrigger>
-              </harp:Payload>
-            </Expression>
-            <Expression xsi:type="MulticastSubject">
-              <Name>DelphiCommands</Name>
-            </Expression>
-            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p5:Unit">
-              <rx:Name>StopCamera</rx:Name>
-            </Expression>
-            <Expression xsi:type="p4:CreateMessage">
-              <harp:MessageType>Write</harp:MessageType>
-              <harp:Payload xsi:type="p4:CreateEnableCamTriggerPayload">
-                <p4:EnableCamTrigger>0</p4:EnableCamTrigger>
-              </harp:Payload>
-            </Expression>
-            <Expression xsi:type="MulticastSubject">
-              <Name>DelphiCommands</Name>
-            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="Extensions\CameraController.bonsai" />
             <Expression xsi:type="SubscribeSubject">
               <Name>DelphiEvents</Name>
             </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="harp:FilterMessageType">
+                <harp:FilterType>Include</harp:FilterType>
+                <harp:MessageType>Event</harp:MessageType>
+              </Combinator>
+            </Expression>
             <Expression xsi:type="p4:Parse">
               <harp:Register xsi:type="p4:TimestampedCamPinState" />
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Seconds</Selector>
+            </Expression>
+            <Expression xsi:type="rx:PublishSubject">
+              <Name>FrameEvent</Name>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>HardwareSchema</Name>
@@ -1142,41 +1077,38 @@
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="aeon:SpinnakerCapture">
                 <spk:Index xsi:nil="true" />
-                <spk:SerialNumber>25294881</spk:SerialNumber>
+                <spk:SerialNumber>23373886</spk:SerialNumber>
                 <spk:ColorProcessing>Default</spk:ColorProcessing>
-                <aeon:ExposureTime>10000</aeon:ExposureTime>
+                <aeon:ExposureTime>7500</aeon:ExposureTime>
                 <aeon:Gain>0</aeon:Gain>
                 <aeon:Binning>1</aeon:Binning>
               </Combinator>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>FrameEvent</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="harp:CreateTimestamped" />
             </Expression>
             <Expression xsi:type="rx:PublishSubject">
               <Name>VideoFeed</Name>
             </Expression>
           </Nodes>
           <Edges>
-            <Edge From="0" To="1" Label="Source1" />
             <Edge From="1" To="2" Label="Source1" />
-            <Edge From="2" To="6" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
             <Edge From="3" To="4" Label="Source1" />
             <Edge From="4" To="5" Label="Source1" />
-            <Edge From="5" To="6" Label="Source2" />
             <Edge From="6" To="7" Label="Source1" />
-            <Edge From="7" To="11" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
             <Edge From="8" To="9" Label="Source1" />
-            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="9" To="11" Label="Source1" />
             <Edge From="10" To="11" Label="Source2" />
             <Edge From="11" To="12" Label="Source1" />
             <Edge From="12" To="13" Label="Source1" />
-            <Edge From="13" To="14" Label="Source1" />
-            <Edge From="14" To="15" Label="Source1" />
-            <Edge From="16" To="17" Label="Source1" />
-            <Edge From="17" To="18" Label="Source1" />
-            <Edge From="19" To="20" Label="Source1" />
-            <Edge From="20" To="24" Label="Source1" />
-            <Edge From="21" To="22" Label="Source1" />
-            <Edge From="22" To="23" Label="Source1" />
-            <Edge From="23" To="24" Label="Source2" />
-            <Edge From="24" To="25" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -1196,7 +1128,7 @@
               </PropertyMappings>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:LogController.bonsai">
-              <Path>C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data</Path>
+              <Path>C:\Users\brandon.pratt\Desktop\data</Path>
               <ChunkSize>1</ChunkSize>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
@@ -1314,11 +1246,11 @@
                     </PropertyMappings>
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="Extensions\LogVideo.bonsai">
-                    <Heartbeats>DelphiEvents</Heartbeats>
-                    <ClosingDuration xsi:nil="true" />
+                    <Heartbeats />
+                    <ClosingDuration>PT30S</ClosingDuration>
                     <LogName>PortCamera</LogName>
                     <FrameRate>60</FrameRate>
-                    <OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_nvenc -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune hq -preset p4 -rc vbr -cq 12 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</OutputArguments>
+                    <OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v libx264 -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</OutputArguments>
                     <InputArguments>-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear</InputArguments>
                   </Expression>
                 </Nodes>
@@ -1728,7 +1660,7 @@ groupMasks:
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="io:WriteAllText">
-                            <io:Path>D:\Data\2025-11-05T23-19-11\behavior\DelphiController\device.yml</io:Path>
+                            <io:Path>C:\Users\brandon.pratt\Desktop\data\2025-11-20T17-43-32\behavior\DelphiController\device.yml</io:Path>
                             <io:Overwrite>false</io:Overwrite>
                             <io:Append>false</io:Append>
                           </Combinator>
@@ -1859,7 +1791,7 @@ groupMasks:
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="wie:KeyDown">
-          <wie:Filter>ShiftKey Space D0 P NumPad0 F1 Shift</wie:Filter>
+          <wie:Filter>LButton A Shift</wie:Filter>
           <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
         </Combinator>
       </Expression>
@@ -1872,7 +1804,7 @@ groupMasks:
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="wie:KeyDown">
-          <wie:Filter>ShiftKey Space D0 P NumPad0 F1 Alt</wie:Filter>
+          <wie:Filter>LButton A Alt</wie:Filter>
           <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
         </Combinator>
       </Expression>
@@ -1928,6 +1860,58 @@ groupMasks:
           <viz:CellSpan ColumnSpan="3" RowSpan="1" />
         </viz:CellSpans>
       </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="rx:Timer">
+            <rx:DueTime>PT0S</rx:DueTime>
+            <rx:Period>PT1S</rx:Period>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="rx:Delay">
+            <rx:DueTime>PT0.01S</rx:DueTime>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="harp:CreateMessage">
+          <harp:MessageType>Write</harp:MessageType>
+          <harp:Payload xsi:type="harp:CreateMessagePayload">
+            <harp:Address>53</harp:Address>
+            <harp:PayloadType>U8</harp:PayloadType>
+            <harp:Value>100000</harp:Value>
+          </harp:Payload>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="MulticastSubject">
+          <Name>DelphiCommands</Name>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="rx:Delay">
+            <rx:DueTime>PT0.01S</rx:DueTime>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="harp:CreateMessage">
+          <harp:MessageType>Write</harp:MessageType>
+          <harp:Payload xsi:type="harp:CreateMessagePayload">
+            <harp:Address>54</harp:Address>
+            <harp:PayloadType>U8</harp:PayloadType>
+            <harp:Value>100000</harp:Value>
+          </harp:Payload>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="MulticastSubject">
+          <Name>DelphiCommands</Name>
+        </Builder>
+      </Expression>
     </Nodes>
     <Edges>
       <Edge From="0" To="1" Label="Source1" />
@@ -1950,6 +1934,12 @@ groupMasks:
       <Edge From="25" To="26" Label="Source1" />
       <Edge From="26" To="27" Label="Source1" />
       <Edge From="27" To="28" Label="Source4" />
+      <Edge From="29" To="30" Label="Source1" />
+      <Edge From="30" To="31" Label="Source1" />
+      <Edge From="31" To="32" Label="Source1" />
+      <Edge From="32" To="33" Label="Source1" />
+      <Edge From="33" To="34" Label="Source1" />
+      <Edge From="34" To="35" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>

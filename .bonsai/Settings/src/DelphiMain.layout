@@ -1,14 +1,56 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VisualizerLayout Version="2.9.0">
+  <WindowSettings Index="3">
+    <NestedLayout>
+      <WindowSettings Index="15">
+        <NestedLayout>
+          <WindowSettings Index="12">
+            <Visible>false</Visible>
+            <Location>
+              <X>51</X>
+              <Y>49</Y>
+            </Location>
+            <Size>
+              <Width>335</Width>
+              <Height>62</Height>
+            </Size>
+            <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
+            <VisualizerSettings>
+              <ObjectTextVisualizer />
+            </VisualizerSettings>
+          </WindowSettings>
+        </NestedLayout>
+      </WindowSettings>
+    </NestedLayout>
+  </WindowSettings>
+  <WindowSettings Index="4">
+    <NestedLayout>
+      <WindowSettings Index="10">
+        <Visible>false</Visible>
+        <Location>
+          <X>509</X>
+          <Y>96</Y>
+        </Location>
+        <Size>
+          <Width>335</Width>
+          <Height>62</Height>
+        </Size>
+        <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
+        <VisualizerSettings>
+          <ObjectTextVisualizer />
+        </VisualizerSettings>
+      </WindowSettings>
+    </NestedLayout>
+  </WindowSettings>
   <WindowSettings Index="28">
     <Visible>false</Visible>
     <Location>
-      <X>182</X>
-      <Y>182</Y>
+      <X>507</X>
+      <Y>175</Y>
     </Location>
     <Size>
-      <Width>503</Width>
-      <Height>626</Height>
+      <Width>335</Width>
+      <Height>373</Height>
     </Size>
     <VisualizerTypeName>Bonsai.Design.Visualizers.TableLayoutPanelVisualizer</VisualizerTypeName>
     <VisualizerSettings>
