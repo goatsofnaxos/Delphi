@@ -1,0 +1,9 @@
+%YAML 1.1
+---
+# yaml-language-server: $schema=rule-schema.json
+
+ruleAlias: Rule2
+sampleWithReplacement: true
+stateDefinitions:
+  -   {name: "OdorA1", transitionsTo: ["OdorA2"]}
+  -   {name: "DefaultState", transitionsTo: ["OdorA1"]}
