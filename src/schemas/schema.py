@@ -1,10 +1,9 @@
 import json
-import numpy as np
-from typing import Annotated, Literal, Union, List
-from pydantic import BaseModel, Field, RootModel
-from enum import Enum
+from typing import List
+from pydantic import BaseModel, Field
 from pathlib import Path
 import os
+
 
 class DelphiController(BaseModel):
     final_valve_energized_time_us: int = Field(ge=0)
@@ -16,6 +15,7 @@ class DelphiController(BaseModel):
     vacuum_setup_time_us: int = Field(ge=0)
     com_port: str
 
+
 class CameraSettings(BaseModel):
     camera_name: str
     frame_rate: int = Field(ge=0)
@@ -24,16 +24,19 @@ class CameraSettings(BaseModel):
     ffmpeg_input: str
     ffmpeg_output: str
 
+
 class HardwareSchema(BaseModel):
     logging_root_path: str
     remote_transfer_root_path: str
     delphi_controller: DelphiController
     camera_settings: CameraSettings
 
+
 class StateDefinition(BaseModel):
     name: str
     odor_index: int
     transitions_to: List[str]
+
 
 class DelphiRule(BaseModel):
     rule_alias: str
@@ -41,14 +44,26 @@ class DelphiRule(BaseModel):
     init_odor_index: int
     state_definitions: List[StateDefinition]
 
+
 class RuleSchema(BaseModel):
     rule: DelphiRule
 
+
 if __name__ == "__main__":
     hardware_schema = HardwareSchema.model_json_schema()
-    Path("src\schemas\hardware-schema.json").write_text(json.dumps(hardware_schema, indent=2))
-    os.system("dotnet bonsai.sgen ""src\schemas\hardware-schema.json"" -o src\Extensions --serializer yaml")
+    Path("src\schemas\hardware-schema.json").write_text(
+        json.dumps(hardware_schema, indent=2)
+    )
+    os.system(
+        "dotnet bonsai.sgen "
+        "src\schemas\hardware-schema.json"
+        " -o src\Extensions --serializer yaml"
+    )
 
     rule_schema = RuleSchema.model_json_schema()
     Path("src\schemas\\rule-schema.json").write_text(json.dumps(rule_schema, indent=2))
-    os.system("dotnet bonsai.sgen ""src\schemas\\rule-schema.json"" -o src\Extensions --serializer yaml")
+    os.system(
+        "dotnet bonsai.sgen "
+        "src\schemas\\rule-schema.json"
+        " -o src\Extensions --serializer yaml"
+    )

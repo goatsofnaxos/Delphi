@@ -2,6 +2,10 @@
   "$defs": {
     "CameraSettings": {
       "properties": {
+        "camera_name": {
+          "title": "Camera Name",
+          "type": "string"
+        },
         "frame_rate": {
           "minimum": 0,
           "title": "Frame Rate",
@@ -27,6 +31,7 @@
         }
       },
       "required": [
+        "camera_name",
         "frame_rate",
         "duty_cycle",
         "serial_number",
