@@ -3,9 +3,7 @@
 # yaml-language-server: $schema=rule-schema.json
 
 ruleAlias: Rule3
-
+sampleWithReplacement: true
 stateDefinitions:
-  -   {name: "OdorA", transitionsTo: [{name: "OdorB", probability: 1}]}
-  -   {name: "OdorB", transitionsTo: [{name: "OdorC", probability: 1}]}
-  -   {name: "OdorC", transitionsTo: [{name: "OdorA", probability: 1}]}
-  -   {name: "DefaultState", transitionsTo: [{name: "OdorA", probability: 1}]}
+  -   {name: "OdorB1", transitionsTo: ["OdorB2"]}
+  -   {name: "DefaultState", transitionsTo: ["OdorB1"]}
