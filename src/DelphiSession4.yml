@@ -3,8 +3,8 @@
 # yaml-language-server: $schema=data-schema.json
 
 metadata:
-  animalId: 2025071102
-  loggingRootPath: C:/Users/bvw8415/Delphi/HIW3/2025071102/
+  animalId: 2025120204
+  loggingRootPath: C:/Users/bvw8415/Delphi/HIW3/2025120204/
   remoteTransferRootPath: C:/Users/bvw8415/OneDrive - Northwestern University/Andrew Jacob Pixley Fink - FinkLab-SharedDrive/DATA/Behavior/Delphi/RobocopyHIW/
   chargeTime: 0.2
   minimumPokeTime: 0.01
@@ -28,7 +28,7 @@ cameraProperties:
   postEventTime: 2.5
 
 harpProperties:
-  comPort: COM4
+  comPort: COM9
   showHarpLeds: false
 
 lineMappings:
