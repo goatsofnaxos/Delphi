@@ -6,4 +6,9 @@ ruleAlias: Rule2
 sampleWithReplacement: true
 stateDefinitions:
   -   {name: "OdorA1", transitionsTo: ["OdorA2"]}
+  -   {name: "OdorA2", transitionsTo: ["OdorA1"]}
+  -   {name: "OdorB1", transitionsTo: ["DefaultState"]}
+  -   {name: "OdorB2", transitionsTo: ["DefaultState"]}
+  -   {name: "OdorC1", transitionsTo: ["DefaultState"]}
+  -   {name: "OdorC2", transitionsTo: ["DefaultState"]}
   -   {name: "DefaultState", transitionsTo: ["OdorA1"]}
