@@ -1,0 +1,124 @@
+{
+  "$defs": {
+    "CameraSettings": {
+      "properties": {
+        "camera_name": {
+          "title": "Camera Name",
+          "type": "string"
+        },
+        "frame_rate": {
+          "minimum": 0,
+          "title": "Frame Rate",
+          "type": "integer"
+        },
+        "duty_cycle": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Duty Cycle",
+          "type": "number"
+        },
+        "serial_number": {
+          "title": "Serial Number",
+          "type": "string"
+        },
+        "ffmpeg_input": {
+          "title": "Ffmpeg Input",
+          "type": "string"
+        },
+        "ffmpeg_output": {
+          "title": "Ffmpeg Output",
+          "type": "string"
+        }
+      },
+      "required": [
+        "camera_name",
+        "frame_rate",
+        "duty_cycle",
+        "serial_number",
+        "ffmpeg_input",
+        "ffmpeg_output"
+      ],
+      "title": "CameraSettings",
+      "type": "object"
+    },
+    "DelphiController": {
+      "properties": {
+        "final_valve_energized_time_us": {
+          "minimum": 0,
+          "title": "Final Valve Energized Time Us",
+          "type": "integer"
+        },
+        "max_odor_delivery_time_us": {
+          "minimum": 0,
+          "title": "Max Odor Delivery Time Us",
+          "type": "integer"
+        },
+        "min_poke_time_us": {
+          "minimum": 0,
+          "title": "Min Poke Time Us",
+          "type": "integer"
+        },
+        "min_odor_delivery_time_us": {
+          "minimum": 0,
+          "title": "Min Odor Delivery Time Us",
+          "type": "integer"
+        },
+        "odor_transition_time_us": {
+          "minimum": 0,
+          "title": "Odor Transition Time Us",
+          "type": "integer"
+        },
+        "poke_pin": {
+          "default": 22,
+          "minimum": 0,
+          "title": "Poke Pin",
+          "type": "integer"
+        },
+        "vacuum_setup_time_us": {
+          "minimum": 0,
+          "title": "Vacuum Setup Time Us",
+          "type": "integer"
+        },
+        "com_port": {
+          "title": "Com Port",
+          "type": "string"
+        }
+      },
+      "required": [
+        "final_valve_energized_time_us",
+        "max_odor_delivery_time_us",
+        "min_poke_time_us",
+        "min_odor_delivery_time_us",
+        "odor_transition_time_us",
+        "vacuum_setup_time_us",
+        "com_port"
+      ],
+      "title": "DelphiController",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "logging_root_path": {
+      "title": "Logging Root Path",
+      "type": "string"
+    },
+    "remote_transfer_root_path": {
+      "title": "Remote Transfer Root Path",
+      "type": "string"
+    },
+    "delphi_controller": {
+      "$ref": "#/$defs/DelphiController"
+    },
+    "camera_settings": {
+      "$ref": "#/$defs/CameraSettings"
+    }
+  },
+  "required": [
+    "logging_root_path",
+    "remote_transfer_root_path",
+    "delphi_controller",
+    "camera_settings"
+  ],
+  "title": "HardwareSchema",
+  "type": "object"
+}

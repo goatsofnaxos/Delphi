@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WorkflowBuilder Version="2.9.0"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
+                 xmlns:p1="clr-namespace:System.Reactive;assembly=System.Reactive.Core"
+                 xmlns:p2="clr-namespace:AllenNeuralDynamics.DelphiController;assembly=AllenNeuralDynamics.DelphiController"
+                 xmlns:harp="clr-namespace:Bonsai.Harp;assembly=Bonsai.Harp"
+                 xmlns="https://bonsai-rx.org/2018/workflow">
+  <Workflow>
+    <Nodes>
+      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:Unit">
+        <rx:Name>StartCamera</rx:Name>
+      </Expression>
+      <Expression xsi:type="p2:CreateMessage">
+        <harp:MessageType>Write</harp:MessageType>
+        <harp:Payload xsi:type="p2:CreateCamPinPayload">
+          <p2:CamPin>26</p2:CamPin>
+        </harp:Payload>
+      </Expression>
+      <Expression xsi:type="MulticastSubject">
+        <Name>DelphiCommands</Name>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>HardwareSchema</Name>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>CameraSettings.FrameRate</Selector>
+      </Expression>
+      <Expression xsi:type="PropertyMapping">
+        <PropertyMappings>
+          <Property Name="FrameRate" />
+        </PropertyMappings>
+      </Expression>
+      <Expression xsi:type="p2:CreateMessage">
+        <harp:MessageType>Write</harp:MessageType>
+        <harp:Payload xsi:type="p2:CreateFrameRatePayload">
+          <p2:FrameRate>60</p2:FrameRate>
+        </harp:Payload>
+      </Expression>
+      <Expression xsi:type="MulticastSubject">
+        <Name>DelphiCommands</Name>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>HardwareSchema</Name>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>CameraSettings.DutyCycle</Selector>
+      </Expression>
+      <Expression xsi:type="PropertyMapping">
+        <PropertyMappings>
+          <Property Name="DutyCycle" />
+        </PropertyMappings>
+      </Expression>
+      <Expression xsi:type="p2:CreateMessage">
+        <harp:MessageType>Write</harp:MessageType>
+        <harp:Payload xsi:type="p2:CreateDutyCyclePayload">
+          <p2:DutyCycle>0.5</p2:DutyCycle>
+        </harp:Payload>
+      </Expression>
+      <Expression xsi:type="MulticastSubject">
+        <Name>DelphiCommands</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Delay">
+          <rx:DueTime>PT0.1S</rx:DueTime>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="p2:CreateMessage">
+        <harp:MessageType>Write</harp:MessageType>
+        <harp:Payload xsi:type="p2:CreateEnableCamTriggerPayload">
+          <p2:EnableCamTrigger>1</p2:EnableCamTrigger>
+        </harp:Payload>
+      </Expression>
+      <Expression xsi:type="MulticastSubject">
+        <Name>DelphiCommands</Name>
+      </Expression>
+      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:Unit">
+        <rx:Name>StopCamera</rx:Name>
+      </Expression>
+      <Expression xsi:type="p2:CreateMessage">
+        <harp:MessageType>Write</harp:MessageType>
+        <harp:Payload xsi:type="p2:CreateEnableCamTriggerPayload">
+          <p2:EnableCamTrigger>0</p2:EnableCamTrigger>
+        </harp:Payload>
+      </Expression>
+      <Expression xsi:type="MulticastSubject">
+        <Name>DelphiCommands</Name>
+      </Expression>
+    </Nodes>
+    <Edges>
+      <Edge From="0" To="1" Label="Source1" />
+      <Edge From="1" To="2" Label="Source1" />
+      <Edge From="2" To="6" Label="Source1" />
+      <Edge From="3" To="4" Label="Source1" />
+      <Edge From="4" To="5" Label="Source1" />
+      <Edge From="5" To="6" Label="Source2" />
+      <Edge From="6" To="7" Label="Source1" />
+      <Edge From="7" To="11" Label="Source1" />
+      <Edge From="8" To="9" Label="Source1" />
+      <Edge From="9" To="10" Label="Source1" />
+      <Edge From="10" To="11" Label="Source2" />
+      <Edge From="11" To="12" Label="Source1" />
+      <Edge From="12" To="13" Label="Source1" />
+      <Edge From="13" To="14" Label="Source1" />
+      <Edge From="14" To="15" Label="Source1" />
+      <Edge From="16" To="17" Label="Source1" />
+      <Edge From="17" To="18" Label="Source1" />
+    </Edges>
+  </Workflow>
+</WorkflowBuilder>
