@@ -28,18 +28,14 @@ cameraProperties:
   postEventTime: 2.5
 
 harpProperties:
-  comPort: COM13
+  comPort: COM11
   showHarpLeds: false
 
 lineMappings:
   odorMap:
     -   {name: "OdorA", line: 6}
-    -   {name: "OdorA2", line: 6}
     -   {name: "OdorB", line: 7}
-    -   {name: "OdorB2", line: 7}
-    -   {name: "OdorB3", line: 7}
     -   {name: "OdorC", line: 8}
-    -   {name: "OdorC2", line: 8}
     -   {name: "OdorD", line: 9}
 
   portLine: 0

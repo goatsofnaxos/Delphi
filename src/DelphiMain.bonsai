@@ -43,7 +43,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:LoadSessionSettings">
-                <p2:Path>LocalRules\DelphiSession.yml</p2:Path>
+                <p2:Path>DelphiSession.yml</p2:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="Combinator">
@@ -158,7 +158,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Take">
-                <rx:Count>8</rx:Count>
+                <rx:Count>4</rx:Count>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:ToDictionary">
@@ -293,7 +293,7 @@
                       <harp:VisualIndicators>Off</harp:VisualIndicators>
                       <harp:Heartbeat>Disabled</harp:Heartbeat>
                       <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                      <harp:PortName>COM4</harp:PortName>
+                      <harp:PortName>COM11</harp:PortName>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="rx:PublishSubject">
@@ -364,7 +364,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorA</Value>
+                            <Value>OdorC</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
@@ -402,7 +402,7 @@
                         <Expression xsi:type="p3:CreateMessage">
                           <harp:MessageType>Write</harp:MessageType>
                           <harp:Payload xsi:type="p3:CreateOutputSetPayload">
-                            <p3:OutputSet>Out6</p3:OutputSet>
+                            <p3:OutputSet>Out8</p3:OutputSet>
                           </harp:Payload>
                         </Expression>
                         <Expression xsi:type="rx:Condition">
@@ -609,7 +609,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="rx:Take">
-                            <rx:Count>8</rx:Count>
+                            <rx:Count>4</rx:Count>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="rx:SelectMany">
@@ -1028,7 +1028,7 @@
                         </Expression>
                         <Expression xsi:type="Index">
                           <Operand xsi:type="StringProperty">
-                            <Value>OdorA</Value>
+                            <Value>OdorC</Value>
                           </Operand>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -1064,7 +1064,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p2:TryGetValueOrDefault">
-                            <p2:Key>OdorA</p2:Key>
+                            <p2:Key>OdorC</p2:Key>
                             <p2:DefaultString>DefaultState</p2:DefaultString>
                           </Combinator>
                         </Expression>
@@ -1887,89 +1887,107 @@
                 <FrameRate>60</FrameRate>
               </Builder>
             </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>SessionSettings</Name>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>SessionSettings</Name>
+              </Builder>
             </Expression>
-            <Expression xsi:type="MemberSelector">
-              <Selector>Metadata.RobocopyTimeInterval</Selector>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="MemberSelector">
+                <Selector>Metadata.RobocopyTimeInterval</Selector>
+              </Builder>
             </Expression>
-            <Expression xsi:type="scr:ExpressionTransform">
-              <scr:Expression>TimeSpan.FromSeconds(it)</scr:Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="scr:ExpressionTransform">
+                <scr:Expression>TimeSpan.FromSeconds(it)</scr:Expression>
+              </Builder>
             </Expression>
-            <Expression xsi:type="PropertyMapping">
-              <PropertyMappings>
-                <Property Name="Period" />
-              </PropertyMappings>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="PropertyMapping">
+                <PropertyMappings>
+                  <Property Name="Period" />
+                </PropertyMappings>
+              </Builder>
             </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="rx:Timer">
-                <rx:DueTime>PT0S</rx:DueTime>
-                <rx:Period>PT1H</rx:Period>
-              </Combinator>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="rx:Timer">
+                  <rx:DueTime>PT0S</rx:DueTime>
+                  <rx:Period>PT1H</rx:Period>
+                </Combinator>
+              </Builder>
             </Expression>
-            <Expression xsi:type="Unit" />
-            <Expression xsi:type="MulticastSubject">
-              <Name>StartRobocopy</Name>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Unit" />
             </Expression>
-            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p5:Unit">
-              <rx:Name>StartRobocopy</rx:Name>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="MulticastSubject">
+                <Name>StartRobocopy</Name>
+              </Builder>
             </Expression>
-            <Expression xsi:type="rx:SelectMany">
-              <Name>Robocopy</Name>
-              <Workflow>
-                <Nodes>
-                  <Expression xsi:type="WorkflowInput">
-                    <Name>Source1</Name>
-                  </Expression>
-                  <Expression xsi:type="SubscribeSubject">
-                    <Name>SessionSettings</Name>
-                  </Expression>
-                  <Expression xsi:type="MemberSelector">
-                    <Selector>Metadata.LoggingRootPath</Selector>
-                  </Expression>
-                  <Expression xsi:type="SubscribeSubject">
-                    <Name>SessionSettings</Name>
-                  </Expression>
-                  <Expression xsi:type="MemberSelector">
-                    <Selector>Metadata.RemoteTransferRootPath</Selector>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Zip" />
-                  </Expression>
-                  <Expression xsi:type="Format">
-                    <Format>python\robocopy.py {0} {1}</Format>
-                    <Selector>Item1,Item2</Selector>
-                  </Expression>
-                  <Expression xsi:type="PropertyMapping">
-                    <PropertyMappings>
-                      <Property Name="Arguments" />
-                    </PropertyMappings>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="io:StartProcess">
-                      <io:FileName>..\.python\.venv\Scripts\python.exe</io:FileName>
-                      <io:Arguments>python\robocopy.py C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data_remote</io:Arguments>
-                    </Combinator>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Take">
-                      <rx:Count>1</rx:Count>
-                    </Combinator>
-                  </Expression>
-                  <Expression xsi:type="WorkflowOutput" />
-                </Nodes>
-                <Edges>
-                  <Edge From="1" To="2" Label="Source1" />
-                  <Edge From="2" To="5" Label="Source1" />
-                  <Edge From="3" To="4" Label="Source1" />
-                  <Edge From="4" To="5" Label="Source2" />
-                  <Edge From="5" To="6" Label="Source1" />
-                  <Edge From="6" To="7" Label="Source1" />
-                  <Edge From="7" To="8" Label="Source1" />
-                  <Edge From="8" To="9" Label="Source1" />
-                  <Edge From="9" To="10" Label="Source1" />
-                </Edges>
-              </Workflow>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="rx:BehaviorSubject" TypeArguments="p5:Unit">
+                <rx:Name>StartRobocopy</rx:Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="rx:SelectMany">
+                <Name>Robocopy</Name>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="SubscribeSubject">
+                      <Name>SessionSettings</Name>
+                    </Expression>
+                    <Expression xsi:type="MemberSelector">
+                      <Selector>Metadata.LoggingRootPath</Selector>
+                    </Expression>
+                    <Expression xsi:type="SubscribeSubject">
+                      <Name>SessionSettings</Name>
+                    </Expression>
+                    <Expression xsi:type="MemberSelector">
+                      <Selector>Metadata.RemoteTransferRootPath</Selector>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Zip" />
+                    </Expression>
+                    <Expression xsi:type="Format">
+                      <Format>python\robocopy.py {0} {1}</Format>
+                      <Selector>Item1,Item2</Selector>
+                    </Expression>
+                    <Expression xsi:type="PropertyMapping">
+                      <PropertyMappings>
+                        <Property Name="Arguments" />
+                      </PropertyMappings>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="io:StartProcess">
+                        <io:FileName>..\.python\.venv\Scripts\python.exe</io:FileName>
+                        <io:Arguments>python\robocopy.py C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data_remote</io:Arguments>
+                      </Combinator>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Take">
+                        <rx:Count>1</rx:Count>
+                      </Combinator>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                  </Nodes>
+                  <Edges>
+                    <Edge From="1" To="2" Label="Source1" />
+                    <Edge From="2" To="5" Label="Source1" />
+                    <Edge From="3" To="4" Label="Source1" />
+                    <Edge From="4" To="5" Label="Source2" />
+                    <Edge From="5" To="6" Label="Source1" />
+                    <Edge From="6" To="7" Label="Source1" />
+                    <Edge From="7" To="8" Label="Source1" />
+                    <Edge From="8" To="9" Label="Source1" />
+                    <Edge From="9" To="10" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Builder>
             </Expression>
           </Nodes>
           <Edges>
@@ -2055,44 +2073,86 @@
         <viz:RowStyles />
         <viz:CellSpans />
       </Expression>
-      <Expression xsi:type="GroupWorkflow">
-        <Name>ExitTrigger</Name>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="GroupWorkflow">
+          <Name>ExitTrigger</Name>
+          <Workflow>
+            <Nodes>
+              <Expression xsi:type="WorkflowInput">
+                <Name>Source1</Name>
+              </Expression>
+              <Expression xsi:type="harp:FilterRegister">
+                <harp:FilterType>Include</harp:FilterType>
+                <harp:Register xsi:type="harp:FilterRegisterAddress">
+                  <harp:Address>88</harp:Address>
+                </harp:Register>
+              </Expression>
+              <Expression xsi:type="Unit" />
+              <Expression xsi:type="MulticastSubject">
+                <Name>StartRobocopy</Name>
+              </Expression>
+              <Expression xsi:type="MulticastSubject">
+                <Name>CloseAllLines</Name>
+              </Expression>
+              <Expression xsi:type="Combinator">
+                <Combinator xsi:type="rx:Take">
+                  <rx:Count>1</rx:Count>
+                </Combinator>
+              </Expression>
+              <Expression xsi:type="WorkflowOutput" />
+            </Nodes>
+            <Edges>
+              <Edge From="0" To="1" Label="Source1" />
+              <Edge From="1" To="2" Label="Source1" />
+              <Edge From="2" To="3" Label="Source1" />
+              <Edge From="3" To="4" Label="Source1" />
+              <Edge From="4" To="5" Label="Source1" />
+              <Edge From="5" To="6" Label="Source1" />
+            </Edges>
+          </Workflow>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="WorkflowOutput" />
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>CurrentState</Name>
+      </Expression>
+      <Expression xsi:type="rx:Condition">
+        <Name>NotDefault</Name>
         <Workflow>
           <Nodes>
             <Expression xsi:type="WorkflowInput">
               <Name>Source1</Name>
             </Expression>
-            <Expression xsi:type="harp:FilterRegister">
-              <harp:FilterType>Include</harp:FilterType>
-              <harp:Register xsi:type="harp:FilterRegisterAddress">
-                <harp:Address>88</harp:Address>
-              </harp:Register>
-            </Expression>
-            <Expression xsi:type="Unit" />
-            <Expression xsi:type="MulticastSubject">
-              <Name>StartRobocopy</Name>
-            </Expression>
-            <Expression xsi:type="MulticastSubject">
-              <Name>CloseAllLines</Name>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="rx:Take">
-                <rx:Count>1</rx:Count>
-              </Combinator>
+            <Expression xsi:type="NotEqual">
+              <Operand xsi:type="StringProperty">
+                <Value>DefaultState</Value>
+              </Operand>
             </Expression>
             <Expression xsi:type="WorkflowOutput" />
           </Nodes>
           <Edges>
             <Edge From="0" To="1" Label="Source1" />
             <Edge From="1" To="2" Label="Source1" />
-            <Edge From="2" To="3" Label="Source1" />
-            <Edge From="3" To="4" Label="Source1" />
-            <Edge From="4" To="5" Label="Source1" />
-            <Edge From="5" To="6" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
-      <Expression xsi:type="WorkflowOutput" />
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Timestamp" />
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Timestamp</Selector>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Skip">
+          <rx:Count>1</rx:Count>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Zip" />
+      </Expression>
+      <Expression xsi:type="Subtract" />
       <Expression xsi:type="GroupWorkflow">
         <Name>ControlKeys</Name>
         <Workflow>
@@ -2318,7 +2378,14 @@
       <Edge From="8" To="9" Label="Source1" />
       <Edge From="9" To="10" Label="Source2" />
       <Edge From="11" To="12" Label="Source1" />
+      <Edge From="13" To="14" Label="Source1" />
       <Edge From="14" To="15" Label="Source1" />
+      <Edge From="15" To="16" Label="Source1" />
+      <Edge From="16" To="17" Label="Source1" />
+      <Edge From="16" To="18" Label="Source2" />
+      <Edge From="17" To="18" Label="Source1" />
+      <Edge From="18" To="19" Label="Source1" />
+      <Edge From="21" To="22" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
