@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VisualizerLayout Version="2.9.0">
+  <WindowSettings Index="29">
+    <Location>
+      <X>27</X>
+      <Y>117</Y>
+    </Location>
+    <Size>
+      <Width>1625</Width>
+      <Height>847</Height>
+    </Size>
+    <VisualizerTypeName>Bonsai.Design.Visualizers.TableLayoutPanelVisualizer</VisualizerTypeName>
+    <VisualizerSettings>
+      <TableLayoutPanelVisualizer>
+        <MashupSettings>
+          <Source>20</Source>
+          <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
+          <VisualizerSettings>
+            <ObjectTextVisualizer />
+          </VisualizerSettings>
+        </MashupSettings>
+        <MashupSettings>
+          <Source>22</Source>
+          <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
+          <VisualizerSettings>
+            <ObjectTextVisualizer />
+          </VisualizerSettings>
+        </MashupSettings>
+        <MashupSettings>
+          <Source>24</Source>
+          <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
+          <VisualizerSettings>
+            <ObjectTextVisualizer />
+          </VisualizerSettings>
+        </MashupSettings>
+        <MashupSettings>
+          <Source>27</Source>
+          <VisualizerTypeName>AllenNeuralDynamics.Core.Design.IplImageRotateVisualizer</VisualizerTypeName>
+          <VisualizerSettings>
+            <IplImageRotateVisualizer>
+              <InvertHorizontal>false</InvertHorizontal>
+              <InvertVertical>false</InvertVertical>
+              <RotateAngle>0</RotateAngle>
+            </IplImageRotateVisualizer>
+          </VisualizerSettings>
+        </MashupSettings>
+      </TableLayoutPanelVisualizer>
+    </VisualizerSettings>
+  </WindowSettings>
+</VisualizerLayout>
