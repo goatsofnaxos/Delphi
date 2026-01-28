@@ -33,7 +33,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="io:ReadAllText">
-                <io:Path>A</io:Path>
+                <io:Path>schemas\hardware-schema1.yml</io:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="p1:DeserializeFromYaml">
@@ -52,7 +52,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:RuleSelector">
-                <p2:Path>schemas\rule-4.yml</p2:Path>
+                <p2:Path>schemas\rule-8.yml</p2:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="p3:DeserializeFromYaml">
@@ -186,7 +186,7 @@
                 <harp:VisualIndicators>On</harp:VisualIndicators>
                 <harp:Heartbeat>Enabled</harp:Heartbeat>
                 <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                <harp:PortName>COM15</harp:PortName>
+                <harp:PortName>COM5</harp:PortName>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:PublishSubject">
@@ -677,7 +677,7 @@
             <Expression xsi:type="p4:CreateMessage">
               <harp:MessageType>Write</harp:MessageType>
               <harp:Payload xsi:type="p4:CreateQueuedOdorMaskPayload">
-                <p4:QueuedOdorMask>1</p4:QueuedOdorMask>
+                <p4:QueuedOdorMask>8</p4:QueuedOdorMask>
               </harp:Payload>
             </Expression>
             <Expression xsi:type="MulticastSubject">
@@ -805,7 +805,7 @@
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="p2:TryLookupOrDefault">
                       <p2:DefaultState>DefaultState</p2:DefaultState>
-                      <p2:Key>OdorA</p2:Key>
+                      <p2:Key>OdorD</p2:Key>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
@@ -903,7 +903,7 @@
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="p2:TryLookupOrDefault">
                       <p2:DefaultState>DefaultState</p2:DefaultState>
-                      <p2:Key>OdorA</p2:Key>
+                      <p2:Key>OdorD</p2:Key>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
@@ -1124,7 +1124,7 @@
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="aeon:SpinnakerCapture">
                 <spk:Index xsi:nil="true" />
-                <spk:SerialNumber>23604583</spk:SerialNumber>
+                <spk:SerialNumber>24026619</spk:SerialNumber>
                 <spk:ColorProcessing>Default</spk:ColorProcessing>
                 <aeon:ExposureTime>7500</aeon:ExposureTime>
                 <aeon:Gain>0</aeon:Gain>
@@ -1197,7 +1197,7 @@
               </PropertyMappings>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:LogController.bonsai">
-              <Path>C:\Users\delphi_01\Delphi\Test</Path>
+              <Path>C:\Users\delphi_basement\Delphi\HIW\2026012901</Path>
               <ChunkSize>1</ChunkSize>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
@@ -1317,8 +1317,8 @@
                   <Expression xsi:type="IncludeWorkflow" Path="Extensions\LogVideo.bonsai">
                     <Heartbeats />
                     <ClosingDuration>PT30S</ClosingDuration>
-                    <LogName>PortCamera</LogName>
-                    <FrameRate>100</FrameRate>
+                    <LogName>TopLeftCamera</LogName>
+                    <FrameRate>60</FrameRate>
                     <OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v libx264 -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</OutputArguments>
                     <InputArguments>-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear</InputArguments>
                   </Expression>
@@ -1729,7 +1729,7 @@ groupMasks:
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="io:WriteAllText">
-                            <io:Path>C:\Users\delphi_01\Delphi\Test\2026-01-21T17-46-47\behavior\DelphiController\device.yml</io:Path>
+                            <io:Path>C:\Users\delphi_basement\Delphi\HIW\2026012901\2026-01-28T22-29-27\behavior\DelphiController\device.yml</io:Path>
                             <io:Overwrite>false</io:Overwrite>
                             <io:Append>false</io:Append>
                           </Combinator>
