@@ -14,11 +14,7 @@ delphi_controller:
   com_port: COM5
 
 camera_settings:
-<<<<<<< HEAD
-  camera_name: PortCamera
-=======
   camera_name: TopLeftCamera
->>>>>>> 637737025cc6b8eb2cad090eb89deba32e7b6b8e
   frame_rate: 60
   duty_cycle: 0.5
   serial_number: '24026619'
