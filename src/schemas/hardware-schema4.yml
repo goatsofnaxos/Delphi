@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=hardware-schema.json
 
-logging_root_path: C:\Users\delphi_01\Delphi\Test
+logging_root_path: C:\Users\delphi_01\Delphi\HIW\2026012902
 remote_transfer_root_path: C:\Users\delphi_01\Delphi\HIW\test
 
 delphi_controller:
@@ -11,12 +11,12 @@ delphi_controller:
   odor_transition_time_us: 20000
   poke_pin: 22
   vacuum_setup_time_us: 10000
-  com_port: COM15
+  com_port: COM13
 
 camera_settings:
-  camera_name: PortCamera
-  frame_rate: 100
+  camera_name: BottomRightCamera
+  frame_rate: 60
   duty_cycle: 0.5
-  serial_number: '23604583'
+  serial_number: '24026619'
   ffmpeg_input: -colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear
   ffmpeg_output: -vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v libx264 -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M
