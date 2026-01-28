@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=rule-schema.json
+
+rule:
+  rule_alias: Standard7
+  init_odor_index: 0x0040
+  sample_with_replacement: true
+  state_definitions: [
+    {name: DefaultState, odor_index: 0x0040, transitions_to: [OdorA]},
+    {name: OdorA, odor_index: 0x0001, transitions_to: [OdorA]},
+    {name: OdorB, odor_index: 0x0002, transitions_to: [OdorA]},
+    {name: OdorC, odor_index: 0x0004, transitions_to: [OdorA]},
+    {name: OdorD, odor_index: 0x0008, transitions_to: [OdorA]},
+    {name: OdorE, odor_index: 0x0010, transitions_to: [OdorA]},
+    {name: OdorF, odor_index: 0x0020, transitions_to: [OdorA]},
+  ]
+
+# OdorA is Pinene
+# OdorD is Anisole
