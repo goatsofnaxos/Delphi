@@ -1,14 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VisualizerLayout Version="2.9.0">
   <WindowSettings Index="29">
-    <Visible>false</Visible>
     <Location>
-      <X>73</X>
-      <Y>318</Y>
+      <X>105</X>
+      <Y>134</Y>
     </Location>
     <Size>
-      <Width>1556</Width>
-      <Height>738</Height>
+      <Width>1625</Width>
+      <Height>847</Height>
     </Size>
     <VisualizerTypeName>Bonsai.Design.Visualizers.TableLayoutPanelVisualizer</VisualizerTypeName>
     <VisualizerSettings>
