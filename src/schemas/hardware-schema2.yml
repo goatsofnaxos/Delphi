@@ -17,6 +17,6 @@ camera_settings:
   camera_name: TopRightCamera
   frame_rate: 60
   duty_cycle: 0.5
-  serial_number: '24026619'
+  serial_number: '23492582'
   ffmpeg_input: -colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear
   ffmpeg_output: -vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v libx264 -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M
