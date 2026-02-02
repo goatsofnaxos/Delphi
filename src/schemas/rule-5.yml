@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=rule-schema.json
+
+rule:
+  rule_alias: Standard
+  init_odor_index: 0x0040
+  sample_with_replacement: true
+  state_definitions: [
+    {name: DefaultState, odor_index: 0x0040, transitions_to: [OdorB]},
+    {name: OdorB, odor_index: 0x0002, transitions_to: [OdorB]},
+  ]
