@@ -1,7 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VisualizerLayout Version="2.9.0">
-  <WindowSettings Index="29">
-    <Visible>false</Visible>
+  <WindowSettings Index="33">
+    <Location>
+      <X>418</X>
+      <Y>117</Y>
+    </Location>
+    <Size>
+      <Width>572</Width>
+      <Height>523</Height>
+    </Size>
     <VisualizerTypeName>Bonsai.Design.Visualizers.TableLayoutPanelVisualizer</VisualizerTypeName>
     <VisualizerSettings>
       <TableLayoutPanelVisualizer>
@@ -27,7 +34,14 @@
           </VisualizerSettings>
         </MashupSettings>
         <MashupSettings>
-          <Source>27</Source>
+          <Source>28</Source>
+          <VisualizerTypeName>Bonsai.Design.ObjectTextVisualizer</VisualizerTypeName>
+          <VisualizerSettings>
+            <ObjectTextVisualizer />
+          </VisualizerSettings>
+        </MashupSettings>
+        <MashupSettings>
+          <Source>31</Source>
           <VisualizerTypeName>AllenNeuralDynamics.Core.Design.IplImageRotateVisualizer</VisualizerTypeName>
           <VisualizerSettings>
             <IplImageRotateVisualizer>
