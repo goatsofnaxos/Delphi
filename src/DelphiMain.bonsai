@@ -23,6 +23,8 @@
       <Expression xsi:type="ExternalizedMapping">
         <Property Name="HardwareSettings" />
         <Property Name="RuleSettings" />
+        <Property Name="NextRuleSettings" />
+        <Property Name="SwitchDateTime" />
       </Expression>
       <Expression xsi:type="GroupWorkflow">
         <Name>InitializeSettings</Name>
@@ -33,7 +35,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="io:ReadAllText">
-                <io:Path>schemas\hardware-schema2.yml</io:Path>
+                <io:Path>schemas\hardware-schema.yml</io:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="p1:DeserializeFromYaml">
@@ -52,8 +54,35 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:RuleSelector">
-                <p2:Path>schemas\rule-8.yml</p2:Path>
+                <p2:Path>schemas\rule-3.yml</p2:Path>
               </Combinator>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Path" DisplayName="NextRuleSettings" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p2:RuleSelector">
+                <p2:Path>schemas\rule-5.yml</p2:Path>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="DueTimes" DisplayName="SwitchDateTime" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p2:RuleTimer">
+                <p2:DueTimes>
+                  <p2:RuleSchedule>
+                    <p2:DueTime>2026-01-30T11:50:00</p2:DueTime>
+                    <p2:RuleSchema>schemas\rule-5.yml</p2:RuleSchema>
+                  </p2:RuleSchedule>
+                </p2:DueTimes>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Sample" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Merge" />
             </Expression>
             <Expression xsi:type="p3:DeserializeFromYaml">
               <p3:Type xsi:type="TypeMapping" TypeArguments="p3:RuleSchema" />
@@ -108,7 +137,7 @@
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:Take">
-                      <rx:Count>7</rx:Count>
+                      <rx:Count>2</rx:Count>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="rx:ToDictionary">
@@ -142,13 +171,19 @@
             <Edge From="2" To="3" Label="Source1" />
             <Edge From="3" To="4" Label="Source1" />
             <Edge From="5" To="6" Label="Source1" />
-            <Edge From="6" To="7" Label="Source1" />
+            <Edge From="6" To="12" Label="Source1" />
             <Edge From="7" To="8" Label="Source1" />
+            <Edge From="8" To="11" Label="Source1" />
             <Edge From="9" To="10" Label="Source1" />
-            <Edge From="10" To="11" Label="Source1" />
-            <Edge From="14" To="15" Label="Source1" />
+            <Edge From="10" To="11" Label="Source2" />
+            <Edge From="11" To="12" Label="Source2" />
+            <Edge From="12" To="13" Label="Source1" />
+            <Edge From="13" To="14" Label="Source1" />
             <Edge From="15" To="16" Label="Source1" />
             <Edge From="16" To="17" Label="Source1" />
+            <Edge From="20" To="21" Label="Source1" />
+            <Edge From="21" To="22" Label="Source1" />
+            <Edge From="22" To="23" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -186,7 +221,7 @@
                 <harp:VisualIndicators>On</harp:VisualIndicators>
                 <harp:Heartbeat>Enabled</harp:Heartbeat>
                 <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                <harp:PortName>COM12</harp:PortName>
+                <harp:PortName>COM8</harp:PortName>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:PublishSubject">
@@ -677,11 +712,33 @@
             <Expression xsi:type="p4:CreateMessage">
               <harp:MessageType>Write</harp:MessageType>
               <harp:Payload xsi:type="p4:CreateQueuedOdorMaskPayload">
-                <p4:QueuedOdorMask>8</p4:QueuedOdorMask>
+                <p4:QueuedOdorMask>2</p4:QueuedOdorMask>
               </harp:Payload>
             </Expression>
             <Expression xsi:type="MulticastSubject">
               <Name>DelphiCommands</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>DelphiEvents</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="harp:FilterMessageType">
+                <harp:FilterType>Include</harp:FilterType>
+                <harp:MessageType>Event</harp:MessageType>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="p4:FilterRegister">
+              <harp:FilterType>Include</harp:FilterType>
+              <harp:Register xsi:type="p4:PokeState" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>1</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:Accumulate" />
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>PokeCount</Name>
             </Expression>
           </Nodes>
           <Edges>
@@ -715,6 +772,11 @@
             <Edge From="29" To="31" Label="Source1" />
             <Edge From="30" To="31" Label="Source2" />
             <Edge From="31" To="32" Label="Source1" />
+            <Edge From="33" To="34" Label="Source1" />
+            <Edge From="34" To="35" Label="Source1" />
+            <Edge From="35" To="36" Label="Source1" />
+            <Edge From="36" To="37" Label="Source1" />
+            <Edge From="37" To="38" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -805,7 +867,7 @@
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="p2:TryLookupOrDefault">
                       <p2:DefaultState>DefaultState</p2:DefaultState>
-                      <p2:Key>OdorD</p2:Key>
+                      <p2:Key>OdorB</p2:Key>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
@@ -903,7 +965,7 @@
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="p2:TryLookupOrDefault">
                       <p2:DefaultState>DefaultState</p2:DefaultState>
-                      <p2:Key>OdorD</p2:Key>
+                      <p2:Key>OdorB</p2:Key>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
@@ -1124,7 +1186,7 @@
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="aeon:SpinnakerCapture">
                 <spk:Index xsi:nil="true" />
-                <spk:SerialNumber>23492582</spk:SerialNumber>
+                <spk:SerialNumber>23373886</spk:SerialNumber>
                 <spk:ColorProcessing>Default</spk:ColorProcessing>
                 <aeon:ExposureTime>7500</aeon:ExposureTime>
                 <aeon:Gain>0</aeon:Gain>
@@ -1197,7 +1259,7 @@
               </PropertyMappings>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:LogController.bonsai">
-              <Path>C:\Users\delphi_01\Delphi\HIW\robocopytest</Path>
+              <Path>C:\Users\brandon.pratt\Desktop\data</Path>
               <ChunkSize>1</ChunkSize>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
@@ -1317,8 +1379,8 @@
                   <Expression xsi:type="IncludeWorkflow" Path="Extensions\LogVideo.bonsai">
                     <Heartbeats />
                     <ClosingDuration>PT30S</ClosingDuration>
-                    <LogName>TopRightCamera</LogName>
-                    <FrameRate>60</FrameRate>
+                    <LogName>PortCamera</LogName>
+                    <FrameRate>100</FrameRate>
                     <OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v libx264 -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</OutputArguments>
                     <InputArguments>-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear</InputArguments>
                   </Expression>
@@ -1729,7 +1791,7 @@ groupMasks:
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="io:WriteAllText">
-                            <io:Path>C:\Users\delphi_01\Delphi\HIW\robocopytest\2026-02-04T20-37-44\behavior\DelphiController\device.yml</io:Path>
+                            <io:Path>C:\Users\brandon.pratt\Desktop\data\2026-02-02T18-33-38\behavior\DelphiController\device.yml</io:Path>
                             <io:Overwrite>false</io:Overwrite>
                             <io:Append>false</io:Append>
                           </Combinator>
@@ -1750,75 +1812,85 @@ groupMasks:
                 </Edges>
               </Workflow>
             </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="rx:Timer">
-                <rx:DueTime>PT0S</rx:DueTime>
-                <rx:Period>PT10S</rx:Period>
-              </Combinator>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="rx:Timer">
+                  <rx:DueTime>PT0S</rx:DueTime>
+                  <rx:Period>PT1H</rx:Period>
+                </Combinator>
+              </Builder>
             </Expression>
-            <Expression xsi:type="Unit" />
-            <Expression xsi:type="MulticastSubject">
-              <Name>StartRobocopy</Name>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Unit" />
             </Expression>
-            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p5:Unit">
-              <rx:Name>StartRobocopy</rx:Name>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="MulticastSubject">
+                <Name>StartRobocopy</Name>
+              </Builder>
             </Expression>
-            <Expression xsi:type="rx:SelectMany">
-              <Name>Robocopy</Name>
-              <Workflow>
-                <Nodes>
-                  <Expression xsi:type="WorkflowInput">
-                    <Name>Source1</Name>
-                  </Expression>
-                  <Expression xsi:type="SubscribeSubject">
-                    <Name>HardwareSchema</Name>
-                  </Expression>
-                  <Expression xsi:type="MemberSelector">
-                    <Selector>LoggingRootPath</Selector>
-                  </Expression>
-                  <Expression xsi:type="SubscribeSubject">
-                    <Name>HardwareSchema</Name>
-                  </Expression>
-                  <Expression xsi:type="MemberSelector">
-                    <Selector>RemoteTransferRootPath</Selector>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Zip" />
-                  </Expression>
-                  <Expression xsi:type="Format">
-                    <Format>python\robocopy.py "{0}" "{1}"</Format>
-                    <Selector>Item1,Item2</Selector>
-                  </Expression>
-                  <Expression xsi:type="PropertyMapping">
-                    <PropertyMappings>
-                      <Property Name="Arguments" />
-                    </PropertyMappings>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="io:StartProcess">
-                      <io:FileName>..\.python\.venv\Scripts\python.exe</io:FileName>
-                      <io:Arguments>python\robocopy.py "C:\Users\delphi_01\Delphi\HIW\robocopytest" "C:\Users\delphi_basement\Northwestern University\finklab_sharepoint - Delphi_data\robocopytest"</io:Arguments>
-                    </Combinator>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Take">
-                      <rx:Count>1</rx:Count>
-                    </Combinator>
-                  </Expression>
-                  <Expression xsi:type="WorkflowOutput" />
-                </Nodes>
-                <Edges>
-                  <Edge From="1" To="2" Label="Source1" />
-                  <Edge From="2" To="5" Label="Source1" />
-                  <Edge From="3" To="4" Label="Source1" />
-                  <Edge From="4" To="5" Label="Source2" />
-                  <Edge From="5" To="6" Label="Source1" />
-                  <Edge From="6" To="7" Label="Source1" />
-                  <Edge From="7" To="8" Label="Source1" />
-                  <Edge From="8" To="9" Label="Source1" />
-                  <Edge From="9" To="10" Label="Source1" />
-                </Edges>
-              </Workflow>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="rx:BehaviorSubject" TypeArguments="p5:Unit">
+                <rx:Name>StartRobocopy</rx:Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="rx:SelectMany">
+                <Name>Robocopy</Name>
+                <Workflow>
+                  <Nodes>
+                    <Expression xsi:type="WorkflowInput">
+                      <Name>Source1</Name>
+                    </Expression>
+                    <Expression xsi:type="SubscribeSubject">
+                      <Name>HardwareSchema</Name>
+                    </Expression>
+                    <Expression xsi:type="MemberSelector">
+                      <Selector>LoggingRootPath</Selector>
+                    </Expression>
+                    <Expression xsi:type="SubscribeSubject">
+                      <Name>HardwareSchema</Name>
+                    </Expression>
+                    <Expression xsi:type="MemberSelector">
+                      <Selector>RemoteTransferRootPath</Selector>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Zip" />
+                    </Expression>
+                    <Expression xsi:type="Format">
+                      <Format>python\robocopy.py {0} {1}</Format>
+                      <Selector>Item1,Item2</Selector>
+                    </Expression>
+                    <Expression xsi:type="PropertyMapping">
+                      <PropertyMappings>
+                        <Property Name="Arguments" />
+                      </PropertyMappings>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="io:StartProcess">
+                        <io:FileName>..\.python\.venv\Scripts\python.exe</io:FileName>
+                        <io:Arguments>python\robocopy.py C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data C:\Users\neurogears\source\repos\zuckerman\Delphi\temp_data_remote</io:Arguments>
+                      </Combinator>
+                    </Expression>
+                    <Expression xsi:type="Combinator">
+                      <Combinator xsi:type="rx:Take">
+                        <rx:Count>1</rx:Count>
+                      </Combinator>
+                    </Expression>
+                    <Expression xsi:type="WorkflowOutput" />
+                  </Nodes>
+                  <Edges>
+                    <Edge From="1" To="2" Label="Source1" />
+                    <Edge From="2" To="5" Label="Source1" />
+                    <Edge From="3" To="4" Label="Source1" />
+                    <Edge From="4" To="5" Label="Source2" />
+                    <Edge From="5" To="6" Label="Source1" />
+                    <Edge From="6" To="7" Label="Source1" />
+                    <Edge From="7" To="8" Label="Source1" />
+                    <Edge From="8" To="9" Label="Source1" />
+                    <Edge From="9" To="10" Label="Source1" />
+                  </Edges>
+                </Workflow>
+              </Builder>
             </Expression>
           </Nodes>
           <Edges>
@@ -1905,6 +1977,18 @@ groupMasks:
       </Expression>
       <Expression xsi:type="VisualizerMapping" />
       <Expression xsi:type="SubscribeSubject">
+        <Name>PokeCount</Name>
+      </Expression>
+      <Expression xsi:type="scr:ExpressionTransform">
+        <scr:Expression>it.ToString()
+ </scr:Expression>
+      </Expression>
+      <Expression xsi:type="Format">
+        <Format>Poke Count: {0}</Format>
+        <Selector>it</Selector>
+      </Expression>
+      <Expression xsi:type="VisualizerMapping" />
+      <Expression xsi:type="SubscribeSubject">
         <Name>VideoFeed</Name>
       </Expression>
       <Expression xsi:type="MemberSelector">
@@ -1912,7 +1996,7 @@ groupMasks:
       </Expression>
       <Expression xsi:type="VisualizerMapping" />
       <Expression xsi:type="viz:TableLayoutPanelBuilder">
-        <viz:ColumnCount>3</viz:ColumnCount>
+        <viz:ColumnCount>4</viz:ColumnCount>
         <viz:RowCount>2</viz:RowCount>
         <viz:ColumnStyles />
         <viz:RowStyles />
@@ -1920,7 +2004,8 @@ groupMasks:
           <viz:CellSpan ColumnSpan="1" RowSpan="1" />
           <viz:CellSpan ColumnSpan="1" RowSpan="1" />
           <viz:CellSpan ColumnSpan="1" RowSpan="1" />
-          <viz:CellSpan ColumnSpan="3" RowSpan="1" />
+          <viz:CellSpan ColumnSpan="1" RowSpan="1" />
+          <viz:CellSpan ColumnSpan="4" RowSpan="1" />
         </viz:CellSpans>
       </Expression>
     </Nodes>
@@ -1938,14 +2023,18 @@ groupMasks:
       <Edge From="18" To="19" Label="Source1" />
       <Edge From="19" To="20" Label="Source1" />
       <Edge From="20" To="21" Label="Source1" />
-      <Edge From="21" To="29" Label="Source1" />
+      <Edge From="21" To="33" Label="Source1" />
       <Edge From="22" To="23" Label="Source1" />
-      <Edge From="23" To="29" Label="Source2" />
+      <Edge From="23" To="33" Label="Source2" />
       <Edge From="24" To="25" Label="Source1" />
-      <Edge From="25" To="29" Label="Source3" />
+      <Edge From="25" To="33" Label="Source3" />
       <Edge From="26" To="27" Label="Source1" />
       <Edge From="27" To="28" Label="Source1" />
-      <Edge From="28" To="29" Label="Source4" />
+      <Edge From="28" To="29" Label="Source1" />
+      <Edge From="29" To="33" Label="Source4" />
+      <Edge From="30" To="31" Label="Source1" />
+      <Edge From="31" To="32" Label="Source1" />
+      <Edge From="32" To="33" Label="Source5" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
