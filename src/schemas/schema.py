@@ -13,12 +13,14 @@ class DelphiController(BaseModel):
     odor_transition_time_us: int = Field(ge=0)
     poke_pin: int = Field(default=22, ge=0)
     vacuum_setup_time_us: int = Field(ge=0)
+    vacuum_close_time_us: int = Field(ge=0)
     com_port: str
 
 
 class CameraSettings(BaseModel):
     camera_name: str
     frame_rate: int = Field(ge=0)
+    exposure: int = Field(ge=0)
     duty_cycle: float = Field(ge=0, le=1)
     serial_number: str
     ffmpeg_input: str
