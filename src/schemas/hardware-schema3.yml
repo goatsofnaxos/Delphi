@@ -11,7 +11,7 @@ delphi_controller:
   odor_transition_time_us: 20000
   poke_pin: 22
   vacuum_setup_time_us: 10000
-  com_port: COM5
+  com_port: COM4
 
 camera_settings:
   camera_name: BottomLeftCamera
