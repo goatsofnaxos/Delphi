@@ -11,6 +11,11 @@
           "title": "Frame Rate",
           "type": "integer"
         },
+        "exposure": {
+          "minimum": 0,
+          "title": "Exposure",
+          "type": "integer"
+        },
         "duty_cycle": {
           "maximum": 1.0,
           "minimum": 0.0,
@@ -33,6 +38,7 @@
       "required": [
         "camera_name",
         "frame_rate",
+        "exposure",
         "duty_cycle",
         "serial_number",
         "ffmpeg_input",
@@ -79,6 +85,11 @@
           "title": "Vacuum Setup Time Us",
           "type": "integer"
         },
+        "vacuum_close_time_us": {
+          "minimum": 0,
+          "title": "Vacuum Close Time Us",
+          "type": "integer"
+        },
         "com_port": {
           "title": "Com Port",
           "type": "string"
@@ -91,6 +102,7 @@
         "min_odor_delivery_time_us",
         "odor_transition_time_us",
         "vacuum_setup_time_us",
+        "vacuum_close_time_us",
         "com_port"
       ],
       "title": "DelphiController",
