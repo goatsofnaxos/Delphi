@@ -712,7 +712,7 @@
             <Expression xsi:type="p4:CreateMessage">
               <harp:MessageType>Write</harp:MessageType>
               <harp:Payload xsi:type="p4:CreateQueuedOdorMaskPayload">
-                <p4:QueuedOdorMask>2</p4:QueuedOdorMask>
+                <p4:QueuedOdorMask>1</p4:QueuedOdorMask>
               </harp:Payload>
             </Expression>
             <Expression xsi:type="MulticastSubject">
