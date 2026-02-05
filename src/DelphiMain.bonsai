@@ -736,33 +736,6 @@
             <Expression xsi:type="MulticastSubject">
               <Name>DelphiCommands</Name>
             </Expression>
-            <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Name" DisplayName="QueueOdor" />
-            </Expression>
-            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Int32">
-              <rx:Name>QueueOdor</rx:Name>
-            </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="InputMapping">
-                <PropertyMappings>
-                  <Property Name="QueuedOdorIndex" Selector="it" />
-                </PropertyMappings>
-              </Builder>
-            </Expression>
-            <Expression xsi:type="PropertyMapping">
-              <PropertyMappings>
-                <Property Name="QueuedOdorMask" />
-              </PropertyMappings>
-            </Expression>
-            <Expression xsi:type="p4:CreateMessage">
-              <harp:MessageType>Write</harp:MessageType>
-              <harp:Payload xsi:type="p4:CreateQueuedOdorMaskPayload">
-                <p4:QueuedOdorMask>1</p4:QueuedOdorMask>
-              </harp:Payload>
-            </Expression>
-            <Expression xsi:type="MulticastSubject">
-              <Name>DelphiCommands</Name>
-            </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>DelphiEvents</Name>
             </Expression>
@@ -785,6 +758,33 @@
                 <harp:VisualIndicators>On</harp:VisualIndicators>
                 <harp:OperationLed>On</harp:OperationLed>
                 <harp:Heartbeat>Enabled</harp:Heartbeat>
+              </harp:Payload>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>DelphiCommands</Name>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Name" DisplayName="QueueOdor" />
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Int32">
+              <rx:Name>QueueOdor</rx:Name>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="InputMapping">
+                <PropertyMappings>
+                  <Property Name="QueuedOdorIndex" Selector="it" />
+                </PropertyMappings>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="QueuedOdorMask" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="p4:CreateMessage">
+              <harp:MessageType>Write</harp:MessageType>
+              <harp:Payload xsi:type="p4:CreateQueuedOdorMaskPayload">
+                <p4:QueuedOdorMask>1</p4:QueuedOdorMask>
               </harp:Payload>
             </Expression>
             <Expression xsi:type="MulticastSubject">
@@ -841,17 +841,20 @@
             <Edge From="26" To="27" Label="Source1" />
             <Edge From="28" To="29" Label="Source1" />
             <Edge From="29" To="30" Label="Source1" />
-            <Edge From="29" To="31" Label="Source1" />
-            <Edge From="30" To="31" Label="Source2" />
+            <Edge From="30" To="31" Label="Source1" />
             <Edge From="31" To="32" Label="Source1" />
             <Edge From="33" To="34" Label="Source1" />
-            <Edge From="30" To="32" Label="Source1" />
-            <Edge From="31" To="32" Label="Source2" />
-            <Edge From="32" To="33" Label="Source1" />
             <Edge From="34" To="35" Label="Source1" />
-            <Edge From="35" To="36" Label="Source1" />
+            <Edge From="34" To="36" Label="Source1" />
+            <Edge From="35" To="37" Label="Source1" />
             <Edge From="36" To="37" Label="Source1" />
+            <Edge From="36" To="37" Label="Source2" />
             <Edge From="37" To="38" Label="Source1" />
+            <Edge From="39" To="40" Label="Source1" />
+            <Edge From="40" To="41" Label="Source1" />
+            <Edge From="41" To="42" Label="Source1" />
+            <Edge From="42" To="43" Label="Source1" />
+            <Edge From="43" To="44" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
