@@ -736,6 +736,33 @@
             <Expression xsi:type="MulticastSubject">
               <Name>DelphiCommands</Name>
             </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>DelphiEvents</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Take">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Delay">
+                <rx:DueTime>PT5S</rx:DueTime>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="harp:CreateMessage">
+              <harp:MessageType>Write</harp:MessageType>
+              <harp:Payload xsi:type="harp:CreateOperationControlPayload">
+                <harp:OperationMode>Active</harp:OperationMode>
+                <harp:DumpRegisters>true</harp:DumpRegisters>
+                <harp:MuteReplies>false</harp:MuteReplies>
+                <harp:VisualIndicators>On</harp:VisualIndicators>
+                <harp:OperationLed>On</harp:OperationLed>
+                <harp:Heartbeat>Enabled</harp:Heartbeat>
+              </harp:Payload>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>DelphiCommands</Name>
+            </Expression>
             <Expression xsi:type="ExternalizedMapping">
               <Property Name="Name" DisplayName="QueueOdor" />
             </Expression>
@@ -767,28 +794,23 @@
               <Name>DelphiEvents</Name>
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="rx:Take">
-                <rx:Count>1</rx:Count>
+              <Combinator xsi:type="harp:FilterMessageType">
+                <harp:FilterType>Include</harp:FilterType>
+                <harp:MessageType>Event</harp:MessageType>
               </Combinator>
+            </Expression>
+            <Expression xsi:type="p4:FilterRegister">
+              <harp:FilterType>Include</harp:FilterType>
+              <harp:Register xsi:type="p4:PokeState" />
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="rx:Delay">
-                <rx:DueTime>PT5S</rx:DueTime>
+              <Combinator xsi:type="IntProperty">
+                <Value>1</Value>
               </Combinator>
             </Expression>
-            <Expression xsi:type="harp:CreateMessage">
-              <harp:MessageType>Write</harp:MessageType>
-              <harp:Payload xsi:type="harp:CreateOperationControlPayload">
-                <harp:OperationMode>Active</harp:OperationMode>
-                <harp:DumpRegisters>true</harp:DumpRegisters>
-                <harp:MuteReplies>false</harp:MuteReplies>
-                <harp:VisualIndicators>On</harp:VisualIndicators>
-                <harp:OperationLed>On</harp:OperationLed>
-                <harp:Heartbeat>Enabled</harp:Heartbeat>
-              </harp:Payload>
-            </Expression>
-            <Expression xsi:type="MulticastSubject">
-              <Name>DelphiCommands</Name>
+            <Expression xsi:type="rx:Accumulate" />
+            <Expression xsi:type="rx:BehaviorSubject">
+              <Name>PokeCount</Name>
             </Expression>
           </Nodes>
           <Edges>
@@ -819,14 +841,20 @@
             <Edge From="26" To="27" Label="Source1" />
             <Edge From="28" To="29" Label="Source1" />
             <Edge From="29" To="30" Label="Source1" />
-            <Edge From="29" To="31" Label="Source1" />
-            <Edge From="30" To="32" Label="Source1" />
-            <Edge From="31" To="32" Label="Source2" />
-            <Edge From="32" To="33" Label="Source1" />
+            <Edge From="30" To="31" Label="Source1" />
+            <Edge From="31" To="32" Label="Source1" />
+            <Edge From="33" To="34" Label="Source1" />
             <Edge From="34" To="35" Label="Source1" />
-            <Edge From="35" To="36" Label="Source1" />
+            <Edge From="34" To="36" Label="Source1" />
+            <Edge From="35" To="37" Label="Source1" />
             <Edge From="36" To="37" Label="Source1" />
+            <Edge From="36" To="37" Label="Source2" />
             <Edge From="37" To="38" Label="Source1" />
+            <Edge From="39" To="40" Label="Source1" />
+            <Edge From="40" To="41" Label="Source1" />
+            <Edge From="41" To="42" Label="Source1" />
+            <Edge From="42" To="43" Label="Source1" />
+            <Edge From="43" To="44" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -2031,6 +2059,18 @@ groupMasks:
       </Expression>
       <Expression xsi:type="VisualizerMapping" />
       <Expression xsi:type="SubscribeSubject">
+        <Name>PokeCount</Name>
+      </Expression>
+      <Expression xsi:type="scr:ExpressionTransform">
+        <scr:Expression>it.ToString()
+ </scr:Expression>
+      </Expression>
+      <Expression xsi:type="Format">
+        <Format>Poke Count: {0}</Format>
+        <Selector>it</Selector>
+      </Expression>
+      <Expression xsi:type="VisualizerMapping" />
+      <Expression xsi:type="SubscribeSubject">
         <Name>VideoFeed</Name>
       </Expression>
       <Expression xsi:type="MemberSelector">
@@ -2038,7 +2078,7 @@ groupMasks:
       </Expression>
       <Expression xsi:type="VisualizerMapping" />
       <Expression xsi:type="viz:TableLayoutPanelBuilder">
-        <viz:ColumnCount>3</viz:ColumnCount>
+        <viz:ColumnCount>4</viz:ColumnCount>
         <viz:RowCount>2</viz:RowCount>
         <viz:ColumnStyles />
         <viz:RowStyles />
@@ -2046,7 +2086,8 @@ groupMasks:
           <viz:CellSpan ColumnSpan="1" RowSpan="1" />
           <viz:CellSpan ColumnSpan="1" RowSpan="1" />
           <viz:CellSpan ColumnSpan="1" RowSpan="1" />
-          <viz:CellSpan ColumnSpan="3" RowSpan="1" />
+          <viz:CellSpan ColumnSpan="1" RowSpan="1" />
+          <viz:CellSpan ColumnSpan="4" RowSpan="1" />
         </viz:CellSpans>
       </Expression>
     </Nodes>
@@ -2064,14 +2105,18 @@ groupMasks:
       <Edge From="18" To="19" Label="Source1" />
       <Edge From="19" To="20" Label="Source1" />
       <Edge From="20" To="21" Label="Source1" />
-      <Edge From="21" To="29" Label="Source1" />
+      <Edge From="21" To="33" Label="Source1" />
       <Edge From="22" To="23" Label="Source1" />
-      <Edge From="23" To="29" Label="Source2" />
+      <Edge From="23" To="33" Label="Source2" />
       <Edge From="24" To="25" Label="Source1" />
-      <Edge From="25" To="29" Label="Source3" />
+      <Edge From="25" To="33" Label="Source3" />
       <Edge From="26" To="27" Label="Source1" />
       <Edge From="27" To="28" Label="Source1" />
-      <Edge From="28" To="29" Label="Source4" />
+      <Edge From="28" To="29" Label="Source1" />
+      <Edge From="29" To="33" Label="Source4" />
+      <Edge From="30" To="31" Label="Source1" />
+      <Edge From="31" To="32" Label="Source1" />
+      <Edge From="32" To="33" Label="Source5" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
