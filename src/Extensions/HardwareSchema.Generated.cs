@@ -19,6 +19,8 @@ namespace HardwareSchema
     
         private int _frameRate;
     
+        private int _exposure;
+    
         private double _dutyCycle;
     
         private string _serialNumber;
@@ -35,6 +37,7 @@ namespace HardwareSchema
         {
             _cameraName = other._cameraName;
             _frameRate = other._frameRate;
+            _exposure = other._exposure;
             _dutyCycle = other._dutyCycle;
             _serialNumber = other._serialNumber;
             _ffmpegInput = other._ffmpegInput;
@@ -64,6 +67,19 @@ namespace HardwareSchema
             set
             {
                 _frameRate = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="exposure")]
+        public int Exposure
+        {
+            get
+            {
+                return _exposure;
+            }
+            set
+            {
+                _exposure = value;
             }
         }
     
@@ -133,6 +149,7 @@ namespace HardwareSchema
         {
             stringBuilder.Append("CameraName = " + _cameraName + ", ");
             stringBuilder.Append("FrameRate = " + _frameRate + ", ");
+            stringBuilder.Append("Exposure = " + _exposure + ", ");
             stringBuilder.Append("DutyCycle = " + _dutyCycle + ", ");
             stringBuilder.Append("SerialNumber = " + _serialNumber + ", ");
             stringBuilder.Append("FfmpegInput = " + _ffmpegInput + ", ");
@@ -175,6 +192,8 @@ namespace HardwareSchema
     
         private int _vacuumSetupTimeUs;
     
+        private int _vacuumCloseTimeUs;
+    
         private string _comPort;
     
         public DelphiController()
@@ -191,6 +210,7 @@ namespace HardwareSchema
             _odorTransitionTimeUs = other._odorTransitionTimeUs;
             _pokePin = other._pokePin;
             _vacuumSetupTimeUs = other._vacuumSetupTimeUs;
+            _vacuumCloseTimeUs = other._vacuumCloseTimeUs;
             _comPort = other._comPort;
         }
     
@@ -285,6 +305,19 @@ namespace HardwareSchema
             }
         }
     
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="vacuum_close_time_us")]
+        public int VacuumCloseTimeUs
+        {
+            get
+            {
+                return _vacuumCloseTimeUs;
+            }
+            set
+            {
+                _vacuumCloseTimeUs = value;
+            }
+        }
+    
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="com_port")]
         public string ComPort
         {
@@ -317,6 +350,7 @@ namespace HardwareSchema
             stringBuilder.Append("OdorTransitionTimeUs = " + _odorTransitionTimeUs + ", ");
             stringBuilder.Append("PokePin = " + _pokePin + ", ");
             stringBuilder.Append("VacuumSetupTimeUs = " + _vacuumSetupTimeUs + ", ");
+            stringBuilder.Append("VacuumCloseTimeUs = " + _vacuumCloseTimeUs + ", ");
             stringBuilder.Append("ComPort = " + _comPort);
             return true;
         }
