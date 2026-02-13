@@ -6,6 +6,8 @@ Packages
 *.exe
 *.exe.settings
 *.WebView2
+*.layout
+*.editor
 
 # python files
 .venv
