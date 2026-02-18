@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=hardware-schema.json
 
-logging_root_path: C:\Users\delphi_basement\Delphi\HIW\2025071102Right
-remote_transfer_root_path: \\Finklab_NAS\files\delphi_data\20260209\2025071102\2025071102Right
+logging_root_path: C:\Users\delphi_basement\Delphi\HIW\2026021802Right
+remote_transfer_root_path: \\Finklab_NAS\files\delphi_data\20260218\2026021802\2026021802Right
 
 delphi_controller:
   final_valve_energized_time_us: 110000
