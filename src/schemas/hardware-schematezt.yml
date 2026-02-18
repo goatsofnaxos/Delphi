@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=hardware-schema.json
 
-logging_root_path: C:\Users\delphi_01\Delphi\HIW\test
+logging_root_path: C:\Users\delphi_03\delphi\HIW\20260212test
 remote_transfer_root_path: \\Finklab_NAS\files\delphi_data\test
 
 delphi_controller:
@@ -12,13 +12,13 @@ delphi_controller:
   poke_pin: 22
   vacuum_setup_time_us: 10000
   vacuum_close_time_us: 20000
-  com_port: COM14
+  com_port: COM4
 
 camera_settings:
-  camera_name: TopLeftCamera
+  camera_name: TopCamera
   frame_rate: 60
   exposure: 5000
   duty_cycle: 0.5
-  serial_number: '24026619'
+  serial_number: '25294881'
   ffmpeg_input: -colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear
-  ffmpeg_output: -vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_nvenc -cq 23 -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -preset fast -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M
+  ffmpeg_output: -vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v libx264 -cq 23 -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -preset fast -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M
