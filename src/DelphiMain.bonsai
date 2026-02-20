@@ -12,6 +12,7 @@
                  xmlns:p4="clr-namespace:AllenNeuralDynamics.DelphiController;assembly=AllenNeuralDynamics.DelphiController"
                  xmlns:p5="clr-namespace:System.Reactive;assembly=System.Reactive.Core"
                  xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
+                 xmlns:cv="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision"
                  xmlns:aeon="clr-namespace:Aeon.Acquisition;assembly=Aeon.Acquisition"
                  xmlns:spk="clr-namespace:Bonsai.Spinnaker;assembly=Bonsai.Spinnaker"
                  xmlns:p6="clr-namespace:AllenNeuralDynamics.Core;assembly=AllenNeuralDynamics.Core"
@@ -243,7 +244,7 @@
                   <Expression xsi:type="p4:CreateMessage">
                     <harp:MessageType>Write</harp:MessageType>
                     <harp:Payload xsi:type="p4:CreateEnableCamTriggerPayload">
-                      <p4:EnableCamTrigger>0</p4:EnableCamTrigger>
+                      <p4:EnableCamTrigger>1</p4:EnableCamTrigger>
                     </harp:Payload>
                   </Expression>
                   <Expression xsi:type="MulticastSubject">
@@ -784,7 +785,7 @@
             <Expression xsi:type="p4:CreateMessage">
               <harp:MessageType>Write</harp:MessageType>
               <harp:Payload xsi:type="p4:CreateQueuedOdorMaskPayload">
-                <p4:QueuedOdorMask>1</p4:QueuedOdorMask>
+                <p4:QueuedOdorMask>2</p4:QueuedOdorMask>
               </harp:Payload>
             </Expression>
             <Expression xsi:type="MulticastSubject">
@@ -945,7 +946,7 @@
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="p2:TryLookupOrDefault">
                       <p2:DefaultState>DefaultState</p2:DefaultState>
-                      <p2:Key>OdorA</p2:Key>
+                      <p2:Key>OdorB</p2:Key>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
@@ -1043,7 +1044,7 @@
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="p2:TryLookupOrDefault">
                       <p2:DefaultState>DefaultState</p2:DefaultState>
-                      <p2:Key>OdorA</p2:Key>
+                      <p2:Key>OdorB</p2:Key>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
@@ -2192,18 +2193,24 @@ groupMasks:
       <Edge From="18" To="19" Label="Source1" />
       <Edge From="19" To="20" Label="Source1" />
       <Edge From="20" To="21" Label="Source1" />
-      <Edge From="21" To="33" Label="Source1" />
+      <Edge From="21" To="39" Label="Source1" />
       <Edge From="22" To="23" Label="Source1" />
-      <Edge From="23" To="33" Label="Source2" />
+      <Edge From="23" To="39" Label="Source2" />
       <Edge From="24" To="25" Label="Source1" />
-      <Edge From="25" To="33" Label="Source3" />
+      <Edge From="25" To="39" Label="Source3" />
       <Edge From="26" To="27" Label="Source1" />
       <Edge From="27" To="28" Label="Source1" />
       <Edge From="28" To="29" Label="Source1" />
-      <Edge From="29" To="33" Label="Source4" />
+      <Edge From="29" To="39" Label="Source4" />
       <Edge From="30" To="31" Label="Source1" />
       <Edge From="31" To="32" Label="Source1" />
-      <Edge From="32" To="33" Label="Source5" />
+      <Edge From="32" To="39" Label="Source5" />
+      <Edge From="33" To="34" Label="Source1" />
+      <Edge From="34" To="35" Label="Source1" />
+      <Edge From="35" To="39" Label="Source6" />
+      <Edge From="36" To="37" Label="Source1" />
+      <Edge From="37" To="38" Label="Source1" />
+      <Edge From="38" To="39" Label="Source7" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
