@@ -27,11 +27,22 @@ class CameraSettings(BaseModel):
     ffmpeg_output: str
 
 
+class CameraSettings1(BaseModel):
+    camera_name: str
+    frame_rate: int = Field(ge=0)
+    exposure: int = Field(ge=0)
+    duty_cycle: float = Field(ge=0, le=1)
+    serial_number: str
+    ffmpeg_input: str
+    ffmpeg_output: str
+
+
 class HardwareSchema(BaseModel):
     logging_root_path: str
     remote_transfer_root_path: str
     delphi_controller: DelphiController
     camera_settings: CameraSettings
+    # camera_settings1: CameraSettings1
 
 
 class StateDefinition(BaseModel):
