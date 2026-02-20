@@ -60,6 +60,16 @@ class CameraSettings1(BaseModel):
     ffmpeg_input: str
     ffmpeg_output: str
 
+class CameraSettings1(BaseModel):
+    camera_name: str
+    frame_rate: int = Field(ge=0)
+    exposure: int = Field(ge=0)
+    duty_cycle: float = Field(ge=0, le=1)
+    serial_number: str
+    ffmpeg_input: str
+    ffmpeg_output: str
+
+
 class HardwareSchema(BaseModel):
     subject_id: str
     session_time: str
@@ -68,10 +78,8 @@ class HardwareSchema(BaseModel):
     robocopy_script_path: str
     delphi_controller: DelphiController
     camera_settings: CameraSettings
-    camera_settings1: CameraSettings1
-    fluidic_settings: FluidicSettings 
-    delux_driver: DeLuxDriver
-    white_rabbit: WhiteRabbit
+    # camera_settings1: CameraSettings1
+
 
 class StateDefinition(BaseModel):
     name: str
