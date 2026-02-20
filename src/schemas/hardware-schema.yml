@@ -18,7 +18,7 @@ delphi_controller:
 
 camera_settings:
   camera_name: PortCamera
-  frame_rate: 100
+  frame_rate: 60
   exposure: 5000
   duty_cycle: 0.5
   serial_number: '23354675'
