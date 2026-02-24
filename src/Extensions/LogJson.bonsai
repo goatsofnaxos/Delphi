@@ -65,7 +65,7 @@
               <Property Name="Name" />
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="Extensions\FormatFileName.bonsai">
-              <Name>HardwareSettings</Name>
+              <Name>RuleSettings</Name>
               <Extension>jsonl</Extension>
               <RootDirectory>metadata</RootDirectory>
             </Expression>
@@ -75,8 +75,8 @@
               </PropertyMappings>
             </Expression>
             <Expression xsi:type="io:CsvWriter">
-              <io:FileName>D:\Data\2025-11-05T22-51-33\HardwareSettings\HardwareSettings_2025-11-05T22-00-00.jsonl</io:FileName>
-              <io:Append>false</io:Append>
+              <io:FileName>D:\data\2026-02-23T22-20-15\metadata\RuleSettings_2026-02-24T00-00-00.jsonl</io:FileName>
+              <io:Append>true</io:Append>
               <io:Overwrite>false</io:Overwrite>
               <io:Suffix>None</io:Suffix>
               <io:IncludeHeader>false</io:IncludeHeader>

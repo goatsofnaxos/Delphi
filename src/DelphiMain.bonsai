@@ -1395,7 +1395,7 @@
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="BooleanProperty">
-                      <Value>false</Value>
+                      <Value>true</Value>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
@@ -2029,7 +2029,7 @@ groupMasks:
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="io:WriteAllText">
                             <io:Path>C:\Users\svc_aind_chronic\Documents\data\2026-01-26T21-57-06\behavior\DelphiController\device.yml</io:Path>
-                            <io:Overwrite>false</io:Overwrite>
+                            <io:Overwrite>true</io:Overwrite>
                             <io:Append>false</io:Append>
                           </Combinator>
                         </Expression>
