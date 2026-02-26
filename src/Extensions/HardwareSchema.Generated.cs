@@ -175,6 +175,84 @@ namespace HardwareSchema
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class DateTimeSettings
+    {
+    
+        private bool _manualDatetime;
+    
+        private string _manualRootDirectoryName;
+    
+        public DateTimeSettings()
+        {
+        }
+    
+        protected DateTimeSettings(DateTimeSettings other)
+        {
+            _manualDatetime = other._manualDatetime;
+            _manualRootDirectoryName = other._manualRootDirectoryName;
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="manual_datetime")]
+        public bool ManualDatetime
+        {
+            get
+            {
+                return _manualDatetime;
+            }
+            set
+            {
+                _manualDatetime = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="manual_root_directory_name")]
+        public string ManualRootDirectoryName
+        {
+            get
+            {
+                return _manualRootDirectoryName;
+            }
+            set
+            {
+                _manualRootDirectoryName = value;
+            }
+        }
+    
+        public System.IObservable<DateTimeSettings> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new DateTimeSettings(this)));
+        }
+    
+        public System.IObservable<DateTimeSettings> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new DateTimeSettings(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("ManualDatetime = " + _manualDatetime + ", ");
+            stringBuilder.Append("ManualRootDirectoryName = " + _manualRootDirectoryName);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
     public partial class DelphiController
     {
     
@@ -384,10 +462,13 @@ namespace HardwareSchema
     
         private CameraSettings _cameraSettings;
     
+        private DateTimeSettings _datetimeSettings;
+    
         public HardwareSchema()
         {
             _delphiController = new DelphiController();
             _cameraSettings = new CameraSettings();
+            _datetimeSettings = new DateTimeSettings();
         }
     
         protected HardwareSchema(HardwareSchema other)
@@ -396,6 +477,7 @@ namespace HardwareSchema
             _remoteTransferRootPath = other._remoteTransferRootPath;
             _delphiController = other._delphiController;
             _cameraSettings = other._cameraSettings;
+            _datetimeSettings = other._datetimeSettings;
         }
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="logging_root_path")]
@@ -452,6 +534,20 @@ namespace HardwareSchema
             }
         }
     
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="datetime_settings")]
+        public DateTimeSettings DatetimeSettings
+        {
+            get
+            {
+                return _datetimeSettings;
+            }
+            set
+            {
+                _datetimeSettings = value;
+            }
+        }
+    
         public System.IObservable<HardwareSchema> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new HardwareSchema(this)));
@@ -467,7 +563,8 @@ namespace HardwareSchema
             stringBuilder.Append("LoggingRootPath = " + _loggingRootPath + ", ");
             stringBuilder.Append("RemoteTransferRootPath = " + _remoteTransferRootPath + ", ");
             stringBuilder.Append("DelphiController = " + _delphiController + ", ");
-            stringBuilder.Append("CameraSettings = " + _cameraSettings);
+            stringBuilder.Append("CameraSettings = " + _cameraSettings + ", ");
+            stringBuilder.Append("DatetimeSettings = " + _datetimeSettings);
             return true;
         }
     
@@ -511,6 +608,11 @@ namespace HardwareSchema
             return Process<CameraSettings>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<DateTimeSettings> source)
+        {
+            return Process<DateTimeSettings>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<DelphiController> source)
         {
             return Process<DelphiController>(source);
@@ -531,6 +633,7 @@ namespace HardwareSchema
     [System.ComponentModel.DefaultPropertyAttribute("Type")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraSettings>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DateTimeSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HardwareSchema>))]
     public partial class DeserializeFromYaml : Bonsai.Expressions.SingleArgumentExpressionBuilder

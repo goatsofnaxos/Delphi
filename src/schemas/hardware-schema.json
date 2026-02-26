@@ -47,6 +47,24 @@
       "title": "CameraSettings",
       "type": "object"
     },
+    "DateTimeSettings": {
+      "properties": {
+        "manual_datetime": {
+          "title": "Manual Datetime",
+          "type": "boolean"
+        },
+        "manual_root_directory_name": {
+          "title": "Manual Root Directory Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "manual_datetime",
+        "manual_root_directory_name"
+      ],
+      "title": "DateTimeSettings",
+      "type": "object"
+    },
     "DelphiController": {
       "properties": {
         "final_valve_energized_time_us": {
@@ -123,13 +141,17 @@
     },
     "camera_settings": {
       "$ref": "#/$defs/CameraSettings"
+    },
+    "datetime_settings": {
+      "$ref": "#/$defs/DateTimeSettings"
     }
   },
   "required": [
     "logging_root_path",
     "remote_transfer_root_path",
     "delphi_controller",
-    "camera_settings"
+    "camera_settings",
+    "datetime_settings"
   ],
   "title": "HardwareSchema",
   "type": "object"

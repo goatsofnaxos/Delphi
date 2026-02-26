@@ -26,13 +26,17 @@ class CameraSettings(BaseModel):
     ffmpeg_input: str
     ffmpeg_output: str
 
+class DateTimeSettings(BaseModel):
+    manual_datetime: bool
+    manual_root_directory_name: str
+
 
 class HardwareSchema(BaseModel):
     logging_root_path: str
     remote_transfer_root_path: str
     delphi_controller: DelphiController
     camera_settings: CameraSettings
-
+    datetime_settings: DateTimeSettings
 
 class StateDefinition(BaseModel):
     name: str
