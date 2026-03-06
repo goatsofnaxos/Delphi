@@ -338,220 +338,6 @@ namespace HardwareSchema
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
-    public partial class DeLuxDriver
-    {
-    
-        private string _comPort;
-    
-        private int _ch1Current;
-    
-        private int _ch1PulseFrequency;
-    
-        private double _ch1PulseDutyCycle;
-    
-        private int _ch2Current;
-    
-        private int _ch2PulseFrequency;
-    
-        private double _ch2PulseDutyCycle;
-    
-        private int _ch3Current;
-    
-        private int _ch3PulseFrequency;
-    
-        private double _ch3PulseDutyCycle;
-    
-        public DeLuxDriver()
-        {
-        }
-    
-        protected DeLuxDriver(DeLuxDriver other)
-        {
-            _comPort = other._comPort;
-            _ch1Current = other._ch1Current;
-            _ch1PulseFrequency = other._ch1PulseFrequency;
-            _ch1PulseDutyCycle = other._ch1PulseDutyCycle;
-            _ch2Current = other._ch2Current;
-            _ch2PulseFrequency = other._ch2PulseFrequency;
-            _ch2PulseDutyCycle = other._ch2PulseDutyCycle;
-            _ch3Current = other._ch3Current;
-            _ch3PulseFrequency = other._ch3PulseFrequency;
-            _ch3PulseDutyCycle = other._ch3PulseDutyCycle;
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="com_port")]
-        public string ComPort
-        {
-            get
-            {
-                return _comPort;
-            }
-            set
-            {
-                _comPort = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch1_current")]
-        public int Ch1Current
-        {
-            get
-            {
-                return _ch1Current;
-            }
-            set
-            {
-                _ch1Current = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch1_pulse_frequency")]
-        public int Ch1PulseFrequency
-        {
-            get
-            {
-                return _ch1PulseFrequency;
-            }
-            set
-            {
-                _ch1PulseFrequency = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch1_pulse_duty_cycle")]
-        public double Ch1PulseDutyCycle
-        {
-            get
-            {
-                return _ch1PulseDutyCycle;
-            }
-            set
-            {
-                _ch1PulseDutyCycle = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch2_current")]
-        public int Ch2Current
-        {
-            get
-            {
-                return _ch2Current;
-            }
-            set
-            {
-                _ch2Current = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch2_pulse_frequency")]
-        public int Ch2PulseFrequency
-        {
-            get
-            {
-                return _ch2PulseFrequency;
-            }
-            set
-            {
-                _ch2PulseFrequency = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch2_pulse_duty_cycle")]
-        public double Ch2PulseDutyCycle
-        {
-            get
-            {
-                return _ch2PulseDutyCycle;
-            }
-            set
-            {
-                _ch2PulseDutyCycle = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch3_current")]
-        public int Ch3Current
-        {
-            get
-            {
-                return _ch3Current;
-            }
-            set
-            {
-                _ch3Current = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch3_pulse_frequency")]
-        public int Ch3PulseFrequency
-        {
-            get
-            {
-                return _ch3PulseFrequency;
-            }
-            set
-            {
-                _ch3PulseFrequency = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch3_pulse_duty_cycle")]
-        public double Ch3PulseDutyCycle
-        {
-            get
-            {
-                return _ch3PulseDutyCycle;
-            }
-            set
-            {
-                _ch3PulseDutyCycle = value;
-            }
-        }
-    
-        public System.IObservable<DeLuxDriver> Generate()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new DeLuxDriver(this)));
-        }
-    
-        public System.IObservable<DeLuxDriver> Generate<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new DeLuxDriver(this));
-        }
-    
-        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
-            stringBuilder.Append("ComPort = " + _comPort + ", ");
-            stringBuilder.Append("Ch1Current = " + _ch1Current + ", ");
-            stringBuilder.Append("Ch1PulseFrequency = " + _ch1PulseFrequency + ", ");
-            stringBuilder.Append("Ch1PulseDutyCycle = " + _ch1PulseDutyCycle + ", ");
-            stringBuilder.Append("Ch2Current = " + _ch2Current + ", ");
-            stringBuilder.Append("Ch2PulseFrequency = " + _ch2PulseFrequency + ", ");
-            stringBuilder.Append("Ch2PulseDutyCycle = " + _ch2PulseDutyCycle + ", ");
-            stringBuilder.Append("Ch3Current = " + _ch3Current + ", ");
-            stringBuilder.Append("Ch3PulseFrequency = " + _ch3PulseFrequency + ", ");
-            stringBuilder.Append("Ch3PulseDutyCycle = " + _ch3PulseDutyCycle);
-            return true;
-        }
-    
-        public override string ToString()
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" { ");
-            if (PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append("}");
-            return stringBuilder.ToString();
-        }
-    }
-
-
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    [Bonsai.CombinatorAttribute(MethodName="Generate")]
     public partial class DelphiController
     {
     
@@ -1026,20 +812,11 @@ namespace HardwareSchema
     
         private CameraSettings1 _cameraSettings1;
     
-        private FluidicSettings _fluidicSettings;
-    
-        private DeLuxDriver _deluxDriver;
-    
-        private WhiteRabbit _whiteRabbit;
-    
         public HardwareSchema()
         {
             _delphiController = new DelphiController();
             _cameraSettings = new CameraSettings();
             _cameraSettings1 = new CameraSettings1();
-            _fluidicSettings = new FluidicSettings();
-            _deluxDriver = new DeLuxDriver();
-            _whiteRabbit = new WhiteRabbit();
         }
     
         protected HardwareSchema(HardwareSchema other)
@@ -1052,61 +829,6 @@ namespace HardwareSchema
             _delphiController = other._delphiController;
             _cameraSettings = other._cameraSettings;
             _cameraSettings1 = other._cameraSettings1;
-            _fluidicSettings = other._fluidicSettings;
-            _deluxDriver = other._deluxDriver;
-            _whiteRabbit = other._whiteRabbit;
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="subject_id")]
-        public string SubjectId
-        {
-            get
-            {
-                return _subjectId;
-            }
-            set
-            {
-                _subjectId = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="session_time")]
-        public string SessionTime
-        {
-            get
-            {
-                return _sessionTime;
-            }
-            set
-            {
-                _sessionTime = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="subject_id")]
-        public string SubjectId
-        {
-            get
-            {
-                return _subjectId;
-            }
-            set
-            {
-                _subjectId = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="session_time")]
-        public string SessionTime
-        {
-            get
-            {
-                return _sessionTime;
-            }
-            set
-            {
-                _sessionTime = value;
-            }
         }
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="logging_root_path")]
@@ -1190,48 +912,6 @@ namespace HardwareSchema
             }
         }
     
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="fluidic_settings")]
-        public FluidicSettings FluidicSettings
-        {
-            get
-            {
-                return _fluidicSettings;
-            }
-            set
-            {
-                _fluidicSettings = value;
-            }
-        }
-    
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="delux_driver")]
-        public DeLuxDriver DeluxDriver
-        {
-            get
-            {
-                return _deluxDriver;
-            }
-            set
-            {
-                _deluxDriver = value;
-            }
-        }
-    
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="white_rabbit")]
-        public WhiteRabbit WhiteRabbit
-        {
-            get
-            {
-                return _whiteRabbit;
-            }
-            set
-            {
-                _whiteRabbit = value;
-            }
-        }
-    
         public System.IObservable<HardwareSchema> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new HardwareSchema(this)));
@@ -1251,10 +931,7 @@ namespace HardwareSchema
             stringBuilder.Append("RobocopyScriptPath = " + _robocopyScriptPath + ", ");
             stringBuilder.Append("DelphiController = " + _delphiController + ", ");
             stringBuilder.Append("CameraSettings = " + _cameraSettings + ", ");
-            stringBuilder.Append("CameraSettings1 = " + _cameraSettings1 + ", ");
-            stringBuilder.Append("FluidicSettings = " + _fluidicSettings + ", ");
-            stringBuilder.Append("DeluxDriver = " + _deluxDriver + ", ");
-            stringBuilder.Append("WhiteRabbit = " + _whiteRabbit);
+            stringBuilder.Append("CameraSettings1 = " + _cameraSettings1);
             return true;
         }
     
@@ -1303,11 +980,6 @@ namespace HardwareSchema
             return Process<CameraSettings1>(source);
         }
 
-        public System.IObservable<string> Process(System.IObservable<DeLuxDriver> source)
-        {
-            return Process<DeLuxDriver>(source);
-        }
-
         public System.IObservable<string> Process(System.IObservable<DelphiController> source)
         {
             return Process<DelphiController>(source);
@@ -1339,7 +1011,6 @@ namespace HardwareSchema
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraSettings1>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DeLuxDriver>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<FluidicSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<WhiteRabbit>))]

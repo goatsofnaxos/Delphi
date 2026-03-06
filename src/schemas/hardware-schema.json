@@ -94,73 +94,6 @@
       "title": "CameraSettings1",
       "type": "object"
     },
-    "DeLuxDriver": {
-      "properties": {
-        "com_port": {
-          "title": "Com Port",
-          "type": "string"
-        },
-        "ch1_current": {
-          "minimum": 0,
-          "title": "Ch1 Current",
-          "type": "integer"
-        },
-        "ch1_pulse_frequency": {
-          "minimum": 0,
-          "title": "Ch1 Pulse Frequency",
-          "type": "integer"
-        },
-        "ch1_pulse_duty_cycle": {
-          "minimum": 0.0,
-          "title": "Ch1 Pulse Duty Cycle",
-          "type": "number"
-        },
-        "ch2_current": {
-          "minimum": 0,
-          "title": "Ch2 Current",
-          "type": "integer"
-        },
-        "ch2_pulse_frequency": {
-          "minimum": 0,
-          "title": "Ch2 Pulse Frequency",
-          "type": "integer"
-        },
-        "ch2_pulse_duty_cycle": {
-          "minimum": 0.0,
-          "title": "Ch2 Pulse Duty Cycle",
-          "type": "number"
-        },
-        "ch3_current": {
-          "minimum": 0,
-          "title": "Ch3 Current",
-          "type": "integer"
-        },
-        "ch3_pulse_frequency": {
-          "minimum": 0,
-          "title": "Ch3 Pulse Frequency",
-          "type": "integer"
-        },
-        "ch3_pulse_duty_cycle": {
-          "minimum": 0.0,
-          "title": "Ch3 Pulse Duty Cycle",
-          "type": "number"
-        }
-      },
-      "required": [
-        "com_port",
-        "ch1_current",
-        "ch1_pulse_frequency",
-        "ch1_pulse_duty_cycle",
-        "ch2_current",
-        "ch2_pulse_frequency",
-        "ch2_pulse_duty_cycle",
-        "ch3_current",
-        "ch3_pulse_frequency",
-        "ch3_pulse_duty_cycle"
-      ],
-      "title": "DeLuxDriver",
-      "type": "object"
-    },
     "DelphiController": {
       "properties": {
         "com_port": {
@@ -326,15 +259,6 @@
     },
     "camera_settings1": {
       "$ref": "#/$defs/CameraSettings1"
-    },
-    "fluidic_settings": {
-      "$ref": "#/$defs/FluidicSettings"
-    },
-    "delux_driver": {
-      "$ref": "#/$defs/DeLuxDriver"
-    },
-    "white_rabbit": {
-      "$ref": "#/$defs/WhiteRabbit"
     }
   },
   "required": [
@@ -345,10 +269,7 @@
     "robocopy_script_path",
     "delphi_controller",
     "camera_settings",
-    "camera_settings1",
-    "fluidic_settings",
-    "delux_driver",
-    "white_rabbit"
+    "camera_settings1"
   ],
   "title": "HardwareSchema",
   "type": "object"
