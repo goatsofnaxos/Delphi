@@ -47,6 +47,53 @@
       "title": "CameraSettings",
       "type": "object"
     },
+    "CameraSettings1": {
+      "properties": {
+        "camera_name": {
+          "title": "Camera Name",
+          "type": "string"
+        },
+        "frame_rate": {
+          "minimum": 0,
+          "title": "Frame Rate",
+          "type": "integer"
+        },
+        "exposure": {
+          "minimum": 0,
+          "title": "Exposure",
+          "type": "integer"
+        },
+        "duty_cycle": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Duty Cycle",
+          "type": "number"
+        },
+        "serial_number": {
+          "title": "Serial Number",
+          "type": "string"
+        },
+        "ffmpeg_input": {
+          "title": "Ffmpeg Input",
+          "type": "string"
+        },
+        "ffmpeg_output": {
+          "title": "Ffmpeg Output",
+          "type": "string"
+        }
+      },
+      "required": [
+        "camera_name",
+        "frame_rate",
+        "exposure",
+        "duty_cycle",
+        "serial_number",
+        "ffmpeg_input",
+        "ffmpeg_output"
+      ],
+      "title": "CameraSettings1",
+      "type": "object"
+    },
     "DelphiController": {
       "properties": {
         "final_valve_energized_time_us": {
@@ -123,13 +170,17 @@
     },
     "camera_settings": {
       "$ref": "#/$defs/CameraSettings"
+    },
+    "camera_settings1": {
+      "$ref": "#/$defs/CameraSettings1"
     }
   },
   "required": [
     "logging_root_path",
     "remote_transfer_root_path",
     "delphi_controller",
-    "camera_settings"
+    "camera_settings",
+    "camera_settings1"
   ],
   "title": "HardwareSchema",
   "type": "object"

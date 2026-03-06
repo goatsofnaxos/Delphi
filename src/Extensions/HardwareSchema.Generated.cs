@@ -175,6 +175,169 @@ namespace HardwareSchema
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class CameraSettings1
+    {
+    
+        private string _cameraName;
+    
+        private int _frameRate;
+    
+        private int _exposure;
+    
+        private double _dutyCycle;
+    
+        private string _serialNumber;
+    
+        private string _ffmpegInput;
+    
+        private string _ffmpegOutput;
+    
+        public CameraSettings1()
+        {
+        }
+    
+        protected CameraSettings1(CameraSettings1 other)
+        {
+            _cameraName = other._cameraName;
+            _frameRate = other._frameRate;
+            _exposure = other._exposure;
+            _dutyCycle = other._dutyCycle;
+            _serialNumber = other._serialNumber;
+            _ffmpegInput = other._ffmpegInput;
+            _ffmpegOutput = other._ffmpegOutput;
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="camera_name")]
+        public string CameraName
+        {
+            get
+            {
+                return _cameraName;
+            }
+            set
+            {
+                _cameraName = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="frame_rate")]
+        public int FrameRate
+        {
+            get
+            {
+                return _frameRate;
+            }
+            set
+            {
+                _frameRate = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="exposure")]
+        public int Exposure
+        {
+            get
+            {
+                return _exposure;
+            }
+            set
+            {
+                _exposure = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="duty_cycle")]
+        public double DutyCycle
+        {
+            get
+            {
+                return _dutyCycle;
+            }
+            set
+            {
+                _dutyCycle = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="serial_number")]
+        public string SerialNumber
+        {
+            get
+            {
+                return _serialNumber;
+            }
+            set
+            {
+                _serialNumber = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ffmpeg_input")]
+        public string FfmpegInput
+        {
+            get
+            {
+                return _ffmpegInput;
+            }
+            set
+            {
+                _ffmpegInput = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ffmpeg_output")]
+        public string FfmpegOutput
+        {
+            get
+            {
+                return _ffmpegOutput;
+            }
+            set
+            {
+                _ffmpegOutput = value;
+            }
+        }
+    
+        public System.IObservable<CameraSettings1> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new CameraSettings1(this)));
+        }
+    
+        public System.IObservable<CameraSettings1> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new CameraSettings1(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("CameraName = " + _cameraName + ", ");
+            stringBuilder.Append("FrameRate = " + _frameRate + ", ");
+            stringBuilder.Append("Exposure = " + _exposure + ", ");
+            stringBuilder.Append("DutyCycle = " + _dutyCycle + ", ");
+            stringBuilder.Append("SerialNumber = " + _serialNumber + ", ");
+            stringBuilder.Append("FfmpegInput = " + _ffmpegInput + ", ");
+            stringBuilder.Append("FfmpegOutput = " + _ffmpegOutput);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
     public partial class DelphiController
     {
     
@@ -384,10 +547,13 @@ namespace HardwareSchema
     
         private CameraSettings _cameraSettings;
     
+        private CameraSettings1 _cameraSettings1;
+    
         public HardwareSchema()
         {
             _delphiController = new DelphiController();
             _cameraSettings = new CameraSettings();
+            _cameraSettings1 = new CameraSettings1();
         }
     
         protected HardwareSchema(HardwareSchema other)
@@ -396,6 +562,7 @@ namespace HardwareSchema
             _remoteTransferRootPath = other._remoteTransferRootPath;
             _delphiController = other._delphiController;
             _cameraSettings = other._cameraSettings;
+            _cameraSettings1 = other._cameraSettings1;
         }
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="logging_root_path")]
@@ -452,6 +619,20 @@ namespace HardwareSchema
             }
         }
     
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="camera_settings1")]
+        public CameraSettings1 CameraSettings1
+        {
+            get
+            {
+                return _cameraSettings1;
+            }
+            set
+            {
+                _cameraSettings1 = value;
+            }
+        }
+    
         public System.IObservable<HardwareSchema> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new HardwareSchema(this)));
@@ -467,7 +648,8 @@ namespace HardwareSchema
             stringBuilder.Append("LoggingRootPath = " + _loggingRootPath + ", ");
             stringBuilder.Append("RemoteTransferRootPath = " + _remoteTransferRootPath + ", ");
             stringBuilder.Append("DelphiController = " + _delphiController + ", ");
-            stringBuilder.Append("CameraSettings = " + _cameraSettings);
+            stringBuilder.Append("CameraSettings = " + _cameraSettings + ", ");
+            stringBuilder.Append("CameraSettings1 = " + _cameraSettings1);
             return true;
         }
     
@@ -511,6 +693,11 @@ namespace HardwareSchema
             return Process<CameraSettings>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<CameraSettings1> source)
+        {
+            return Process<CameraSettings1>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<DelphiController> source)
         {
             return Process<DelphiController>(source);
@@ -531,6 +718,7 @@ namespace HardwareSchema
     [System.ComponentModel.DefaultPropertyAttribute("Type")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraSettings>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraSettings1>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HardwareSchema>))]
     public partial class DeserializeFromYaml : Bonsai.Expressions.SingleArgumentExpressionBuilder

@@ -42,7 +42,7 @@ class HardwareSchema(BaseModel):
     remote_transfer_root_path: str
     delphi_controller: DelphiController
     camera_settings: CameraSettings
-    # camera_settings1: CameraSettings1
+    camera_settings1: CameraSettings1
 
 
 class StateDefinition(BaseModel):
