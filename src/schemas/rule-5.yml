@@ -2,9 +2,9 @@
 
 rule:
   rule_alias: Standard
-  init_odor_index: 0x0040
+  init_odor_index: 0x0010
   sample_with_replacement: true
   state_definitions: [
-    {name: DefaultState, odor_index: 0x0040, transitions_to: [OdorB]},
-    {name: OdorB, odor_index: 0x0002, transitions_to: [OdorB]},
+    {name: DefaultState, odor_index: 0x0010, transitions_to: [OdorA]},
+    {name: OdorA, odor_index: 0x0001, transitions_to: [OdorA]},
   ]
