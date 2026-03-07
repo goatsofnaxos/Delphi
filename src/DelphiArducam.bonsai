@@ -36,7 +36,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="io:ReadAllText">
-                <io:Path>schemas\hardware-schema3.yml</io:Path>
+                <io:Path>schemas\hardware-schema4.yml</io:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="p1:DeserializeFromYaml">
@@ -222,7 +222,7 @@
                 <harp:VisualIndicators>On</harp:VisualIndicators>
                 <harp:Heartbeat>Enabled</harp:Heartbeat>
                 <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                <harp:PortName>COM8</harp:PortName>
+                <harp:PortName>COM7</harp:PortName>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:PublishSubject">
@@ -1449,10 +1449,10 @@
               <Builder xsi:type="Combinator">
                 <Combinator xsi:type="aeon:SpinnakerCapture">
                   <spk:Index xsi:nil="true" />
-                  <spk:SerialNumber>23373890</spk:SerialNumber>
+                  <spk:SerialNumber>23373892</spk:SerialNumber>
                   <spk:ColorProcessing>Default</spk:ColorProcessing>
-                  <aeon:ExposureTime>5000</aeon:ExposureTime>
-                  <aeon:Gain>0</aeon:Gain>
+                  <aeon:ExposureTime>1500</aeon:ExposureTime>
+                  <aeon:Gain>32</aeon:Gain>
                   <aeon:Binning>1</aeon:Binning>
                 </Combinator>
               </Builder>
@@ -1547,7 +1547,7 @@
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="aeon:SpinnakerCapture">
                 <spk:Index xsi:nil="true" />
-                <spk:SerialNumber>23373890</spk:SerialNumber>
+                <spk:SerialNumber>25461066</spk:SerialNumber>
                 <spk:ColorProcessing>Default</spk:ColorProcessing>
                 <aeon:ExposureTime>5000</aeon:ExposureTime>
                 <aeon:Gain>0</aeon:Gain>
@@ -1690,7 +1690,7 @@
               </PropertyMappings>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:LogController.bonsai">
-              <Path>C:\Users\svc_aind_chronic\Documents\data_mouse3</Path>
+              <Path>C:\Users\svc_aind_chronic\Documents\data_mouse4</Path>
               <ChunkSize>1</ChunkSize>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
@@ -1847,8 +1847,8 @@
                     <Builder xsi:type="IncludeWorkflow" Path="Extensions\LogVideo.bonsai">
                       <Heartbeats />
                       <ClosingDuration>PT30S</ClosingDuration>
-                      <LogName>OverheadCamera</LogName>
-                      <FrameRate>60</FrameRate>
+                      <LogName>PortCamera</LogName>
+                      <FrameRate>100</FrameRate>
                       <OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_qsv -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</OutputArguments>
                       <InputArguments>-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear</InputArguments>
                     </Builder>
@@ -2006,7 +2006,7 @@
                                 <Combinator xsi:type="p6:FfmpegVideoWriter">
                                   <p6:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse3\2026-03-06T21-43-07\behavior-videos\OverheadCamera\OverheadCamera_2026-03-06T21-00-00.mp4</p6:FileName>
                                   <p6:Overwrite>false</p6:Overwrite>
-                                  <p6:FrameRate>60</p6:FrameRate>
+                                  <p6:FrameRate>100</p6:FrameRate>
                                   <p6:Verbosity>Verbose</p6:Verbosity>
                                   <p6:OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_qsv -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</p6:OutputArguments>
                                   <p6:InputArguments>-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear</p6:InputArguments>
@@ -2862,7 +2862,7 @@ groupMasks:
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="io:WriteAllText">
-                            <io:Path>C:\Users\svc_aind_chronic\Documents\data_mouse3\2026-03-06T21-43-07\behavior\DelphiController\device.yml</io:Path>
+                            <io:Path>C:\Users\svc_aind_chronic\Documents\data_mouse4\2026-03-07T00-02-35\behavior\DelphiController\device.yml</io:Path>
                             <io:Overwrite>false</io:Overwrite>
                             <io:Append>false</io:Append>
                           </Combinator>
@@ -2930,7 +2930,7 @@ groupMasks:
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="io:StartProcess">
                       <io:FileName>..\.venv\Scripts\python.exe</io:FileName>
-                      <io:Arguments>python\robocopy.py C:\Users\svc_aind_chronic\Documents\data_mouse3 \\Allen\aind\stage\chronic\Delphi\2026-02-24\data_mouse3</io:Arguments>
+                      <io:Arguments>python\robocopy.py C:\Users\svc_aind_chronic\Documents\data_mouse4 \\Allen\aind\stage\chronic\Delphi\2026-02-24\data_mouse4</io:Arguments>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
@@ -3095,8 +3095,7 @@ groupMasks:
           <viz:CellSpan ColumnSpan="1" RowSpan="1" />
           <viz:CellSpan ColumnSpan="1" RowSpan="1" />
           <viz:CellSpan ColumnSpan="1" RowSpan="1" />
-          <viz:CellSpan ColumnSpan="1" RowSpan="1" />
-          <viz:CellSpan ColumnSpan="1" RowSpan="1" />
+          <viz:CellSpan ColumnSpan="2" RowSpan="1" />
           <viz:CellSpan ColumnSpan="2" RowSpan="1" />
         </viz:CellSpans>
       </Expression>
