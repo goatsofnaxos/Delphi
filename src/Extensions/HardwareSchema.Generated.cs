@@ -376,6 +376,10 @@ namespace HardwareSchema
     public partial class HardwareSchema
     {
     
+        private string _subjectId;
+    
+        private string _sessionTime;
+    
         private string _loggingRootPath;
     
         private string _remoteTransferRootPath;
@@ -392,10 +396,38 @@ namespace HardwareSchema
     
         protected HardwareSchema(HardwareSchema other)
         {
+            _subjectId = other._subjectId;
+            _sessionTime = other._sessionTime;
             _loggingRootPath = other._loggingRootPath;
             _remoteTransferRootPath = other._remoteTransferRootPath;
             _delphiController = other._delphiController;
             _cameraSettings = other._cameraSettings;
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="subject_id")]
+        public string SubjectId
+        {
+            get
+            {
+                return _subjectId;
+            }
+            set
+            {
+                _subjectId = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="session_time")]
+        public string SessionTime
+        {
+            get
+            {
+                return _sessionTime;
+            }
+            set
+            {
+                _sessionTime = value;
+            }
         }
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="logging_root_path")]
@@ -464,6 +496,8 @@ namespace HardwareSchema
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
+            stringBuilder.Append("SubjectId = " + _subjectId + ", ");
+            stringBuilder.Append("SessionTime = " + _sessionTime + ", ");
             stringBuilder.Append("LoggingRootPath = " + _loggingRootPath + ", ");
             stringBuilder.Append("RemoteTransferRootPath = " + _remoteTransferRootPath + ", ");
             stringBuilder.Append("DelphiController = " + _delphiController + ", ");

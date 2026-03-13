@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=hardware-schema.json
-
+subject_id: '801055'
+session_time: '2024-06-01T12:00:00Z'
 logging_root_path: C:\Users\svc_aind_chronic\Documents\data
 remote_transfer_root_path: \\allen\aind\stage\chronic\Delphi
 
