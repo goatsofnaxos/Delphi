@@ -1,0 +1,26 @@
+{
+  "experiments": ["Delphi", "Pirouette"],
+  "auto_start": false,
+  "parallel": false,
+  "experiments_config": {
+    "Delphi": {
+      "root": "C:/Users/brandon.pratt/Desktop/code/Delphi",
+      "workflow": "src/DelphiMain.bonsai",
+      "parameters": {
+        "HardwareSettings": "src/schemas/hardware-schema.yml",
+        "RuleSettings": "src/schemas/rule-3.yml",
+        "NextRuleSettings": "src/schemas/rule-5.yml"
+      }
+    },
+    "Pirouette": {
+      "root": "C:/Users/brandon.pratt/Desktop/code/Aind.Behavior.Pirouette",
+      "workflow": "src/WrappedPirouette.bonsai",
+      "parameters": {
+        "RigPath": "local/AindBehaviorPirouetteRig.json",
+        "SessionPath": "local/AindBehaviorSessionModel.json",
+        "ConnectionString": "@tcp://localhost:5557",
+        "LifealertRoot": "C:/Users/brandon.pratt/Desktop/code/lifealert"
+      }
+    }
+  }
+}

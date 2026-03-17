@@ -110,6 +110,14 @@
     }
   },
   "properties": {
+    "subject_id": {
+      "title": "Subject Id",
+      "type": "string"
+    },
+    "session_time": {
+      "title": "Session Time",
+      "type": "string"
+    },
     "logging_root_path": {
       "title": "Logging Root Path",
       "type": "string"
@@ -126,6 +134,8 @@
     }
   },
   "required": [
+    "subject_id",
+    "session_time",
     "logging_root_path",
     "remote_transfer_root_path",
     "delphi_controller",

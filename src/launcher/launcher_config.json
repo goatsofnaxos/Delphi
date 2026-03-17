@@ -1,0 +1,44 @@
+{
+  "EXPERIMENTS": {
+    "Delphi": {
+      "name": "Delphi",
+      "WorkflowRoot": [
+        "C:/Users/brandon.pratt/Desktop/code/Delphi"
+      ],
+      "workflows": [
+        "src/DelphiMain.bonsai"
+      ],
+      "parameters": {
+        "HardwareSettings": "src/schemas/hardware-schema.yml",
+        "RuleSettings": "src/schemas/rule-3.yml",
+        "NextRuleSettings": "src/schemas/rule-5.yml"
+      },
+      "BONSAI_CMD": "/.bonsai/Bonsai.exe",
+      "ParameterOptions": {
+        "HardwareSettings": [
+          "src/schemas/hardware-schema3.yml",
+          "src/schemas/hardware-schema.yml"
+        ]
+      }
+    },
+    "Pirouette": {
+      "name": "Pirouette",
+      "WorkflowRoot": [
+        "C:/Users/brandon.pratt/Desktop/code/Aind.Behavior.Pirouette"
+      ],
+      "workflows": [
+        "src/WrappedPirouette.bonsai"
+      ],
+      "parameters": {
+        "RigPath": "local/AindBehaviorPirouetteRig.json",
+        "SessionPath": "local/AindBehaviorSessionModel.json",
+        "ConnectionString": "@tcp://localhost:5557",
+        "LifealertRoot": "C:/Users/brandon.pratt/Desktop/code/lifealert"
+      },
+      "BONSAI_CMD": "/bonsai/Bonsai.exe",
+      "LifealertOptions": [
+        "C:/Users/brandon.pratt/Desktop/code/lifealert"
+      ]
+    }
+  }
+}

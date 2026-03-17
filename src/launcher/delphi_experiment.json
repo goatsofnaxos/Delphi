@@ -1,0 +1,24 @@
+{
+  "experiments": ["Delphi"],
+  "auto_start": false,
+  "parallel": false,
+  "experiments_config": {
+    "Delphi": {
+      "root": "C:/Users/brandon.pratt/Desktop/code/Delphi",
+      "workflow": "src/DelphiMain.bonsai",
+      "session_count": 2,
+      "session_parameters": [
+        {
+          "HardwareSettings": "src/schemas/hardware-schema.yml",
+          "RuleSettings": "src/schemas/rule-1.yml",
+          "NextRuleSettings": "src/schemas/rule-2.yml"
+        },
+        {
+          "HardwareSettings": "src/schemas/hardware-schema2.yml",
+          "RuleSettings": "src/schemas/rule-3.yml",
+          "NextRuleSettings": "src/schemas/rule-4.yml"
+        }
+      ]
+    }
+  }
+}
