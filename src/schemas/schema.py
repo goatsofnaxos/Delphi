@@ -32,6 +32,7 @@ class HardwareSchema(BaseModel):
     session_time: str
     logging_root_path: str
     remote_transfer_root_path: str
+    robocopy_script_path: str
     delphi_controller: DelphiController
     camera_settings: CameraSettings
 

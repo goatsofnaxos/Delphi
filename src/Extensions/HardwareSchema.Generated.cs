@@ -384,6 +384,8 @@ namespace HardwareSchema
     
         private string _remoteTransferRootPath;
     
+        private string _robocopyScriptPath;
+    
         private DelphiController _delphiController;
     
         private CameraSettings _cameraSettings;
@@ -400,6 +402,7 @@ namespace HardwareSchema
             _sessionTime = other._sessionTime;
             _loggingRootPath = other._loggingRootPath;
             _remoteTransferRootPath = other._remoteTransferRootPath;
+            _robocopyScriptPath = other._robocopyScriptPath;
             _delphiController = other._delphiController;
             _cameraSettings = other._cameraSettings;
         }
@@ -456,6 +459,19 @@ namespace HardwareSchema
             }
         }
     
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="robocopy_script_path")]
+        public string RobocopyScriptPath
+        {
+            get
+            {
+                return _robocopyScriptPath;
+            }
+            set
+            {
+                _robocopyScriptPath = value;
+            }
+        }
+    
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="delphi_controller")]
         public DelphiController DelphiController
@@ -500,6 +516,7 @@ namespace HardwareSchema
             stringBuilder.Append("SessionTime = " + _sessionTime + ", ");
             stringBuilder.Append("LoggingRootPath = " + _loggingRootPath + ", ");
             stringBuilder.Append("RemoteTransferRootPath = " + _remoteTransferRootPath + ", ");
+            stringBuilder.Append("RobocopyScriptPath = " + _robocopyScriptPath + ", ");
             stringBuilder.Append("DelphiController = " + _delphiController + ", ");
             stringBuilder.Append("CameraSettings = " + _cameraSettings);
             return true;

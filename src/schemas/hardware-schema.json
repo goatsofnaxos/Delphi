@@ -126,6 +126,10 @@
       "title": "Remote Transfer Root Path",
       "type": "string"
     },
+    "robocopy_script_path": {
+      "title": "Robocopy Script Path",
+      "type": "string"
+    },
     "delphi_controller": {
       "$ref": "#/$defs/DelphiController"
     },
@@ -138,6 +142,7 @@
     "session_time",
     "logging_root_path",
     "remote_transfer_root_path",
+    "robocopy_script_path",
     "delphi_controller",
     "camera_settings"
   ],

@@ -1,11 +1,12 @@
 # yaml-language-server: $schema=hardware-schema.json
 subject_id: '801055'
 session_time: '2024-06-01T12:00:00Z'
-logging_root_path: C:\Users\svc_aind_chronic\Documents\data
-remote_transfer_root_path: \\allen\aind\stage\chronic\Delphi
+logging_root_path: D:/data
+robocopy_script_path: C:/Users/svc_aind_chronic/Documents/code/Delphi/src/python/robocopy.py
+remote_transfer_root_path: //allen/aind/stage/chronic/data
 
 delphi_controller:
-  final_valve_energized_time_us: 110000
+  final_valve_energized_time_us: 0
   max_odor_delivery_time_us: 10000000
   min_poke_time_us: 10000
   min_odor_delivery_time_us: 10000
@@ -13,13 +14,13 @@ delphi_controller:
   poke_pin: 22
   vacuum_setup_time_us: 10000
   vacuum_close_time_us: 20000
-  com_port: COM3
+  com_port: COM7
 
 camera_settings:
   camera_name: PortCamera
   frame_rate: 100
   exposure: 5000
   duty_cycle: 0.5
-  serial_number: '23373886'
+  serial_number: '23354675'
   ffmpeg_input: -colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear
-  ffmpeg_output: -vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_qsv -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M
+  ffmpeg_output: -vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v libx264 -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M
