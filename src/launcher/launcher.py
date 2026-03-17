@@ -825,7 +825,12 @@ def copy_and_patch_aind_session_json(
             obj = {}
 
     obj["subject"] = subject_id
-    obj["date"] = start_utc_hyphen  # hyphen UTC
+
+    # Convert session start (hyphen format) to true RFC3339/ISO-8601 timestamp
+    # Example target: 2026-03-13T16:11:58.419072Z
+    dt = datetime.strptime(start_utc_hyphen, "%Y-%m-%dT%H-%M-%S")
+    dt = dt.replace(tzinfo=timezone.utc)
+    obj["date"] = dt.isoformat(timespec="microseconds").replace("+00:00", "Z")
     obj["session_name"] = f"{subject_id}_{start_utc_hyphen}"
     obj["experimenter"] = [experimenter] if experimenter else []
     obj["experiment"] = experiment_value
