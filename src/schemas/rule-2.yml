@@ -5,11 +5,11 @@ rule:
   init_odor_index: 0x0040
   sample_with_replacement: true
   state_definitions: [
-    {name: DefaultState, odor_index: 0x0040, transitions_to: [OdorA1]},
-    {name: OdorA1, odor_index: 0x0001, transitions_to: [OdorA2]},
-    {name: OdorA2, odor_index: 0x0002, transitions_to: [OdorA1]},
-    {name: OdorB1, odor_index: 0x0004, transitions_to: [OdorA1]},
-    {name: OdorB2, odor_index: 0x0008, transitions_to: [OdorA1]},
-    {name: OdorC1, odor_index: 0x0010, transitions_to: [OdorA1]},
-    {name: OdorC2, odor_index: 0x0020, transitions_to: [OdorA1]},
+    {name: DefaultState, odor_index: 0x0040, transitions_to: [OdorA, OdorB, OdorC, OdorD, OdorE, OdorF]},
+    {name: OdorA, odor_index: 0x0001, transitions_to: [DefaultState]},
+    {name: OdorB, odor_index: 0x0002, transitions_to: [DefaultState]},
+    {name: OdorC, odor_index: 0x0004, transitions_to: [DefaultState]},
+    {name: OdorD, odor_index: 0x0008, transitions_to: [DefaultState]},
+    {name: OdorE, odor_index: 0x0010, transitions_to: [DefaultState]},
+    {name: OdorF, odor_index: 0x0020, transitions_to: [DefaultState]},
   ]
