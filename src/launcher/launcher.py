@@ -1020,12 +1020,27 @@ def stop_lifealert():
     if not LIFEALERT_PROCS:
         print("No lifealert process is currently running.")
         return
+
     print("Stopping lifealert processes...")
+
     for p in LIFEALERT_PROCS:
         try:
+            # Step 1: Try normal force terminate
             p.kill()
         except Exception:
             pass
+
+        try:
+            # Step 2: Force kill including all children (Windows)
+            subprocess.run(
+                ["taskkill", "/PID", str(p.pid), "/F", "/T"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                creationflags=subprocess.CREATE_NO_WINDOW,
+            )
+        except Exception:
+            pass
+
     LIFEALERT_PROCS.clear()
     print("lifealert stopped.")
 
@@ -1097,22 +1112,46 @@ def wait_for_workflows():
 
 
 def cleanup_temp_files_and_processes():
-    if TEMP_SESSION_FILES:
-        print("\nCleaning up per-session override and temp files:")
-        for fp in TEMP_SESSION_FILES:
-            try:
-                Path(fp).unlink(missing_ok=True)
-                print(f"  removed: {fp}")
-            except Exception as e:
-                print(f"  warning: could not remove {fp}: {e}")
+    print("\nRunning cleanup routine...")
+
+    # --- Kill lifealert first (if running), same logic as stop_lifealert() ---
     if LIFEALERT_PROCS:
-        print("\nStopping lifealert processes...")
+        print("Stopping lifealert processes...")
         for p in LIFEALERT_PROCS:
             try:
                 p.kill()
             except Exception:
                 pass
+            try:
+                subprocess.run(
+                    ["taskkill", "/PID", str(p.pid), "/F", "/T"],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    creationflags=subprocess.CREATE_NO_WINDOW,
+                )
+            except Exception:
+                pass
         LIFEALERT_PROCS.clear()
+
+    # --- NOW remove temp files ---
+    if TEMP_SESSION_FILES:
+        print("Cleaning up per-session override and temp files:")
+        for fp in TEMP_SESSION_FILES:
+            try:
+                Path(fp).unlink(missing_ok=True)
+                print(f"  removed: {fp}")
+            except PermissionError:
+                # Windows file lock — retry after short sleep
+                import time
+
+                time.sleep(0.2)
+                try:
+                    Path(fp).unlink(missing_ok=True)
+                    print(f"  removed after retry: {fp}")
+                except Exception as e:
+                    print(f"  ERROR: could not remove {fp}: {e}")
+            except Exception as e:
+                print(f"  WARNING: could not remove {fp}: {e}")
 
 
 # -------------------------------
@@ -1568,32 +1607,44 @@ def main():
             s["exp_key"].lower() == "pirouette" for s in sessions_to_launch
         )
 
+        # === CONTROL MENU ===
         while True:
-            print("\n=== Control Menu ===")
-            print("  1. Start lifealert")
-            print("  2. Stop lifealert")
-            print("  3. Show status")
-            print("  4. Wait for workflows")
-            print("  5. Exit & cleanup")
-            if not pir_selected:
-                print("  (Pirouette not selected — lifealert disabled)")
+            try:
+                print("\n=== Control Menu ===")
+                print("  1. Start lifealert")
+                print("  2. Stop lifealert")
+                print("  3. Show status")
+                print("  4. Wait for workflows")
+                print("  5. Exit & cleanup")
+                if not pir_selected:
+                    print("  (Pirouette not selected — lifealert disabled)")
 
-            sel = input("Select: ").strip()
-            if sel == "1":
-                if pir_selected:
-                    start_lifealert_with_menu(cfg, prepared_per_experiment)
+                sel = input("Select: ").strip()
+
+                if sel == "1":
+                    if pir_selected:
+                        start_lifealert_with_menu(cfg, prepared_per_experiment)
+                    else:
+                        print("Pirouette not selected.")
+
+                elif sel == "2":
+                    stop_lifealert()  # Updated function will hard-kill uv + children
+
+                elif sel == "3":
+                    show_status()
+
+                elif sel == "4":
+                    wait_for_workflows()
+
+                elif sel == "5":
+                    break
+
                 else:
-                    print("Pirouette not selected.")
-            elif sel == "2":
-                stop_lifealert()
-            elif sel == "3":
-                show_status()
-            elif sel == "4":
-                wait_for_workflows()
-            elif sel == "5":
+                    print("Invalid selection.")
+
+            except KeyboardInterrupt:
+                print("\nCtrl+C detected — exiting control menu and cleaning up...")
                 break
-            else:
-                print("Invalid selection.")
 
     except KeyboardInterrupt:
         print("\nInterrupted.")
