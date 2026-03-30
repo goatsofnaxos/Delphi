@@ -1023,7 +1023,7 @@ def stop_lifealert():
     print("Stopping lifealert processes...")
     for p in LIFEALERT_PROCS:
         try:
-            p.terminate()
+            p.kill()
         except Exception:
             pass
     LIFEALERT_PROCS.clear()
@@ -1109,7 +1109,7 @@ def cleanup_temp_files_and_processes():
         print("\nStopping lifealert processes...")
         for p in LIFEALERT_PROCS:
             try:
-                p.terminate()
+                p.kill()
             except Exception:
                 pass
         LIFEALERT_PROCS.clear()
