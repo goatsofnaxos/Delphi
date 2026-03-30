@@ -31,9 +31,12 @@ import os
 import re
 import sys
 import subprocess
+import time
 from pathlib import Path
 from typing import Dict, Any, List, Tuple, Optional
 from datetime import datetime, timezone
+
+import psutil
 
 # Optional YAML support (if PyYAML is available)
 try:
@@ -1023,15 +1026,9 @@ def stop_lifealert():
 
     print("Stopping lifealert processes...")
 
-    for p in LIFEALERT_PROCS:
+    for p in LIFEALERT_PROCS[:]:
         try:
-            # Step 1: Try normal force terminate
-            p.kill()
-        except Exception:
-            pass
-
-        try:
-            # Step 2: Force kill including all children (Windows)
+            # Kill process tree decisively
             subprocess.run(
                 ["taskkill", "/PID", str(p.pid), "/F", "/T"],
                 stdout=subprocess.DEVNULL,
@@ -1041,8 +1038,20 @@ def stop_lifealert():
         except Exception:
             pass
 
+    # CRITICAL: wait for Windows to release file handles
+    gone, alive = psutil.wait_procs(LIFEALERT_PROCS, timeout=10)
+
+    if alive:
+        raise RuntimeError(
+            f"Lifealert did not fully exit. Still alive: {[p.pid for p in alive]}"
+        )
+
     LIFEALERT_PROCS.clear()
-    print("lifealert stopped.")
+
+    # Extra grace period for Windows handle cleanup
+    time.sleep(1.5)
+
+    print("lifealert stopped cleanly.")
 
 
 def start_lifealert_with_menu(
@@ -1119,10 +1128,7 @@ def cleanup_temp_files_and_processes():
         print("Stopping lifealert processes...")
         for p in LIFEALERT_PROCS:
             try:
-                p.kill()
-            except Exception:
-                pass
-            try:
+                # Kill process tree decisively
                 subprocess.run(
                     ["taskkill", "/PID", str(p.pid), "/F", "/T"],
                     stdout=subprocess.DEVNULL,
