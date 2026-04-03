@@ -14,6 +14,7 @@ class DelphiController(BaseModel):
     poke_pin: int = Field(default=22, ge=0)
     vacuum_setup_time_us: int = Field(ge=0)
     vacuum_close_time_us: int = Field(ge=0)
+    odor_dwell_time_us: int = Field(ge=0)
     com_port: str
 
 

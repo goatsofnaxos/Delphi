@@ -1,26 +1,25 @@
 # yaml-language-server: $schema=hardware-schema.json
 
-logging_root_path: C:\Users\svc_aind_chronic\Documents\data_mouse3
-remote_transfer_root_path: \\Allen\aind\stage\chronic\Delphi\2026-03-24\data_mouse3
+logging_root_path: C:\Users\svc_aind_chronic\Documents\data_mouse7
+remote_transfer_root_path: \\Allen\aind\stage\chronic\Delphi\2026-02-24\data_mouse7
 
 delphi_controller:
   final_valve_energized_time_us: 110000
   max_odor_delivery_time_us: 10000000
-  min_poke_time_us: 50000
+  min_poke_time_us: 100000
   min_odor_delivery_time_us: 10000
   odor_transition_time_us: 20000
   poke_pin: 22
   vacuum_setup_time_us: 10000
   vacuum_close_time_us: 20000
-  odor_dwell_time_us: 100000
-  com_port: COM8
+  com_port: COM4
 
 camera_settings:
   camera_name: PortCamera
   frame_rate: 100
   exposure: 1500
   duty_cycle: 0.5
-  serial_number: '23373888' 
+  serial_number: '23373885' 
   ffmpeg_input: -colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear
   ffmpeg_output: -vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_qsv -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M
 
@@ -29,6 +28,6 @@ camera_settings1:
   frame_rate: 100
   exposure: 5000
   duty_cycle: 0.5
-  serial_number: '23373890'
+  serial_number: '25431298'
   ffmpeg_input: -colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear
   ffmpeg_output: -vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_qsv -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M

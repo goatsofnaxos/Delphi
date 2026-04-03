@@ -357,6 +357,8 @@ namespace HardwareSchema
     
         private int _vacuumCloseTimeUs;
     
+        private int _odorDwellTimeUs;
+    
         private string _comPort;
     
         public DelphiController()
@@ -374,6 +376,7 @@ namespace HardwareSchema
             _pokePin = other._pokePin;
             _vacuumSetupTimeUs = other._vacuumSetupTimeUs;
             _vacuumCloseTimeUs = other._vacuumCloseTimeUs;
+            _odorDwellTimeUs = other._odorDwellTimeUs;
             _comPort = other._comPort;
         }
     
@@ -481,6 +484,19 @@ namespace HardwareSchema
             }
         }
     
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="odor_dwell_time_us")]
+        public int OdorDwellTimeUs
+        {
+            get
+            {
+                return _odorDwellTimeUs;
+            }
+            set
+            {
+                _odorDwellTimeUs = value;
+            }
+        }
+    
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="com_port")]
         public string ComPort
         {
@@ -514,6 +530,7 @@ namespace HardwareSchema
             stringBuilder.Append("PokePin = " + _pokePin + ", ");
             stringBuilder.Append("VacuumSetupTimeUs = " + _vacuumSetupTimeUs + ", ");
             stringBuilder.Append("VacuumCloseTimeUs = " + _vacuumCloseTimeUs + ", ");
+            stringBuilder.Append("OdorDwellTimeUs = " + _odorDwellTimeUs + ", ");
             stringBuilder.Append("ComPort = " + _comPort);
             return true;
         }
