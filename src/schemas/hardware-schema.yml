@@ -6,12 +6,13 @@ remote_transfer_root_path: C:\Users\brandon.pratt\Desktop\data
 delphi_controller:
   final_valve_energized_time_us: 110000
   max_odor_delivery_time_us: 10000000
-  min_poke_time_us: 10000
+  min_poke_time_us: 50000
   min_odor_delivery_time_us: 10000
   odor_transition_time_us: 20000
   poke_pin: 22
   vacuum_setup_time_us: 10000
   vacuum_close_time_us: 20000
+  odor_dwell_time_us: 100000
   com_port: COM8
 
 camera_settings:
