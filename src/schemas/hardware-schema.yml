@@ -14,7 +14,8 @@ delphi_controller:
   poke_pin: 22
   vacuum_setup_time_us: 10000
   vacuum_close_time_us: 20000
-  com_port: COM7
+  odor_dwell_time_us: 100000
+  com_port: COM8
 
 camera_settings:
   camera_name: PortCamera

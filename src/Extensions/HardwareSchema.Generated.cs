@@ -353,7 +353,15 @@ namespace HardwareSchema
     
         private int _odorSetupTimeUs;
     
+        private int _pokePin;
+    
+        private int _vacuumSetupTimeUs;
+    
+        private int _vacuumCloseTimeUs;
+    
         private int _odorDwellTimeUs;
+    
+        private string _comPort;
     
         public DelphiController()
         {
@@ -366,8 +374,12 @@ namespace HardwareSchema
             _maxOdorDeliveryTimeUs = other._maxOdorDeliveryTimeUs;
             _minPokeTimeUs = other._minPokeTimeUs;
             _minOdorDeliveryTimeUs = other._minOdorDeliveryTimeUs;
-            _odorSetupTimeUs = other._odorSetupTimeUs;
+            _odorTransitionTimeUs = other._odorTransitionTimeUs;
+            _pokePin = other._pokePin;
+            _vacuumSetupTimeUs = other._vacuumSetupTimeUs;
+            _vacuumCloseTimeUs = other._vacuumCloseTimeUs;
             _odorDwellTimeUs = other._odorDwellTimeUs;
+            _comPort = other._comPort;
         }
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="com_port")]
@@ -457,7 +469,59 @@ namespace HardwareSchema
             }
             set
             {
+                _pokePin = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="vacuum_setup_time_us")]
+        public int VacuumSetupTimeUs
+        {
+            get
+            {
+                return _vacuumSetupTimeUs;
+            }
+            set
+            {
+                _vacuumSetupTimeUs = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="vacuum_close_time_us")]
+        public int VacuumCloseTimeUs
+        {
+            get
+            {
+                return _vacuumCloseTimeUs;
+            }
+            set
+            {
+                _vacuumCloseTimeUs = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="odor_dwell_time_us")]
+        public int OdorDwellTimeUs
+        {
+            get
+            {
+                return _odorDwellTimeUs;
+            }
+            set
+            {
                 _odorDwellTimeUs = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="com_port")]
+        public string ComPort
+        {
+            get
+            {
+                return _comPort;
+            }
+            set
+            {
+                _comPort = value;
             }
         }
     
@@ -478,299 +542,11 @@ namespace HardwareSchema
             stringBuilder.Append("MaxOdorDeliveryTimeUs = " + _maxOdorDeliveryTimeUs + ", ");
             stringBuilder.Append("MinPokeTimeUs = " + _minPokeTimeUs + ", ");
             stringBuilder.Append("MinOdorDeliveryTimeUs = " + _minOdorDeliveryTimeUs + ", ");
-            stringBuilder.Append("OdorSetupTimeUs = " + _odorSetupTimeUs + ", ");
-            stringBuilder.Append("OdorDwellTimeUs = " + _odorDwellTimeUs);
-            return true;
-        }
-    
-        public override string ToString()
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" { ");
-            if (PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append("}");
-            return stringBuilder.ToString();
-        }
-    }
-
-
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    [Bonsai.CombinatorAttribute(MethodName="Generate")]
-    public partial class FluidicSettings
-    {
-    
-        private int _leakFlowmeterAdc;
-    
-        private double _leakThreshold;
-    
-        private int _manualFlometerAdc;
-    
-        private double _manualFlowmeterTargetFlowRate;
-    
-        private double _manualFlowmeterFlowRateTolerance;
-    
-        private int _proportionalValveFlowmeter0Adc;
-    
-        private double _proportionalValveFlowmeter0TargetFlowrate;
-    
-        private int _proportionalValveFlowmeter1Adc;
-    
-        private double _proportionalValveFlowmeter1TargetFlowrate;
-    
-        private int _proportionalValveFlowmeter2Adc;
-    
-        private double _proportionalValveFlowmeter2TargetFlowrate;
-    
-        public FluidicSettings()
-        {
-        }
-    
-        protected FluidicSettings(FluidicSettings other)
-        {
-            _leakFlowmeterAdc = other._leakFlowmeterAdc;
-            _leakThreshold = other._leakThreshold;
-            _manualFlometerAdc = other._manualFlometerAdc;
-            _manualFlowmeterTargetFlowRate = other._manualFlowmeterTargetFlowRate;
-            _manualFlowmeterFlowRateTolerance = other._manualFlowmeterFlowRateTolerance;
-            _proportionalValveFlowmeter0Adc = other._proportionalValveFlowmeter0Adc;
-            _proportionalValveFlowmeter0TargetFlowrate = other._proportionalValveFlowmeter0TargetFlowrate;
-            _proportionalValveFlowmeter1Adc = other._proportionalValveFlowmeter1Adc;
-            _proportionalValveFlowmeter1TargetFlowrate = other._proportionalValveFlowmeter1TargetFlowrate;
-            _proportionalValveFlowmeter2Adc = other._proportionalValveFlowmeter2Adc;
-            _proportionalValveFlowmeter2TargetFlowrate = other._proportionalValveFlowmeter2TargetFlowrate;
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="leak_flowmeter_adc")]
-        public int LeakFlowmeterAdc
-        {
-            get
-            {
-                return _leakFlowmeterAdc;
-            }
-            set
-            {
-                _leakFlowmeterAdc = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="leak_threshold")]
-        public double LeakThreshold
-        {
-            get
-            {
-                return _leakThreshold;
-            }
-            set
-            {
-                _leakThreshold = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="manual_flometer_adc")]
-        public int ManualFlometerAdc
-        {
-            get
-            {
-                return _manualFlometerAdc;
-            }
-            set
-            {
-                _manualFlometerAdc = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="manual_flowmeter_target_flow_rate")]
-        public double ManualFlowmeterTargetFlowRate
-        {
-            get
-            {
-                return _manualFlowmeterTargetFlowRate;
-            }
-            set
-            {
-                _manualFlowmeterTargetFlowRate = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="manual_flowmeter_flow_rate_tolerance")]
-        public double ManualFlowmeterFlowRateTolerance
-        {
-            get
-            {
-                return _manualFlowmeterFlowRateTolerance;
-            }
-            set
-            {
-                _manualFlowmeterFlowRateTolerance = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="proportional_valve_flowmeter_0_adc")]
-        public int ProportionalValveFlowmeter0Adc
-        {
-            get
-            {
-                return _proportionalValveFlowmeter0Adc;
-            }
-            set
-            {
-                _proportionalValveFlowmeter0Adc = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="proportional_valve_flowmeter_0_target_flowrate")]
-        public double ProportionalValveFlowmeter0TargetFlowrate
-        {
-            get
-            {
-                return _proportionalValveFlowmeter0TargetFlowrate;
-            }
-            set
-            {
-                _proportionalValveFlowmeter0TargetFlowrate = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="proportional_valve_flowmeter_1_adc")]
-        public int ProportionalValveFlowmeter1Adc
-        {
-            get
-            {
-                return _proportionalValveFlowmeter1Adc;
-            }
-            set
-            {
-                _proportionalValveFlowmeter1Adc = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="proportional_valve_flowmeter_1_target_flowrate")]
-        public double ProportionalValveFlowmeter1TargetFlowrate
-        {
-            get
-            {
-                return _proportionalValveFlowmeter1TargetFlowrate;
-            }
-            set
-            {
-                _proportionalValveFlowmeter1TargetFlowrate = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="proportional_valve_flowmeter_2_adc")]
-        public int ProportionalValveFlowmeter2Adc
-        {
-            get
-            {
-                return _proportionalValveFlowmeter2Adc;
-            }
-            set
-            {
-                _proportionalValveFlowmeter2Adc = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="proportional_valve_flowmeter_2_target_flowrate")]
-        public double ProportionalValveFlowmeter2TargetFlowrate
-        {
-            get
-            {
-                return _proportionalValveFlowmeter2TargetFlowrate;
-            }
-            set
-            {
-                _proportionalValveFlowmeter2TargetFlowrate = value;
-            }
-        }
-    
-        public System.IObservable<FluidicSettings> Generate()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new FluidicSettings(this)));
-        }
-    
-        public System.IObservable<FluidicSettings> Generate<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new FluidicSettings(this));
-        }
-    
-        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
-            stringBuilder.Append("LeakFlowmeterAdc = " + _leakFlowmeterAdc + ", ");
-            stringBuilder.Append("LeakThreshold = " + _leakThreshold + ", ");
-            stringBuilder.Append("ManualFlometerAdc = " + _manualFlometerAdc + ", ");
-            stringBuilder.Append("ManualFlowmeterTargetFlowRate = " + _manualFlowmeterTargetFlowRate + ", ");
-            stringBuilder.Append("ManualFlowmeterFlowRateTolerance = " + _manualFlowmeterFlowRateTolerance + ", ");
-            stringBuilder.Append("ProportionalValveFlowmeter0Adc = " + _proportionalValveFlowmeter0Adc + ", ");
-            stringBuilder.Append("ProportionalValveFlowmeter0TargetFlowrate = " + _proportionalValveFlowmeter0TargetFlowrate + ", ");
-            stringBuilder.Append("ProportionalValveFlowmeter1Adc = " + _proportionalValveFlowmeter1Adc + ", ");
-            stringBuilder.Append("ProportionalValveFlowmeter1TargetFlowrate = " + _proportionalValveFlowmeter1TargetFlowrate + ", ");
-            stringBuilder.Append("ProportionalValveFlowmeter2Adc = " + _proportionalValveFlowmeter2Adc + ", ");
-            stringBuilder.Append("ProportionalValveFlowmeter2TargetFlowrate = " + _proportionalValveFlowmeter2TargetFlowrate);
-            return true;
-        }
-    
-        public override string ToString()
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" { ");
-            if (PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append("}");
-            return stringBuilder.ToString();
-        }
-    }
-
-
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    [Bonsai.CombinatorAttribute(MethodName="Generate")]
-    public partial class WhiteRabbit
-    {
-    
-        private string _comPort;
-    
-        public WhiteRabbit()
-        {
-        }
-    
-        protected WhiteRabbit(WhiteRabbit other)
-        {
-            _comPort = other._comPort;
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="com_port")]
-        public string ComPort
-        {
-            get
-            {
-                return _comPort;
-            }
-            set
-            {
-                _comPort = value;
-            }
-        }
-    
-        public System.IObservable<WhiteRabbit> Generate()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new WhiteRabbit(this)));
-        }
-    
-        public System.IObservable<WhiteRabbit> Generate<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new WhiteRabbit(this));
-        }
-    
-        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
+            stringBuilder.Append("OdorTransitionTimeUs = " + _odorTransitionTimeUs + ", ");
+            stringBuilder.Append("PokePin = " + _pokePin + ", ");
+            stringBuilder.Append("VacuumSetupTimeUs = " + _vacuumSetupTimeUs + ", ");
+            stringBuilder.Append("VacuumCloseTimeUs = " + _vacuumCloseTimeUs + ", ");
+            stringBuilder.Append("OdorDwellTimeUs = " + _odorDwellTimeUs + ", ");
             stringBuilder.Append("ComPort = " + _comPort);
             return true;
         }

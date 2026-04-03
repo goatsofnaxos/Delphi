@@ -174,56 +174,25 @@
           "title": "Proportional Valve Flowmeter 0 Adc",
           "type": "integer"
         },
-        "proportional_valve_flowmeter_0_target_flowrate": {
-          "minimum": 0.0,
-          "title": "Proportional Valve Flowmeter 0 Target Flowrate",
-          "type": "number"
-        },
-        "proportional_valve_flowmeter_1_adc": {
+        "odor_dwell_time_us": {
           "minimum": 0,
-          "title": "Proportional Valve Flowmeter 1 Adc",
+          "title": "Odor Dwell Time Us",
           "type": "integer"
         },
-        "proportional_valve_flowmeter_1_target_flowrate": {
-          "minimum": 0.0,
-          "title": "Proportional Valve Flowmeter 1 Target Flowrate",
-          "type": "number"
-        },
-        "proportional_valve_flowmeter_2_adc": {
-          "minimum": 0,
-          "title": "Proportional Valve Flowmeter 2 Adc",
-          "type": "integer"
-        },
-        "proportional_valve_flowmeter_2_target_flowrate": {
-          "minimum": 0.0,
-          "title": "Proportional Valve Flowmeter 2 Target Flowrate",
-          "type": "number"
-        }
-      },
-      "required": [
-        "leak_flowmeter_adc",
-        "leak_threshold",
-        "manual_flometer_adc",
-        "manual_flowmeter_target_flow_rate",
-        "manual_flowmeter_flow_rate_tolerance",
-        "proportional_valve_flowmeter_0_adc",
-        "proportional_valve_flowmeter_0_target_flowrate",
-        "proportional_valve_flowmeter_1_adc",
-        "proportional_valve_flowmeter_1_target_flowrate",
-        "proportional_valve_flowmeter_2_adc",
-        "proportional_valve_flowmeter_2_target_flowrate"
-      ],
-      "title": "FluidicSettings",
-      "type": "object"
-    },
-    "WhiteRabbit": {
-      "properties": {
         "com_port": {
           "title": "Com Port",
           "type": "string"
         }
       },
       "required": [
+        "final_valve_energized_time_us",
+        "max_odor_delivery_time_us",
+        "min_poke_time_us",
+        "min_odor_delivery_time_us",
+        "odor_transition_time_us",
+        "vacuum_setup_time_us",
+        "vacuum_close_time_us",
+        "odor_dwell_time_us",
         "com_port"
       ],
       "title": "WhiteRabbit",
