@@ -5,10 +5,16 @@ rule:
   init_odor_index: 0x0010
   sample_with_replacement: true
   state_definitions: [
-    {name: DefaultState, odor_index: 0x0010, transitions_to:   [OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorB, OdorB, OdorB, OdorB, OdorC, OdorC, OdorD]},
-    {name: OdorA, odor_index: 0x0001, transitions_to:   [OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorB, OdorB, OdorB, OdorB, OdorC, OdorC, OdorD]},
-    {name: OdorB, odor_index: 0x0002, transitions_to:   [OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorB, OdorB, OdorB, OdorB, OdorC, OdorC, OdorD]},
-    {name: OdorC, odor_index: 0x0004, transitions_to:   [OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorB, OdorB, OdorB, OdorB, OdorC, OdorC, OdorD]},
-    {name: OdorD, odor_index: 0x0008, transitions_to:   [OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorB, OdorB, OdorB, OdorB, OdorC, OdorC, OdorD]}
+    {name: DefaultState, odor_index: 0x0010, transitions_to:   [OdorA, OdorA, OdorA, OdorA, OdorB, OdorB, OdorC]},
+    {name: OdorA, odor_index: 0x0001, transitions_to:   [OdorA, OdorA, OdorA, OdorA, OdorB, OdorB, OdorC]},
+    {name: OdorB, odor_index: 0x0002, transitions_to:   [OdorA, OdorA, OdorA, OdorA, OdorB, OdorB, OdorC]},
+    {name: OdorC, odor_index: 0x0004, transitions_to:   [OdorA, OdorA, OdorA, OdorA, OdorB, OdorB, OdorC]},
   ]
 
+#state_definitions: [
+#    {name: DefaultState, odor_index: 0x0010, transitions_to:   [OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorB, OdorB, OdorB, OdorB, OdorC, OdorC, OdorD]},
+#    {name: OdorA, odor_index: 0x0001, transitions_to:   [OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorB, OdorB, OdorB, OdorB, OdorC, OdorC, OdorD]},
+#    {name: OdorB, odor_index: 0x0002, transitions_to:   [OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorB, OdorB, OdorB, OdorB, OdorC, OdorC, OdorD]},
+#    {name: OdorC, odor_index: 0x0004, transitions_to:   [OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorB, OdorB, OdorB, OdorB, OdorC, OdorC, OdorD]},
+#    {name: OdorD, odor_index: 0x0008, transitions_to:   [OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorA, OdorB, OdorB, OdorB, OdorB, OdorC, OdorC, OdorD]}
+#  ]

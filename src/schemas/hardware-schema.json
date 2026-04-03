@@ -137,6 +137,11 @@
           "title": "Vacuum Close Time Us",
           "type": "integer"
         },
+        "odor_dwell_time_us": {
+          "minimum": 0,
+          "title": "Odor Dwell Time Us",
+          "type": "integer"
+        },
         "com_port": {
           "title": "Com Port",
           "type": "string"
@@ -150,6 +155,7 @@
         "odor_transition_time_us",
         "vacuum_setup_time_us",
         "vacuum_close_time_us",
+        "odor_dwell_time_us",
         "com_port"
       ],
       "title": "DelphiController",
