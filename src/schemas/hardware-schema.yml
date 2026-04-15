@@ -18,8 +18,8 @@ delphi_controller:
 
 camera_settings:
   camera_name: PortCamera
-  frame_rate: 60
-  exposure: 5000
+  frame_rate: 30
+  exposure: 1500
   duty_cycle: 0.5
   serial_number: '23354675'
   ffmpeg_input: -colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear
