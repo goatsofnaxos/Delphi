@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=hardware-schema.json
 
-logging_root_path: C:\Users\delphi_basement\Delphi\HIW\testB3
-remote_transfer_root_path: \\Finklab_NAS\files\delphi_data\test
+logging_root_path: C:\Users\delphi_04\Delphi\HIW\testB3
+remote_transfer_root_path: \\129.105.30.83\files\delphi_data\test
 
 delphi_controller:
   final_valve_energized_time_us: 110000
@@ -12,7 +12,7 @@ delphi_controller:
   poke_pin: 22
   vacuum_setup_time_us: 10000
   vacuum_close_time_us: 20000
-  com_port: COM5
+  com_port: COM7
 
 camera_settings:
   camera_name: TopCamera3
