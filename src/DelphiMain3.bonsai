@@ -36,7 +36,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="io:ReadAllText">
-                <io:Path>schemas\hardware-schema1.yml</io:Path>
+                <io:Path>schemas\hardware-schemaB1.yml</io:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="p1:DeserializeFromYaml">
@@ -55,7 +55,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:RuleSelector">
-                <p2:Path>schemas\rule-8.yml</p2:Path>
+                <p2:Path>schemas\rule-7.yml</p2:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="ExternalizedMapping">
@@ -71,12 +71,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:RuleTimer">
-                <p2:DueTimes>
-                  <p2:RuleSchedule>
-                    <p2:DueTime>2026-02-13T11:00:00</p2:DueTime>
-                    <p2:RuleSchema>schemas\rule-7.yml</p2:RuleSchema>
-                  </p2:RuleSchedule>
-                </p2:DueTimes>
+                <p2:DueTimes />
               </Combinator>
             </Expression>
             <Expression xsi:type="Combinator">
@@ -327,7 +322,7 @@
                 <harp:VisualIndicators>On</harp:VisualIndicators>
                 <harp:Heartbeat>Enabled</harp:Heartbeat>
                 <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                <harp:PortName>COM14</harp:PortName>
+                <harp:PortName>COM4</harp:PortName>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:PublishSubject">
@@ -1381,7 +1376,7 @@
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="aeon:SpinnakerCapture">
                 <spk:Index xsi:nil="true" />
-                <spk:SerialNumber>24026619</spk:SerialNumber>
+                <spk:SerialNumber>25294884</spk:SerialNumber>
                 <spk:ColorProcessing>Default</spk:ColorProcessing>
                 <aeon:ExposureTime>5000</aeon:ExposureTime>
                 <aeon:Gain>0</aeon:Gain>
@@ -1457,7 +1452,7 @@
               </PropertyMappings>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:LogController.bonsai">
-              <Path>C:\Users\delphi_01\Delphi\HIW\2025071101Left</Path>
+              <Path>C:\Users\delphi_03\delphi\HIW\testB1</Path>
               <ChunkSize>1</ChunkSize>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
@@ -1572,7 +1567,7 @@
                   <Expression xsi:type="IncludeWorkflow" Path="Extensions\LogVideo.bonsai">
                     <Heartbeats />
                     <ClosingDuration>PT30S</ClosingDuration>
-                    <LogName>TopLeftCamera</LogName>
+                    <LogName>TopCamera1</LogName>
                     <FrameRate>60</FrameRate>
                     <OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v libx264 -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</OutputArguments>
                     <InputArguments>-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear</InputArguments>
@@ -1984,7 +1979,7 @@ groupMasks:
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="io:WriteAllText">
-                            <io:Path>C:\Users\delphi_01\Delphi\HIW\2025071101Left\2026-02-09T19-12-23\behavior\DelphiController\device.yml</io:Path>
+                            <io:Path>C:\Users\delphi_03\delphi\HIW\testB1\2026-05-01T19-09-52\behavior\DelphiController\device.yml</io:Path>
                             <io:Overwrite>false</io:Overwrite>
                             <io:Append>false</io:Append>
                           </Combinator>
@@ -2052,7 +2047,7 @@ groupMasks:
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="io:StartProcess">
                       <io:FileName>C:\Users\delphi_03\AppData\Local\Programs\Python\Python311\python.exe</io:FileName>
-                      <io:Arguments>python\robocopy.py "C:\Users\delphi_01\Delphi\HIW\2025071101Left" "\\Finklab_NAS\files\delphi_data\20260209\2025071101\2025071101Left"</io:Arguments>
+                      <io:Arguments>python\robocopy.py "C:\Users\delphi_03\delphi\HIW\testB1" "\\129.105.30.83\files\delphi_data\test"</io:Arguments>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">

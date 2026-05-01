@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VisualizerLayout Version="2.9.0">
   <WindowSettings Index="37">
-    <Visible>false</Visible>
     <Location>
-      <X>41</X>
-      <Y>136</Y>
+      <X>740</X>
+      <Y>199</Y>
     </Location>
     <Size>
       <Width>697</Width>
