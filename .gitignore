@@ -18,6 +18,7 @@ Packages
 *.bin
 *.csv
 *.jsonl
+.env
 
 *.mp4
 /src/LocalRules

@@ -1,0 +1,354 @@
+{
+   "object_type": "Acquisition",
+   "describedBy": "https://raw.githubusercontent.com/AllenNeuralDynamics/aind-data-schema/main/src/aind_data_schema/core/acquisition.py",
+   "schema_version": "2.4.0",
+   "subject_id": "801055",
+   "specimen_id": null,
+   "acquisition_start_time": "2026-01-06T22:49:36.543619Z",
+   "acquisition_start_tz": 0,
+   "acquisition_end_time": "2026-02-24T19:00:01.485129Z",
+   "experimenters": [
+      "Brandon Pratt"
+   ],
+   "protocol_id": [
+      "2413"
+   ],
+   "ethics_review_id": null,
+   "instrument_id": "Chronic1",
+   "acquisition_type": "Longterm chronic recording",
+   "notes": null,
+   "coordinate_system": {
+      "object_type": "Coordinate system",
+      "name": "BREGMA_ARI",
+      "origin": "Bregma",
+      "axes": [
+         {
+            "object_type": "Axis",
+            "name": "AP",
+            "direction": "Posterior_to_anterior"
+         },
+         {
+            "object_type": "Axis",
+            "name": "ML",
+            "direction": "Left_to_right"
+         },
+         {
+            "object_type": "Axis",
+            "name": "SI",
+            "direction": "Superior_to_inferior"
+         }
+      ],
+      "axis_unit": "millimeter"
+   },
+   "calibrations": [],
+   "maintenance": [],
+   "data_streams": [
+      {
+         "object_type": "Data stream",
+         "stream_start_time": "2026-01-06T22:49:36.543619Z",
+         "stream_end_time": "2026-02-24T19:00:01.485129Z",
+         "modalities": [
+            {
+               "name": "Extracellular electrophysiology",
+               "abbreviation": "ecephys"
+            },
+            {
+               "name": "Behavior videos",
+               "abbreviation": "behavior-videos"
+            },
+            {
+               "name": "Behavior",
+               "abbreviation": "behavior"
+            }
+         ],
+         "code": [
+            {
+               "object_type": "Code",
+               "url": "https://github.com/AllenNeuralDynamics/Aind.Behavior.Pirouette/src/WrappedPirouette.bonsai",
+               "name": "Pirouette Bonsai Acquisition",
+               "version": null,
+               "container": null,
+               "run_script": null,
+               "language": null,
+               "language_version": null,
+               "input_data": null,
+               "parameters": null,
+               "core_dependency": {
+                  "object_type": "Software",
+                  "name": "Bonsai",
+                  "version": "2.9"
+               }
+            },
+            {
+               "object_type": "Code",
+               "url": "https://github.com/AllenNeuralDynamics/lifealert",
+               "name": "LifeAlert",
+               "version": null,
+               "container": null,
+               "run_script": null,
+               "language": "Python",
+               "language_version": null,
+               "input_data": null,
+               "parameters": null,
+               "core_dependency": null
+            },
+            {
+               "object_type": "Code",
+               "url": "https://github.com/goatsofnaxos/Delphi/src/DelphiMain.bonsai",
+               "name": "Delphi Bonsai Acquisition",
+               "version": null,
+               "container": null,
+               "run_script": null,
+               "language": null,
+               "language_version": null,
+               "input_data": null,
+               "parameters": null,
+               "core_dependency": {
+                  "object_type": "Software",
+                  "name": "Bonsai",
+                  "version": "2.9"
+               }
+            }
+         ],
+         "notes": "Poking behavior to receieve odors is also considered a BEHAVIOR modality.",
+         "active_devices": [
+            "Chronic_ephys_assembly",
+            "Onix Breakout Board",
+            "Coaxial Commutator",
+            "Harp White Rabbit",
+            "Harp Output Expander",
+            "Magnetic Encoder",
+            "Delphi Controller",
+            "TopCamera",
+            "PortCamera"
+         ],
+         "configurations": [
+            {
+               "object_type": "Ephys assembly config",
+               "device_name": "Chronic_ephys_assembly",
+               "manipulator": {
+                  "object_type": "Manipulator config",
+                  "device_name": "scientifica manipulator",
+                  "coordinate_system": {
+                     "object_type": "Coordinate system",
+                     "name": "BREGMA_ARI",
+                     "origin": "Bregma",
+                     "axes": [
+                        {
+                           "object_type": "Axis",
+                           "name": "AP",
+                           "direction": "Posterior_to_anterior"
+                        },
+                        {
+                           "object_type": "Axis",
+                           "name": "ML",
+                           "direction": "Left_to_right"
+                        },
+                        {
+                           "object_type": "Axis",
+                           "name": "SI",
+                           "direction": "Superior_to_inferior"
+                        }
+                     ],
+                     "axis_unit": "millimeter"
+                  },
+                  "local_axis_positions": {
+                     "object_type": "Translation",
+                     "translation": [
+                        0.0,
+                        0.0,
+                        3971.0
+                     ]
+                  }
+               },
+               "probes": [
+                  {
+                     "object_type": "Probe config",
+                     "device_name": "23107807843",
+                     "primary_targeted_structure": {
+                        "atlas": "CCFv3",
+                        "name": "Piriform area",
+                        "acronym": "PIR",
+                        "id": "961"
+                     },
+                     "other_targeted_structure": null,
+                     "atlas_coordinate": {
+                        "object_type": "Atlas coordinate",
+                        "translation": [
+                           6854.0,
+                           5759.0,
+                           2114.0
+                        ],
+                        "coordinate_system": {
+                           "object_type": "Atlas",
+                           "name": "CCF",
+                           "origin": "Origin",
+                           "axes": [
+                              {
+                                 "object_type": "Axis",
+                                 "name": "AP",
+                                 "direction": "Anterior_to_posterior"
+                              },
+                              {
+                                 "object_type": "Axis",
+                                 "name": "SI",
+                                 "direction": "Superior_to_inferior"
+                              },
+                              {
+                                 "object_type": "Axis",
+                                 "name": "ML",
+                                 "direction": "Left_to_right"
+                              }
+                           ],
+                           "axis_unit": "micrometer",
+                           "version": "3",
+                           "size": [
+                              1320.0,
+                              800.0,
+                              1140.0
+                           ],
+                           "size_unit": "pixel",
+                           "resolution": [
+                              10.0,
+                              10.0,
+                              10.0
+                           ],
+                           "resolution_unit": "micrometer"
+                        }
+                     },
+                     "coordinate_system": {
+                        "object_type": "Coordinate system",
+                        "name": "BREGMA_ARI",
+                        "origin": "Bregma",
+                        "axes": [
+                           {
+                              "object_type": "Axis",
+                              "name": "AP",
+                              "direction": "Posterior_to_anterior"
+                           },
+                           {
+                              "object_type": "Axis",
+                              "name": "ML",
+                              "direction": "Left_to_right"
+                           },
+                           {
+                              "object_type": "Axis",
+                              "name": "SI",
+                              "direction": "Superior_to_inferior"
+                           }
+                        ],
+                        "axis_unit": "millimeter"
+                     },
+                     "transform": [],
+                     "dye": null,
+                     "notes": "Probe is chronically implanted so manipulator is only used during implantation."
+                  }
+               ],
+               "modules": null
+            }
+         ],
+         "connections": []
+      }
+   ],
+   "stimulus_epochs": [
+      {
+         "object_type": "Stimulus epoch",
+         "stimulus_start_time": "2026-01-06T22:49:36.543619Z",
+         "stimulus_end_time": "2026-02-24T19:00:01.485129Z",
+         "stimulus_name": "Pirouette Behavior",
+         "code": {
+            "object_type": "Code",
+            "url": "https://github.com/AllenNeuralDynamics/Aind.Behavior.Pirouette/src/WrappedPirouette.bonsai",
+            "name": "Pirouette Bonsai Acquisition",
+            "version": null,
+            "container": null,
+            "run_script": null,
+            "language": null,
+            "language_version": null,
+            "input_data": null,
+            "parameters": null,
+            "core_dependency": {
+               "object_type": "Software",
+               "name": "Bonsai",
+               "version": "2.9"
+            }
+         },
+         "stimulus_modalities": [
+            "Free moving"
+         ],
+         "performance_metrics": null,
+         "notes": null,
+         "active_devices": [
+            "Chronic_ephys_assembly",
+            "Onix Breakout Board",
+            "Coaxial Commutator",
+            "Harp White Rabbit",
+            "Harp Output Expander",
+            "Magnetic Encoder"
+         ],
+         "configurations": [],
+         "training_protocol_name": null,
+         "curriculum_status": null
+      },
+      {
+         "object_type": "Stimulus epoch",
+         "stimulus_start_time": "2026-01-06T22:49:36.543619Z",
+         "stimulus_end_time": "2026-02-24T19:00:01.485129Z",
+         "stimulus_name": "Odor Delivery",
+         "code": {
+            "object_type": "Code",
+            "url": "https://github.com/goatsofnaxos/Delphi/src/DelphiMain.bonsai",
+            "name": "Delphi Bonsai Acquisition",
+            "version": null,
+            "container": null,
+            "run_script": null,
+            "language": null,
+            "language_version": null,
+            "input_data": null,
+            "parameters": null,
+            "core_dependency": {
+               "object_type": "Software",
+               "name": "Bonsai",
+               "version": "2.9"
+            }
+         },
+         "stimulus_modalities": [
+            "Olfactory",
+            "Free moving"
+         ],
+         "performance_metrics": null,
+         "notes": null,
+         "active_devices": [
+            "Delphi Controller"
+         ],
+         "configurations": [
+            {
+               "object_type": "Olfactometer config",
+               "device_name": "Delphi Controller",
+               "channel_configs": [
+                  {
+                     "object_type": "Olfactometer channel info",
+                     "channel_index": 0,
+                     "odorant": "OdorA",
+                     "dilution": "0.0",
+                     "dilution_unit": "% v/v"
+                  }
+               ]
+            }
+         ],
+         "training_protocol_name": null,
+         "curriculum_status": null
+      }
+   ],
+   "manipulations": [],
+   "subject_details": {
+      "object_type": "Acquisition subject details",
+      "animal_weight_prior": null,
+      "animal_weight_post": null,
+      "weight_unit": "gram",
+      "anaesthesia": null,
+      "mouse_platform_name": "Pirouette Behavior Box: Bedding and nesting material",
+      "reward_consumed_total": null,
+      "reward_consumed_unit": null
+   }
+}

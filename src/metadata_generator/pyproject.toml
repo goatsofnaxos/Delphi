@@ -1,0 +1,69 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "metadata-generator"
+version = "0.1.0"
+description = "Tools to generate AIND v2 metadata (subject, procedures, instrument, acquisition)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+authors = [
+  { name = "Brandon Pratt", email = "brandon.pratt@alleninstitute.org" }
+]
+
+keywords = [
+  "AIND",
+  "metadata",
+  "neuroscience",
+  "aind-data-schema"
+]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: MIT License",
+]
+
+dependencies = [
+  # Core schema packages
+  "python-dotenv>=1.0",
+  "aind-data-schema>=2.0.0",
+  "aind-data-schema-models>=2.0.0",
+
+  # DOCX parsing
+  "python-docx>=1.1.0",
+
+  # Data handling
+  "pandas>=2.1",
+  "numpy>=1.26",
+
+  # HTTP (subject metadata fetch)
+  "requests>=2.31",
+
+  # YAML support if desired later
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.4",
+  "mypy>=1.9",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["metadata_generator"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true

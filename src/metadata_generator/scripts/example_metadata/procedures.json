@@ -1,0 +1,229 @@
+{
+   "object_type": "Procedures",
+   "describedBy": "https://raw.githubusercontent.com/AllenNeuralDynamics/aind-data-schema/main/src/aind_data_schema/core/procedures.py",
+   "schema_version": "2.1.1",
+   "subject_id": "801055",
+   "subject_procedures": [
+      {
+         "object_type": "Surgery",
+         "protocol_id": "2413",
+         "start_date": "2025-06-17",
+         "experimenters": [
+            "Carl Schoonover",
+            "Ben Ouellette"
+         ],
+         "ethics_review_id": null,
+         "animal_weight_prior": 26.8,
+         "animal_weight_post": 26.8,
+         "weight_unit": "gram",
+         "anaesthesia": {
+            "object_type": "Anaesthetic",
+            "anaesthetic_type": "isoflurane",
+            "duration": 210.0,
+            "duration_unit": "minute",
+            "level": null
+         },
+         "workstation_id": null,
+         "coordinate_system": null,
+         "measured_coordinates": null,
+         "procedures": [
+            {
+               "object_type": "Craniotomy",
+               "protocol_id": null,
+               "craniotomy_type": "Other",
+               "coordinate_system_name": null,
+               "position": null,
+               "size": null,
+               "size_unit": null,
+               "protective_material": "Kwik-Cast",
+               "implant_part_number": null,
+               "dura_removed": true
+            }
+         ],
+         "notes": "Large vessel at 0/0, expect we will need to adjust targeting anterior ~125um. Also craniotomy 50um short on the medial side and 100 um short on the lateral side.\nBen did the durotomy—was beautiful."
+      },
+      {
+         "object_type": "Surgery",
+         "protocol_id": "2413",
+         "start_date": "2025-06-18",
+         "experimenters": [
+            "Carl Schoonover",
+            "Ben Ouellette"
+         ],
+         "ethics_review_id": null,
+         "animal_weight_prior": 27.8,
+         "animal_weight_post": 30.3,
+         "weight_unit": "gram",
+         "anaesthesia": {
+            "object_type": "Anaesthetic",
+            "anaesthetic_type": "Ket/XylKet",
+            "duration": 356.0,
+            "duration_unit": "minute",
+            "level": null
+         },
+         "workstation_id": null,
+         "coordinate_system": null,
+         "measured_coordinates": null,
+         "procedures": [
+            {
+               "object_type": "Probe implant",
+               "protocol_id": null,
+               "implanted_device": {
+                  "object_type": "Ephys probe",
+                  "name": "23107807843",
+                  "serial_number": "23107807843",
+                  "manufacturer": null,
+                  "model": null,
+                  "additional_settings": null,
+                  "notes": null,
+                  "probe_model": "Neuropixels 2.0 (Multi Shank)",
+                  "headstage": {
+                     "object_type": "Device",
+                     "name": "ONIX Headstage Neuropixels 2.0e",
+                     "serial_number": null,
+                     "manufacturer": null,
+                     "model": null,
+                     "additional_settings": null,
+                     "notes": null
+                  }
+               },
+               "device_config": {
+                  "object_type": "Probe config",
+                  "device_name": "23107807843",
+                  "primary_targeted_structure": {
+                     "atlas": "CCFv3",
+                     "name": "Piriform area",
+                     "acronym": "PIR",
+                     "id": "961"
+                  },
+                  "other_targeted_structure": null,
+                  "atlas_coordinate": {
+                     "object_type": "Atlas coordinate",
+                     "translation": [
+                        6854.0,
+                        5759.0,
+                        2114.0
+                     ],
+                     "coordinate_system": {
+                        "object_type": "Atlas",
+                        "name": "CCF",
+                        "origin": "Origin",
+                        "axes": [
+                           {
+                              "object_type": "Axis",
+                              "name": "AP",
+                              "direction": "Anterior_to_posterior"
+                           },
+                           {
+                              "object_type": "Axis",
+                              "name": "SI",
+                              "direction": "Superior_to_inferior"
+                           },
+                           {
+                              "object_type": "Axis",
+                              "name": "ML",
+                              "direction": "Left_to_right"
+                           }
+                        ],
+                        "axis_unit": "micrometer",
+                        "version": "3",
+                        "size": [
+                           1320.0,
+                           800.0,
+                           1140.0
+                        ],
+                        "size_unit": "pixel",
+                        "resolution": [
+                           10.0,
+                           10.0,
+                           10.0
+                        ],
+                        "resolution_unit": "micrometer"
+                     }
+                  },
+                  "coordinate_system": {
+                     "object_type": "Coordinate system",
+                     "name": "BREGMA_ARI",
+                     "origin": "Bregma",
+                     "axes": [
+                        {
+                           "object_type": "Axis",
+                           "name": "AP",
+                           "direction": "Posterior_to_anterior"
+                        },
+                        {
+                           "object_type": "Axis",
+                           "name": "ML",
+                           "direction": "Left_to_right"
+                        },
+                        {
+                           "object_type": "Axis",
+                           "name": "SI",
+                           "direction": "Superior_to_inferior"
+                        }
+                     ],
+                     "axis_unit": "millimeter"
+                  },
+                  "transform": [],
+                  "dye": null,
+                  "notes": "Probe is chronically implanted so manipulator is only used during implantation."
+               }
+            }
+         ],
+         "notes": "Great prep. Signals were as strong at the end of the implantation as before."
+      },
+      {
+         "object_type": "Surgery",
+         "protocol_id": "2413",
+         "start_date": "2025-06-10",
+         "experimenters": [
+            "Ben Ouellette"
+         ],
+         "ethics_review_id": null,
+         "animal_weight_prior": null,
+         "animal_weight_post": null,
+         "weight_unit": "gram",
+         "anaesthesia": null,
+         "workstation_id": null,
+         "coordinate_system": null,
+         "measured_coordinates": null,
+         "procedures": [
+            {
+               "object_type": "Headframe",
+               "protocol_id": null,
+               "headframe_type": "3D printed custom headframe for chronic implantation",
+               "headframe_part_number": "CAD model: Headplate_mark12",
+               "headframe_material": null,
+               "well_part_number": null,
+               "well_type": null
+            }
+         ],
+         "notes": null
+      }
+   ],
+   "specimen_procedures": [],
+   "coordinate_system": {
+      "object_type": "Coordinate system",
+      "name": "BREGMA_ARI",
+      "origin": "Bregma",
+      "axes": [
+         {
+            "object_type": "Axis",
+            "name": "AP",
+            "direction": "Posterior_to_anterior"
+         },
+         {
+            "object_type": "Axis",
+            "name": "ML",
+            "direction": "Left_to_right"
+         },
+         {
+            "object_type": "Axis",
+            "name": "SI",
+            "direction": "Superior_to_inferior"
+         }
+      ],
+      "axis_unit": "millimeter"
+   },
+   "notes": "Great targeting: Elbow on all four shanks, and Shank 1 may be sinking into calf. Signals were as strong at the end of the implantation as before.\nFirst try; using metabond instead of bruno cement. No KwikCast skin.\nPlug-in 8 days after implant: signals as good as at end of procedure, targeting excellent."
+}
