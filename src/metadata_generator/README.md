@@ -51,11 +51,7 @@ uv pip install -e .
 
 Configuration is resolved using three layers, with clear precedence:
 
-CLI arguments  
-   ↓  
-.env file  
-   ↓  
-derived defaults in code  
+CLI arguments -> .env file -> derived defaults in code  
 
 ### .env configuration
 
