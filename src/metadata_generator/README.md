@@ -52,13 +52,9 @@ uv pip install -e .
 Configuration is resolved using three layers, with clear precedence:
 
 CLI arguments
-
-   ↓ override
-
+   ↓
 .env file
-
-   ↓ override
-
+   ↓
 derived defaults in code
 
 ### .env configuration
@@ -108,7 +104,6 @@ uv run python scripts/generate_all_metadata.py \
 Each metadata file can be enabled or disabled independently:
 
 MetadataGenerationConfig(
-
     generate_subject=True,
 
     generate_instrument=True,
