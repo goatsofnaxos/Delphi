@@ -36,7 +36,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="io:ReadAllText">
-                <io:Path>schemas\hardware-schema8.yml</io:Path>
+                <io:Path>schemas\hardware-schema4.yml</io:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="p1:DeserializeFromYaml">
@@ -55,7 +55,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:RuleSelector">
-                <p2:Path>schemas\rule_cycle-ABC-oddball-CBA.yml</p2:Path>
+                <p2:Path>schemas\rule-D-only.yml</p2:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="ExternalizedMapping">
@@ -63,7 +63,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:RuleSelector">
-                <p2:Path>schemas\rule_cycle-ABC-oddball-CBA.yml</p2:Path>
+                <p2:Path>schemas\rule-D-only.yml</p2:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="ExternalizedMapping">
@@ -1288,15 +1288,11 @@
             <Expression xsi:type="SubscribeSubject">
               <Name>CameraStarted</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="SubscribeSubject">
-                <Name>Camera1Started</Name>
-              </Builder>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Camera1Started</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="Combinator">
-                <Combinator xsi:type="rx:Zip" />
-              </Builder>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Take">
@@ -1401,142 +1397,94 @@
             <Expression xsi:type="rx:PublishSubject">
               <Name>VideoFeed</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="SubscribeSubject">
-                <Name>HardwareSchema</Name>
-              </Builder>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>HardwareSchema</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="MemberSelector">
-                <Selector>CameraSettings1.SerialNumber</Selector>
-              </Builder>
+            <Expression xsi:type="MemberSelector">
+              <Selector>CameraSettings1.SerialNumber</Selector>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="PropertyMapping">
-                <PropertyMappings>
-                  <Property Name="SerialNumber" />
-                </PropertyMappings>
-              </Builder>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="SerialNumber" />
+              </PropertyMappings>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="SubscribeSubject">
-                <Name>HardwareSchema</Name>
-              </Builder>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>HardwareSchema</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="MemberSelector">
-                <Selector>CameraSettings1.Exposure</Selector>
-              </Builder>
+            <Expression xsi:type="MemberSelector">
+              <Selector>CameraSettings1.Exposure</Selector>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="PropertyMapping">
-                <PropertyMappings>
-                  <Property Name="ExposureTime" />
-                </PropertyMappings>
-              </Builder>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="ExposureTime" />
+              </PropertyMappings>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="Combinator">
-                <Combinator xsi:type="aeon:SpinnakerCapture">
-                  <spk:Index xsi:nil="true" />
-                  <spk:SerialNumber>25431292</spk:SerialNumber>
-                  <spk:ColorProcessing>Default</spk:ColorProcessing>
-                  <aeon:ExposureTime>1500</aeon:ExposureTime>
-                  <aeon:Gain>0</aeon:Gain>
-                  <aeon:Binning>1</aeon:Binning>
-                </Combinator>
-              </Builder>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="aeon:SpinnakerCapture">
+                <spk:Index xsi:nil="true" />
+                <spk:SerialNumber>25431292</spk:SerialNumber>
+                <spk:ColorProcessing>Default</spk:ColorProcessing>
+                <aeon:ExposureTime>1500</aeon:ExposureTime>
+                <aeon:Gain>0</aeon:Gain>
+                <aeon:Binning>1</aeon:Binning>
+              </Combinator>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="MemberSelector">
-                <Selector>Image</Selector>
-              </Builder>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Image</Selector>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="Combinator">
-                <Combinator xsi:type="cv:Smooth">
-                  <cv:SmoothType>Median</cv:SmoothType>
-                  <cv:Size1>3</cv:Size1>
-                  <cv:Size2>3</cv:Size2>
-                  <cv:Sigma1>0</cv:Sigma1>
-                  <cv:Sigma2>0</cv:Sigma2>
-                </Combinator>
-              </Builder>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="cv:Smooth">
+                <cv:SmoothType>Median</cv:SmoothType>
+                <cv:Size1>3</cv:Size1>
+                <cv:Size2>3</cv:Size2>
+                <cv:Sigma1>0</cv:Sigma1>
+                <cv:Sigma2>0</cv:Sigma2>
+              </Combinator>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="MemberSelector">
-                <Selector>ChunkData</Selector>
-              </Builder>
+            <Expression xsi:type="MemberSelector">
+              <Selector>ChunkData</Selector>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="Combinator">
-                <Combinator xsi:type="rx:Zip" />
-              </Builder>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="rx:PublishSubject">
-                <Name>Camera1Frame</Name>
-              </Builder>
+            <Expression xsi:type="rx:PublishSubject">
+              <Name>Camera1Frame</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="SubscribeSubject">
-                <Name>Camera1Frame</Name>
-              </Builder>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Camera1Frame</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="Combinator">
-                <Combinator xsi:type="rx:IsEmpty" />
-              </Builder>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:IsEmpty" />
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="BitwiseNot" />
+            <Expression xsi:type="BitwiseNot" />
+            <Expression xsi:type="rx:PublishSubject">
+              <Name>Camera1Started</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="rx:PublishSubject">
-                <Name>Camera1Started</Name>
-              </Builder>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Camera1Frame</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="SubscribeSubject">
-                <Name>Camera1Frame</Name>
-              </Builder>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>FrameEvent</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="SubscribeSubject">
-                <Name>FrameEvent</Name>
-              </Builder>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Take">
+                <rx:Count>1</rx:Count>
+              </Combinator>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="Combinator">
-                <Combinator xsi:type="rx:Take">
-                  <rx:Count>1</rx:Count>
-                </Combinator>
-              </Builder>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:SkipUntil" />
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="Combinator">
-                <Combinator xsi:type="rx:SkipUntil" />
-              </Builder>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>FrameEvent</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="SubscribeSubject">
-                <Name>FrameEvent</Name>
-              </Builder>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Zip" />
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="Combinator">
-                <Combinator xsi:type="rx:Zip" />
-              </Builder>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="harp:CreateTimestamped" />
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="Combinator">
-                <Combinator xsi:type="harp:CreateTimestamped" />
-              </Builder>
-            </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="rx:PublishSubject">
-                <Name>Video1Feed</Name>
-              </Builder>
+            <Expression xsi:type="rx:PublishSubject">
+              <Name>Video1Feed</Name>
             </Expression>
           </Nodes>
           <Edges>
@@ -1893,234 +1841,206 @@
                       </Edges>
                     </Workflow>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="SubscribeSubject">
-                      <Name>Video1Feed</Name>
-                    </Builder>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>Video1Feed</Name>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="SubscribeSubject">
-                      <Name>HardwareSchema</Name>
-                    </Builder>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>HardwareSchema</Name>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="MemberSelector">
-                      <Selector>CameraSettings1.FrameRate</Selector>
-                    </Builder>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>CameraSettings1.FrameRate</Selector>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="PropertyMapping">
-                      <PropertyMappings>
-                        <Property Name="FrameRate" />
-                      </PropertyMappings>
-                    </Builder>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="FrameRate" />
+                    </PropertyMappings>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="SubscribeSubject">
-                      <Name>HardwareSchema</Name>
-                    </Builder>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>HardwareSchema</Name>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="MemberSelector">
-                      <Selector>CameraSettings1.FfmpegInput</Selector>
-                    </Builder>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>CameraSettings1.FfmpegInput</Selector>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="PropertyMapping">
-                      <PropertyMappings>
-                        <Property Name="InputArguments" />
-                      </PropertyMappings>
-                    </Builder>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="InputArguments" />
+                    </PropertyMappings>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="SubscribeSubject">
-                      <Name>HardwareSchema</Name>
-                    </Builder>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>HardwareSchema</Name>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="MemberSelector">
-                      <Selector>CameraSettings1.FfmpegOutput</Selector>
-                    </Builder>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>CameraSettings1.FfmpegOutput</Selector>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="PropertyMapping">
-                      <PropertyMappings>
-                        <Property Name="OutputArguments" />
-                      </PropertyMappings>
-                    </Builder>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="OutputArguments" />
+                    </PropertyMappings>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="SubscribeSubject">
-                      <Name>HardwareSchema</Name>
-                    </Builder>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>HardwareSchema</Name>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="MemberSelector">
-                      <Selector>CameraSettings1.CameraName</Selector>
-                    </Builder>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>CameraSettings1.CameraName</Selector>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="PropertyMapping">
-                      <PropertyMappings>
-                        <Property Name="LogName" />
-                      </PropertyMappings>
-                    </Builder>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="LogName" />
+                    </PropertyMappings>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="GroupWorkflow">
-                      <Name>LogVideo1</Name>
-                      <Description>Chunks and logs a timestamped video stream into the base data log.</Description>
-                      <Workflow>
-                        <Nodes>
-                          <Expression xsi:type="WorkflowInput">
-                            <Name>Source1</Name>
-                          </Expression>
-                          <Expression xsi:type="ExternalizedMapping">
-                            <Property Name="Name" DisplayName="Heartbeats" Description="The source of heartbeat signals used as a timing signal for closing groups." Category="GroupClosing" />
-                          </Expression>
-                          <Expression xsi:type="SubscribeSubject">
-                            <Name />
-                          </Expression>
-                          <Expression xsi:type="SubscribeSubject">
-                            <Name>ChunkSize</Name>
-                          </Expression>
-                          <Expression xsi:type="PropertyMapping">
-                            <PropertyMappings>
-                              <Property Name="ChunkSize" />
-                            </PropertyMappings>
-                          </Expression>
-                          <Expression xsi:type="ExternalizedMapping">
-                            <Property Name="ClosingDuration" Category="GroupClosing" />
-                          </Expression>
-                          <Expression xsi:type="Combinator">
-                            <Combinator xsi:type="aeon:GroupByTime">
-                              <aeon:ChunkSize>1</aeon:ChunkSize>
-                              <aeon:ClosingDuration>PT30S</aeon:ClosingDuration>
-                            </Combinator>
-                          </Expression>
-                          <Expression xsi:type="ExternalizedMapping">
-                            <Property Name="Name" DisplayName="LogName" Description="The base name of the video log, without extension." />
-                            <Property Name="FrameRate" />
-                            <Property Name="OutputArguments" />
-                            <Property Name="InputArguments" />
-                          </Expression>
-                          <Expression xsi:type="rx:CreateObservable">
-                            <Name>LogVideo</Name>
-                            <Workflow>
-                              <Nodes>
-                                <Expression xsi:type="WorkflowInput">
-                                  <Name>Source1</Name>
-                                </Expression>
-                                <Expression xsi:type="rx:AsyncSubject">
-                                  <Name>Data</Name>
-                                </Expression>
-                                <Expression xsi:type="SubscribeSubject">
-                                  <Name>Data</Name>
-                                </Expression>
-                                <Expression xsi:type="Combinator">
-                                  <Combinator xsi:type="rx:Merge" />
-                                </Expression>
-                                <Expression xsi:type="SubscribeSubject">
-                                  <Name>Data</Name>
-                                </Expression>
-                                <Expression xsi:type="MemberSelector">
-                                  <Selector>Key</Selector>
-                                </Expression>
-                                <Expression xsi:type="ExternalizedMapping">
-                                  <Property Name="Name" />
-                                </Expression>
-                                <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:FormatFileName.bonsai">
-                                  <Name>OverheadCamera</Name>
-                                  <Extension>csv</Extension>
-                                </Expression>
-                                <Expression xsi:type="PropertyMapping">
-                                  <PropertyMappings>
-                                    <Property Name="FileName" />
-                                  </PropertyMappings>
-                                </Expression>
-                                <Expression xsi:type="io:CsvWriter">
-                                  <io:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-04-25T00-52-59\behavior-videos\OverheadCamera\OverheadCamera_2026-04-27T18-00-00.csv</io:FileName>
-                                  <io:Append>false</io:Append>
-                                  <io:Overwrite>false</io:Overwrite>
-                                  <io:Suffix>None</io:Suffix>
-                                  <io:IncludeHeader>true</io:IncludeHeader>
-                                  <io:Selector>Seconds,Value.Item2.FrameID,Value.Item2.Timestamp</io:Selector>
-                                </Expression>
-                                <Expression xsi:type="MemberSelector">
-                                  <Selector>Value.Item1</Selector>
-                                </Expression>
-                                <Expression xsi:type="SubscribeSubject">
-                                  <Name>Data</Name>
-                                </Expression>
-                                <Expression xsi:type="MemberSelector">
-                                  <Selector>Key</Selector>
-                                </Expression>
-                                <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:FormatFileName.bonsai">
-                                  <Name>OverheadCamera</Name>
-                                  <Extension>mp4</Extension>
-                                </Expression>
-                                <Expression xsi:type="PropertyMapping">
-                                  <PropertyMappings>
-                                    <Property Name="FileName" />
-                                  </PropertyMappings>
-                                </Expression>
-                                <Expression xsi:type="ExternalizedMapping">
-                                  <Property Name="FrameRate" />
-                                  <Property Name="OutputArguments" />
-                                  <Property Name="InputArguments" />
-                                </Expression>
-                                <Expression xsi:type="Combinator">
-                                  <Combinator xsi:type="p6:FfmpegVideoWriter">
-                                    <p6:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-04-25T00-52-59\behavior-videos\OverheadCamera\OverheadCamera_2026-04-27T18-00-00.mp4</p6:FileName>
-                                    <p6:Overwrite>false</p6:Overwrite>
-                                    <p6:FrameRate>50</p6:FrameRate>
-                                    <p6:Verbosity>Verbose</p6:Verbosity>
-                                    <p6:OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_amf -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</p6:OutputArguments>
-                                    <p6:InputArguments>-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear</p6:InputArguments>
-                                  </Combinator>
-                                </Expression>
-                                <Expression xsi:type="WorkflowOutput" />
-                              </Nodes>
-                              <Edges>
-                                <Edge From="0" To="1" Label="Source1" />
-                                <Edge From="2" To="3" Label="Source1" />
-                                <Edge From="3" To="9" Label="Source1" />
-                                <Edge From="4" To="5" Label="Source1" />
-                                <Edge From="5" To="7" Label="Source1" />
-                                <Edge From="6" To="7" Label="Source2" />
-                                <Edge From="6" To="13" Label="Source2" />
-                                <Edge From="7" To="8" Label="Source1" />
-                                <Edge From="8" To="9" Label="Source2" />
-                                <Edge From="9" To="10" Label="Source1" />
-                                <Edge From="10" To="16" Label="Source1" />
-                                <Edge From="11" To="12" Label="Source1" />
-                                <Edge From="12" To="13" Label="Source1" />
-                                <Edge From="13" To="14" Label="Source1" />
-                                <Edge From="14" To="16" Label="Source2" />
-                                <Edge From="15" To="16" Label="Source3" />
-                                <Edge From="16" To="17" Label="Source1" />
-                              </Edges>
-                            </Workflow>
-                          </Expression>
-                          <Expression xsi:type="Combinator">
-                            <Combinator xsi:type="rx:Switch" />
-                          </Expression>
-                          <Expression xsi:type="WorkflowOutput" />
-                        </Nodes>
-                        <Edges>
-                          <Edge From="0" To="6" Label="Source1" />
-                          <Edge From="1" To="2" Label="Source1" />
-                          <Edge From="2" To="6" Label="Source2" />
-                          <Edge From="3" To="4" Label="Source1" />
-                          <Edge From="4" To="6" Label="Source3" />
-                          <Edge From="5" To="6" Label="Source4" />
-                          <Edge From="6" To="8" Label="Source1" />
-                          <Edge From="7" To="8" Label="Source2" />
-                          <Edge From="8" To="9" Label="Source1" />
-                          <Edge From="9" To="10" Label="Source1" />
-                        </Edges>
-                      </Workflow>
-                    </Builder>
+                  <Expression xsi:type="GroupWorkflow">
+                    <Name>LogVideo1</Name>
+                    <Description>Chunks and logs a timestamped video stream into the base data log.</Description>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedMapping">
+                          <Property Name="Name" DisplayName="Heartbeats" Description="The source of heartbeat signals used as a timing signal for closing groups." Category="GroupClosing" />
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name />
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>ChunkSize</Name>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="ChunkSize" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedMapping">
+                          <Property Name="ClosingDuration" Category="GroupClosing" />
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="aeon:GroupByTime">
+                            <aeon:ChunkSize>1</aeon:ChunkSize>
+                            <aeon:ClosingDuration>PT30S</aeon:ClosingDuration>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedMapping">
+                          <Property Name="Name" DisplayName="LogName" Description="The base name of the video log, without extension." />
+                          <Property Name="FrameRate" />
+                          <Property Name="OutputArguments" />
+                          <Property Name="InputArguments" />
+                        </Expression>
+                        <Expression xsi:type="rx:CreateObservable">
+                          <Name>LogVideo</Name>
+                          <Workflow>
+                            <Nodes>
+                              <Expression xsi:type="WorkflowInput">
+                                <Name>Source1</Name>
+                              </Expression>
+                              <Expression xsi:type="rx:AsyncSubject">
+                                <Name>Data</Name>
+                              </Expression>
+                              <Expression xsi:type="SubscribeSubject">
+                                <Name>Data</Name>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="rx:Merge" />
+                              </Expression>
+                              <Expression xsi:type="SubscribeSubject">
+                                <Name>Data</Name>
+                              </Expression>
+                              <Expression xsi:type="MemberSelector">
+                                <Selector>Key</Selector>
+                              </Expression>
+                              <Expression xsi:type="ExternalizedMapping">
+                                <Property Name="Name" />
+                              </Expression>
+                              <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:FormatFileName.bonsai">
+                                <Name>OverheadCamera</Name>
+                                <Extension>csv</Extension>
+                              </Expression>
+                              <Expression xsi:type="PropertyMapping">
+                                <PropertyMappings>
+                                  <Property Name="FileName" />
+                                </PropertyMappings>
+                              </Expression>
+                              <Expression xsi:type="io:CsvWriter">
+                                <io:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-04-25T00-52-59\behavior-videos\OverheadCamera\OverheadCamera_2026-04-27T18-00-00.csv</io:FileName>
+                                <io:Append>false</io:Append>
+                                <io:Overwrite>false</io:Overwrite>
+                                <io:Suffix>None</io:Suffix>
+                                <io:IncludeHeader>true</io:IncludeHeader>
+                                <io:Selector>Seconds,Value.Item2.FrameID,Value.Item2.Timestamp</io:Selector>
+                              </Expression>
+                              <Expression xsi:type="MemberSelector">
+                                <Selector>Value.Item1</Selector>
+                              </Expression>
+                              <Expression xsi:type="SubscribeSubject">
+                                <Name>Data</Name>
+                              </Expression>
+                              <Expression xsi:type="MemberSelector">
+                                <Selector>Key</Selector>
+                              </Expression>
+                              <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:FormatFileName.bonsai">
+                                <Name>OverheadCamera</Name>
+                                <Extension>mp4</Extension>
+                              </Expression>
+                              <Expression xsi:type="PropertyMapping">
+                                <PropertyMappings>
+                                  <Property Name="FileName" />
+                                </PropertyMappings>
+                              </Expression>
+                              <Expression xsi:type="ExternalizedMapping">
+                                <Property Name="FrameRate" />
+                                <Property Name="OutputArguments" />
+                                <Property Name="InputArguments" />
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="p6:FfmpegVideoWriter">
+                                  <p6:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-04-25T00-52-59\behavior-videos\OverheadCamera\OverheadCamera_2026-04-27T18-00-00.mp4</p6:FileName>
+                                  <p6:Overwrite>false</p6:Overwrite>
+                                  <p6:FrameRate>50</p6:FrameRate>
+                                  <p6:Verbosity>Verbose</p6:Verbosity>
+                                  <p6:OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_amf -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</p6:OutputArguments>
+                                  <p6:InputArguments>-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear</p6:InputArguments>
+                                </Combinator>
+                              </Expression>
+                              <Expression xsi:type="WorkflowOutput" />
+                            </Nodes>
+                            <Edges>
+                              <Edge From="0" To="1" Label="Source1" />
+                              <Edge From="2" To="3" Label="Source1" />
+                              <Edge From="3" To="9" Label="Source1" />
+                              <Edge From="4" To="5" Label="Source1" />
+                              <Edge From="5" To="7" Label="Source1" />
+                              <Edge From="6" To="7" Label="Source2" />
+                              <Edge From="6" To="13" Label="Source2" />
+                              <Edge From="7" To="8" Label="Source1" />
+                              <Edge From="8" To="9" Label="Source2" />
+                              <Edge From="9" To="10" Label="Source1" />
+                              <Edge From="10" To="16" Label="Source1" />
+                              <Edge From="11" To="12" Label="Source1" />
+                              <Edge From="12" To="13" Label="Source1" />
+                              <Edge From="13" To="14" Label="Source1" />
+                              <Edge From="14" To="16" Label="Source2" />
+                              <Edge From="15" To="16" Label="Source3" />
+                              <Edge From="16" To="17" Label="Source1" />
+                            </Edges>
+                          </Workflow>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Switch" />
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="6" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
+                        <Edge From="2" To="6" Label="Source2" />
+                        <Edge From="3" To="4" Label="Source1" />
+                        <Edge From="4" To="6" Label="Source3" />
+                        <Edge From="5" To="6" Label="Source4" />
+                        <Edge From="6" To="8" Label="Source1" />
+                        <Edge From="7" To="8" Label="Source2" />
+                        <Edge From="8" To="9" Label="Source1" />
+                        <Edge From="9" To="10" Label="Source1" />
+                      </Edges>
+                    </Workflow>
                   </Expression>
                 </Nodes>
                 <Edges>
@@ -2738,19 +2658,13 @@ groupMasks:
         <Selector>Value.Item1</Selector>
       </Expression>
       <Expression xsi:type="VisualizerMapping" />
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="SubscribeSubject">
-          <Name>Video1Feed</Name>
-        </Builder>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>Video1Feed</Name>
       </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="MemberSelector">
-          <Selector>Value.Item1</Selector>
-        </Builder>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Value.Item1</Selector>
       </Expression>
-      <Expression xsi:type="Disable">
-        <Builder xsi:type="VisualizerMapping" />
-      </Expression>
+      <Expression xsi:type="VisualizerMapping" />
       <Expression xsi:type="viz:TableLayoutPanelBuilder">
         <viz:ColumnCount>4</viz:ColumnCount>
         <viz:RowCount>2</viz:RowCount>
