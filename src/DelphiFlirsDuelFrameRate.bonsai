@@ -15,7 +15,8 @@
                  xmlns:aeon="clr-namespace:Aeon.Acquisition;assembly=Aeon.Acquisition"
                  xmlns:spk="clr-namespace:Bonsai.Spinnaker;assembly=Bonsai.Spinnaker"
                  xmlns:cv="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision"
-                 xmlns:p6="clr-namespace:AllenNeuralDynamics.Core;assembly=AllenNeuralDynamics.Core"
+                 xmlns:p6="clr-namespace:DragonflySpinnakerCapture;assembly=Extensions"
+                 xmlns:p7="clr-namespace:AllenNeuralDynamics.Core;assembly=AllenNeuralDynamics.Core"
                  xmlns:wie="clr-namespace:Bonsai.Windows.Input;assembly=Bonsai.Windows.Input"
                  xmlns:viz="clr-namespace:Bonsai.Design.Visualizers;assembly=Bonsai.Design.Visualizers"
                  xmlns="https://bonsai-rx.org/2018/workflow">
@@ -54,7 +55,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:RuleSelector">
-                <p2:Path>schemas\rule-D-only.yml</p2:Path>
+                <p2:Path>schemas\rule-3.yml</p2:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="ExternalizedMapping">
@@ -64,8 +65,8 @@
               <Combinator xsi:type="p2:RuleTimer">
                 <p2:DueTimes>
                   <p2:RuleSchedule>
-                    <p2:DueTime>2026-05-14T10:51:00</p2:DueTime>
-                    <p2:RuleSchema>schemas\rule-B-only.yml</p2:RuleSchema>
+                    <p2:DueTime>2026-05-15T11:01:00</p2:DueTime>
+                    <p2:RuleSchema>schemas\rule-3.yml</p2:RuleSchema>
                   </p2:RuleSchedule>
                 </p2:DueTimes>
               </Combinator>
@@ -832,7 +833,7 @@
             <Expression xsi:type="p4:CreateMessage">
               <harp:MessageType>Write</harp:MessageType>
               <harp:Payload xsi:type="p4:CreateQueuedOdorMaskPayload">
-                <p4:QueuedOdorMask>8</p4:QueuedOdorMask>
+                <p4:QueuedOdorMask>1</p4:QueuedOdorMask>
               </harp:Payload>
             </Expression>
             <Expression xsi:type="MulticastSubject">
@@ -994,7 +995,7 @@
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="p2:TryLookupOrDefault">
                       <p2:DefaultState>DefaultState</p2:DefaultState>
-                      <p2:Key>OdorD</p2:Key>
+                      <p2:Key>OdorA</p2:Key>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
@@ -1092,7 +1093,7 @@
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="p2:TryLookupOrDefault">
                       <p2:DefaultState>DefaultState</p2:DefaultState>
-                      <p2:Key>OdorD</p2:Key>
+                      <p2:Key>OdorA</p2:Key>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
@@ -1351,7 +1352,7 @@
                 <spk:SerialNumber>26047899</spk:SerialNumber>
                 <spk:ColorProcessing>Default</spk:ColorProcessing>
                 <aeon:ExposureTime>5000</aeon:ExposureTime>
-                <aeon:Gain>32</aeon:Gain>
+                <aeon:Gain>20</aeon:Gain>
                 <aeon:Binning>1</aeon:Binning>
               </Combinator>
             </Expression>
@@ -1435,13 +1436,13 @@
               </PropertyMappings>
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="aeon:SpinnakerCapture">
+              <Combinator xsi:type="p6:DragonflySpinnakerCapture">
                 <spk:Index xsi:nil="true" />
                 <spk:SerialNumber>26030525</spk:SerialNumber>
                 <spk:ColorProcessing>Default</spk:ColorProcessing>
-                <aeon:ExposureTime>5000</aeon:ExposureTime>
-                <aeon:Gain>0</aeon:Gain>
-                <aeon:Binning>1</aeon:Binning>
+                <p6:ExposureTime>5000</p6:ExposureTime>
+                <p6:Gain>20</p6:Gain>
+                <p6:Binning>1</p6:Binning>
               </Combinator>
             </Expression>
             <Expression xsi:type="MemberSelector">
@@ -1660,8 +1661,8 @@
               <Name>PathPrefix</Name>
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p6:AppendModalitySuffix">
-                <p6:Modality>BehaviorVideos</p6:Modality>
+              <Combinator xsi:type="p7:AppendModalitySuffix">
+                <p7:Modality>BehaviorVideos</p7:Modality>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:Defer">
@@ -1798,7 +1799,7 @@
                                 </PropertyMappings>
                               </Expression>
                               <Expression xsi:type="io:CsvWriter">
-                                <io:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-14T18-06-09\behavior-videos\PortCamera\PortCamera_2026-05-14T18-00-00.csv</io:FileName>
+                                <io:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-15T18-00-08\behavior-videos\PortCamera\PortCamera_2026-05-15T18-00-00.csv</io:FileName>
                                 <io:Append>false</io:Append>
                                 <io:Overwrite>false</io:Overwrite>
                                 <io:Suffix>None</io:Suffix>
@@ -1829,13 +1830,13 @@
                                 <Property Name="InputArguments" />
                               </Expression>
                               <Expression xsi:type="Combinator">
-                                <Combinator xsi:type="p6:FfmpegVideoWriter">
-                                  <p6:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-14T18-06-09\behavior-videos\PortCamera\PortCamera_2026-05-14T18-00-00.mp4</p6:FileName>
-                                  <p6:Overwrite>false</p6:Overwrite>
-                                  <p6:FrameRate>100</p6:FrameRate>
-                                  <p6:Verbosity>Verbose</p6:Verbosity>
-                                  <p6:OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_qsv -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</p6:OutputArguments>
-                                  <p6:InputArguments>-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear</p6:InputArguments>
+                                <Combinator xsi:type="p7:FfmpegVideoWriter">
+                                  <p7:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-15T18-00-08\behavior-videos\PortCamera\PortCamera_2026-05-15T18-00-00.mp4</p7:FileName>
+                                  <p7:Overwrite>false</p7:Overwrite>
+                                  <p7:FrameRate>100</p7:FrameRate>
+                                  <p7:Verbosity>Verbose</p7:Verbosity>
+                                  <p7:OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_qsv -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</p7:OutputArguments>
+                                  <p7:InputArguments>-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear</p7:InputArguments>
                                 </Combinator>
                               </Expression>
                               <Expression xsi:type="WorkflowOutput" />
@@ -1999,7 +2000,7 @@
                                 </PropertyMappings>
                               </Expression>
                               <Expression xsi:type="io:CsvWriter">
-                                <io:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-14T18-06-09\behavior-videos\OverheadCamera\OverheadCamera_2026-05-14T18-00-00.csv</io:FileName>
+                                <io:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-15T18-00-08\behavior-videos\OverheadCamera\OverheadCamera_2026-05-15T18-00-00.csv</io:FileName>
                                 <io:Append>false</io:Append>
                                 <io:Overwrite>false</io:Overwrite>
                                 <io:Suffix>None</io:Suffix>
@@ -2030,13 +2031,13 @@
                                 <Property Name="InputArguments" />
                               </Expression>
                               <Expression xsi:type="Combinator">
-                                <Combinator xsi:type="p6:FfmpegVideoWriter">
-                                  <p6:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-14T18-06-09\behavior-videos\OverheadCamera\OverheadCamera_2026-05-14T18-00-00.mp4</p6:FileName>
-                                  <p6:Overwrite>false</p6:Overwrite>
-                                  <p6:FrameRate>30</p6:FrameRate>
-                                  <p6:Verbosity>Verbose</p6:Verbosity>
-                                  <p6:OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_qsv -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</p6:OutputArguments>
-                                  <p6:InputArguments>-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear</p6:InputArguments>
+                                <Combinator xsi:type="p7:FfmpegVideoWriter">
+                                  <p7:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-15T18-00-08\behavior-videos\OverheadCamera\OverheadCamera_2026-05-15T18-00-00.mp4</p7:FileName>
+                                  <p7:Overwrite>false</p7:Overwrite>
+                                  <p7:FrameRate>30</p7:FrameRate>
+                                  <p7:Verbosity>Verbose</p7:Verbosity>
+                                  <p7:OutputArguments>-vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_qsv -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M</p7:OutputArguments>
+                                  <p7:InputArguments>-colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear</p7:InputArguments>
                                 </Combinator>
                               </Expression>
                               <Expression xsi:type="WorkflowOutput" />
@@ -2118,8 +2119,8 @@
               <Name>PathPrefix</Name>
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p6:AppendModalitySuffix">
-                <p6:Modality>Behavior</p6:Modality>
+              <Combinator xsi:type="p7:AppendModalitySuffix">
+                <p7:Modality>Behavior</p7:Modality>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:Defer">
@@ -2501,7 +2502,7 @@ groupMasks:
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="io:WriteAllText">
-                            <io:Path>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-14T18-06-09\behavior\DelphiController\device.yml</io:Path>
+                            <io:Path>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-15T18-00-08\behavior\DelphiController\device.yml</io:Path>
                             <io:Overwrite>false</io:Overwrite>
                             <io:Append>false</io:Append>
                           </Combinator>
@@ -2692,7 +2693,7 @@ groupMasks:
         <Name>RuleSettings</Name>
       </Expression>
       <Expression xsi:type="MemberSelector">
-        <Selector>Rule.RuleAlias</Selector>
+        <Selector>Rule.RuleName</Selector>
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="rx:Timestamp" />
@@ -2710,7 +2711,7 @@ groupMasks:
         <Combinator xsi:type="rx:Zip" />
       </Expression>
       <Expression xsi:type="Format">
-        <Format>{0}\{1}</Format>
+        <Format>{0} - {1}</Format>
         <Selector>Item1,Item2</Selector>
       </Expression>
       <Expression xsi:type="VisualizerMapping" />
@@ -2746,6 +2747,7 @@ groupMasks:
         <viz:ColumnStyles />
         <viz:RowStyles />
         <viz:CellSpans>
+          <viz:CellSpan ColumnSpan="1" RowSpan="1" />
           <viz:CellSpan ColumnSpan="1" RowSpan="1" />
           <viz:CellSpan ColumnSpan="1" RowSpan="1" />
           <viz:CellSpan ColumnSpan="1" RowSpan="1" />
