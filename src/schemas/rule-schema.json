@@ -2,6 +2,10 @@
   "$defs": {
     "DelphiRule": {
       "properties": {
+        "rule_name": {
+          "title": "Rule Name",
+          "type": "string"
+        },
         "rule_alias": {
           "title": "Rule Alias",
           "type": "string"
@@ -23,6 +27,7 @@
         }
       },
       "required": [
+        "rule_name",
         "rule_alias",
         "sample_with_replacement",
         "init_odor_index",

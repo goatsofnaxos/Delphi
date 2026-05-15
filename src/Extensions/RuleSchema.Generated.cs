@@ -15,6 +15,8 @@ namespace RuleSchema
     public partial class DelphiRule
     {
     
+        private string _ruleName;
+    
         private string _ruleAlias;
     
         private bool _sampleWithReplacement;
@@ -30,10 +32,24 @@ namespace RuleSchema
     
         protected DelphiRule(DelphiRule other)
         {
+            _ruleName = other._ruleName;
             _ruleAlias = other._ruleAlias;
             _sampleWithReplacement = other._sampleWithReplacement;
             _initOdorIndex = other._initOdorIndex;
             _stateDefinitions = other._stateDefinitions;
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="rule_name")]
+        public string RuleName
+        {
+            get
+            {
+                return _ruleName;
+            }
+            set
+            {
+                _ruleName = value;
+            }
         }
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="rule_alias")]
@@ -101,6 +117,7 @@ namespace RuleSchema
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
+            stringBuilder.Append("RuleName = " + _ruleName + ", ");
             stringBuilder.Append("RuleAlias = " + _ruleAlias + ", ");
             stringBuilder.Append("SampleWithReplacement = " + _sampleWithReplacement + ", ");
             stringBuilder.Append("InitOdorIndex = " + _initOdorIndex + ", ");

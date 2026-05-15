@@ -53,6 +53,7 @@ class StateDefinition(BaseModel):
 
 
 class DelphiRule(BaseModel):
+    rule_name: str
     rule_alias: str
     sample_with_replacement: bool
     init_odor_index: int
