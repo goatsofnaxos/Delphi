@@ -1,0 +1,17 @@
+{
+  "experiments": ["Pirouette"],
+  "auto_start": false,
+  "parallel": false,
+  "experiments_config": {
+    "Pirouette": {
+      "root": "C:/Users/svc_aind_chronic/Documents/code/Aind.Behavior.Pirouette",
+      "workflow": "src/WrappedPirouette.bonsai",
+      "parameters": {
+        "RigPath": "local/AindBehaviorPirouetteRig.json",
+        "SessionPath": "local/AindBehaviorSessionModel.json",
+        "ConnectionString": "@tcp://localhost:5557",
+        "LifealertRoot": "C:/Users/svc_aind_chronic/Documents/code/lifealert"
+      }
+    }
+  }
+}
