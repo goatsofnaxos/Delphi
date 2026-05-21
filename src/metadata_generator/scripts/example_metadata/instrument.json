@@ -1,0 +1,569 @@
+{
+   "object_type": "Instrument",
+   "describedBy": "https://raw.githubusercontent.com/AllenNeuralDynamics/aind-data-schema/main/src/aind_data_schema/core/instrument.py",
+   "schema_version": "2.2.3",
+   "location": "157",
+   "instrument_id": "Chronic1",
+   "modification_date": "2026-05-07",
+   "modalities": [
+      {
+         "name": "Behavior videos",
+         "abbreviation": "behavior-videos"
+      },
+      {
+         "name": "Extracellular electrophysiology",
+         "abbreviation": "ecephys"
+      }
+   ],
+   "calibrations": null,
+   "coordinate_system": {
+      "object_type": "Coordinate system",
+      "name": "ARENA_RBT",
+      "origin": "Arena_center",
+      "axes": [
+         {
+            "object_type": "Axis",
+            "name": "X",
+            "direction": "Left_to_right"
+         },
+         {
+            "object_type": "Axis",
+            "name": "Y",
+            "direction": "Front_to_back"
+         },
+         {
+            "object_type": "Axis",
+            "name": "Z",
+            "direction": "Down_to_up"
+         }
+      ],
+      "axis_unit": "centimeter"
+   },
+   "temperature_control": null,
+   "notes": null,
+   "connections": [
+      {
+         "object_type": "Connection",
+         "source_device": "Harp Output Expander",
+         "source_port": "OUT_1",
+         "target_device": "TopCamera",
+         "target_port": null,
+         "send_and_receive": false
+      },
+      {
+         "object_type": "Connection",
+         "source_device": "TopCamera",
+         "source_port": null,
+         "target_device": "Chronic.3",
+         "target_port": null,
+         "send_and_receive": false
+      },
+      {
+         "object_type": "Connection",
+         "source_device": "Harp Output Expander",
+         "source_port": "OUT_1",
+         "target_device": "PortCamera",
+         "target_port": null,
+         "send_and_receive": false
+      },
+      {
+         "object_type": "Connection",
+         "source_device": "PortCamera",
+         "source_port": null,
+         "target_device": "Chronic.3",
+         "target_port": null,
+         "send_and_receive": false
+      },
+      {
+         "object_type": "Connection",
+         "source_device": "Magnetic Encoder",
+         "source_port": null,
+         "target_device": "Harp Output Expander",
+         "target_port": "Expansion",
+         "send_and_receive": false
+      },
+      {
+         "object_type": "Connection",
+         "source_device": "Harp White Rabbit",
+         "source_port": null,
+         "target_device": "Harp Output Expander",
+         "target_port": "CLK_IN",
+         "send_and_receive": false
+      },
+      {
+         "object_type": "Connection",
+         "source_device": "Onix Breakout Board",
+         "source_port": null,
+         "target_device": "Chronic.3",
+         "target_port": null,
+         "send_and_receive": false
+      },
+      {
+         "object_type": "Connection",
+         "source_device": "Coaxial Commutator",
+         "source_port": null,
+         "target_device": "Onix Breakout Board",
+         "target_port": null,
+         "send_and_receive": false
+      },
+      {
+         "object_type": "Connection",
+         "source_device": "Coaxial Commutator",
+         "source_port": null,
+         "target_device": "Chronic.3",
+         "target_port": null,
+         "send_and_receive": false
+      },
+      {
+         "object_type": "Connection",
+         "source_device": "Magnetic Encoder",
+         "source_port": null,
+         "target_device": "Harp Output Expander",
+         "target_port": "Expansion",
+         "send_and_receive": false
+      },
+      {
+         "object_type": "Connection",
+         "source_device": "Delphi Controller",
+         "source_port": null,
+         "target_device": "Chronic.3",
+         "target_port": null,
+         "send_and_receive": false
+      },
+      {
+         "object_type": "Connection",
+         "source_device": "Poke Port",
+         "source_port": null,
+         "target_device": "Delphi Controller",
+         "target_port": "POKE0_Pin 22",
+         "send_and_receive": false
+      }
+   ],
+   "components": [
+      {
+         "object_type": "Computer",
+         "name": "Chronic.3",
+         "serial_number": null,
+         "manufacturer": null,
+         "model": null,
+         "additional_settings": null,
+         "notes": null,
+         "operating_system": null
+      },
+      {
+         "object_type": "Harp device",
+         "name": "Harp Output Expander",
+         "serial_number": null,
+         "manufacturer": {
+            "name": "Open Ephys Production Site",
+            "abbreviation": "OEPS",
+            "registry": "Research Organization Registry (ROR)",
+            "registry_identifier": "007rkz355"
+         },
+         "model": null,
+         "additional_settings": null,
+         "notes": null,
+         "data_interface": "USB",
+         "channels": [
+            {
+               "object_type": "DAQ channel",
+               "channel_name": "OUT_1",
+               "channel_type": "Digital Output",
+               "port": null,
+               "channel_index": null,
+               "sample_rate": null,
+               "sample_rate_unit": null,
+               "event_based_sampling": null
+            },
+            {
+               "object_type": "DAQ channel",
+               "channel_name": "CLK_IN",
+               "channel_type": "Digital Input",
+               "port": null,
+               "channel_index": null,
+               "sample_rate": null,
+               "sample_rate_unit": null,
+               "event_based_sampling": null
+            },
+            {
+               "object_type": "DAQ channel",
+               "channel_name": "Expansion",
+               "channel_type": "Analog Input",
+               "port": null,
+               "channel_index": null,
+               "sample_rate": null,
+               "sample_rate_unit": null,
+               "event_based_sampling": null
+            }
+         ],
+         "firmware_version": null,
+         "hardware_version": null,
+         "harp_device_type": {
+            "whoami": 1108,
+            "name": "OutputExpander"
+         },
+         "core_version": "1.2",
+         "tag_version": null,
+         "is_clock_generator": false
+      },
+      {
+         "object_type": "Harp device",
+         "name": "Harp White Rabbit",
+         "serial_number": null,
+         "manufacturer": {
+            "name": "Open Ephys Production Site",
+            "abbreviation": "OEPS",
+            "registry": "Research Organization Registry (ROR)",
+            "registry_identifier": "007rkz355"
+         },
+         "model": null,
+         "additional_settings": null,
+         "notes": null,
+         "data_interface": "USB",
+         "channels": [],
+         "firmware_version": null,
+         "hardware_version": null,
+         "harp_device_type": {
+            "whoami": 1152,
+            "name": "ClockSynchronizer"
+         },
+         "core_version": "1.1",
+         "tag_version": null,
+         "is_clock_generator": true
+      },
+      {
+         "object_type": "Ephys assembly",
+         "name": "Chronic_ephys_assembly",
+         "manipulator": {
+            "object_type": "Manipulator",
+            "name": "Manipulator scientifica",
+            "serial_number": null,
+            "manufacturer": {
+               "name": "Other",
+               "abbreviation": null,
+               "registry": null,
+               "registry_identifier": null
+            },
+            "model": null,
+            "additional_settings": null,
+            "notes": "Used only during implantation"
+         },
+         "probes": [
+            {
+               "object_type": "Ephys probe",
+               "name": "23107807843",
+               "serial_number": "23107807843",
+               "manufacturer": null,
+               "model": null,
+               "additional_settings": null,
+               "notes": null,
+               "probe_model": "Neuropixels 2.0 (Multi Shank)",
+               "headstage": {
+                  "object_type": "Device",
+                  "name": "ONIX Headstage Neuropixels 2.0e",
+                  "serial_number": null,
+                  "manufacturer": null,
+                  "model": null,
+                  "additional_settings": null,
+                  "notes": null
+               }
+            }
+         ]
+      },
+      {
+         "object_type": "Device",
+         "name": "Coaxial Commutator",
+         "serial_number": null,
+         "manufacturer": {
+            "name": "Open Ephys Production Site",
+            "abbreviation": "OEPS",
+            "registry": "Research Organization Registry (ROR)",
+            "registry_identifier": "007rkz355"
+         },
+         "model": null,
+         "additional_settings": null,
+         "notes": null
+      },
+      {
+         "object_type": "Device",
+         "name": "Magnetic Encoder",
+         "serial_number": "U1 AS504BA",
+         "manufacturer": {
+            "name": "Allen Institute for Neural Dynamics",
+            "abbreviation": "AIND",
+            "registry": "Research Organization Registry (ROR)",
+            "registry_identifier": "04szwah67"
+         },
+         "model": null,
+         "additional_settings": null,
+         "notes": "encodes the relative rotation of a ring magnet (K&J Magnetics: 1/4 inch x 1/8 inch x 1/4 inch, ID: N42 R424DIA, DIA Magnetized) glued onto the coaxial tether"
+      },
+      {
+         "object_type": "Enclosure",
+         "name": "Pirouette Behavior Box",
+         "serial_number": null,
+         "manufacturer": null,
+         "model": null,
+         "additional_settings": null,
+         "notes": null,
+         "size": {
+            "object_type": "Scale",
+            "scale": [
+               8.0,
+               15.0,
+               32.0
+            ]
+         },
+         "size_unit": "inch",
+         "internal_material": "Bedding and nesting material",
+         "external_material": "Acrylic",
+         "grounded": true,
+         "laser_interlock": false,
+         "air_filtration": true
+      },
+      {
+         "object_type": "Light emitting diode",
+         "name": "IR Light Source",
+         "serial_number": null,
+         "manufacturer": {
+            "name": "Thorlabs",
+            "abbreviation": null,
+            "registry": "Research Organization Registry (ROR)",
+            "registry_identifier": "04gsnvb07"
+         },
+         "model": null,
+         "additional_settings": null,
+         "notes": null,
+         "wavelength": 810,
+         "wavelength_unit": "nanometer",
+         "bandwidth": null,
+         "bandwidth_unit": null
+      },
+      {
+         "object_type": "Lens",
+         "name": "IR Convex Lens",
+         "serial_number": null,
+         "manufacturer": {
+            "name": "Thorlabs",
+            "abbreviation": null,
+            "registry": "Research Organization Registry (ROR)",
+            "registry_identifier": "04gsnvb07"
+         },
+         "model": null,
+         "additional_settings": null,
+         "notes": null
+      },
+      {
+         "object_type": "Open ephys acquisition board",
+         "name": "Onix Breakout Board",
+         "serial_number": null,
+         "manufacturer": {
+            "name": "Open Ephys Production Site",
+            "abbreviation": "OEPS",
+            "registry": "Research Organization Registry (ROR)",
+            "registry_identifier": "007rkz355"
+         },
+         "model": null,
+         "additional_settings": null,
+         "notes": null,
+         "data_interface": "USB",
+         "channels": [],
+         "firmware_version": "1.6",
+         "hardware_version": null,
+         "ports": [
+            {
+               "object_type": "Probe port",
+               "index": 1,
+               "probes": [
+                  "23107807843"
+               ]
+            }
+         ]
+      },
+      {
+         "object_type": "Camera assembly",
+         "relative_position": [
+            "Superior"
+         ],
+         "coordinate_system": null,
+         "transform": null,
+         "name": "TopCamera_assembly",
+         "target": "Body",
+         "camera": {
+            "object_type": "Camera",
+            "name": "TopCamera",
+            "serial_number": null,
+            "manufacturer": {
+               "name": "Teledyne FLIR",
+               "abbreviation": "FLIR",
+               "registry": "Research Organization Registry (ROR)",
+               "registry_identifier": "01j1gwp17"
+            },
+            "model": null,
+            "additional_settings": null,
+            "notes": "Blackfly S BFS-U3-04S2M-CS",
+            "detector_type": "Camera",
+            "data_interface": "USB",
+            "cooling": "No cooling",
+            "frame_rate": "60",
+            "frame_rate_unit": "hertz",
+            "immersion": null,
+            "chroma": "Monochrome",
+            "sensor_width": 1440,
+            "sensor_height": 1080,
+            "size_unit": "pixel",
+            "sensor_format": null,
+            "sensor_format_unit": null,
+            "bit_depth": null,
+            "bin_mode": "No binning",
+            "bin_width": null,
+            "bin_height": null,
+            "bin_unit": "pixel",
+            "gain": "0.0",
+            "crop_offset_x": null,
+            "crop_offset_y": null,
+            "crop_width": null,
+            "crop_height": null,
+            "crop_unit": "pixel",
+            "recording_software": {
+               "object_type": "Software",
+               "name": "Spinnaker SDK",
+               "version": "1.29.0.5"
+            },
+            "driver": null,
+            "driver_version": null
+         },
+         "lens": {
+            "object_type": "Lens",
+            "name": "Camera lens",
+            "serial_number": null,
+            "manufacturer": {
+               "name": "Tamron",
+               "abbreviation": null,
+               "registry": null,
+               "registry_identifier": null
+            },
+            "model": null,
+            "additional_settings": null,
+            "notes": "Tamron 12VG412ASIR lens."
+         },
+         "filter": null
+      },
+      {
+         "object_type": "Camera assembly",
+         "relative_position": [
+            "Left"
+         ],
+         "coordinate_system": null,
+         "transform": null,
+         "name": "PortCamera_assembly",
+         "target": "Body",
+         "camera": {
+            "object_type": "Camera",
+            "name": "PortCamera",
+            "serial_number": null,
+            "manufacturer": {
+               "name": "Teledyne FLIR",
+               "abbreviation": "FLIR",
+               "registry": "Research Organization Registry (ROR)",
+               "registry_identifier": "01j1gwp17"
+            },
+            "model": null,
+            "additional_settings": null,
+            "notes": "Blackfly S BFS-U3-04S2M-CS",
+            "detector_type": "Camera",
+            "data_interface": "USB",
+            "cooling": "No cooling",
+            "frame_rate": "60",
+            "frame_rate_unit": "hertz",
+            "immersion": null,
+            "chroma": "Monochrome",
+            "sensor_width": 1440,
+            "sensor_height": 1080,
+            "size_unit": "pixel",
+            "sensor_format": null,
+            "sensor_format_unit": null,
+            "bit_depth": null,
+            "bin_mode": "No binning",
+            "bin_width": null,
+            "bin_height": null,
+            "bin_unit": "pixel",
+            "gain": "0.0",
+            "crop_offset_x": null,
+            "crop_offset_y": null,
+            "crop_width": null,
+            "crop_height": null,
+            "crop_unit": "pixel",
+            "recording_software": {
+               "object_type": "Software",
+               "name": "Spinnaker SDK",
+               "version": "1.29.0.5"
+            },
+            "driver": null,
+            "driver_version": null
+         },
+         "lens": {
+            "object_type": "Lens",
+            "name": "Camera lens",
+            "serial_number": null,
+            "manufacturer": {
+               "name": "Tamron",
+               "abbreviation": null,
+               "registry": null,
+               "registry_identifier": null
+            },
+            "model": null,
+            "additional_settings": null,
+            "notes": "Tamron 12VG412ASIR lens."
+         },
+         "filter": null
+      },
+      {
+         "object_type": "Olfactometer",
+         "name": "Delphi Controller",
+         "serial_number": null,
+         "manufacturer": {
+            "name": "Allen Institute for Neural Dynamics",
+            "abbreviation": "AIND",
+            "registry": "Research Organization Registry (ROR)",
+            "registry_identifier": "04szwah67"
+         },
+         "model": null,
+         "additional_settings": null,
+         "notes": "whoami=1409 and flow rate is actually set to 75 mL/min",
+         "data_interface": "USB",
+         "channels": [
+            {
+               "object_type": "Olfactometer channel",
+               "channel_index": 0,
+               "channel_type": "Odor",
+               "flow_capacity": 100,
+               "flow_unit": "mL/min"
+            }
+         ],
+         "firmware_version": null,
+         "hardware_version": null,
+         "harp_device_type": {
+            "whoami": 1140,
+            "name": "Olfactometer"
+         },
+         "core_version": "1.0",
+         "tag_version": null,
+         "is_clock_generator": false
+      },
+      {
+         "object_type": "Device",
+         "name": "Poke Port",
+         "serial_number": null,
+         "manufacturer": {
+            "name": "Allen Institute for Neural Dynamics",
+            "abbreviation": "AIND",
+            "registry": "Research Organization Registry (ROR)",
+            "registry_identifier": "04szwah67"
+         },
+         "model": null,
+         "additional_settings": null,
+         "notes": "https://github.com/AllenNeuralDynamics/harp.peripheral.poke-port"
+      }
+   ]
+}
