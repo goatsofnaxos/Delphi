@@ -1,0 +1,165 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# ---------------------------------------------------------------------
+# Project metadata
+# ---------------------------------------------------------------------
+[project]
+name = "delphi-data"
+version = "0.1.0"
+description = "Delphi data ingestion, curation, analysis, visualization, and video analysis toolkit built on the Aeon API"
+readme = "README.md"
+license = "MIT"
+
+authors = [
+    { name = "Delphi Analysis Team" }
+]
+
+requires-python = ">=3.11"
+
+keywords = [
+    "data",
+    "analysis",
+    "visualization",
+    "video",
+    "aeon",
+    "ethology",
+    "delphi"
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+]
+
+# ---------------------------------------------------------------------
+# Core dependencies
+# ---------------------------------------------------------------------
+dependencies = [
+    "numpy>=1.23",
+    "pandas>=2.0",
+    "scipy>=1.10",
+    "matplotlib>=3.7",
+    "seaborn>=0.12",
+    "pydantic>=2.0",
+    "swc-aeon>=0.2.0",
+    "tqdm>=4.66"
+]
+
+# ---------------------------------------------------------------------
+# Optional dependencies
+# ---------------------------------------------------------------------
+[project.optional-dependencies]
+
+video = [
+    "opencv-python>=4.8",
+    "scikit-image>=0.22",
+    "imageio>=2.31",
+]
+
+dev = [
+    "pytest>=7.4",
+    "pytest-cov",
+    "black>=24.0",
+    "ruff>=0.3",
+    "mypy>=1.8",
+    "pre-commit>=3.5",
+]
+
+docs = [
+    "mkdocs>=1.5",
+    "mkdocs-material>=9.0",
+    "mkdocstrings[python]>=0.24",
+]
+
+all = [
+    "delphi-data[video,dev,docs]",
+]
+
+# ---------------------------------------------------------------------
+# CLI entry
+# ---------------------------------------------------------------------
+[project.scripts]
+delphi-data = "delphi_data.cli:main"
+
+# ---------------------------------------------------------------------
+# setuptools configuration (FLAT layout)
+# ---------------------------------------------------------------------
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["delphi_data*"]
+
+# ---------------------------------------------------------------------
+# uv dependency groups
+# ---------------------------------------------------------------------
+[dependency-groups]
+
+dev = [
+    "pytest>=7.4",
+    "pytest-cov",
+    "black>=24.0",
+    "ruff>=0.3",
+    "mypy>=1.8",
+    "pre-commit>=3.5",
+]
+
+docs = [
+    "mkdocs>=1.5",
+    "mkdocs-material>=9.0",
+    "mkdocstrings[python]>=0.24",
+]
+
+video = [
+    "opencv-python>=4.8",
+    "scikit-image>=0.22",
+    "imageio>=2.31",
+]
+
+# ---------------------------------------------------------------------
+# pytest
+# ---------------------------------------------------------------------
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+
+# ---------------------------------------------------------------------
+# Black
+# ---------------------------------------------------------------------
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+exclude = '''
+/(
+  build
+| dist
+| \.venv
+| sandbox
+)/
+'''
+
+# ---------------------------------------------------------------------
+# Ruff
+# ---------------------------------------------------------------------
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+exclude = ["sandbox"]
+
+# ---------------------------------------------------------------------
+# MyPy
+# ---------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+exclude = ["sandbox"]
