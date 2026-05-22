@@ -80,25 +80,43 @@ def get_behavior_enclosure(instrument):
 # HELPER Delphi metadata parsing
 # ------------------------------
 def parse_delphi_metadata(metadata_path: Path):
-
-    # load .jsonl file
     metadatafiles = os.listdir(metadata_path)
-    for file in metadatafiles:
-        if "HardwareSettings" in file:
-            delphi_metadata_path = pathlib.Path.cwd().joinpath(metadata_path, file)
 
-            # Open the JSONL file
-            with open(delphi_metadata_path, "r") as jsonl_file:
-                # Read and parse each line into a list of dictionaries
-                delphi_hardware = [json.loads(line) for line in jsonl_file]
+    delphi_rules = {}  # initialize once
+    delphi_hardware = []  # (optional: same fix for hardware if needed)
+
+    for file in metadatafiles:
+        full_path = pathlib.Path.cwd().joinpath(metadata_path, file)
+
+        if "HardwareSettings" in file:
+            with open(full_path, "r") as jsonl_file:
+                delphi_hardware.extend(json.loads(line) for line in jsonl_file)
 
         if "RuleSettings" in file:
-            rule_metadata_path = pathlib.Path.cwd().joinpath(metadata_path, file)
+            full_path = pathlib.Path.cwd().joinpath(metadata_path, file)
 
-            # Open the JSONL file
-            with open(rule_metadata_path, "r") as jsonl_file:
-                # Read and parse each line into a list of dictionaries
-                delphi_rules = [json.loads(line) for line in jsonl_file]
+            with open(full_path, "r") as jsonl_file:
+                for line in jsonl_file:
+                    record = json.loads(line)
+
+                    try:
+                        state_defs = record["value"]["rule"]["stateDefinitions"]
+                    except KeyError:
+                        continue  # skip malformed entries safely
+
+                    for odor in state_defs:
+                        name = odor.get("name")
+
+                        if not name or name == "DefaultState":
+                            continue
+
+                        try:
+                            idx = int(math.log2(odor["odorIndex"]))
+                        except (KeyError, ValueError):
+                            continue
+
+                        # store in dictionary (deduplicates automatically)
+                        delphi_rules[name] = idx
 
     return delphi_hardware, delphi_rules
 
@@ -406,19 +424,14 @@ def create_instrument_metadata(
 
         """Delphi Controller"""
         # channels
-        odor_transitions = delphi_rules[0]["value"]["rule"]["stateDefinitions"]
-        odor_channels = []
-        for odor in odor_transitions:
-            odor_name = odor["name"]
-            odor_idx = int(math.log2(odor["odorIndex"]))
-            if odor_name != "DefaultState":
-                odor_channels.append(
-                    OlfactometerChannel(
-                        channel_index=odor_idx,
-                        channel_type=OlfactometerChannelType.ODOR,
-                        flow_unit="mL/min",
-                    )
-                )
+        odor_channels = [
+            OlfactometerChannel(
+                channel_index=idx,
+                channel_type=OlfactometerChannelType.ODOR,
+                flow_unit="mL/min",
+            )
+            for name, idx in sorted(delphi_rules.items(), key=lambda x: x[1])
+        ]
 
         # delphi controller device
         harp_delphi_controller = Olfactometer(

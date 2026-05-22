@@ -79,9 +79,7 @@ def get_delphi_odor_names(metadata_path):
     """
     _, delphi_rules = parse_delphi_metadata(metadata_path)
 
-    odor_transitions = delphi_rules[0]["value"]["rule"]["stateDefinitions"]
-
-    odor_names = [odor["name"] for odor in odor_transitions if odor.get("name") != "DefaultState"]
+    odor_names = [name for name in delphi_rules.keys() if name != "DefaultState"]
 
     return odor_names
 
