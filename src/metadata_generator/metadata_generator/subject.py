@@ -12,10 +12,7 @@ from aind_data_schema.components.subjects import (
 )
 from aind_data_schema_models.organizations import Organization
 
-AIND_SUBJECT_ENDPOINTS = [
-    "https://aind-metadata-service/api/v2/subject",
-    "http://aind-metadata-service/api/v2/subject",
-]
+AIND_SUBJECT_ENDPOINTS = ["http://aind-metadata-service/api/v2/subject"]
 
 
 class SubjectFetchError(RuntimeError):
@@ -35,29 +32,14 @@ def _create_minimal_fallback_subject(subject_id: str) -> Subject:
         subject_details=MouseSubject(
             sex="Unknown",
             date_of_birth=None,
-            species=Species(
-                name="Mus musculus",
-                common_name="House mouse",
-                registry=None,
-                registry_identifier=None,
-            ),
-            strain=Strain(
-                name="Unknown",
-                species="Mus musculus",
-                registry=None,
-                registry_identifier=None,
-            ),
+            species=Species(),
+            strain=Strain(),
             alleles=[],
             genotype=None,
             breeding_info=None,
             housing=None,
             wellness_reports=[],
-            source=Organization(
-                name="Unknown",
-                abbreviation=None,
-                registry=None,
-                registry_identifier=None,
-            ),
+            source=Organization(),
             restrictions=None,
             rrid=None,
         ),
@@ -69,33 +51,60 @@ def fetch_subject_metadata(
     subject_id: str,
     *,
     offline_cache: Path | None = None,
-    allow_fallback: bool = True,
+    allow_fallback: bool = False,
     timeout: int = 15,
 ) -> Subject:
     """
     Fetch Subject metadata from the AIND metadata service.
 
-    If fetching fails and allow_fallback=True, returns a minimal
-    schema-valid Subject using only subject_id.
+    NOTE:
+    This service may return valid JSON even with HTTP 400.
     """
 
     last_error: Exception | None = None
 
     for base_url in AIND_SUBJECT_ENDPOINTS:
+        url = f"{base_url}/{subject_id}"
+
         try:
-            url = f"{base_url}/{subject_id}"
-            response = requests.get(url, timeout=timeout)
-            response.raise_for_status()
-            return Subject.model_validate(response.json())
+            print(f"Requesting: {url}")
+
+            response = requests.get(
+                url,
+                timeout=timeout,
+                headers={"Accept": "application/json"},
+                proxies={"http": "", "https": ""},
+            )
+
+            print(f"Status: {response.status_code}")
+
+            # Try parsing JSON regardless of status code
+            try:
+                data = response.json()
+                print("Received valid JSON")
+
+                return Subject.model_validate(data)
+
+            except Exception as parse_error:
+                print(f"JSON parse failed: {parse_error}")
+                print(f"Raw response:\n{response.text}\n")
+
+                last_error = RuntimeError(
+                    f"Invalid JSON response ({response.status_code}): {response.text}"
+                )
+
         except Exception as exc:
+            print(f"Request failed for {url}: {exc}")
             last_error = exc
 
     # Offline cache fallback
     if offline_cache and offline_cache.exists():
+        print("Using offline cache")
         with offline_cache.open("r", encoding="utf-8") as f:
             return Subject.model_validate(json.load(f))
 
     if allow_fallback:
+        print("Using minimal fallback subject")
         return _create_minimal_fallback_subject(subject_id)
 
     raise SubjectFetchError(
