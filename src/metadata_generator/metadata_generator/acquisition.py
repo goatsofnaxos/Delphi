@@ -157,8 +157,9 @@ def create_acquisition_metadata(
                     # Read and parse each line into a list of dictionaries
                     delphi_hardware = [json.loads(line) for line in jsonl_file]
             try:
-                int(delphi_hardware["subject"])
-                subject_id = delphi_hardware["subject"]
+                subject_id = next(
+                    str(item.get("subject")) for item in delphi_hardware if "subject" in item
+                )
             except Exception:
                 subject_id = subject
 
@@ -352,6 +353,7 @@ def create_acquisition_metadata(
         instrument_id=instrument_id,
         protocol_id=[protocol_id],
         acquisition_type=acquisition_type,
+        acquisition_start_tz="UTC",
         acquisition_start_time=expt_start_time,
         acquisition_end_time=expt_end_time,
         coordinate_system=CoordinateSystemLibrary.BREGMA_ARI,
