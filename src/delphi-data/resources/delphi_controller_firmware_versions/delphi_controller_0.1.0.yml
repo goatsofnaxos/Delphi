@@ -1,0 +1,277 @@
+%YAML 1.1
+---
+# yaml-language-server: $schema=https://harp-tech.org/draft-02/schema/device.json
+device: DelphiController
+whoAmI: 1409
+firmwareVersion: "0.1.0"
+hardwareTargets: "1.0"
+registers:
+    ValveState:
+        address: 32
+        type: U16
+        access: Event
+        description: "Set the enabled/disabled state (enabled = 1) of all valves"
+    ValvesSet:
+        address: 33
+        type: U16
+        maskType: ValveMask
+        access: Write
+        description: "Write a 1 to any bit to enable the corresponding valve."
+    ValvesClear:
+        address: 34
+        type: U16
+        maskType: ValveMask
+        access: Write
+        description: "Write a 1 to any bit to disable the corresponding valve."
+    ValveConfig0: &valveConfig
+        address: 35
+        type: U8
+        length: 12
+        access: Write
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve0."
+    ValveConfig1:
+        <<: *valveConfig
+        address: 36
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve1."
+    ValveConfig2:
+        <<: *valveConfig
+        address: 37
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve2."
+    ValveConfig3:
+        <<: *valveConfig
+        address: 38
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve3."
+    ValveConfig4:
+        <<: *valveConfig
+        address: 39
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve4."
+    ValveConfig5:
+        <<: *valveConfig
+        address: 40
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve5."
+    ValveConfig6:
+        <<: *valveConfig
+        address: 41
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve6."
+    ValveConfig7:
+        <<: *valveConfig
+        address: 42
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve7."
+    ValveConfig8:
+        <<: *valveConfig
+        address: 43
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve8."
+    ValveConfig9:
+        <<: *valveConfig
+        address: 44
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve9."
+    ValveConfig10:
+        <<: *valveConfig
+        address: 45
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve10."
+    ValveConfig11:
+        <<: *valveConfig
+        address: 46
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve11."
+    ValveConfig12:
+        <<: *valveConfig
+        address: 47
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve12."
+    ValveConfig13:
+        <<: *valveConfig
+        address: 48
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve13."
+    ValveConfig14:
+        <<: *valveConfig
+        address: 49
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve14."
+    ValveConfig15:
+        <<: *valveConfig
+        address: 50
+        description: "the hit duty cycle (float: 0 - 1.0), hold duty cycle (float: 0 - 1.0), and hit duration in microseconds (U32) for Valve15."
+    AuxGPIODir:
+        address: 51
+        type: U8
+        maskType: AuxGPIOMask
+        access: Write
+        description: "Specify each auxiliary GPIO pin as an input (0) or output (1)."
+    AuxGPIOState:
+        address: 52
+        type: U8
+        maskType: AuxGPIOMask
+        access: Write
+        description: "Set the state (on or off) of any auxiliary GPIO pins specified as outputs."
+    AuxGPIOSet:
+        address: 53
+        type: U8
+        maskType: AuxGPIOMask
+        access: Write
+        description: "When writing a 1 to any bit, turn on the specified auxiliary GPIO pins specified as outputs."
+    AuxGPIOClear:
+        address: 54
+        type: U8
+        maskType: AuxGPIOMask
+        access: Write
+        description: "When writing a 1 to any bit, Turn off the specified auxiliary GPIO pins specified as outputs."
+    AuxGPIOInputRiseEvent:
+        address: 55
+        type: U8
+        maskType: AuxGPIOMask
+        access: Event
+        description: ""
+    AuxGPIOInputFallEvent:
+        address: 56
+        type: U8
+        maskType: AuxGPIOMask
+        access: Event
+        description: ""
+    AuxGPIORisingInputs:
+        address: 57
+        type: U8
+        maskType: AuxGPIOMask
+        access: Write
+        description: ""
+    AuxGPIOFallingInputs:
+        address: 58
+        type: U8
+        maskType: AuxGPIOMask
+        access: Write
+        description: ""
+    PokePin:
+        address: 59
+        type: U8
+        access: Write
+        description: "which poke ports are active."
+    PokePinInverted:
+        address: 60
+        type: U8
+        access: Write
+        description: "Which poke ports are inverted (i.e: transition from HIGH to LOW when a poke occurs)."
+    PokeState:
+        address: 61
+        type: U8
+        access: Event
+        description: "The state of the poke port. An event will be triggered given a poke/ beam break that is greater than the min poke time."
+    RawPokeState:
+        address: 62
+        type: U8
+        access: Event
+        description: "The raw state of the poke pin. Events will be triggered at the onset of a beam break (1) and offset (0)."
+    PokeDometer:
+        address: 63
+        type: U32
+        access: Read
+        description: "number of mouse pokes per port since boot or reset."
+    FSMState:
+        address: 64
+        type: U8
+        access: Write
+        description: "Enable (1) (aka reset) or Disable (0) the poke handling state machine. Note that QueuedOdorIndex must be specified first. Disabling and then enabling a previously-enabled FSM will reset it to its starting state."
+    ForceFSM:
+        address: 65
+        type: U8
+        access: Write
+        description: "Force the poke handling state machine to iterate as if handling a mouse poke. PokeDometers are not incremented."
+    QueuedOdorMask:
+        address: 66
+        type: U16
+        access: Event
+        description: "Queued odors (value: odor valve mask) that will be delivered to the odor port given a register poke. After odors have been dispensed, the register will be set to 0, which indicates that new odors are needed"
+    VacuumCloseTimeUS:
+        address: 67
+        type: U32
+        access: Write
+        description: "Time alotted (in microseconds) for the vacuum valve to close."
+    MinOdorDeliveryTimeUS:
+        address: 68
+        type: U32
+        access: Write
+        description: "Minimum time alotted (in microseconds) for the odor delivery state."
+    MaxOdorDeliveryTimeUS:
+        address: 69
+        type: U32
+        access: Write
+        description: "Maximum time alotted (in microseconds) for the odor delivery state."
+    OdorTransitionTimeUS:
+        address: 70
+        type: U32
+        access: Write
+        description: "Time alotted (in microseconds) before the vacuum turns on to remove the current odor."
+    VacuumSetupTimeUS:
+        address: 71
+        type: U32
+        access: Write
+        description: "Time alotted (in microseconds) for the vacuum to open."
+    FinalValveEnergizedTimeUS:
+        address: 72
+        type: U32
+        access: Write
+        description: "Time alotted (in microseconds) for the final valve to open and remain on."
+    MinimumPokeTimeUS:
+        address: 73
+        type: U32
+        access: Write
+        description: "Minimum time (in microseconds) necessary for a mouse poke port beam to be broken before being interpretted as a poke."
+    CamPin:
+        address: 74
+        type: U8
+        access: Write
+        description: "The GPIO output pin used for camera triggering. Default pin is 26."
+    CamPinState:
+        address: 75
+        type: U8
+        access: Event
+        description: "Event is initiated when a rising edge of the camera triggered signal (PWM) is detected. The actual value of the pin doesn't change."
+    FrameRate:
+        address: 76
+        type: U32
+        access: Write
+        description: "Set the frame rate of the camera trigger/ frequency of the PWM signal."
+    DutyCycle:
+        address: 77
+        type: Float
+        access: Write
+        description: "Set the duty cycle of the PWM. Default and recommend is 0.5 for producing a square wave."
+    EnableCamTrigger:
+        address: 78
+        type: U8
+        access: Write
+        description: "Enable (1) and disable (0) camera triggering/ the PWM signal."
+    EnableValveLeds:
+        address: 79
+        type: U8
+        access: Write
+        description: "Enable (1) and disable (0) valve LEDs."
+
+groupMasks:
+    ValveMask:
+        description: "Valve that can be configured/enabled/disabled"
+        values:
+            Valve0: 0x0
+            Valve1: 0x1
+            Valve2: 0x2
+            Valve3: 0x3
+            Valve4: 0x4
+            Valve5: 0x5
+            Valve6: 0x6
+            Valve7: 0x7
+            Valve8: 0x8
+            Valve9: 0x9
+            Valve10: 0xA
+            Valve11: 0xB
+            Valve12: 0xC
+            Valve13: 0xD
+            Valve14: 0xE
+            Valve15: 0xF
+            AllValves: 0xFFFF
+    AuxGPIOMask:
+        description: "Auxiliary GPIO index."
+        values:
+            AuxGPIO0: 0x01
+            AuxGPIO1: 0x02
+            AuxGPIO2: 0x04
+            AuxGPIO3: 0x08
+            AuxGPIO4: 0x10
+            AuxGPIO5: 0x20
+            AuxGPIO6: 0x40
+            AuxGPIO7: 0x80
