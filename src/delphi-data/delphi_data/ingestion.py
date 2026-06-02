@@ -319,6 +319,11 @@ def parse_data(
     for name, value in constant_registers.items():
         df[name] = value
 
+    # -----------------------------
+    # ADD DATETIME COLUMN
+    # -----------------------------
+    df["datetime"] = aeon_api.to_datetime(df["beam_break_onset"])
+
     return df
 
 
