@@ -1369,8 +1369,8 @@ switch-aligned analyses.</p>
             <td>
               <div class="doc-md-description">
                 <p>Override the camera frame rate (Hz) used for QC plots.  When
-<code>None</code>, the rate is resolved from the Harp register → HardwareSettings
-→ :data:<code>~delphi_data.quality_control.DEFAULT_CAMERA_FPS</code>.</p>
+<code>None</code>, the rate is resolved from the Harp register -&gt; HardwareSettings
+-&gt; :data:<code>~delphi_data.quality_control.DEFAULT_CAMERA_FPS</code>.</p>
               </div>
             </td>
             <td>
@@ -1709,8 +1709,8 @@ switch-aligned analyses.</p>
 </span><span id="__span-0-132"><a id="__codelineno-0-132" name="__codelineno-0-132"></a><span class="sd">        Number of pokes extracted per day for the duration-comparison figure.</span>
 </span><span id="__span-0-133"><a id="__codelineno-0-133" name="__codelineno-0-133"></a><span class="sd">    camera_fps:</span>
 </span><span id="__span-0-134"><a id="__codelineno-0-134" name="__codelineno-0-134"></a><span class="sd">        Override the camera frame rate (Hz) used for QC plots.  When</span>
-</span><span id="__span-0-135"><a id="__codelineno-0-135" name="__codelineno-0-135"></a><span class="sd">        ``None``, the rate is resolved from the Harp register → HardwareSettings</span>
-</span><span id="__span-0-136"><a id="__codelineno-0-136" name="__codelineno-0-136"></a><span class="sd">        → :data:`~delphi_data.quality_control.DEFAULT_CAMERA_FPS`.</span>
+</span><span id="__span-0-135"><a id="__codelineno-0-135" name="__codelineno-0-135"></a><span class="sd">        ``None``, the rate is resolved from the Harp register -&gt; HardwareSettings</span>
+</span><span id="__span-0-136"><a id="__codelineno-0-136" name="__codelineno-0-136"></a><span class="sd">        -&gt; :data:`~delphi_data.quality_control.DEFAULT_CAMERA_FPS`.</span>
 </span><span id="__span-0-137"><a id="__codelineno-0-137" name="__codelineno-0-137"></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="__span-0-138"><a id="__codelineno-0-138" name="__codelineno-0-138"></a>    <span class="n">data_root</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">data_root</span><span class="p">)</span>
 </span><span id="__span-0-139"><a id="__codelineno-0-139" name="__codelineno-0-139"></a>    <span class="n">result_dir</span> <span class="o">=</span> <span class="n">data_root</span> <span class="o">/</span> <span class="s2">&quot;behavior&quot;</span> <span class="o">/</span> <span class="s2">&quot;results&quot;</span>
@@ -2161,8 +2161,8 @@ attributes.</p>
 </span><span id="__span-0-451"><a id="__codelineno-0-451" name="__codelineno-0-451"></a>        <span class="s2">&quot;--camera-fps&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">_s</span><span class="o">.</span><span class="n">camera_fps</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;camera_fps&quot;</span><span class="p">,</span>
 </span><span id="__span-0-452"><a id="__codelineno-0-452" name="__codelineno-0-452"></a>        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
 </span><span id="__span-0-453"><a id="__codelineno-0-453" name="__codelineno-0-453"></a>            <span class="s2">&quot;Override camera frame rate for QC plots (Hz).  &quot;</span>
-</span><span id="__span-0-454"><a id="__codelineno-0-454" name="__codelineno-0-454"></a>            <span class="s2">&quot;Leave unset for auto-detect (Harp register → rig config → &quot;</span>
-</span><span id="__span-0-455"><a id="__codelineno-0-455" name="__codelineno-0-455"></a>            <span class="sa">f</span><span class="s2">&quot;HardwareSettings → default).  [env: DELPHI_CAMERA_FPS, current: </span><span class="si">{</span><span class="n">_s</span><span class="o">.</span><span class="n">camera_fps</span><span class="si">}</span><span class="s2">]&quot;</span>
+</span><span id="__span-0-454"><a id="__codelineno-0-454" name="__codelineno-0-454"></a>            <span class="s2">&quot;Leave unset for auto-detect (Harp register -&gt; rig config -&gt; &quot;</span>
+</span><span id="__span-0-455"><a id="__codelineno-0-455" name="__codelineno-0-455"></a>            <span class="sa">f</span><span class="s2">&quot;HardwareSettings -&gt; default).  [env: DELPHI_CAMERA_FPS, current: </span><span class="si">{</span><span class="n">_s</span><span class="o">.</span><span class="n">camera_fps</span><span class="si">}</span><span class="s2">]&quot;</span>
 </span><span id="__span-0-456"><a id="__codelineno-0-456" name="__codelineno-0-456"></a>        <span class="p">),</span>
 </span><span id="__span-0-457"><a id="__codelineno-0-457" name="__codelineno-0-457"></a>    <span class="p">)</span>
 </span><span id="__span-0-458"><a id="__codelineno-0-458" name="__codelineno-0-458"></a>    <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>

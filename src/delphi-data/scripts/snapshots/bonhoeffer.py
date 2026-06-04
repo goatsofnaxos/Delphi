@@ -132,8 +132,8 @@ def run_snapshot(
         Number of pokes extracted per day for the duration-comparison figure.
     camera_fps:
         Override the camera frame rate (Hz) used for QC plots.  When
-        ``None``, the rate is resolved from the Harp register → HardwareSettings
-        → :data:`~delphi_data.quality_control.DEFAULT_CAMERA_FPS`.
+        ``None``, the rate is resolved from the Harp register -> HardwareSettings
+        -> :data:`~delphi_data.quality_control.DEFAULT_CAMERA_FPS`.
     """
     data_root = pathlib.Path(data_root)
     result_dir = data_root / "behavior" / "results"
@@ -451,8 +451,8 @@ def _parse_args(argv=None) -> argparse.Namespace:
         "--camera-fps", type=float, default=_s.camera_fps, dest="camera_fps",
         help=(
             "Override camera frame rate for QC plots (Hz).  "
-            "Leave unset for auto-detect (Harp register → rig config → "
-            f"HardwareSettings → default).  [env: DELPHI_CAMERA_FPS, current: {_s.camera_fps}]"
+            "Leave unset for auto-detect (Harp register -> rig config -> "
+            f"HardwareSettings -> default).  [env: DELPHI_CAMERA_FPS, current: {_s.camera_fps}]"
         ),
     )
     return parser.parse_args(argv)

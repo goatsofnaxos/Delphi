@@ -939,6 +939,100 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output layout
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Output layout">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sidecar-json-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sidecar JSON fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-via-env" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration via .env
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#session-discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session discovery
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chunk-deletion-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chunk deletion safety
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#delphi_data.video_processing.main" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1143,6 +1237,100 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#output-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output layout
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Output layout">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sidecar-json-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sidecar JSON fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-via-env" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration via .env
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#session-discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session discovery
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chunk-deletion-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chunk deletion safety
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#delphi_data.video_processing.main" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1174,12 +1362,10 @@
 
 
 <h1 id="create_poke_clips">create_poke_clips<a class="headerlink" href="#create_poke_clips" title="Permanent link">&para;</a></h1>
-<p>Thin wrapper around :mod:<code>delphi_data.video_processing</code>.</p>
-<p>All logic lives in the package module.  See the
-<a href="../../api/video_processing/">video_processing API page</a> for the full reference.</p>
+<p>Extract poke-triggered MP4 clips from Delphi session video data.</p>
 <div class="admonition note">
 <p class="admonition-title">System requirements</p>
-<p><code>ffmpeg</code> and <code>ffprobe</code> must be on <code>PATH</code>.</p>
+<p><code>ffmpeg</code> and <code>ffprobe</code> must be available on <code>PATH</code>.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Python requirements</p>
@@ -1187,6 +1373,88 @@
 </span></code></pre></div>
 </div>
 <hr />
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>For each 1-hour PortCamera chunk in <code>behavior-videos/PortCamera/</code>, the script:</p>
+<ol>
+<li>Loads poke-onset timestamps from the Harp <code>PokeState</code> register stream.</li>
+<li>Loads the camera frame-index CSV for the chunk (plus a ±4 s margin for
+   clips near chunk boundaries).</li>
+<li>Slices the frame index into per-poke windows of <strong>±4 seconds</strong> around each
+   poke onset.</li>
+<li>Exports one MP4 clip per poke using <code>ffmpeg</code>.  When an <code>OverheadCamera</code>
+   folder is also present, its frames are appended side-by-side to the right of
+   the PortCamera frames.</li>
+<li>Writes a JSON sidecar alongside each clip recording camera names, FPS, and
+   per-frame UTC timestamps.</li>
+<li>Optionally deletes the source chunk files after a successful export
+   (controlled by <code>--no-delete</code>).</li>
+</ol>
+<hr />
+<h2 id="output-layout">Output layout<a class="headerlink" href="#output-layout" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>&lt;data_root&gt;/
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  behavior-videos/
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    PortCamera/
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>      PokeClips/
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        poke_&lt;subject&gt;_&lt;YYYY-MM-DD_HH-MM-SS-ffffff&gt;.mp4
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        poke_&lt;subject&gt;_&lt;YYYY-MM-DD_HH-MM-SS-ffffff&gt;.json  # sidecar
+</span></code></pre></div>
+<h3 id="sidecar-json-fields">Sidecar JSON fields<a class="headerlink" href="#sidecar-json-fields" title="Permanent link">&para;</a></h3>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;cameras&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;PortCamera&quot;</span><span class="p">],</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">&quot;clip_fps&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">100.0</span><span class="p">,</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">&quot;frame_timestamps_utc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;2026-03-20T20:27:05.957...&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">]</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<hr />
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Search for all sessions under ROOT and extract clips</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>python<span class="w"> </span>scripts/create_poke_clips.py<span class="w"> </span>C:/data
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Or via the installed CLI</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>delphi-data<span class="w"> </span>create-clips<span class="w"> </span>C:/data
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># Write clips to a separate output directory</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>delphi-data<span class="w"> </span>create-clips<span class="w"> </span>C:/data<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span>--output<span class="w"> </span>C:/clips
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="c1"># Use 8 parallel export threads</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>delphi-data<span class="w"> </span>create-clips<span class="w"> </span>C:/data<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">    </span>--workers<span class="w"> </span><span class="m">8</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="c1"># Keep source PortCamera files after export</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>delphi-data<span class="w"> </span>create-clips<span class="w"> </span>C:/data<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">    </span>--no-delete
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="c1"># Keep source even if some clips failed</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>delphi-data<span class="w"> </span>create-clips<span class="w"> </span>C:/data<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">    </span>--no-delete-corrupted
+</span></code></pre></div>
+<hr />
+<h2 id="configuration-via-env">Configuration via <code>.env</code><a class="headerlink" href="#configuration-via-env" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">DELPHI_WORKERS</span><span class="o">=</span><span class="m">4</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nv">DELPHI_NO_DELETE</span><span class="o">=</span><span class="nb">false</span>
+</span></code></pre></div>
+<hr />
+<h2 id="session-discovery">Session discovery<a class="headerlink" href="#session-discovery" title="Permanent link">&para;</a></h2>
+<p>The script walks <code>ROOT</code> recursively and treats any directory that contains
+all three of <code>behavior/</code>, <code>behavior-videos/</code>, and <code>metadata/</code> as a valid
+session.  Directories whose path includes the word <code>clips</code> are skipped to
+avoid re-processing already-extracted output.</p>
+<hr />
+<h2 id="chunk-deletion-safety">Chunk deletion safety<a class="headerlink" href="#chunk-deletion-safety" title="Permanent link">&para;</a></h2>
+<p>Source chunk files are only deleted when:</p>
+<ul>
+<li><code>--no-delete</code> is <strong>not</strong> set, <strong>and</strong></li>
+<li>the chunk ended more than <code>DELETE_BUFFER_HRS</code> (3 h) ago (prevents deleting
+  files the acquisition system may still be writing), <strong>and</strong></li>
+<li>all clips in the chunk exported successfully (unless <code>--no-delete-corrupted</code>
+  is set).</li>
+</ul>
+<hr />
+<h2 id="api-reference">API reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h2>
+<p>All logic lives in :mod:<code>delphi_data.video_processing</code>.
+See the <a href="../../api/video_processing/">video_processing API page</a> for the full
+function reference.</p>
 
 
 <div class="doc doc-object doc-function">
