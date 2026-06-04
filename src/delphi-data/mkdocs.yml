@@ -1,0 +1,122 @@
+site_name: delphi-data
+site_description: >
+  Delphi data ingestion, curation, analysis, visualization, and video
+  analysis toolkit built on the Aeon API.
+site_author: Delphi Analysis Team
+repo_url: https://github.com/your-org/delphi-data
+repo_name: delphi-data
+docs_dir: docs
+site_dir: site
+
+# ---------------------------------------------------------------------------
+# Theme
+# ---------------------------------------------------------------------------
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+# ---------------------------------------------------------------------------
+# Navigation
+# ---------------------------------------------------------------------------
+nav:
+  - Home: index.md
+  - API Reference:
+    - Overview: api/index.md
+    - poke_metrics: api/poke_metrics.md
+    - visualization: api/visualization.md
+    - video_processing: api/video_processing.md
+    - quality_control: api/quality_control.md
+    - settings: api/settings.md
+    - ingestion: api/ingestion.md
+    - curation: api/curation.md
+    - config: api/config.md
+    - cli: api/cli.md
+  - Scripts:
+    - Overview: scripts/index.md
+    - full_processing_pipeline: scripts/full_processing_pipeline.md
+    - build_dataset: scripts/build_dataset.md
+    - data_snapshot: scripts/data_snapshot.md
+    - create_poke_clips: scripts/create_poke_clips.md
+    - Snapshots:
+      - Overview: scripts/snapshots/index.md
+      - bonhoeffer: scripts/snapshots/bonhoeffer.md
+      - _common: scripts/snapshots/common.md
+
+# ---------------------------------------------------------------------------
+# Plugins
+# ---------------------------------------------------------------------------
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths:
+            - .          # package root (delphi_data/ is importable from here)
+            - scripts    # scripts/ sub-packages (snapshots/)
+          options:
+            # Docstring parsing
+            docstring_style: numpy
+            docstring_options:
+              ignore_init_summary: false
+            # Display
+            show_root_heading: true
+            show_root_full_path: false
+            show_source: true
+            show_signature_annotations: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            # Member ordering
+            members_order: source
+            group_by_category: true
+            # Inherited members
+            inherited_members: false
+            # Filters
+            filters:
+              - "!^_[^_]"   # hide private (single underscore) members
+              - "!^__"       # hide dunder members
+
+# ---------------------------------------------------------------------------
+# Markdown extensions
+# ---------------------------------------------------------------------------
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+      title: On this page

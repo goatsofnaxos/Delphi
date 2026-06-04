@@ -4,11 +4,12 @@ delphi_data/__init__.py
 delphi_data/cli.py
 delphi_data/config.py
 delphi_data/curation.py
-delphi_data/delphi_controller_registers.py
 delphi_data/ingestion.py
 delphi_data/poke_metrics.py
 delphi_data/quality_control.py
+delphi_data/settings.py
 delphi_data/utils.py
+delphi_data/video_processing.py
 delphi_data/visualization.py
 delphi_data.egg-info/PKG-INFO
 delphi_data.egg-info/SOURCES.txt

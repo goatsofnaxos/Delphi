@@ -6,6 +6,7 @@ seaborn>=0.12
 pydantic>=2.0
 swc-aeon>=0.2.0
 tqdm>=4.66
+python-dotenv>=0.21
 
 [all]
 delphi-data[dev,docs,video]
@@ -19,9 +20,12 @@ mypy>=1.8
 pre-commit>=3.5
 
 [docs]
-mkdocs>=1.5
+mkdocs>=1.6
 mkdocs-material>=9.0
-mkdocstrings[python]>=0.24
+mkdocstrings[python]>=1.0
+pymdown-extensions>=10.0
+pygments>=2.16
+ghp-import>=2.1
 
 [video]
 opencv-python>=4.8
