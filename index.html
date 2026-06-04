@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Delphi data ingestion, curation, analysis, visualization, and video analysis toolkit built on the Aeon API.
+        <meta name="description" content="Python packages for the Delphi olfactory operant-conditioning apparatus — behavioral data analysis and AIND metadata generation.
 ">
       
       
@@ -17,7 +17,7 @@
       
       
       
-        <link rel="next" href="api/">
+        <link rel="next" href="delphi-data/">
       
       
         
@@ -28,7 +28,7 @@
     
     
       
-        <title>delphi-data</title>
+        <title>Delphi</title>
       
     
     
@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#delphi-data" class="md-skip">
+        <a href="#delphi" class="md-skip">
           Skip to content
         </a>
       
@@ -97,7 +97,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="delphi-data" class="md-header__button md-logo" aria-label="delphi-data" data-md-component="logo">
+    <a href="." title="Delphi" class="md-header__button md-logo" aria-label="Delphi" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -111,7 +111,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            delphi-data
+            Delphi
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -250,11 +250,11 @@
     
     
       <li class="md-tabs__item">
-        <a href="api/" class="md-tabs__link">
+        <a href="delphi-data/" class="md-tabs__link">
           
   
   
-  API Reference
+  delphi-data
 
         </a>
       </li>
@@ -270,11 +270,11 @@
     
     
       <li class="md-tabs__item">
-        <a href="scripts/" class="md-tabs__link">
+        <a href="metadata-generator/" class="md-tabs__link">
           
   
   
-  Scripts
+  metadata-generator
 
         </a>
       </li>
@@ -310,13 +310,13 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="delphi-data" class="md-nav__button md-logo" aria-label="delphi-data" data-md-component="logo">
+    <a href="." title="Delphi" class="md-nav__button md-logo" aria-label="Delphi" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    delphi-data
+    Delphi
   </label>
   
     <div class="md-nav__source">
@@ -402,10 +402,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#packages" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Packages
       
     </span>
   </a>
@@ -413,82 +413,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
+  <a href="#repository" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick start
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Quick start">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#build-a-dataset" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Build a dataset
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#generate-a-snapshot" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Generate a snapshot
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#python-api" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Python API
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Installation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cli-reference" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        CLI reference
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#module-index" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Module index
+        Repository
       
     </span>
   </a>
@@ -535,7 +463,7 @@
   <span class="md-ellipsis">
     
   
-    API Reference
+    delphi-data
   
 
     
@@ -548,6 +476,88 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    delphi-data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="delphi-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -564,7 +574,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/" class="md-nav__link">
+      <a href="delphi-data/api/" class="md-nav__link">
         
   
   
@@ -592,7 +602,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/poke_metrics/" class="md-nav__link">
+      <a href="delphi-data/api/poke_metrics/" class="md-nav__link">
         
   
   
@@ -620,7 +630,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/visualization/" class="md-nav__link">
+      <a href="delphi-data/api/visualization/" class="md-nav__link">
         
   
   
@@ -648,7 +658,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/video_processing/" class="md-nav__link">
+      <a href="delphi-data/api/video_processing/" class="md-nav__link">
         
   
   
@@ -676,7 +686,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/quality_control/" class="md-nav__link">
+      <a href="delphi-data/api/quality_control/" class="md-nav__link">
         
   
   
@@ -704,7 +714,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/settings/" class="md-nav__link">
+      <a href="delphi-data/api/settings/" class="md-nav__link">
         
   
   
@@ -732,7 +742,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/ingestion/" class="md-nav__link">
+      <a href="delphi-data/api/ingestion/" class="md-nav__link">
         
   
   
@@ -760,7 +770,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/curation/" class="md-nav__link">
+      <a href="delphi-data/api/curation/" class="md-nav__link">
         
   
   
@@ -788,7 +798,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/config/" class="md-nav__link">
+      <a href="delphi-data/api/config/" class="md-nav__link">
         
   
   
@@ -816,7 +826,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/cli/" class="md-nav__link">
+      <a href="delphi-data/api/cli/" class="md-nav__link">
         
   
   
@@ -832,6 +842,362 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scripts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scripts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="delphi-data/scripts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="delphi-data/scripts/full_processing_pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    full_processing_pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="delphi-data/scripts/build_dataset/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    build_dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="delphi-data/scripts/data_snapshot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    data_snapshot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="delphi-data/scripts/create_poke_clips/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    create_poke_clips
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3_6" id="__nav_2_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Snapshots
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Snapshots
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="delphi-data/scripts/snapshots/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="delphi-data/scripts/snapshots/bonhoeffer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bonhoeffer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="delphi-data/scripts/snapshots/common/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    _common
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -876,7 +1242,7 @@
   <span class="md-ellipsis">
     
   
-    Scripts
+    metadata-generator
   
 
     
@@ -892,7 +1258,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Scripts
+    metadata-generator
   
 
           </label>
@@ -905,7 +1271,7 @@
   
   
     <li class="md-nav__item">
-      <a href="scripts/" class="md-nav__link">
+      <a href="metadata-generator/" class="md-nav__link">
         
   
   
@@ -913,118 +1279,6 @@
     
   
     Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="scripts/full_processing_pipeline/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    full_processing_pipeline
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="scripts/build_dataset/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    build_dataset
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="scripts/data_snapshot/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    data_snapshot
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="scripts/create_poke_clips/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    create_poke_clips
   
 
     
@@ -1060,17 +1314,17 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_6" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
         
           
-          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
             
   
   
   <span class="md-ellipsis">
     
   
-    Snapshots
+    API Reference
   
 
     
@@ -1081,12 +1335,12 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_6">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Snapshots
+    API Reference
   
 
           </label>
@@ -1099,7 +1353,7 @@
   
   
     <li class="md-nav__item">
-      <a href="scripts/snapshots/" class="md-nav__link">
+      <a href="metadata-generator/api/" class="md-nav__link">
         
   
   
@@ -1127,14 +1381,14 @@
   
   
     <li class="md-nav__item">
-      <a href="scripts/snapshots/bonhoeffer/" class="md-nav__link">
+      <a href="metadata-generator/api/cli/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    bonhoeffer
+    cli
   
 
     
@@ -1155,14 +1409,154 @@
   
   
     <li class="md-nav__item">
-      <a href="scripts/snapshots/common/" class="md-nav__link">
+      <a href="metadata-generator/api/config/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    _common
+    config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="metadata-generator/api/subject/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    subject
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="metadata-generator/api/instrument/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    instrument
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="metadata-generator/api/acquisition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    acquisition
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="metadata-generator/api/procedures/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    procedures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="metadata-generator/api/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    utils
   
 
     
@@ -1220,10 +1614,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#packages" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Packages
       
     </span>
   </a>
@@ -1231,82 +1625,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
+  <a href="#repository" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick start
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Quick start">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#build-a-dataset" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Build a dataset
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#generate-a-snapshot" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Generate a snapshot
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#python-api" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Python API
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Installation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cli-reference" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        CLI reference
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#module-index" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Module index
+        Repository
       
     </span>
   </a>
@@ -1333,104 +1655,31 @@
   
 
 
-<h1 id="delphi-data">delphi-data<a class="headerlink" href="#delphi-data" title="Permanent link">&para;</a></h1>
-<p><strong>delphi-data</strong> is a Python package for ingesting, curating, analysing, and visualising behavioral data from the Delphi olfactory poke-port apparatus.</p>
+<h1 id="delphi">Delphi<a class="headerlink" href="#delphi" title="Permanent link">&para;</a></h1>
+<p>Delphi is an olfactory operant-conditioning apparatus and software ecosystem for freely-moving mice. This site documents the Python packages that support the experiment.</p>
 <hr />
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The package provides a complete pipeline from raw hardware event streams to publication-quality figures:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Raw Harp streams
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>      │
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>      ▼
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>delphi_data.ingestion   ← parse poke state machine, build per-poke CSV
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>      │
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>      ▼
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>delphi_data.poke_metrics ← compute rates, IPI thresholds, fold changes, durations
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>      │
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>      ▼
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>delphi_data.visualization ← generate figures (all return matplotlib Figure objects)
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>      │
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>      ▼
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>scripts/snapshots/        ← experiment-specific snapshot scripts (save figures to disk)
-</span></code></pre></div>
-<hr />
-<h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
-<h3 id="build-a-dataset">Build a dataset<a class="headerlink" href="#build-a-dataset" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>delphi-data<span class="w"> </span>build-dataset<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span>--data-root<span class="w"> </span>/data/842456/2026-03-20T20-23-05/2026-03-20T20-23-37<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span>--firmware<span class="w"> </span><span class="m">0</span>.1.0
-</span></code></pre></div>
-<h3 id="generate-a-snapshot">Generate a snapshot<a class="headerlink" href="#generate-a-snapshot" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>delphi-data<span class="w"> </span>snapshot<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span>--experiment<span class="w"> </span>bonhoeffer<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span>--data-root<span class="w"> </span>/data/842456/2026-03-20T20-23-05/2026-03-20T20-23-37
-</span></code></pre></div>
-<h3 id="python-api">Python API<a class="headerlink" href="#python-api" title="Permanent link">&para;</a></h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">delphi_data.poke_metrics</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">load_csvs_with_subject_id</span><span class="p">,</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">odor_change_events</span><span class="p">,</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">compute_poke_stats</span><span class="p">,</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">)</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">delphi_data.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_poke_rate_timeseries</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">df</span> <span class="o">=</span> <span class="n">load_csvs_with_subject_id</span><span class="p">(</span><span class="s2">&quot;/data/842456&quot;</span><span class="p">)</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1"># ... build odor_events dict ...</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">poke_stats</span> <span class="o">=</span> <span class="n">compute_poke_stats</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">odor_events</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">fig</span> <span class="o">=</span> <span class="n">plot_poke_rate_timeseries</span><span class="p">(</span><span class="n">poke_stats</span><span class="p">,</span> <span class="n">time_unit</span><span class="o">=</span><span class="s2">&quot;days&quot;</span><span class="p">)</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;poke_rate.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span>
-</span></code></pre></div>
-<hr />
-<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="w">                    </span><span class="c1"># core</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[video]&quot;</span><span class="w">           </span><span class="c1"># + video clip extraction</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[docs]&quot;</span><span class="w">            </span><span class="c1"># + documentation tools</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[all]&quot;</span><span class="w">             </span><span class="c1"># everything</span>
-</span></code></pre></div>
-<hr />
-<h2 id="cli-reference">CLI reference<a class="headerlink" href="#cli-reference" title="Permanent link">&para;</a></h2>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>delphi-data &lt;command&gt; --help
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Commands:
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  build-dataset   Ingest raw session data → behavior/delphi_dataset.csv
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>  snapshot        Generate experiment-specific visualization snapshot
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>  consolidate     Merge multiple run sub-directories into the earliest one
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>  create-clips    Extract video clips around poke events  [requires video]
-</span></code></pre></div>
-<hr />
-<h2 id="module-index">Module index<a class="headerlink" href="#module-index" title="Permanent link">&para;</a></h2>
+<h2 id="packages">Packages<a class="headerlink" href="#packages" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Module</th>
+<th>Package</th>
 <th>Purpose</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="api/poke_metrics/"><code>delphi_data.poke_metrics</code></a></td>
-<td>All behavioral computations</td>
+<td><a href="delphi-data/">delphi-data</a></td>
+<td>Ingest, curate, analyse, and visualise behavioral data from Delphi and Pirouette sessions</td>
 </tr>
 <tr>
-<td><a href="api/visualization/"><code>delphi_data.visualization</code></a></td>
-<td>All plotting functions</td>
-</tr>
-<tr>
-<td><a href="api/ingestion/"><code>delphi_data.ingestion</code></a></td>
-<td>Raw Harp data → per-poke DataFrame</td>
-</tr>
-<tr>
-<td><a href="api/curation/"><code>delphi_data.curation</code></a></td>
-<td>Session directory consolidation</td>
-</tr>
-<tr>
-<td><a href="api/config/"><code>delphi_data.config</code></a></td>
-<td>Firmware register definitions</td>
-</tr>
-<tr>
-<td><a href="api/cli/"><code>delphi_data.cli</code></a></td>
-<td>CLI entry point</td>
+<td><a href="metadata-generator/">metadata-generator</a></td>
+<td>Generate AIND v2 metadata (subject, procedures, instrument, acquisition)</td>
 </tr>
 </tbody>
 </table>
+<hr />
+<h2 id="repository">Repository<a class="headerlink" href="#repository" title="Permanent link">&para;</a></h2>
+<p>Source code: <a href="https://github.com/goatsofnaxos/Delphi">github.com/goatsofnaxos/Delphi</a></p>
 
 
 
