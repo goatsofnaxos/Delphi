@@ -50,7 +50,8 @@ dependencies = [
     "seaborn>=0.12",
     "pydantic>=2.0",
     "swc-aeon>=0.2.0",
-    "tqdm>=4.66"
+    "tqdm>=4.66",
+    "python-dotenv>=0.21",
 ]
 
 # ---------------------------------------------------------------------
@@ -74,9 +75,18 @@ dev = [
 ]
 
 docs = [
-    "mkdocs>=1.5",
+    # Core framework
+    "mkdocs>=1.6",
+    # Material theme
     "mkdocs-material>=9.0",
-    "mkdocstrings[python]>=0.24",
+    # API docs from docstrings (installs mkdocstrings-python automatically)
+    "mkdocstrings[python]>=1.0",
+    # Markdown extensions used in mkdocs.yml (pymdownx.*)
+    "pymdown-extensions>=10.0",
+    # Syntax highlighting for code blocks
+    "pygments>=2.16",
+    # GitHub Pages deployment (mkdocs gh-deploy)
+    "ghp-import>=2.1",
 ]
 
 all = [
@@ -111,9 +121,18 @@ dev = [
 ]
 
 docs = [
-    "mkdocs>=1.5",
+    # Core framework
+    "mkdocs>=1.6",
+    # Material theme
     "mkdocs-material>=9.0",
-    "mkdocstrings[python]>=0.24",
+    # API docs from docstrings (installs mkdocstrings-python automatically)
+    "mkdocstrings[python]>=1.0",
+    # Markdown extensions used in mkdocs.yml (pymdownx.*)
+    "pymdown-extensions>=10.0",
+    # Syntax highlighting for code blocks
+    "pygments>=2.16",
+    # GitHub Pages deployment (mkdocs gh-deploy)
+    "ghp-import>=2.1",
 ]
 
 video = [
