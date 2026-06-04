@@ -1,0 +1,53 @@
+name: Deploy docs to GitHub Pages
+
+# Trigger on every push to main or delphi-data-package-dev that touches the
+# package source or docs.  Also allows manual re-deployment from the Actions tab.
+on:
+  push:
+    branches:
+      - main
+      - delphi-data-package-dev
+    paths:
+      - "src/delphi-data/**"
+  workflow_dispatch:      # enables the "Run workflow" button in the Actions tab
+
+# Grant the workflow write access to push to gh-pages.
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ---------------------------------------------------------------
+      # 1. Check out the full repository
+      # ---------------------------------------------------------------
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # full history — mkdocs uses git dates
+
+      # ---------------------------------------------------------------
+      # 2. Set up Python
+      # ---------------------------------------------------------------
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      # ---------------------------------------------------------------
+      # 3. Install the package and its docs extras
+      # ---------------------------------------------------------------
+      - name: Install delphi-data[docs]
+        run: |
+          pip install --upgrade pip
+          pip install -e "src/delphi-data[docs]"
+
+      # ---------------------------------------------------------------
+      # 4. Build and deploy to gh-pages
+      #    mkdocs gh-deploy pushes the built site/ to the gh-pages branch.
+      #    --force ensures the branch is always overwritten cleanly.
+      # ---------------------------------------------------------------
+      - name: Deploy docs
+        working-directory: src/delphi-data
+        run: mkdocs gh-deploy --force --clean

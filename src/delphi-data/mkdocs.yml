@@ -3,8 +3,9 @@ site_description: >
   Delphi data ingestion, curation, analysis, visualization, and video
   analysis toolkit built on the Aeon API.
 site_author: Delphi Analysis Team
-repo_url: https://github.com/your-org/delphi-data
-repo_name: delphi-data
+site_url: https://goatsofnaxos.github.io/Delphi/
+repo_url: https://github.com/goatsofnaxos/Delphi
+repo_name: goatsofnaxos/Delphi
 docs_dir: docs
 site_dir: site
 
