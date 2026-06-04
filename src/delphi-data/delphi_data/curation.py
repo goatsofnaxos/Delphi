@@ -7,6 +7,18 @@ from tqdm import tqdm
 
 
 def is_timestamp_dir(name: str) -> bool:
+    """Return ``True`` if *name* matches the ``YYYY-MM-DDTHH-MM-SS`` format.
+
+    Parameters
+    ----------
+    name:
+        Directory name to test.
+
+    Returns
+    -------
+    bool
+        ``True`` when *name* can be parsed as ``%Y-%m-%dT%H-%M-%S``.
+    """
     try:
         datetime.strptime(name, "%Y-%m-%dT%H-%M-%S")
         return True
@@ -15,6 +27,20 @@ def is_timestamp_dir(name: str) -> bool:
 
 
 def compute_sha256(file_path: str, chunk_size: int = 1024 * 1024) -> str:
+    """Compute the SHA-256 hex digest of a file.
+
+    Parameters
+    ----------
+    file_path:
+        Absolute or relative path to the file.
+    chunk_size:
+        Read chunk size in bytes (default 1 MiB).
+
+    Returns
+    -------
+    str
+        Lowercase hexadecimal SHA-256 digest.
+    """
     hasher = hashlib.sha256()
     with open(file_path, "rb") as f:
         while chunk := f.read(chunk_size):
@@ -23,18 +49,41 @@ def compute_sha256(file_path: str, chunk_size: int = 1024 * 1024) -> str:
 
 
 def same_filesystem(path1: str, path2: str) -> bool:
-    """Check if two paths are on the same filesystem."""
+    """Check if two paths reside on the same filesystem.
+
+    Parameters
+    ----------
+    path1:
+        First path (must exist).
+    path2:
+        Second path.  Its parent directory is used when *path2* itself does
+        not yet exist.
+
+    Returns
+    -------
+    bool
+        ``True`` when both paths share the same ``st_dev`` device number.
+    """
     try:
         return os.stat(path1).st_dev == os.stat(os.path.dirname(path2)).st_dev
     except FileNotFoundError:
         return os.stat(path1).st_dev == os.stat(os.path.dirname(path2)).st_dev
 
 
-def fast_move_with_optional_checksum(src_file: str, dst_file: str):
-    """
-    Efficient move strategy:
-    - Same filesystem → atomic rename (instant, no hashing)
-    - Cross filesystem → move with checksum verification
+def fast_move_with_optional_checksum(src_file: str, dst_file: str) -> None:
+    """Move a file efficiently, verifying integrity only on cross-filesystem moves.
+
+    On a same-filesystem move an atomic ``os.replace`` is used (instant, no
+    hashing).  On a cross-filesystem move the file is copied via
+    ``shutil.move`` and SHA-256 digests are compared; a warning is printed on
+    mismatch.
+
+    Parameters
+    ----------
+    src_file:
+        Absolute path of the source file.
+    dst_file:
+        Absolute path of the destination file.
     """
     if same_filesystem(src_file, dst_file):
         # Fast path (no copy, no hashing)
@@ -52,7 +101,19 @@ def fast_move_with_optional_checksum(src_file: str, dst_file: str):
         print(f"\nWARNING: checksum mismatch: {dst_file}")
 
 
-def collect_run_dirs(session_root: str):
+def collect_run_dirs(session_root: str) -> list:
+    """Return a list of timestamp-named run directories inside *session_root*.
+
+    Parameters
+    ----------
+    session_root:
+        Path to the session directory that may contain multiple run sub-dirs.
+
+    Returns
+    -------
+    list of str
+        Absolute paths of run directories whose names match the timestamp format.
+    """
     return [
         os.path.join(session_root, d)
         for d in os.listdir(session_root)
@@ -60,23 +121,54 @@ def collect_run_dirs(session_root: str):
     ]
 
 
-def find_earliest_run(run_dirs):
+def find_earliest_run(run_dirs: list) -> str:
+    """Return the run directory with the lexicographically earliest name.
+
+    Parameters
+    ----------
+    run_dirs:
+        List of run-directory paths (names must be ISO-format timestamps).
+
+    Returns
+    -------
+    str
+        Path of the earliest run directory.
+    """
     return min(run_dirs, key=lambda p: os.path.basename(p))
 
 
 def count_files(directory: str) -> int:
+    """Count all files recursively under *directory*.
+
+    Parameters
+    ----------
+    directory:
+        Root directory to walk.
+
+    Returns
+    -------
+    int
+        Total number of files found.
+    """
     total = 0
     for _, _, files in os.walk(directory):
         total += len(files)
     return total
 
 
-def move_contents_with_progress(src_dir: str, dst_dir: str):
-    """
-    Move contents with:
-    - fast same-filesystem moves
-    - checksum validation only when needed
-    - tqdm progress bar
+def move_contents_with_progress(src_dir: str, dst_dir: str) -> None:
+    """Recursively move the contents of *src_dir* into *dst_dir* with a progress bar.
+
+    Uses :func:`fast_move_with_optional_checksum` for each file, so same-
+    filesystem moves are instant while cross-filesystem moves are checksum-
+    verified.  Existing destination files are skipped.
+
+    Parameters
+    ----------
+    src_dir:
+        Source directory whose contents will be moved.
+    dst_dir:
+        Destination directory.  Created automatically if it does not exist.
     """
     total_files = count_files(src_dir)
 
@@ -110,10 +202,17 @@ def move_contents_with_progress(src_dir: str, dst_dir: str):
                 pbar.update(1)
 
 
-def remove_all_empty_dirs(directory: str):
-    """
-    Remove ALL empty directories recursively, including those that
-    only contain empty subdirectories.
+def remove_all_empty_dirs(directory: str) -> None:
+    """Remove all empty directories under *directory*, including nested empties.
+
+    The walk is repeated until no more empty directories remain, so directories
+    that become empty only after their children are removed are also deleted.
+
+    Parameters
+    ----------
+    directory:
+        Root directory to clean up.  The directory itself is removed if it
+        ends up empty.
     """
     removed_any = True
 
@@ -128,13 +227,23 @@ def remove_all_empty_dirs(directory: str):
                     pass
 
 
-def consolidate_session_runs(session_root: str):
-    """
-    Consolidate all run directories into the earliest run with:
-    - progress bars
-    - smart large-file handling (instant moves when possible)
-    - checksum validation only when required
-    - full cleanup of empty directories
+def consolidate_session_runs(session_root: str) -> None:
+    """Consolidate multiple run sub-directories in *session_root* into the earliest one.
+
+    Identifies all timestamp-named run directories, moves the contents of
+    every later run into the earliest run using
+    :func:`move_contents_with_progress`, then removes empty directories.
+
+    Parameters
+    ----------
+    session_root:
+        Path to the session directory containing one or more timestamp-named
+        run sub-directories (e.g. ``2026-03-20T20-23-37``).
+
+    Raises
+    ------
+    ValueError
+        If *session_root* is not a valid directory.
     """
 
     session_root = os.path.abspath(session_root)
@@ -175,4 +284,4 @@ def consolidate_session_runs(session_root: str):
             except OSError:
                 pass
 
-    print("\nConsolidation complete.")
+    print("\n✅ Consolidation complete.")

@@ -74,7 +74,28 @@ DEFAULT_TIMING_REGISTERS = {
 # -----------------------------
 # FIRMWARE REGISTER RESOLUTION
 # -----------------------------
-def resolve_firmware_registers(firmware, config):
+def resolve_firmware_registers(firmware: str, config: dict) -> list:
+    """Resolve the full register list for a firmware version, following parent inheritance.
+
+    Parameters
+    ----------
+    firmware:
+        Firmware version string (e.g. ``"0.2.0"``).
+    config:
+        Firmware configuration dict mapping version strings to ``{"parent": ...,
+        "registers": [...]}`` entries (e.g. :data:`FIRMWARE_CONFIG`).
+
+    Returns
+    -------
+    list of str
+        Ordered register names with parent registers prepended.
+
+    Raises
+    ------
+    ValueError
+        If a cyclic inheritance chain is detected or an unknown version is
+        encountered.
+    """
     resolved = []
     visited = set()
 
@@ -100,7 +121,24 @@ def resolve_firmware_registers(firmware, config):
 # -----------------------------
 # GET ALL REGISTERS FOR FIRMWARE VERSION
 # -----------------------------
-def get_all_registers(firmware: str):
+def get_all_registers(firmware: str) -> tuple:
+    """Return all register names for a given firmware version.
+
+    Combines :data:`CORE_REGISTERS` with the firmware-specific and
+    video-specific registers resolved via :func:`resolve_firmware_registers`.
+
+    Parameters
+    ----------
+    firmware:
+        Firmware version string (e.g. ``"0.2.0"``).
+
+    Returns
+    -------
+    all_regs : list of str
+        Ordered, deduplicated list of core + firmware register names.
+    video_regs : list of str
+        Video-specific register names for the firmware version.
+    """
     core = CORE_REGISTERS
 
     fw_regs = resolve_firmware_registers(firmware, FIRMWARE_CONFIG)
