@@ -125,7 +125,21 @@ RELATIVE_SHANK4_RE = re.compile(
 # ----------------------- Helpers ----------------------------------------------
 # =============================================================================
 def canon(s: str) -> str:
-    """Lowercase, strip, remove punctuation and excessive spaces; normalize unicode."""
+    """
+    Canonicalize a string for resilient header matching.
+
+    Lowercases, strips, removes punctuation, and normalises unicode.
+
+    Parameters
+    ----------
+    s : str
+        Raw string to canonicalize.
+
+    Returns
+    -------
+    str
+        Canonical form with collapsed whitespace and no punctuation.
+    """
     if not s:
         return ""
     s = unicodedata.normalize("NFKC", s).strip().lower()
@@ -135,7 +149,21 @@ def canon(s: str) -> str:
 
 
 def cell_text_robust(cell) -> str:
-    """Return cell text, falling back to joining non-empty paragraphs if .text is empty."""
+    """
+    Return the text content of a docx table cell.
+
+    Falls back to joining non-empty paragraph texts when ``cell.text`` is empty.
+
+    Parameters
+    ----------
+    cell : docx.table._Cell
+        A python-docx table cell object.
+
+    Returns
+    -------
+    str
+        Stripped cell text.
+    """
     txt = cell.text.strip()
     if txt:
         return txt
@@ -144,10 +172,37 @@ def cell_text_robust(cell) -> str:
 
 
 def parse_value_multiline(text: str) -> List[str]:
+    """
+    Split *text* into non-empty stripped lines.
+
+    Parameters
+    ----------
+    text : str
+        Multi-line string to split.
+
+    Returns
+    -------
+    list[str]
+        List of non-empty stripped lines.
+    """
     return [ln.strip() for ln in text.splitlines() if ln.strip()]
 
 
 def parse_date_lines_from_text(block_text: str) -> List[Dict[str, str]]:
+    """
+    Extract date/experiment pairs from a block of text.
+
+    Parameters
+    ----------
+    block_text : str
+        Multi-line text block potentially containing lines of the form
+        ``"MM/DD/YYYY - Experiment Name"``.
+
+    Returns
+    -------
+    list[dict]
+        List of ``{"date": str, "experiment": str}`` dicts for every matched line.
+    """
     items = []
     for ln in parse_value_multiline(block_text):
         m = DATE_LINE_RE.match(ln)
@@ -157,6 +212,20 @@ def parse_date_lines_from_text(block_text: str) -> List[Dict[str, str]]:
 
 
 def normalize_um(value: str) -> int | None:
+    """
+    Parse a micrometre depth string to an integer.
+
+    Parameters
+    ----------
+    value : str
+        String potentially containing a numeric value followed by ``um`` or ``µm``
+        (e.g. ``"450 um"`` or ``"450"``).
+
+    Returns
+    -------
+    int or None
+        Parsed integer, or *value* unchanged when it is not a string.
+    """
     if not isinstance(value, str):
         return value
     m = UM_NUM_RE.search(value)
@@ -164,6 +233,19 @@ def normalize_um(value: str) -> int | None:
 
 
 def normalize_int(value: str) -> int | None:
+    """
+    Parse the first integer found in a string.
+
+    Parameters
+    ----------
+    value : str
+        String to search for an integer token.
+
+    Returns
+    -------
+    int or None
+        First integer found, or *value* unchanged when it is not a string.
+    """
     if not isinstance(value, str):
         return value
     m = INT_RE.search(value)
@@ -184,19 +266,60 @@ def extract_time(text: str) -> str | None:
 
 
 def is_date_experiment_header(kcanon: str) -> bool:
-    """Detect 'Date / Experiment' headers even with extra text like '(delete irrelevant fields)'."""
+    """
+    Detect ``Date / Experiment`` table headers robustly.
+
+    Handles extra text such as ``"(delete irrelevant fields)"``.
+
+    Parameters
+    ----------
+    kcanon : str
+        Canonicalized header string.
+
+    Returns
+    -------
+    bool
+        ``True`` if *kcanon* represents a Date/Experiment header.
+    """
     if "date experiment" in kcanon:
         return True
     return "date" in kcanon and "experiment" in kcanon
 
 
 def is_known_field_start(kcanon: str) -> bool:
-    """Any canonical key that maps to a known field (excluding date_experiment) ends the date block."""
+    """
+    Return whether *kcanon* maps to a known metadata field (excluding ``date_experiment``).
+
+    Used to detect the end of a date/experiment multi-row block.
+
+    Parameters
+    ----------
+    kcanon : str
+        Canonicalized header string.
+
+    Returns
+    -------
+    bool
+        ``True`` if *kcanon* matches a known field other than ``date_experiment``.
+    """
     return kcanon in KNOWN_FIELDS_CANON and KNOWN_FIELDS_CANON[kcanon] != "date_experiment"
 
 
 def resolve_note_key_from_canon(kcanon: str) -> str | None:
-    """Return notes data key if this canonical header represents a notes section."""
+    """
+    Return the notes data-dict key for a given canonical header, or ``None``.
+
+    Parameters
+    ----------
+    kcanon : str
+        Canonicalized header string.
+
+    Returns
+    -------
+    str or None
+        Data key such as ``"surgery_notes"`` or ``"metabond_notes"``, or ``None``
+        if *kcanon* does not represent a notes section.
+    """
     if kcanon in NOTE_HEADERS_CANON:
         return NOTE_HEADERS_CANON[kcanon]
     for note_hdr_canon, data_key in NOTE_HEADERS_CANON.items():
@@ -219,8 +342,22 @@ def strip_note_header(line: str) -> str:
 
 def append_note_lines(data: Dict[str, Any], key: str, lines: List[str]) -> None:
     """
-    Append lines to a notes field without duplicates and stripping any header prefixes.
+    Append lines to a notes field without duplicates, stripping header prefixes.
+
     Preserves order of first occurrence.
+
+    Parameters
+    ----------
+    data : dict
+        Mutable data dictionary to update in-place.
+    key : str
+        Notes field key (e.g. ``"surgery_notes"``).
+    lines : list[str]
+        Lines to append.
+
+    Returns
+    -------
+    None
     """
     existing_lines = [ln.strip() for ln in data.get(key, "").splitlines() if ln.strip()]
     seen = set(existing_lines)
@@ -242,7 +379,24 @@ def append_note_lines(data: Dict[str, Any], key: str, lines: List[str]) -> None:
 def parse_metadata_table(
     doc: Document, table_index: int = 0
 ) -> Tuple[Dict[str, Any], pd.DataFrame]:
-    """Parse the main metadata table, including a multi-row Date/Experiment block and notes-in-table."""
+    """
+    Parse the main surgery-notes metadata table.
+
+    Handles a multi-row Date/Experiment block and notes embedded in table cells.
+
+    Parameters
+    ----------
+    doc : Document
+        Loaded python-docx Document object.
+    table_index : int, optional
+        Index of the metadata table within *doc*. Default is ``0``.
+
+    Returns
+    -------
+    tuple[dict, pd.DataFrame]
+        ``(data, date_expt_df)`` where *data* is the structured field dict and
+        *date_expt_df* has columns ``["date", "experiment"]``.
+    """
     table = doc.tables[table_index]
 
     data: Dict[str, Any] = {
@@ -377,14 +531,22 @@ def parse_metadata_table(
 
 def parse_paragraph_sections(doc: Document, data: Dict[str, Any]) -> None:
     """
-    Parse times, depths, and free-text notes from paragraphs (NOT from tables),
-    iterating per line to prevent duplicates and capture inline header content cleanly.
+    Parse times, depths, and free-text notes from document paragraphs.
 
-    Key behavior:
-     - Match phrases on raw lines and extract times via TIME_RE (supports '.' and AM/PM).
-     - Use a specific regex for 'Depth shank 4 entered relative...' to capture '450' even without 'um'.
-     - Accept 'Never' and question-mark depths in shank lines.
-     - Do NOT normalize times; return exactly as matched (e.g., '1:16pm', '5.22').
+    Iterates per physical line to prevent duplicates and capture inline header
+    content cleanly. Does NOT touch table content. Times are returned exactly
+    as matched (no normalisation).
+
+    Parameters
+    ----------
+    doc : Document
+        Loaded python-docx Document object.
+    data : dict
+        Mutable data dictionary (from :func:`parse_metadata_table`) updated in-place.
+
+    Returns
+    -------
+    None
     """
     current_notes_key = None
     in_dead_zone = False
@@ -503,8 +665,20 @@ def parse_paragraph_sections(doc: Document, data: Dict[str, Any]) -> None:
 
 def parse_kx_anesthesia_table(doc: Document) -> pd.DataFrame:
     """
-    Parse the K/X anesthesia table into a DataFrame.
+    Parse the K/X anesthesia dosing table into a DataFrame.
+
     Robust to rows with missing columns and note-only lines.
+
+    Parameters
+    ----------
+    doc : Document
+        Loaded python-docx Document object.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with columns ``["time", "agent", "concentration", "volume_ul", "reason"]``.
+        Empty DataFrame with those columns is returned when no matching table is found.
     """
     kx_rows: List[Dict[str, Any]] = []
 
@@ -577,17 +751,37 @@ def parse_surgery_notes(
     surgery_notes_path: Path,
     metadata_table_index: int = 0,
 ) -> Tuple[Dict[str, Any], pd.DataFrame, pd.DataFrame]:
-    """Parse the surgery notes DOCX and return structured data, date/experiment DataFrame, and K/X anesthesia DataFrame."""
+    """
+    End-to-end parser for a surgery notes DOCX file.
+
+    Parses the metadata table (including Date/Experiment block and notes-in-table),
+    paragraph sections (times, depths, free-text notes), and the K/X anesthesia table.
+    Times are returned exactly as matched — no normalisation applied.
+
+    Parameters
+    ----------
+    surgery_notes_path : Path
+        Path to the ``.docx`` surgery notes file.
+    metadata_table_index : int, optional
+        Index of the main metadata table within the document. Default is ``0``.
+
+    Returns
+    -------
+    tuple[dict, pd.DataFrame, pd.DataFrame, str | None]
+        ``(data, date_expt_df, kx_df, probe_serial_number)`` where *data* contains
+        all structured fields, *date_expt_df* has columns ``["date", "experiment"]``,
+        *kx_df* has columns ``["time", "agent", "concentration", "volume_ul", "reason"]``,
+        and *probe_serial_number* is the ``probe_sn`` field value (may be ``None``).
+
+    Raises
+    ------
+    FileNotFoundError
+        If *surgery_notes_path* does not exist.
+    ValueError
+        If the document contains no tables.
+    """
     if not surgery_notes_path.exists():
         raise FileNotFoundError(f"Surgery notes file not found: {surgery_notes_path}")
-
-    """
-    End-to-end parser:
-     - Parse metadata table (incl. Date/Experiment block; table-only, plus notes-in-table)
-     - Parse paragraphs: times, depths, notes (paragraph-only, line-level with inline header capture; NO time normalization)
-     - Parse K/X anesthesia table into a DataFrame
-    Returns: (data, date_expt_df, kx_df)
-    """
     doc = Document(str(surgery_notes_path))
     if len(doc.tables) == 0:
         raise ValueError("No tables found in the document.")
@@ -618,7 +812,32 @@ def create_procedures_metadata(
     probe_config,
 ) -> tuple[Procedures, str]:
     """
-    Create Procedures metadata AND return probe_sn.
+    Create AIND Procedures metadata from parsed surgery notes.
+
+    Parameters
+    ----------
+    current_experiment : str
+        One of ``{"delphi", "pirouette", "delphi_pirouette"}``. Only ``"pirouette"``
+        triggers full surgery-note parsing; other values produce a minimal Procedures object.
+    subject_id : str
+        Unique subject identifier.
+    protocol_id : str
+        Protocol identifier applied to all Surgery records.
+    surgeons : list[str]
+        Names of surgeons. Index 0 is the primary surgeon; index 1 is used for
+        the headframe surgery.
+    surgery_notes_path : Path
+        Path to the ``.docx`` surgery notes file.
+    probe_device : EphysProbe
+        Probe device object used in the ProbeImplant procedure.
+    probe_config : ProbeConfig
+        Probe configuration object used in the ProbeImplant procedure.
+
+    Returns
+    -------
+    Procedures
+        Validated AIND Procedures object containing craniotomy, implantation, and
+        headframe Surgery records (or a minimal stub for non-pirouette experiments).
     """
     if "pirouette" in current_experiment:
         parsed_data, date_expt_df, kx_df, _ = parse_surgery_notes(surgery_notes_path)

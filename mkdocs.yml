@@ -1,0 +1,137 @@
+site_name: Delphi
+site_description: >
+  Python packages for the Delphi olfactory operant-conditioning apparatus —
+  behavioral data analysis and AIND metadata generation.
+site_author: Delphi Analysis Team
+site_url: https://goatsofnaxos.github.io/Delphi/
+repo_url: https://github.com/goatsofnaxos/Delphi
+repo_name: goatsofnaxos/Delphi
+docs_dir: docs
+site_dir: site
+
+# ---------------------------------------------------------------------------
+# Theme
+# ---------------------------------------------------------------------------
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+# ---------------------------------------------------------------------------
+# Navigation
+# ---------------------------------------------------------------------------
+nav:
+  - Home: index.md
+  - delphi-data:
+    - Overview: delphi-data/index.md
+    - API Reference:
+      - Overview: delphi-data/api/index.md
+      - poke_metrics: delphi-data/api/poke_metrics.md
+      - visualization: delphi-data/api/visualization.md
+      - video_processing: delphi-data/api/video_processing.md
+      - quality_control: delphi-data/api/quality_control.md
+      - settings: delphi-data/api/settings.md
+      - ingestion: delphi-data/api/ingestion.md
+      - curation: delphi-data/api/curation.md
+      - config: delphi-data/api/config.md
+      - cli: delphi-data/api/cli.md
+    - Scripts:
+      - Overview: delphi-data/scripts/index.md
+      - full_processing_pipeline: delphi-data/scripts/full_processing_pipeline.md
+      - build_dataset: delphi-data/scripts/build_dataset.md
+      - data_snapshot: delphi-data/scripts/data_snapshot.md
+      - create_poke_clips: delphi-data/scripts/create_poke_clips.md
+      - Snapshots:
+        - Overview: delphi-data/scripts/snapshots/index.md
+        - bonhoeffer: delphi-data/scripts/snapshots/bonhoeffer.md
+        - _common: delphi-data/scripts/snapshots/common.md
+  - metadata-generator:
+    - Overview: metadata-generator/index.md
+    - API Reference:
+      - Overview: metadata-generator/api/index.md
+      - cli: metadata-generator/api/cli.md
+      - config: metadata-generator/api/config.md
+      - subject: metadata-generator/api/subject.md
+      - instrument: metadata-generator/api/instrument.md
+      - acquisition: metadata-generator/api/acquisition.md
+      - procedures: metadata-generator/api/procedures.md
+      - utils: metadata-generator/api/utils.md
+
+# ---------------------------------------------------------------------------
+# Plugins
+# ---------------------------------------------------------------------------
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths:
+            - src/delphi-data          # delphi_data package root
+            - src/delphi-data/scripts  # scripts sub-packages (snapshots/)
+            - src/metadata_generator   # metadata_generator package root
+          options:
+            # Docstring parsing
+            docstring_style: numpy
+            docstring_options:
+              ignore_init_summary: false
+            # Display
+            show_root_heading: true
+            show_root_full_path: false
+            show_source: true
+            show_signature_annotations: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            # Member ordering
+            members_order: source
+            group_by_category: true
+            # Inherited members
+            inherited_members: false
+            # Filters
+            filters:
+              - "!^_[^_]"   # hide private (single underscore) members
+              - "!^__"       # hide dunder members
+
+# ---------------------------------------------------------------------------
+# Markdown extensions
+# ---------------------------------------------------------------------------
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+      title: On this page

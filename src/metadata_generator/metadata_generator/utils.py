@@ -6,10 +6,24 @@ from aind_data_schema.components.configs import EphysAssemblyConfig
 
 def get_delphi_odor_channel_indices(instrument):
     """
-    Extract odor channel indices from the Delphi Olfactometer
-    defined in an AIND Instrument object.
+    Extract odor channel indices from the Delphi Olfactometer in an Instrument.
 
-    Handles both enum and string representations of channel_type.
+    Handles both enum and string representations of ``channel_type``.
+
+    Parameters
+    ----------
+    instrument : Instrument
+        AIND Instrument object containing a Delphi Olfactometer component.
+
+    Returns
+    -------
+    list[int]
+        Sorted list of odor channel indices.
+
+    Raises
+    ------
+    ValueError
+        If the Delphi Olfactometer has no ODOR channels.
     """
 
     odor_channel_indices = []
@@ -42,11 +56,15 @@ def get_platform_surface_from_instrument(instrument):
     """
     Determine the platform surface string from the Instrument's enclosure.
 
+    Parameters
+    ----------
+    instrument : Instrument
+        AIND Instrument object.
+
     Returns
     -------
     str
-        Platform surface string in the form:
-        "<enclosure name>: <internal material>"
+        Platform surface string in the form ``"<enclosure name>: <internal material>"``.
 
     Raises
     ------

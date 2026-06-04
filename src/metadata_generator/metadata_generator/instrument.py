@@ -52,11 +52,20 @@ def get_behavior_enclosure(instrument):
     """
     Determine whether the instrument uses a Delphi cage or a Pirouette behavior box.
 
+    Parameters
+    ----------
+    instrument : Instrument
+        AIND Instrument object whose ``components`` list is searched for an ``Enclosure``.
+
     Returns
     -------
-    (enclosure, kind) where kind is one of:
-      - "delphi"
-      - "pirouette"
+    tuple[Enclosure, str]
+        ``(enclosure, kind)`` where *kind* is one of ``"delphi"`` or ``"pirouette"``.
+
+    Raises
+    ------
+    ValueError
+        If no ``Enclosure`` component is found, or the enclosure name is unrecognised.
     """
     enclosures = [c for c in instrument.components if isinstance(c, Enclosure)]
 
@@ -80,6 +89,21 @@ def get_behavior_enclosure(instrument):
 # HELPER Delphi metadata parsing
 # ------------------------------
 def parse_delphi_metadata(metadata_path: Path):
+    """
+    Parse Delphi HardwareSettings and RuleSettings JSONL files.
+
+    Parameters
+    ----------
+    metadata_path : Path
+        Directory containing Delphi metadata files (``*HardwareSettings*.jsonl``
+        and ``*RuleSettings*.jsonl``).
+
+    Returns
+    -------
+    tuple[list, dict]
+        ``(delphi_hardware, delphi_rules)`` where *delphi_hardware* is a list of
+        hardware-settings records and *delphi_rules* maps odor name to channel index.
+    """
     metadatafiles = os.listdir(metadata_path)
 
     delphi_rules = {}  # initialize once

@@ -38,9 +38,20 @@ from aind_data_schema_models.modalities import Modality
 def _creation_timestamp(p: Path) -> float | None:
     """
     Return file creation timestamp in seconds since epoch.
+
     Windows: creation time
     macOS: birth time
     Linux: None (caller must fallback)
+
+    Parameters
+    ----------
+    p : Path
+        File path to stat.
+
+    Returns
+    -------
+    float or None
+        Seconds since the Unix epoch, or ``None`` on Linux where birth time is unavailable.
     """
     st = p.stat()
     if hasattr(st, "st_birthtime"):
@@ -56,7 +67,21 @@ def most_recent_created_file(
 ) -> tuple[Path | None, datetime | None]:
     """
     Find the most recently created file in a directory.
-    Falls back to modification time where creation time is unavailable.
+
+    Falls back to modification time where creation time is unavailable (Linux).
+
+    Parameters
+    ----------
+    dir_path : Path
+        Directory to search.
+    include_subdirs : bool, optional
+        If ``True``, recurse into sub-directories. Default is ``False``.
+
+    Returns
+    -------
+    tuple[Path or None, datetime or None]
+        ``(path, timestamp)`` of the newest file, or ``(None, None)`` if the
+        directory is empty.
     """
     root = pathlib.Path(dir_path)
     iterator = root.rglob("*") if include_subdirs else root.glob("*")
@@ -107,7 +132,45 @@ def create_acquisition_metadata(
     delphi_controller_name: str = "Delphi Controller",
 ) -> Acquisition:
     """
-    Create Acquisition metadata EXACTLY matching the original notebook behavior.
+    Create an AIND Acquisition metadata object.
+
+    Parameters
+    ----------
+    current_experiment : str
+        One of ``{"delphi", "pirouette", "delphi_pirouette"}``.
+    acquisition_type : str
+        Acquisition type label (e.g. ``"ChronicRecording"``).
+    instrument_id : str
+        Instrument identifier string.
+    protocol_id : str
+        Protocol identifier used for the session.
+    subject : str
+        Subject ID string (used as fallback when not embedded in session JSON).
+    experimenters : list[str]
+        Names of experimenters present during the session.
+    dataset_root : Path
+        Root directory of the dataset (used to locate ``behavior-videos``).
+    metadata_path : Path
+        Directory containing session metadata files (Bonsai JSON or Delphi JSONL).
+    ephys_assembly : EphysAssembly
+        Ephys assembly object from the Instrument.
+    probe_id : str
+        Probe name (e.g. ``"Probe B"``).
+    cam_assemblies : list[CameraAssembly]
+        Camera assembly objects from the Instrument.
+    platform_surface : str
+        Mouse platform surface description string.
+    odor_names : list[str] or None, optional
+        Ordered list of odor names for Delphi olfactometer config.
+    odor_channels : list or None, optional
+        Ordered list of olfactometer channel indices matching *odor_names*.
+    delphi_controller_name : str, optional
+        Name of the Delphi olfactometer device. Default is ``"Delphi Controller"``.
+
+    Returns
+    -------
+    Acquisition
+        Fully populated and validated AIND Acquisition object.
     """
 
     # -------------------------------------------------------------------------

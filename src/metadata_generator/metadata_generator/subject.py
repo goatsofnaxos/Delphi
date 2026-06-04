@@ -25,6 +25,16 @@ def _create_minimal_fallback_subject(subject_id: str) -> Subject:
 
     This is a DEVELOPMENT / OFFLINE FALLBACK and should be replaced
     by authoritative metadata when available.
+
+    Parameters
+    ----------
+    subject_id : str
+        Unique identifier for the subject.
+
+    Returns
+    -------
+    Subject
+        Minimally populated Subject with placeholder values for all required fields.
     """
 
     return Subject(
@@ -57,8 +67,34 @@ def fetch_subject_metadata(
     """
     Fetch Subject metadata from the AIND metadata service.
 
-    NOTE:
-    This service may return valid JSON even with HTTP 400.
+    Tries each URL in ``AIND_SUBJECT_ENDPOINTS`` in order. If all network
+    requests fail, falls back to *offline_cache* then to a minimal stub
+    (when *allow_fallback* is ``True``). The service may return valid JSON
+    even with HTTP 400.
+
+    Parameters
+    ----------
+    subject_id : str
+        Unique subject identifier used to build the request URL.
+    offline_cache : Path or None, optional
+        Path to a JSON file containing a previously saved Subject. Used when
+        all network endpoints are unreachable.
+    allow_fallback : bool, optional
+        If ``True``, generate a minimal stub Subject instead of raising when
+        both network and *offline_cache* are unavailable.
+    timeout : int, optional
+        Per-request timeout in seconds. Default is ``15``.
+
+    Returns
+    -------
+    Subject
+        Validated AIND Subject object.
+
+    Raises
+    ------
+    SubjectFetchError
+        If no endpoint succeeds, *offline_cache* is absent or not provided,
+        and *allow_fallback* is ``False``.
     """
 
     last_error: Exception | None = None
@@ -121,11 +157,23 @@ def write_subject_metadata(
     allow_fallback: bool = False,
 ) -> Subject:
     """
-    Write subject.json to disk.
+    Fetch subject metadata and write ``subject.json`` to *output_directory*.
 
-    If fetching fails:
-    - uses offline_cache if available
-    - otherwise generates a minimal fallback Subject (if allowed)
+    Parameters
+    ----------
+    subject_id : str
+        Unique subject identifier.
+    output_directory : Path
+        Directory where ``subject.json`` will be written (created if absent).
+    offline_cache : Path or None, optional
+        Passed through to :func:`fetch_subject_metadata`.
+    allow_fallback : bool, optional
+        Passed through to :func:`fetch_subject_metadata`.
+
+    Returns
+    -------
+    Subject
+        The Subject object that was serialised to disk.
     """
 
     output_directory.mkdir(parents=True, exist_ok=True)
