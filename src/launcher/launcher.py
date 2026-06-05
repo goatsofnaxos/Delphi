@@ -372,6 +372,7 @@ def save_session_record(session: Dict[str, Any]) -> Path:
         )
         with open(fp, "w", encoding="utf-8") as f:
             json.dump(session, f, indent=2, ensure_ascii=False)
+        TEMP_SESSION_FILES.append(str(fp))
         return fp
     except Exception as e:
         print(f"Warning: Could not write session log: {e}")
