@@ -95,7 +95,7 @@ plugins:
             - src/delphi-data          # delphi_data package root
             - src/delphi-data/scripts  # scripts sub-packages (snapshots/)
             - src/metadata_generator   # metadata_generator package root
-            - src/launcher
+            - src                      # launcher package (src/launcher/)
           options:
             # Docstring parsing
             docstring_style: numpy
