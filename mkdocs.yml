@@ -79,6 +79,8 @@ nav:
       - acquisition: metadata-generator/api/acquisition.md
       - procedures: metadata-generator/api/procedures.md
       - utils: metadata-generator/api/utils.md
+  - launcher:
+    - Overview: launcher/index.md
 
 # ---------------------------------------------------------------------------
 # Plugins
@@ -93,6 +95,7 @@ plugins:
             - src/delphi-data          # delphi_data package root
             - src/delphi-data/scripts  # scripts sub-packages (snapshots/)
             - src/metadata_generator   # metadata_generator package root
+            - src/launcher
           options:
             # Docstring parsing
             docstring_style: numpy

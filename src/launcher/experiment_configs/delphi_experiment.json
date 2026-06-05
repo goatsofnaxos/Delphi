@@ -4,7 +4,7 @@
   "parallel": false,
   "experiments_config": {
     "Delphi": {
-      "root": "C:/Users/brandon.pratt/Desktop/code/Delphi",
+      "root": "../../..",
       "workflow": "src/DelphiMain.bonsai",
       "session_count": 2,
       "session_parameters": [

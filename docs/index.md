@@ -10,6 +10,7 @@ Delphi is an olfactory operant-conditioning apparatus and software ecosystem for
 |---------|---------|
 | [delphi-data](delphi-data/index.md) | Ingest, curate, analyse, and visualise behavioral data from Delphi and Pirouette sessions |
 | [metadata-generator](metadata-generator/index.md) | Generate AIND v2 metadata (subject, procedures, instrument, acquisition) |
+| [launcher](launcher/index.md) | Interactive multi-experiment Bonsai workflow launcher with subject recall and session logging |
 
 ---
 

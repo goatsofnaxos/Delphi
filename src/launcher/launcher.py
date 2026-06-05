@@ -12,14 +12,17 @@ What's special in this build
   - Per-session parameter overrides (session-only), per-session file copies (Option B).
   - Pirouette temp files under <root>/src are zeroed if they exist (and deleted on exit).
   - Lifealert menu after Bonsai launch: start/stop, choose directories from a persisted list.
+  - Subject ID recall from known_subjects.json (remembered across runs).
+  - Interactive sessions are auto-saved as reusable configs in generated_configs/.
+  - Profile files may use relative paths (resolved relative to the profile's own directory).
 
 Run examples
 ------------
 Interactive:
     uv run launcher.py
 
-Using a profile by NAME (resolves ./experiments/<NAME>.json|.yaml|.yml):
-    uv run launcher.py --experiment standard_delphi_pirouette
+Using a profile by NAME (resolves ./experiments/<NAME>.json|.yaml|.yml or next to launcher.py):
+    uv run launcher.py --experiment delphi_experiment
 
 Using a profile by FILE PATH:
     uv run launcher.py --experiment C:/path/to/my_profile.json
@@ -45,8 +48,10 @@ except Exception:
     yaml = None
 
 CONFIG_PATH = Path(__file__).with_name("launcher_config.json")
-EXPERIMENTS_DIR = Path(__file__).with_name("experiments")
+EXPERIMENTS_DIR = Path(__file__).with_name("experiment_configs")
 SESSIONS_DIR = Path(__file__).with_name("sessions")
+GENERATED_CONFIGS_DIR = Path(__file__).with_name("experiment_configs")
+SUBJECTS_CONFIG_PATH = Path(__file__).with_name("known_subjects.json")
 
 # Track per-session files and temp files to clean up at the end
 TEMP_SESSION_FILES: List[str] = []
@@ -54,17 +59,26 @@ TEMP_SESSION_FILES: List[str] = []
 LIFEALERT_PROCS: List[subprocess.Popen] = []
 # Track launched Bonsai processes
 WORKFLOW_PROCS: List[subprocess.Popen] = []
+# Original XML content for .bonsai files patched in-place, keyed by absolute path
+BONSAI_ORIGINALS: Dict[str, str] = {}
 
 
 # -------------------------------
 # CLI
 # -------------------------------
 def parse_args():
+    """Parse command-line arguments for the launcher.
+
+    Returns
+    -------
+    argparse.Namespace
+        Parsed argument namespace. Key attribute: ``experiment`` (str or None).
+    """
     p = argparse.ArgumentParser(description="Bonsai multi-experiment launcher")
     p.add_argument(
         "--experiment",
         "-e",
-        help="Profile by NAME (resolved in ./experiments) or a .json/.yaml/.yml FILE path. NONE by default.",
+        help="Profile by NAME (resolved in ./experiments or next to launcher.py) or a .json/.yaml/.yml FILE path. NONE by default.",
         default=None,
     )
     return p.parse_args()
@@ -74,6 +88,19 @@ def parse_args():
 # I/O & basic helpers
 # -------------------------------
 def load_config() -> Dict[str, Any]:
+    """Load and validate the launcher configuration from disk.
+
+    Returns
+    -------
+    dict
+        Parsed configuration dictionary with at least an ``EXPERIMENTS`` key.
+
+    Raises
+    ------
+    SystemExit
+        If the config file is missing, not a JSON object, or has no valid
+        ``EXPERIMENTS`` map.
+    """
     if not CONFIG_PATH.exists():
         print(f"Configuration file not found: {CONFIG_PATH}")
         print("Please create 'launcher_config.json' next to this script.")
@@ -99,25 +126,88 @@ def load_config() -> Dict[str, Any]:
 
 
 def save_config(cfg: Dict[str, Any]) -> None:
+    """Persist the launcher configuration to disk.
+
+    Parameters
+    ----------
+    cfg : dict
+        Configuration dictionary to serialise as JSON.
+
+    Returns
+    -------
+    None
+    """
     with open(CONFIG_PATH, "w", encoding="utf-8") as f:
         json.dump(cfg, f, indent=2, ensure_ascii=False)
 
 
 def norm(p: str) -> str:
+    """Normalise a filesystem path (expand ``~`` and collapse separators).
+
+    Parameters
+    ----------
+    p : str
+        Raw path string.
+
+    Returns
+    -------
+    str
+        Normalised absolute-style path string.
+    """
     return os.path.normpath(os.path.expanduser(p))
 
 
 def exists_path(p: str) -> bool:
+    """Return True if *p* (after normalisation) points to an existing filesystem entry.
+
+    Parameters
+    ----------
+    p : str
+        Path string to test.
+
+    Returns
+    -------
+    bool
+        ``True`` if the path exists, ``False`` otherwise.
+    """
     return os.path.exists(norm(p))
 
 
 def prompt(prompt_text: str, default: str = "") -> str:
+    """Prompt the user for a string value with an optional default.
+
+    Parameters
+    ----------
+    prompt_text : str
+        Text shown before the input cursor.
+    default : str, optional
+        Value returned when the user submits an empty line.
+
+    Returns
+    -------
+    str
+        The entered value, or *default* if the user pressed Enter.
+    """
     suffix = f" [{default}]" if default else ""
     val = input(f"{prompt_text}{suffix}: ").strip()
     return val or default
 
 
 def prompt_yes_no(prompt_text: str, default_yes: bool = True) -> bool:
+    """Prompt the user for a yes/no confirmation.
+
+    Parameters
+    ----------
+    prompt_text : str
+        Question to display.
+    default_yes : bool, optional
+        If ``True`` (default), pressing Enter returns ``True``.
+
+    Returns
+    -------
+    bool
+        ``True`` for yes, ``False`` for no.
+    """
     default = "Y/n" if default_yes else "y/N"
     while True:
         ans = input(f"{prompt_text} ({default}): ").strip().lower()
@@ -131,6 +221,19 @@ def prompt_yes_no(prompt_text: str, default_yes: bool = True) -> bool:
 
 
 def is_probably_path(value: str) -> bool:
+    """Heuristically decide whether *value* looks like a filesystem path.
+
+    Parameters
+    ----------
+    value : str
+        The string to test.
+
+    Returns
+    -------
+    bool
+        ``True`` if the value appears to be a path (contains slashes or has a
+        recognised file extension), ``False`` otherwise.
+    """
     if not isinstance(value, str):
         return False
     v = value.strip()
@@ -148,6 +251,21 @@ def is_probably_path(value: str) -> bool:
 
 
 def make_relative_if_under_root(path_abs: str, root_abs: str) -> str:
+    """Return a forward-slash relative path if *path_abs* lives under *root_abs*.
+
+    Parameters
+    ----------
+    path_abs : str
+        Absolute path to the target file or directory.
+    root_abs : str
+        Absolute path to the root directory.
+
+    Returns
+    -------
+    str
+        Relative path (forward slashes) when *path_abs* is under *root_abs*,
+        otherwise the normalised absolute path.
+    """
     path_abs = norm(path_abs)
     root_abs = norm(root_abs)
     try:
@@ -163,20 +281,61 @@ def make_relative_if_under_root(path_abs: str, root_abs: str) -> str:
 # Session helpers
 # -------------------------------
 def utc_timestamp_for_session() -> str:
+    """Generate a UTC timestamp string suitable for use in session IDs and filenames.
+
+    Returns
+    -------
+    str
+        Timestamp in the format ``YYYY-MM-DDTHH-MM-SS`` (e.g. ``2025-05-09T18-46-21``).
+    """
     return datetime.now(timezone.utc).strftime(
         "%Y-%m-%dT%H-%M-%S"
     )  # e.g., 2025-05-09T18-46-21
 
 
 def build_session(exp_key: str, experimenter_default: str = "") -> Dict[str, Any]:
+    """Interactively build a session dict by prompting for experimenter and subject.
+
+    Parameters
+    ----------
+    exp_key : str
+        Experiment key used to name the session.
+    experimenter_default : str, optional
+        Pre-filled default for the experimenter prompt.
+
+    Returns
+    -------
+    dict
+        Session dictionary as returned by :func:`build_session_with_values`.
+    """
     experimenter = prompt("Experimenter name", default=experimenter_default)
-    subject_id = prompt("Subject ID")
+    subject_id = prompt_subject_id()
     return build_session_with_values(exp_key, experimenter, subject_id)
 
 
 def build_session_with_values(
     exp_key: str, experimenter: str, subject_id: str, start_utc: str = ""
 ) -> Dict[str, Any]:
+    """Build a session dict from explicit values (no user prompts).
+
+    Parameters
+    ----------
+    exp_key : str
+        Experiment key used to derive ``experiment_name``.
+    experimenter : str
+        Experimenter name.
+    subject_id : str
+        Subject identifier.
+    start_utc : str, optional
+        Pre-set UTC start timestamp. Generated automatically when empty.
+
+    Returns
+    -------
+    dict
+        Session dictionary with keys ``session_id``, ``experimenter``,
+        ``subject_id``, ``experiment_name``, ``start_utc``, and
+        ``experiment_key``.
+    """
     experiment_name = exp_key.lower()
     if not start_utc:
         start_utc = utc_timestamp_for_session()
@@ -192,6 +351,18 @@ def build_session_with_values(
 
 
 def save_session_record(session: Dict[str, Any]) -> Path:
+    """Write a session dictionary to a JSON file in the sessions directory.
+
+    Parameters
+    ----------
+    session : dict
+        Session dictionary as returned by :func:`build_session_with_values`.
+
+    Returns
+    -------
+    Path
+        Path to the written file, or an empty ``Path()`` on failure.
+    """
     try:
         SESSIONS_DIR.mkdir(parents=True, exist_ok=True)
         safe_exp = session.get("experiment_name", "exp")
@@ -207,10 +378,195 @@ def save_session_record(session: Dict[str, Any]) -> Path:
         return Path()
 
 
+def load_known_subjects() -> List[str]:
+    """Load the list of previously used subject IDs from disk.
+
+    Returns
+    -------
+    list of str
+        Subject IDs in the order they were first entered, or an empty
+        list if the file does not exist or cannot be read.
+    """
+    if not SUBJECTS_CONFIG_PATH.exists():
+        return []
+    try:
+        with open(SUBJECTS_CONFIG_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, list):
+            return [str(s) for s in data if s]
+    except Exception:
+        pass
+    return []
+
+
+def save_known_subjects(subjects: List[str]) -> None:
+    """Persist the list of known subject IDs to disk.
+
+    Parameters
+    ----------
+    subjects : list of str
+        Subject IDs to save.
+
+    Returns
+    -------
+    None
+    """
+    try:
+        with open(SUBJECTS_CONFIG_PATH, "w", encoding="utf-8") as f:
+            json.dump(subjects, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        print(f"Warning: could not save known_subjects.json: {e}")
+
+
+def prompt_subject_id(default: str = "") -> str:
+    """Prompt the user to select or enter a subject ID, with recall from previous sessions.
+
+    Displays a numbered list of previously used subject IDs loaded from
+    ``known_subjects.json``. The user may select by number or type a new
+    value. New values are appended to ``known_subjects.json`` automatically.
+
+    Parameters
+    ----------
+    default : str, optional
+        Pre-filled default value shown in brackets.
+
+    Returns
+    -------
+    str
+        The chosen or newly entered subject ID (never empty; re-prompts
+        until a non-empty value is provided).
+    """
+    known = load_known_subjects()
+    while True:
+        print("\nSubject ID:")
+        if known:
+            for i, s in enumerate(known, start=1):
+                marker = " [default]" if s == default else ""
+                print(f"  {i}. {s}{marker}")
+        suffix = f" [default: {default}]" if default else ""
+        raw = input(f"Select by number or type new ID{suffix}: ").strip()
+
+        if not raw and default:
+            return default
+
+        # Only treat as a menu index if it matches a listed option exactly
+        if raw.isdigit() and 1 <= int(raw) <= len(known):
+            return known[int(raw) - 1]
+
+        # Anything else (including numeric subject IDs out of range) is a new ID
+        sid = raw
+        if not sid:
+            print("Subject ID cannot be empty. Please try again.")
+            continue
+
+        if sid not in known:
+            known.append(sid)
+            save_known_subjects(known)
+            print(f"  Saved '{sid}' to known subjects.")
+        return sid
+
+
+def save_generated_config(
+    selected_keys: List[str],
+    prepared_per_experiment: Dict[str, Dict[str, Any]],
+    sessions_to_launch: List[Dict[str, Any]],
+    auto_start: bool,
+    parallel: bool,
+) -> Path:
+    """Save the current interactive session parameters as a reusable profile file.
+
+    The generated config mirrors the structure of ``delphi_experiment.json``
+    and can be passed directly to ``--experiment`` on the next run.
+
+    Parameters
+    ----------
+    selected_keys : list of str
+        Experiment keys that were configured for this run.
+    prepared_per_experiment : dict
+        Mapping of exp_key to a dict containing ``root``, ``workflow``,
+        and ``base_params`` as set up during configuration.
+    sessions_to_launch : list of dict
+        All assembled session dicts for this run (used to derive
+        ``session_count`` per experiment).
+    auto_start : bool
+        Whether Bonsai was set to auto-start.
+    parallel : bool
+        Whether sessions were set to run in parallel.
+
+    Returns
+    -------
+    Path
+        Path to the saved config file, or an empty ``Path()`` on failure.
+    """
+    try:
+        GENERATED_CONFIGS_DIR.mkdir(parents=True, exist_ok=True)
+        now = datetime.now(timezone.utc)
+        date_str = now.strftime("%Y-%m-%d")
+        dt_str = now.strftime("%Y-%m-%dT%H-%M-%S")
+        exp_label = "_".join(k.lower() for k in selected_keys)
+        fname = f"{exp_label}_{date_str}_{dt_str}.json"
+        fpath = GENERATED_CONFIGS_DIR / fname
+
+        experiments_cfg: Dict[str, Any] = {}
+        for exp_key in selected_keys:
+            info = prepared_per_experiment[exp_key]
+            chosen_root = info["root"]
+            wf_abs = info["workflow"]
+            base_params = info["base_params"]
+
+            # Store workflow relative to root when possible
+            wf_stored = make_relative_if_under_root(wf_abs, chosen_root)
+
+            # Count sessions for this experiment
+            sc = sum(1 for s in sessions_to_launch if s["exp_key"] == exp_key)
+
+            # Rebuild params relative to root when possible
+            params_stored: Dict[str, str] = {}
+            for k, v in base_params.items():
+                if is_probably_path(v) and os.path.isabs(v):
+                    params_stored[k] = make_relative_if_under_root(v, chosen_root)
+                else:
+                    params_stored[k] = v
+
+            experiments_cfg[exp_key] = {
+                "root": chosen_root,
+                "workflow": wf_stored,
+                "session_count": sc,
+                "parameters": params_stored,
+            }
+
+        cfg_data = {
+            "generated_at": dt_str,
+            "experiments": selected_keys,
+            "auto_start": auto_start,
+            "parallel": parallel,
+            "experiments_config": experiments_cfg,
+        }
+
+        with open(fpath, "w", encoding="utf-8") as f:
+            json.dump(cfg_data, f, indent=2, ensure_ascii=False)
+        return fpath
+    except Exception as e:
+        print(f"Warning: could not save generated config: {e}")
+        return Path()
+
+
 # -------------------------------
 # Experiment selection (interactive)
 # -------------------------------
 def select_experiments(cfg: Dict[str, Any]) -> List[str]:
+    """Interactively prompt the user to select one or more experiments.
+
+    Parameters
+    ----------
+    cfg : dict
+        Launcher configuration dictionary containing an ``EXPERIMENTS`` map.
+
+    Returns
+    -------
+    list of str
+        Ordered, deduplicated list of selected experiment keys.
+    """
     experiments = cfg["EXPERIMENTS"]
     keys = sorted(experiments.keys())
     print("\n=== Select Experiments ===")
@@ -262,6 +618,25 @@ def select_experiments(cfg: Dict[str, Any]) -> List[str]:
 # Workflow roots & workflows
 # -------------------------------
 def ensure_workflow_root(exp_key: str, exp: Dict[str, Any], cfg: Dict[str, Any]) -> str:
+    """Interactively ensure a valid WorkflowRoot is selected for an experiment.
+
+    Presents saved roots, lets the user pick one or add a new path. Persists
+    any additions to the config file.
+
+    Parameters
+    ----------
+    exp_key : str
+        Experiment key in ``cfg["EXPERIMENTS"]``.
+    exp : dict
+        Experiment config dict (mutated in place when a new root is added).
+    cfg : dict
+        Full launcher config (saved to disk when updated).
+
+    Returns
+    -------
+    str
+        Normalised absolute path to the chosen WorkflowRoot.
+    """
     experiments = cfg["EXPERIMENTS"]
     roots = exp.get("WorkflowRoot", [])
     if not isinstance(roots, list):
@@ -315,9 +690,25 @@ def ensure_workflow_root(exp_key: str, exp: Dict[str, Any], cfg: Dict[str, Any])
 def ensure_workflows(
     exp_key: str, exp: Dict[str, Any], chosen_root: str, cfg: Dict[str, Any]
 ) -> List[str]:
-    """
-    Show available workflows, let the user select one by number or enter a new path.
+    """Show available workflows, let the user select one by number or enter a new path.
+
     Returns a one-element list with the absolute selected workflow path.
+
+    Parameters
+    ----------
+    exp_key : str
+        Experiment key in ``cfg["EXPERIMENTS"]``.
+    exp : dict
+        Experiment config dict (mutated when a new workflow is added).
+    chosen_root : str
+        Absolute path to the WorkflowRoot used to resolve relative entries.
+    cfg : dict
+        Full launcher config (saved to disk when updated).
+
+    Returns
+    -------
+    list of str
+        Single-element list containing the absolute path to the chosen workflow.
     """
     experiments = cfg["EXPERIMENTS"]
     wf_list = exp.get("workflows", [])
@@ -395,6 +786,26 @@ def ensure_workflows(
 def prompt_parameters_menu(
     exp_key: str, exp: Dict[str, Any], chosen_root: str, cfg: Dict[str, Any]
 ) -> None:
+    """Interactive menu to view and edit persisted experiment parameters.
+
+    Allows the user to select, modify, add, and remove parameter values.
+    Changes are persisted to ``launcher_config.json`` immediately.
+
+    Parameters
+    ----------
+    exp_key : str
+        Experiment key in ``cfg["EXPERIMENTS"]``.
+    exp : dict
+        Experiment config dict (mutated in place).
+    chosen_root : str
+        Absolute path to the WorkflowRoot for resolving relative paths.
+    cfg : dict
+        Full launcher config (saved to disk when updated).
+
+    Returns
+    -------
+    None
+    """
     experiments = cfg["EXPERIMENTS"]
     params = exp.get("parameters", {}) or {}
     if not isinstance(params, dict):
@@ -605,6 +1016,26 @@ def prompt_parameters_menu(
 def lifealert_options_menu(
     pir_exp: Dict[str, Any], pir_root: str, cfg: Dict[str, Any]
 ) -> str:
+    """Interactive menu to select or add a Lifealert directory.
+
+    Saves the chosen path to the Pirouette experiment's ``LifealertOptions``
+    list and persists to ``launcher_config.json``.
+
+    Parameters
+    ----------
+    pir_exp : dict
+        Pirouette experiment config dict (mutated in place).
+    pir_root : str
+        Absolute path to the Pirouette WorkflowRoot for resolving relative paths.
+    cfg : dict
+        Full launcher config (saved to disk when updated).
+
+    Returns
+    -------
+    str
+        Absolute path to the chosen Lifealert directory, or ``""`` if the user
+        chose Back.
+    """
     experiments = cfg["EXPERIMENTS"]
     params = pir_exp.get("parameters", {}) or {}
     options = pir_exp.get("LifealertOptions", []) or []
@@ -689,6 +1120,24 @@ def lifealert_options_menu(
 def expand_and_validate_parameters(
     exp_key: str, exp: Dict[str, Any], chosen_root: str, cfg: Dict[str, Any]
 ) -> Dict[str, str]:
+    """Expand all relative path parameters to absolute paths for launch.
+
+    Parameters
+    ----------
+    exp_key : str
+        Experiment key (unused in current logic, reserved for future use).
+    exp : dict
+        Experiment config dict containing a ``parameters`` sub-dict.
+    chosen_root : str
+        Absolute path to the WorkflowRoot used to resolve relative values.
+    cfg : dict
+        Full launcher config (unused in current logic, reserved for future use).
+
+    Returns
+    -------
+    dict
+        Mapping of parameter name to absolute (or unchanged) value string.
+    """
     params = exp.get("parameters", {}) or {}
     final_params: Dict[str, str] = {}
 
@@ -714,6 +1163,27 @@ def expand_and_validate_parameters(
 def resolve_bonsai_cmd(
     exp_key: str, exp: Dict[str, Any], chosen_root: str, cfg: Dict[str, Any]
 ) -> str:
+    """Resolve the absolute path to the Bonsai executable for an experiment.
+
+    Reads ``BONSAI_CMD`` from the experiment config. Prompts the user if the
+    value is missing or the path does not exist, and persists the choice.
+
+    Parameters
+    ----------
+    exp_key : str
+        Experiment key in ``cfg["EXPERIMENTS"]``.
+    exp : dict
+        Experiment config dict (mutated when ``BONSAI_CMD`` is updated).
+    chosen_root : str
+        Absolute path to the WorkflowRoot for resolving relative paths.
+    cfg : dict
+        Full launcher config (saved to disk when updated).
+
+    Returns
+    -------
+    str
+        Absolute path to the Bonsai executable.
+    """
     rel_cmd = (exp.get("BONSAI_CMD") or "").strip()
 
     def _full(p: str) -> str:
@@ -753,11 +1223,25 @@ def resolve_bonsai_cmd(
 # Pirouette recovery temp files
 # -------------------------------
 def zero_pirouette_temp_files(chosen_root: str) -> None:
+    """Reset Pirouette recovery temp files in ``<chosen_root>/src`` to ``"0"``.
+
+    Files that exist are zeroed and added to ``TEMP_SESSION_FILES`` for
+    deletion on exit.
+
+    Parameters
+    ----------
+    chosen_root : str
+        Absolute path to the Pirouette WorkflowRoot.
+
+    Returns
+    -------
+    None
+    """
     src_dir = Path(chosen_root) / "src"
     filenames = [
-        "~AccumulatedCommutatorTurnsRecovery.Double.tmp",
-        "~AccumulatedMagnetTurnsRecovery.Double.tmp",
-        "~SampleIndexRecovery.Int64.tmp",
+        "AccumulatedCommutatorTurnsRecovery.txt",
+        "AccumulatedMagnetTurnsRecovery.txt",
+        "SampleIndexRecovery.txt",
     ]
     for name in filenames:
         fpath = src_dir / name
@@ -775,9 +1259,135 @@ def zero_pirouette_temp_files(chosen_root: str) -> None:
 # -------------------------------
 # Per-session schema copies
 # -------------------------------
+def _remap_path_to_local_root(path_str: str, local_root: str) -> Optional[str]:
+    """Attempt to remap a foreign absolute path to the local workflow root.
+
+    Walks progressively shorter suffixes of *path_str* until a path that
+    exists under *local_root* is found.
+
+    Parameters
+    ----------
+    path_str : str
+        An absolute path that may originate from a different machine.
+    local_root : str
+        The local workflow root directory to remap into.
+
+    Returns
+    -------
+    str or None
+        Remapped path string if a match exists under *local_root*, otherwise
+        ``None``.
+    """
+    try:
+        local_root_p = Path(local_root)
+        foreign_p = Path(path_str.replace("/", "\\"))
+        try:
+            foreign_p.relative_to(local_root_p)
+            return None  # already under local root — no change needed
+        except ValueError:
+            pass
+        # Try progressively shorter suffixes (skip the drive letter part)
+        parts = foreign_p.parts[1:]
+        for start in range(len(parts)):
+            candidate = local_root_p.joinpath(*parts[start:])
+            if candidate.exists():
+                return str(candidate)
+    except Exception:
+        pass
+    return None
+
+
+def patch_bonsai_xml(
+    workflow_path: str,
+    chosen_root: str,
+) -> None:
+    """Patch a ``.bonsai`` workflow file in-place to fix stale default paths.
+
+    Bonsai deserialises the workflow XML *before* applying ``-p`` command-line
+    overrides.  When default property values embedded in the XML reference paths
+    that do not exist on the current machine (e.g. saved on a different
+    workstation), Bonsai raises an XML error at load time.  This function edits
+    the original ``.bonsai`` file directly so Bonsai always opens
+    ``DelphiMain.bonsai`` — no copies are created.
+
+    The original XML content is saved to ``BONSAI_ORIGINALS`` and is restored
+    automatically by ``cleanup_temp_files_and_processes`` when the launcher
+    exits, leaving the repository in its original state.
+
+    Parameters
+    ----------
+    workflow_path : str
+        Absolute path to the ``.bonsai`` workflow file.
+    chosen_root : str
+        Workflow root directory for the current machine.
+
+    Returns
+    -------
+    None
+    """
+    src = Path(workflow_path)
+    if not src.exists():
+        return
+
+    try:
+        original = src.read_text(encoding="utf-8")
+    except Exception as e:
+        print(f"Warning: could not read Bonsai XML for patching ({e}); skipping.")
+        return
+
+    # Match absolute Windows-style paths (backslash or forward-slash variants)
+    path_re = re.compile(r'[A-Za-z]:[/\\][^<>&"\n\t]*')
+
+    replacements: Dict[str, str] = {}
+    for match in path_re.finditer(original):
+        raw = match.group(0).rstrip("\\/")
+        if raw in replacements:
+            continue
+        if Path(raw).exists():
+            continue  # already valid on this machine
+        remapped = _remap_path_to_local_root(raw, chosen_root)
+        if remapped:
+            replacements[raw] = remapped
+
+    if not replacements:
+        return  # nothing to patch
+
+    patched = original
+    for old, new in replacements.items():
+        patched = patched.replace(old, new)
+
+    try:
+        src.write_text(patched, encoding="utf-8")
+        # Save original only once per file (first patch wins)
+        if str(src) not in BONSAI_ORIGINALS:
+            BONSAI_ORIGINALS[str(src)] = original
+        print(f"  Patched Bonsai XML in-place ({len(replacements)} path(s) remapped): {src.name}")
+    except Exception as e:
+        print(f"Warning: could not write patched Bonsai XML ({e}); skipping.")
+
+
 def copy_and_patch_hardware_schema(
     src_abs: str, subject_id: str, start_utc_hyphen: str
 ) -> str:
+    """Copy a hardware schema file and inject ``subject_id`` and ``session_time``.
+
+    The patched copy is written next to the original with a name that includes
+    the subject ID and timestamp, and is registered for deletion on exit.
+
+    Parameters
+    ----------
+    src_abs : str
+        Absolute path to the source hardware schema file (YAML).
+    subject_id : str
+        Subject identifier to inject.
+    start_utc_hyphen : str
+        Session start timestamp in ``YYYY-MM-DDTHH-MM-SS`` format.
+
+    Returns
+    -------
+    str
+        Absolute path to the patched copy.
+    """
     src = Path(src_abs)
     parent = src.parent
     stem = src.stem
@@ -814,6 +1424,29 @@ def copy_and_patch_aind_session_json(
     experimenter: str,
     experiment_value: str,
 ) -> str:
+    """Copy an AIND session JSON and inject session metadata fields.
+
+    The patched copy is written next to the original and registered for
+    deletion on exit.
+
+    Parameters
+    ----------
+    src_abs : str
+        Absolute path to the source AIND session JSON file.
+    subject_id : str
+        Subject identifier.
+    start_utc_hyphen : str
+        Session start timestamp in ``YYYY-MM-DDTHH-MM-SS`` format.
+    experimenter : str
+        Experimenter name (placed in a one-element list under ``experimenter``).
+    experiment_value : str
+        Experiment label stored under the ``experiment`` key.
+
+    Returns
+    -------
+    str
+        Absolute path to the patched copy.
+    """
     src = Path(src_abs)
     parent = src.parent
     stem = src.stem
@@ -852,9 +1485,20 @@ def copy_and_patch_aind_session_json(
 def build_session_overrides_if_available(
     exp: Dict[str, Any], session: Dict[str, Any]
 ) -> Dict[str, str]:
-    """
-    If the experiment config includes parameter names like 'Experimenter', 'SubjectId',
+    """If the experiment config includes parameter names like 'Experimenter', 'SubjectId',
     'SessionId', 'SessionStartUtc', 'ExperimentName', prepare per-session overrides.
+
+    Parameters
+    ----------
+    exp : dict
+        Experiment config dict (used to check which parameter names are declared).
+    session : dict
+        Session dictionary from :func:`build_session_with_values`.
+
+    Returns
+    -------
+    dict
+        Mapping of parameter name to session value for any matching keys.
     """
     param_names = set((exp.get("parameters") or {}).keys())
     overrides = {}
@@ -877,6 +1521,26 @@ def build_session_overrides_if_available(
 def prompt_per_session_overrides(
     exp: Dict[str, Any], chosen_root: str, base_params_abs: Dict[str, str]
 ) -> Dict[str, str]:
+    """Interactively override parameters for the current session only.
+
+    Changes are NOT persisted to ``launcher_config.json``; they apply only
+    to the session being built.
+
+    Parameters
+    ----------
+    exp : dict
+        Experiment config dict (read for ``ParameterOptions``).
+    chosen_root : str
+        Absolute path to the WorkflowRoot for resolving relative paths.
+    base_params_abs : dict
+        Starting parameter dict (absolute paths); a copy is modified and
+        returned.
+
+    Returns
+    -------
+    dict
+        Updated parameter dict with any user-supplied overrides applied.
+    """
     params = dict(base_params_abs)
     param_opts: Dict[str, List[str]] = exp.get("ParameterOptions", {}) or {}
 
@@ -964,6 +1628,13 @@ def prompt_per_session_overrides(
 # Launch utilities
 # -------------------------------
 def prompt_launch_mode() -> bool:
+    """Prompt the user to choose between auto-starting Bonsai or opening it in the editor.
+
+    Returns
+    -------
+    bool
+        ``True`` to auto-start (``--start`` flag), ``False`` to open in editor.
+    """
     while True:
         ans = (
             input("\nStart workflow now or open in editor? [S]tart / [O]pen: ")
@@ -978,6 +1649,13 @@ def prompt_launch_mode() -> bool:
 
 
 def prompt_run_mode() -> bool:
+    """Prompt the user to choose between sequential and parallel session execution.
+
+    Returns
+    -------
+    bool
+        ``True`` for parallel, ``False`` for sequential.
+    """
     while True:
         ans = (
             input("Run all sessions [S]equentially or in [P]arallel? ").strip().lower()
@@ -991,7 +1669,18 @@ def prompt_run_mode() -> bool:
 
 # ---- NEW: filter out non-Bonsai meta-parameters (e.g., LifealertRoot) ----
 def filter_params_for_bonsai(parameters: Dict[str, str]) -> Dict[str, str]:
-    """Return a copy of params excluding keys that should NOT be passed to Bonsai."""
+    """Return a copy of params excluding keys that should NOT be passed to Bonsai.
+
+    Parameters
+    ----------
+    parameters : dict
+        Full parameter dict including any meta-keys.
+
+    Returns
+    -------
+    dict
+        Filtered copy with Bonsai-unsafe keys removed (e.g. ``LifealertRoot``).
+    """
     EXCLUDE = {"lifealertroot"}  # case-insensitive
     return {k: v for k, v in parameters.items() if k.lower() not in EXCLUDE}
 
@@ -1002,6 +1691,30 @@ def launch_bonsai(
     parameters: Dict[str, str],
     auto_start: bool,
 ) -> subprocess.Popen:
+    """Launch a Bonsai workflow process.
+
+    Parameters
+    ----------
+    bonsai_cmd_full : str
+        Absolute path to the Bonsai executable.
+    workflow_path : str
+        Absolute path to the ``.bonsai`` workflow file.
+    parameters : Dict[str, str]
+        Parameter dict to pass to Bonsai as ``-p Name=Value`` arguments.
+        ``LifealertRoot`` and other meta-keys are automatically filtered out.
+    auto_start : bool
+        If ``True``, passes ``--start`` to Bonsai so it begins immediately.
+
+    Returns
+    -------
+    subprocess.Popen
+        The launched process handle.
+
+    Raises
+    ------
+    SystemExit
+        If the Bonsai executable cannot be found.
+    """
     cmd = [bonsai_cmd_full, workflow_path]
     if auto_start:
         cmd.append("--start")
@@ -1020,6 +1733,17 @@ def launch_bonsai(
 
 
 def stop_lifealert():
+    """Stop all running lifealert processes using taskkill and wait for exit.
+
+    Returns
+    -------
+    None
+
+    Raises
+    ------
+    RuntimeError
+        If one or more lifealert processes do not exit within the timeout.
+    """
     if not LIFEALERT_PROCS:
         print("No lifealert process is currently running.")
         return
@@ -1057,14 +1781,33 @@ def stop_lifealert():
 def start_lifealert_with_menu(
     cfg: Dict[str, Any], prepared_per_experiment: Dict[str, Dict[str, Any]]
 ) -> None:
-    if "Pirouette" not in cfg["EXPERIMENTS"]:
-        print("Pirouette is not configured; cannot start lifealert.")
+    """Present the Lifealert directory menu and start the lifealert process.
+
+    Searches ``cfg["EXPERIMENTS"]`` for an experiment whose key contains
+    ``"pirouette"`` (case-insensitive) and uses that experiment's root.
+
+    Parameters
+    ----------
+    cfg : dict
+        Full launcher config.
+    prepared_per_experiment : dict
+        Mapping of exp_key to prepared info dict from the current run.
+
+    Returns
+    -------
+    None
+    """
+    pir_key = next(
+        (k for k in cfg["EXPERIMENTS"] if "pirouette" in k.lower()), None
+    )
+    if pir_key is None:
+        print("No Pirouette experiment configured; cannot start lifealert.")
         return
-    pir_info = prepared_per_experiment.get("Pirouette")
+    pir_info = prepared_per_experiment.get(pir_key)
     if not pir_info:
-        print("Pirouette was not selected for this run; cannot start lifealert.")
+        print("Pirouette experiment was not selected for this run; cannot start lifealert.")
         return
-    pir_exp = cfg["EXPERIMENTS"]["Pirouette"]
+    pir_exp = cfg["EXPERIMENTS"][pir_key]
     pir_root = pir_info["root"]
     choose_abs = lifealert_options_menu(pir_exp, pir_root, cfg)
     if not choose_abs:
@@ -1085,6 +1828,12 @@ def start_lifealert_with_menu(
 
 
 def show_status():
+    """Print the current status of all workflow and lifealert processes.
+
+    Returns
+    -------
+    None
+    """
     print("\n=== Status ===")
     if WORKFLOW_PROCS:
         alive = 0
@@ -1109,6 +1858,12 @@ def show_status():
 
 
 def wait_for_workflows():
+    """Block until all launched Bonsai workflow processes have finished.
+
+    Returns
+    -------
+    None
+    """
     if not WORKFLOW_PROCS:
         print("No workflow processes to wait for.")
         return
@@ -1121,12 +1876,39 @@ def wait_for_workflows():
 
 
 def cleanup_temp_files_and_processes():
+    """Stop lifealert processes and delete all registered temporary session files.
+
+    Returns
+    -------
+    None
+    """
     print("\nRunning cleanup routine...")
+
+    # --- Close Bonsai workflow processes ---
+    running = [p for p in WORKFLOW_PROCS if p.poll() is None]
+    if running:
+        print("Closing Bonsai workflow processes...")
+        for p in running:
+            try:
+                subprocess.run(
+                    ["taskkill", "/PID", str(p.pid), "/F", "/T"],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    creationflags=subprocess.CREATE_NO_WINDOW,
+                )
+            except Exception:
+                pass
+        try:
+            psutil.wait_procs(running, timeout=10)
+        except Exception:
+            pass
+        print("Bonsai workflows closed.")
 
     # --- Kill lifealert first (if running), same logic as stop_lifealert() ---
     if LIFEALERT_PROCS:
         print("Stopping lifealert processes...")
-        for p in LIFEALERT_PROCS:
+        procs_to_kill = list(LIFEALERT_PROCS)
+        for p in procs_to_kill:
             try:
                 # Kill process tree decisively
                 subprocess.run(
@@ -1137,6 +1919,10 @@ def cleanup_temp_files_and_processes():
                 )
             except Exception:
                 pass
+        try:
+            psutil.wait_procs(procs_to_kill, timeout=5)
+        except Exception:
+            pass
         LIFEALERT_PROCS.clear()
 
     # --- NOW remove temp files ---
@@ -1159,6 +1945,16 @@ def cleanup_temp_files_and_processes():
             except Exception as e:
                 print(f"  WARNING: could not remove {fp}: {e}")
 
+    # --- Restore any .bonsai files that were patched in-place ---
+    if BONSAI_ORIGINALS:
+        print("Restoring patched Bonsai workflow files:")
+        for fpath, original_text in BONSAI_ORIGINALS.items():
+            try:
+                Path(fpath).write_text(original_text, encoding="utf-8")
+                print(f"  restored: {fpath}")
+            except Exception as e:
+                print(f"  WARNING: could not restore {fpath}: {e}")
+
 
 # -------------------------------
 # Pre-launch SUMMARY (hides LifealertRoot)
@@ -1166,6 +1962,24 @@ def cleanup_temp_files_and_processes():
 def print_prelaunch_summary(
     sessions_to_launch: List[Dict[str, Any]], auto_start: bool, parallel: bool
 ):
+    """Print a formatted pre-launch summary of all sessions to be run.
+
+    LifealertRoot is excluded from the parameter display to match exactly
+    what will be passed to Bonsai.
+
+    Parameters
+    ----------
+    sessions_to_launch : list of dict
+        All assembled session dicts for this run.
+    auto_start : bool
+        Whether Bonsai will be auto-started.
+    parallel : bool
+        Whether sessions will run in parallel.
+
+    Returns
+    -------
+    None
+    """
     print("\n==================== PRE-LAUNCH SUMMARY ====================")
     print(f"Mode      : {'START (run)' if auto_start else 'OPEN (editor)'}")
     print(f"Scheduling: {'PARALLEL' if parallel else 'SEQUENTIAL'}")
@@ -1188,16 +2002,39 @@ def print_prelaunch_summary(
 # Profile loading (JSON/YAML)
 # -------------------------------
 def resolve_profile_path(name_or_file: str) -> Optional[Path]:
+    """Resolve a profile name or file path to an existing Path object.
+
+    Searches ``experiment_configs/`` (``EXPERIMENTS_DIR``) first, then the
+    directory containing ``launcher.py``, when a bare name (without extension)
+    is given.
+
+    Parameters
+    ----------
+    name_or_file : str
+        A bare profile name (e.g. ``"delphi_experiment"``), a relative/absolute
+        file path with a recognised extension, or an existing file path.
+
+    Returns
+    -------
+    Path or None
+        Resolved path if found, otherwise ``None``.
+    """
     if not name_or_file:
         return None
     p = Path(name_or_file)
     if p.suffix.lower() in (".json", ".yaml", ".yml"):
         return p if p.exists() else None
-    # treat as NAME
+    if p.exists() and p.is_file():
+        return p
+    # Treat as a bare NAME — search experiment_configs/ first, then launcher dir
+    launcher_dir = Path(__file__).parent
     candidates = [
         EXPERIMENTS_DIR / f"{name_or_file}.json",
         EXPERIMENTS_DIR / f"{name_or_file}.yaml",
         EXPERIMENTS_DIR / f"{name_or_file}.yml",
+        launcher_dir / f"{name_or_file}.json",   # fallback: next to launcher.py
+        launcher_dir / f"{name_or_file}.yaml",
+        launcher_dir / f"{name_or_file}.yml",
     ]
     for cand in candidates:
         if cand.exists():
@@ -1206,6 +2043,24 @@ def resolve_profile_path(name_or_file: str) -> Optional[Path]:
 
 
 def load_profile(path: Path) -> Dict[str, Any]:
+    """Load a profile from a JSON or YAML file.
+
+    Parameters
+    ----------
+    path : Path
+        Path to the profile file.
+
+    Returns
+    -------
+    dict
+        Parsed profile dictionary.
+
+    Raises
+    ------
+    RuntimeError
+        If a YAML file is provided but PyYAML is not installed, or if the
+        file extension is not recognised.
+    """
     if path.suffix.lower() == ".json":
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -1221,8 +2076,32 @@ def load_profile(path: Path) -> Dict[str, Any]:
 
 
 def apply_profile_to_config(
-    profile: Dict[str, Any], cfg: Dict[str, Any]
+    profile: Dict[str, Any],
+    cfg: Dict[str, Any],
+    profile_dir: Optional[Path] = None,
 ) -> Tuple[List[str], Optional[bool], Optional[bool]]:
+    """Apply a loaded profile to the launcher config, resolving relative paths.
+
+    Relative ``root`` and ``LifealertRoot`` values in the profile are resolved
+    relative to *profile_dir* (the directory containing the profile file).
+
+    Parameters
+    ----------
+    profile : dict
+        Parsed profile dictionary.
+    cfg : dict
+        Full launcher config (mutated in place with profile overrides).
+    profile_dir : Path, optional
+        Directory of the profile file, used to resolve relative paths in the
+        profile.  When ``None``, relative paths are left unresolved.
+
+    Returns
+    -------
+    tuple of (list of str, bool or None, bool or None)
+        A 3-tuple of ``(selected_keys, auto_start, parallel)``.
+        ``auto_start`` and ``parallel`` are ``None`` when not specified in
+        the profile.
+    """
     experiments = cfg["EXPERIMENTS"]
     # Selected experiments
     selected = profile.get("experiments", [])
@@ -1255,6 +2134,9 @@ def apply_profile_to_config(
         # Set root
         root = exp_override.get("root")
         if root:
+            root_path = Path(root)
+            if not root_path.is_absolute() and profile_dir is not None:
+                root = str((profile_dir / root_path).resolve())
             exp["WorkflowRoot"] = [root]
 
         # Set workflow
@@ -1265,6 +2147,10 @@ def apply_profile_to_config(
         # Set parameters (merge/replace)
         params = exp_override.get("parameters", {})
         if params and isinstance(params, dict):
+            if "LifealertRoot" in params and profile_dir is not None:
+                lr = params["LifealertRoot"]
+                if lr and not Path(lr).is_absolute():
+                    params["LifealertRoot"] = str((profile_dir / lr).resolve())
             base_params = exp.get("parameters", {}) or {}
             base_params.update(params)
             exp["parameters"] = base_params
@@ -1280,13 +2166,25 @@ def apply_profile_to_config(
 # Session planning (interactive or profile)
 # -------------------------------
 def plan_sessions_for_experiment(
-    exp_key: str, profile_session_count: int = None
+    exp_key: str, profile_session_count: Optional[int] = None
 ) -> int:
-    """
-    Determine how many sessions to run for this experiment.
+    """Determine how many sessions to run for this experiment.
 
     - If 'profile_session_count' is provided (from a profile .json/.yaml), return it directly.
     - Otherwise, interactive prompt: ask the user.
+
+    Parameters
+    ----------
+    exp_key : str
+        Experiment key shown in the interactive prompt.
+    profile_session_count : int, optional
+        Session count from a loaded profile. When provided and valid
+        (>= 1), returned directly without prompting.
+
+    Returns
+    -------
+    int
+        Number of sessions to run (>= 1).
     """
 
     # Profile override
@@ -1312,9 +2210,25 @@ def plan_sessions_for_experiment(
 def apply_per_session_profile_parameters(
     exp_key: str, profile: dict, session_index: int
 ) -> dict:
-    """
-    Reads experiments_config[exp_key].session_parameters[session_index]
-    Returns {} if none exist.
+    """Read per-session parameter overrides from a profile for a given session index.
+
+    Reads ``experiments_config[exp_key].session_parameters[session_index]``
+    and returns ``{}`` if none exist.
+
+    Parameters
+    ----------
+    exp_key : str
+        Experiment key to look up in the profile.
+    profile : dict
+        Parsed profile dictionary.
+    session_index : int
+        Zero-based index of the session within the experiment.
+
+    Returns
+    -------
+    dict
+        Parameter overrides for this session, or an empty dict if none are
+        defined.
     """
     exp_cfg = profile.get("experiments_config", {}).get(exp_key, {})
     sess_params = exp_cfg.get("session_parameters", [])
@@ -1329,6 +2243,16 @@ def apply_per_session_profile_parameters(
 # Main
 # -------------------------------
 def main():
+    """Entry point for the multi-experiment Bonsai launcher.
+
+    Parses CLI arguments, loads configuration, optionally applies a profile,
+    builds sessions interactively or from the profile, and launches Bonsai
+    workflows with an optional lifealert control menu.
+
+    Returns
+    -------
+    None
+    """
     args = parse_args()
 
     cfg = load_config()
@@ -1345,12 +2269,28 @@ def main():
     if args.experiment:
         profile_path = resolve_profile_path(args.experiment)
         if not profile_path:
-            print(f"Could not find profile: {args.experiment}")
-            sys.exit(1)
+            print(f"\nCould not find experiment config: '{args.experiment}'")
+            # Collect all available configs from experiment_configs/
+            available = sorted(
+                p for p in EXPERIMENTS_DIR.glob("*")
+                if p.suffix.lower() in (".json", ".yaml", ".yml") and p.is_file()
+            )
+            if not available:
+                print("No experiment configs found in experiment_configs/.")
+                sys.exit(1)
+            print("\nAvailable experiment configs:")
+            for i, p in enumerate(available, start=1):
+                print(f"  {i}. {p.stem}")
+            while True:
+                raw = input("Select by number: ").strip()
+                if raw.isdigit() and 1 <= int(raw) <= len(available):
+                    profile_path = available[int(raw) - 1]
+                    break
+                print("Invalid selection. Try again.")
         try:
             profile = load_profile(profile_path)
             selected_keys, auto_start_from_profile, parallel_from_profile = (
-                apply_profile_to_config(profile, cfg)
+                apply_profile_to_config(profile, cfg, profile_dir=profile_path.parent)
             )
             print(f"Loaded profile: {profile_path}")
         except Exception as e:
@@ -1448,10 +2388,12 @@ def main():
 
     try:
         is_delphi_only = (
-            len(selected_keys) == 1 and selected_keys[0].lower() == "delphi"
+            len(selected_keys) == 1
+            and "delphi" in selected_keys[0].lower()
+            and "pirouette" not in selected_keys[0].lower()
         )
         is_pirouette_only = (
-            len(selected_keys) == 1 and selected_keys[0].lower() == "pirouette"
+            len(selected_keys) == 1 and "pirouette" in selected_keys[0].lower()
         )
         is_all_experiments = selected_is_all
 
@@ -1459,7 +2401,7 @@ def main():
         if is_all_experiments:
             print("\n=== 'All experiments' mode: shared Experimenter/Subject ===")
             shared_exp = prompt("Experimenter name")
-            shared_sub = prompt("Subject ID")
+            shared_sub = prompt_subject_id()
 
         last_exp_name = ""
 
@@ -1479,7 +2421,7 @@ def main():
                 else:
                     session_count = 1  # Mixed-profile case
             else:
-                if exp_key.lower() == "delphi":
+                if "delphi" in exp_key.lower() and "pirouette" not in exp_key.lower():
                     session_count = plan_sessions_for_experiment(exp_key)
                 else:
                     session_count = 1
@@ -1522,11 +2464,11 @@ def main():
                         )
 
                 # Pirouette temp-file reset
-                if exp_key.lower() == "pirouette":
+                if "pirouette" in exp_key.lower():
                     zero_pirouette_temp_files(root)
 
                 # Per-session schema copies (Delphi)
-                if exp_key.lower() == "delphi":
+                if "delphi" in exp_key.lower() and "pirouette" not in exp_key.lower():
                     key = "HardwareSettings"
                     if key in params_abs and is_probably_path(params_abs[key]):
                         src = params_abs[key]
@@ -1535,7 +2477,7 @@ def main():
                         )
 
                 # Per-session schema copies (Pirouette)
-                if exp_key.lower() == "pirouette":
+                if "pirouette" in exp_key.lower():
                     if is_all_experiments:
                         exp_val = "delphi_pirouette"
                     else:
@@ -1563,6 +2505,13 @@ def main():
                     ):
                         params_abs = prompt_per_session_overrides(exp, root, params_abs)
 
+                # Patch Bonsai XML default paths for the local machine in-place.
+                # Bonsai deserialises XML before applying -p overrides, so any
+                # stale absolute paths baked into the file as defaults must be
+                # remapped first. The original is saved to BONSAI_ORIGINALS and
+                # restored on exit — no new workflow files are created.
+                patch_bonsai_xml(info["workflow"], root)
+
                 # Add to launch list
                 sessions_to_launch.append(
                     {
@@ -1573,6 +2522,18 @@ def main():
                         "session": session,
                     }
                 )
+
+        # Auto-save generated config for recall
+        if not args.experiment:
+            saved_cfg_path = save_generated_config(
+                selected_keys,
+                prepared_per_experiment,
+                sessions_to_launch,
+                auto_start=False,   # will be confirmed below; use False as placeholder
+                parallel=False,
+            )
+            if saved_cfg_path:
+                print(f"\nConfig saved for recall: {saved_cfg_path}")
 
         # === Global launch choice ===
         if auto_start_from_profile is None:
@@ -1596,21 +2557,26 @@ def main():
         # === Launch Bonsai FIRST ===
         WORKFLOW_PROCS.clear()
         if parallel:
+            # Open all workflows simultaneously — no delay between launches
             for s in sessions_to_launch:
                 p = launch_bonsai(
                     s["bonsai_cmd"], s["workflow"], s["params"], auto_start
                 )
                 WORKFLOW_PROCS.append(p)
         else:
-            for s in sessions_to_launch:
+            # Open workflows one after another with a brief stagger so each
+            # window has time to appear before the next one starts.
+            for idx, s in enumerate(sessions_to_launch):
                 p = launch_bonsai(
                     s["bonsai_cmd"], s["workflow"], s["params"], auto_start
                 )
                 WORKFLOW_PROCS.append(p)
+                if idx < len(sessions_to_launch) - 1:
+                    time.sleep(1.5)  # stagger — do NOT wait for close
 
         # === Lifealert control menu ===
         pir_selected = any(
-            s["exp_key"].lower() == "pirouette" for s in sessions_to_launch
+            "pirouette" in s["exp_key"].lower() for s in sessions_to_launch
         )
 
         # === CONTROL MENU ===

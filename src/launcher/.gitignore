@@ -1,0 +1,13 @@
+# Runtime output — not version-controlled
+sessions/
+known_subjects.json
+
+# Auto-generated configs (dated filenames); hand-authored configs are kept
+experiment_configs/*_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]_*.json
+
+# Virtual environment and build artefacts
+.venv/
+site/
+*.egg-info/
+__pycache__/
+*.pyc
