@@ -254,6 +254,21 @@ class _Settings:
     no_consolidate:
         Disable automatic run-directory consolidation in ``build-dataset``.
         ``DELPHI_NO_CONSOLIDATE`` — default ``False``.
+    skip_build:
+        Skip the build-dataset step in the full pipeline.
+        ``DELPHI_SKIP_BUILD`` — default ``False``.
+    skip_clips:
+        Skip the create-clips step in the full pipeline.
+        ``DELPHI_SKIP_CLIPS`` — default ``False``.
+    skip_snapshot:
+        Skip the snapshot step in the full pipeline.
+        ``DELPHI_SKIP_SNAPSHOT`` — default ``False``.
+    dataset_append:
+        When ``True`` and ``delphi_dataset.csv`` already exists, ingest the
+        full dataset and append new rows, deduplicating on
+        ``beam_break_onset``.  When ``False`` (default), the build step is
+        skipped if the CSV exists.  ``DELPHI_DATASET_APPEND`` — default
+        ``False``.
     experiment:
         Default experiment type for the ``snapshot`` command and the full
         processing pipeline (e.g. ``"bonhoeffer"``).
@@ -279,6 +294,12 @@ class _Settings:
     # Build / ingest settings
     firmware:           Optional[str]  = _optional_str("DELPHI_FIRMWARE")
     no_consolidate:     bool           = _bool("DELPHI_NO_CONSOLIDATE", False)
+    dataset_append:     bool           = _bool("DELPHI_DATASET_APPEND", False)
+
+    # Pipeline step toggles
+    skip_build:         bool           = _bool("DELPHI_SKIP_BUILD", False)
+    skip_clips:         bool           = _bool("DELPHI_SKIP_CLIPS", False)
+    skip_snapshot:      bool           = _bool("DELPHI_SKIP_SNAPSHOT", False)
 
     # Video clip settings
     workers:            int            = _bool("DELPHI_WORKERS", 4)  # type: ignore[assignment]
@@ -305,6 +326,10 @@ class _Settings:
             f"no_delete={self.no_delete}",
             f"no_consolidate={self.no_consolidate}",
             f"experiment={self.experiment!r}",
+            f"skip_build={self.skip_build}",
+            f"skip_clips={self.skip_clips}",
+            f"skip_snapshot={self.skip_snapshot}",
+            f"dataset_append={self.dataset_append}",
             f"data_root={self.data_root!r}",
         ]
         return f"Settings({', '.join(fields)})"

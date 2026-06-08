@@ -1,5 +1,6 @@
 import hashlib
 import os
+import pathlib
 import shutil
 from datetime import datetime
 
@@ -284,4 +285,88 @@ def consolidate_session_runs(session_root: str) -> None:
             except OSError:
                 pass
 
-    print("\n✅ Consolidation complete.")
+    print("\nConsolidation complete.")
+
+
+# ---------------------------------------------------------------------------
+# Metadata consolidation
+# ---------------------------------------------------------------------------
+
+#: File glob patterns that belong inside ``behavior/metadata/`` but are
+#: sometimes written to a top-level ``metadata/`` directory by older versions
+#: of the acquisition software.
+METADATA_PATTERNS: tuple = (
+    "HardwareSettings*.jsonl",
+    "RuleSettings*.jsonl",
+)
+
+
+def consolidate_metadata_files(data_root: str | pathlib.Path) -> list:
+    """Move ``RuleSettings`` and ``HardwareSettings`` files to ``behavior/metadata/``.
+
+    Older versions of the Delphi acquisition software write these JSONL files
+    to a top-level ``<data_root>/metadata/`` directory.  The ingestion pipeline
+    and quality-control functions expect them at
+    ``<data_root>/behavior/metadata/``.  This function moves any matching files
+    and removes the top-level ``metadata/`` directory when it is left empty.
+
+    Patterns moved:
+
+    - ``HardwareSettings*.jsonl``
+    - ``RuleSettings*.jsonl``
+
+    Files that already exist at the destination are **not** overwritten; a
+    warning is printed instead.
+
+    Parameters
+    ----------
+    data_root:
+        Run-level session directory that may contain a top-level ``metadata/``
+        sub-directory alongside ``behavior/``.
+
+    Returns
+    -------
+    list of str
+        Absolute paths of files that were successfully moved.
+    """
+    data_root = pathlib.Path(data_root)
+    src_meta = data_root / "metadata"
+    dst_meta = data_root / "behavior" / "metadata"
+
+    if not src_meta.is_dir():
+        return []
+
+    # Collect candidate files matching any of the known patterns
+    candidates: list = []
+    for pattern in METADATA_PATTERNS:
+        candidates.extend(sorted(src_meta.glob(pattern)))
+
+    if not candidates:
+        return []
+
+    dst_meta.mkdir(parents=True, exist_ok=True)
+    moved: list = []
+
+    for src_file in candidates:
+        dst_file = dst_meta / src_file.name
+
+        if dst_file.exists():
+            print(f"  [warn] skipping {src_file.name} — already exists in behavior/metadata/")
+            continue
+
+        try:
+            fast_move_with_optional_checksum(str(src_file), str(dst_file))
+            print(f"  [moved] {src_file.name} -> behavior/metadata/")
+            moved.append(str(dst_file))
+        except Exception as exc:
+            print(f"  [error] could not move {src_file.name}: {exc}")
+
+    # Remove the top-level metadata/ directory if it is now empty
+    if src_meta.is_dir() and not any(src_meta.iterdir()):
+        try:
+            src_meta.rmdir()
+            print(f"  [removed] empty metadata/ directory")
+        except OSError:
+            pass
+
+    return moved

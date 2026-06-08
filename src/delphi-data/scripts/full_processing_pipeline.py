@@ -80,12 +80,19 @@ def run_build_dataset(
     data_root: pathlib.Path,
     firmware: str | None,
     consolidate_runs: bool,
+    append: bool = False,
 ) -> bool:
     """Run the dataset ingestion step.
 
     Calls :func:`build_dataset.build_dataset` to ingest raw Harp streams and
-    write ``behavior/delphi_dataset.csv``.  Skipped automatically when the
-    output CSV already exists and *firmware* is ``None`` (auto-detect mode).
+    write ``behavior/delphi_dataset.csv``.
+
+    Behaviour when the CSV already exists:
+
+    - *append* = ``False`` (default) — the existing file is **skipped** and
+      the step returns ``True`` immediately.
+    - *append* = ``True`` — ingestion runs in full; newly ingested rows are
+      merged with the existing file and deduplicated on ``beam_break_onset``.
 
     Parameters
     ----------
@@ -97,6 +104,10 @@ def run_build_dataset(
     consolidate_runs:
         When ``True``, merge multiple run sub-directories into the earliest
         one before ingestion.
+    append:
+        When ``True``, append new rows to an existing CSV rather than
+        skipping the step.  Deduplication is performed on
+        ``beam_break_onset``.
 
     Returns
     -------
@@ -106,15 +117,19 @@ def run_build_dataset(
     from build_dataset import build_dataset
 
     csv_path = data_root / "behavior" / "delphi_dataset.csv"
-    if csv_path.exists():
+    if csv_path.exists() and not append:
         print(f"  [skip] delphi_dataset.csv already exists: {csv_path}")
         return True
+
+    if csv_path.exists() and append:
+        print(f"  [append] Merging new data into existing delphi_dataset.csv …")
 
     try:
         build_dataset(
             data_root=data_root,
             firmware=firmware,
             consolidate_runs=consolidate_runs,
+            append=append,
         )
         return True
     except Exception:
@@ -265,6 +280,7 @@ def run_pipeline(
     skip_build: bool = False,
     skip_clips: bool = False,
     skip_snapshot: bool = False,
+    append: bool = False,
 ) -> dict:
     """Run the full three-step Delphi processing pipeline for one session.
 
@@ -307,11 +323,18 @@ def run_pipeline(
     no_delete:
         Retain PortCamera source files after clip export.
     skip_build:
-        Skip the dataset ingestion step.
+        Skip the dataset ingestion step.  Default reads from
+        ``DELPHI_SKIP_BUILD``.
     skip_clips:
-        Skip the poke-clip extraction step.
+        Skip the poke-clip extraction step.  Default reads from
+        ``DELPHI_SKIP_CLIPS``.
     skip_snapshot:
-        Skip the snapshot/figure generation step.
+        Skip the snapshot/figure generation step.  Default reads from
+        ``DELPHI_SKIP_SNAPSHOT``.
+    append:
+        When ``True``, append new rows to an existing ``delphi_dataset.csv``
+        instead of skipping the build step.  Deduplication is performed on
+        ``beam_break_onset``.  Default reads from ``DELPHI_DATASET_APPEND``.
 
     Returns
     -------
@@ -336,7 +359,7 @@ def run_pipeline(
         status["build"] = "skipped"
     else:
         t0 = time.perf_counter()
-        ok = run_build_dataset(data_root, firmware, consolidate_runs)
+        ok = run_build_dataset(data_root, firmware, consolidate_runs, append=append)
         status["build"] = "ok" if ok else "failed"
         print(f"  -> {status['build'].upper()}  ({time.perf_counter() - t0:.1f} s)\n")
 
@@ -512,16 +535,26 @@ def _parse_args(argv: list | None = None) -> argparse.Namespace:
 
     # ---- step toggles ----
     parser.add_argument(
-        "--skip-build", action="store_true", default=False,
-        help="Skip the build-dataset step.",
+        "--skip-build", action="store_true", default=_s.skip_build,
+        help=f"Skip the build-dataset step.  [env: DELPHI_SKIP_BUILD, current: {_s.skip_build}]",
     )
     parser.add_argument(
-        "--skip-clips", action="store_true", default=False,
-        help="Skip the create-clips step.",
+        "--skip-clips", action="store_true", default=_s.skip_clips,
+        help=f"Skip the create-clips step.  [env: DELPHI_SKIP_CLIPS, current: {_s.skip_clips}]",
     )
     parser.add_argument(
-        "--skip-snapshot", action="store_true", default=False,
-        help="Skip the snapshot step.",
+        "--skip-snapshot", action="store_true", default=_s.skip_snapshot,
+        help=f"Skip the snapshot step.  [env: DELPHI_SKIP_SNAPSHOT, current: {_s.skip_snapshot}]",
+    )
+
+    # ---- dataset append ----
+    parser.add_argument(
+        "--append", action="store_true", default=_s.dataset_append,
+        help=(
+            "Append new rows to an existing delphi_dataset.csv rather than "
+            "skipping the build step.  Deduplicates on beam_break_onset.  "
+            f"[env: DELPHI_DATASET_APPEND, current: {_s.dataset_append}]"
+        ),
     )
 
     return parser.parse_args(argv)
@@ -547,6 +580,7 @@ if __name__ == "__main__":
         skip_build=args.skip_build,
         skip_clips=args.skip_clips,
         skip_snapshot=args.skip_snapshot,
+        append=args.append,
     )
     # Exit 1 if any step failed
     sys.exit(1 if "failed" in result.values() else 0)
