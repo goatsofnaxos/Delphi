@@ -10,7 +10,7 @@ What's special in this build
   - Multi-experiment & multi-session.
   - "All experiments" mode (one session per experiment; ask Experimenter & Subject once).
   - Per-session parameter overrides (session-only), per-session file copies (Option B).
-  - Pirouette temp files under <root>/src are zeroed if they exist (and deleted on exit).
+  - Pirouette recovery files under <root>/src are created if missing and zeroed on launch and on exit.
   - Lifealert menu after Bonsai launch: start/stop, choose directories from a persisted list.
   - Subject ID recall from known_subjects.json (remembered across runs).
   - Interactive sessions are auto-saved as reusable configs in generated_configs/.
@@ -55,6 +55,8 @@ SUBJECTS_CONFIG_PATH = Path(__file__).with_name("known_subjects.json")
 
 # Track per-session files and temp files to clean up at the end
 TEMP_SESSION_FILES: List[str] = []
+# Pirouette recovery files — zeroed (not deleted) on exit
+PIROUETTE_RECOVERY_FILES: List[str] = []
 # Track lifealert background processes to terminate on exit
 LIFEALERT_PROCS: List[subprocess.Popen] = []
 # Track launched Bonsai processes
@@ -1226,8 +1228,9 @@ def resolve_bonsai_cmd(
 def zero_pirouette_temp_files(chosen_root: str) -> None:
     """Reset Pirouette recovery temp files in ``<chosen_root>/src`` to ``"0"``.
 
-    Files that exist are zeroed and added to ``TEMP_SESSION_FILES`` for
-    deletion on exit.
+    Creates each file if it does not yet exist.  All three files are registered
+    in ``PIROUETTE_RECOVERY_FILES`` so that cleanup zeroes them again on exit
+    rather than deleting them.
 
     Parameters
     ----------
@@ -1239,6 +1242,7 @@ def zero_pirouette_temp_files(chosen_root: str) -> None:
     None
     """
     src_dir = Path(chosen_root) / "src"
+    src_dir.mkdir(parents=True, exist_ok=True)
     filenames = [
         "AccumulatedCommutatorTurnsRecovery.txt",
         "AccumulatedMagnetTurnsRecovery.txt",
@@ -1246,15 +1250,15 @@ def zero_pirouette_temp_files(chosen_root: str) -> None:
     ]
     for name in filenames:
         fpath = src_dir / name
-        if fpath.exists():
-            try:
-                with open(fpath, "w", encoding="utf-8") as f:
-                    f.write("0")
-                if str(fpath) not in TEMP_SESSION_FILES:
-                    TEMP_SESSION_FILES.append(str(fpath))
-                print(f"Reset temp file: {fpath}")
-            except Exception as e:
-                print(f"Warning: could not reset {fpath}: {e}")
+        try:
+            existed = fpath.exists()
+            fpath.write_text("0", encoding="utf-8")
+            if str(fpath) not in PIROUETTE_RECOVERY_FILES:
+                PIROUETTE_RECOVERY_FILES.append(str(fpath))
+            action = "Reset" if existed else "Created"
+            print(f"{action} recovery file: {fpath}")
+        except Exception as e:
+            print(f"Warning: could not reset {fpath}: {e}")
 
 
 # -------------------------------
@@ -1925,6 +1929,16 @@ def cleanup_temp_files_and_processes():
         except Exception:
             pass
         LIFEALERT_PROCS.clear()
+
+    # --- Zero Pirouette recovery files (never delete them) ---
+    if PIROUETTE_RECOVERY_FILES:
+        print("Resetting Pirouette recovery files to 0:")
+        for fp in PIROUETTE_RECOVERY_FILES:
+            try:
+                Path(fp).write_text("0", encoding="utf-8")
+                print(f"  zeroed: {fp}")
+            except Exception as e:
+                print(f"  ERROR: could not zero {fp}: {e}")
 
     # --- NOW remove temp files ---
     if TEMP_SESSION_FILES:
