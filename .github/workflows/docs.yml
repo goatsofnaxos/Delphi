@@ -9,6 +9,7 @@ on:
       - "src/delphi-data/**"
       - "src/metadata_generator/**"
       - "src/launcher/**"
+      - "src/experiment_conductor/**"
       - "docs/**"
       - "mkdocs.yml"
   workflow_dispatch:
@@ -33,7 +34,7 @@ jobs:
       - name: Install packages and docs dependencies
         run: |
           pip install --upgrade pip
-          pip install -e "src/delphi-data[docs]" -e "src/metadata_generator[docs]" -e "src/launcher[docs]"
+          pip install -e "src/delphi-data[docs]" -e "src/metadata_generator[docs]" -e "src/launcher[docs]" -e "src/experiment_conductor[docs]"
 
       - name: Deploy docs
         run: mkdocs gh-deploy --force --clean

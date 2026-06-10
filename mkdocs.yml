@@ -81,6 +81,17 @@ nav:
       - utils: metadata-generator/api/utils.md
   - launcher:
     - Overview: launcher/index.md
+  - experiment-conductor:
+    - Overview: experiment-conductor/index.md
+    - API Reference:
+      - Overview: experiment-conductor/api/index.md
+      - conductor: experiment-conductor/api/conductor.md
+      - config: experiment-conductor/api/config.md
+      - state: experiment-conductor/api/state.md
+      - pipeline_bridge: experiment-conductor/api/pipeline_bridge.md
+      - metadata_bridge: experiment-conductor/api/metadata_bridge.md
+      - uploader_bridge: experiment-conductor/api/uploader_bridge.md
+      - hotkeys: experiment-conductor/api/hotkeys.md
 
 # ---------------------------------------------------------------------------
 # Plugins
@@ -96,6 +107,7 @@ plugins:
             - src/delphi-data/scripts  # scripts sub-packages (snapshots/)
             - src/metadata_generator   # metadata_generator package root
             - src                      # launcher package (src/launcher/)
+            - src/experiment_conductor # experiment_conductor package root
           options:
             # Docstring parsing
             docstring_style: numpy

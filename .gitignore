@@ -12,6 +12,7 @@ Packages
 # python files
 .venv
 *.pyc
+site/
 
 # data files
 *.avi
