@@ -55,22 +55,58 @@ _CYCLE_LOCK = threading.Lock()  # prevents overlapping cadence cycles
 _SESSION_DIR_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}$")
 
 
+def _normalize_session_datetime(raw: str) -> str:
+    """Convert a session datetime string to the ``YYYY-MM-DDTHH-MM-SS`` directory format.
+
+    Accepts both the AIND/launcher ISO format (``2024-06-01T12:00:00Z`` or
+    ``2024-06-01T12:00:00``) and the already-normalised directory format
+    (``2024-06-01T12-00-00``).  The time portion's colons are replaced with
+    hyphens and any trailing timezone suffix (``Z`` or ``+HH:MM``) is stripped.
+
+    Parameters
+    ----------
+    raw : str
+        Raw session datetime string.
+
+    Returns
+    -------
+    str
+        Normalised string matching ``YYYY-MM-DDTHH-MM-SS``.
+
+    Examples
+    --------
+    >>> _normalize_session_datetime("2024-06-01T12:00:00Z")
+    '2024-06-01T12-00-00'
+    >>> _normalize_session_datetime("2026-03-20T20-23-05")
+    '2026-03-20T20-23-05'
+    """
+    # Strip trailing Z or +offset
+    raw = re.sub(r"(Z|[+-]\d{2}:\d{2})$", "", raw.strip())
+    # Split on T, normalise time colons → hyphens
+    if "T" in raw:
+        date_part, time_part = raw.split("T", 1)
+        time_part = time_part.replace(":", "-")
+        return f"{date_part}T{time_part}"
+    return raw
+
+
 def _resolve_data_root(
     cfg: ConductorConfig,
     poll_interval_s: float = 30.0,
-    timeout_s: float = 600.0,
+    timeout_s: float = 3600.0,
 ) -> Path:
     """Compute and return the session directory on the local server.
 
-    When ``cfg.session_datetime`` is provided, returns
-    ``server_root / subject_id / session_datetime`` immediately (creating
-    nothing — the directory must be created by robocopy).
+    When ``cfg.session_datetime`` is provided, normalises the string to the
+    ``YYYY-MM-DDTHH-MM-SS`` directory format (converting from AIND ISO format
+    if necessary) and returns ``server_root / subject_id / session_datetime``
+    immediately — the directory must already exist or be created by robocopy.
 
     When ``session_datetime`` is ``None``, polls
-    ``server_root / subject_id /`` until at least one
-    ``YYYY-MM-DDTHH-MM-SS`` directory appears, then returns the newest one.
-    This handles the window between Bonsai starting and robocopy first copying
-    data to the server.
+    ``server_root / subject_id /`` every ``poll_interval_s`` seconds until at
+    least one ``YYYY-MM-DDTHH-MM-SS`` directory appears, then returns the
+    newest one.  Robocopy may take up to an hour to first mirror data from the
+    acquisition computer; the default timeout is 3600 s (1 hour).
 
     Parameters
     ----------
@@ -79,7 +115,7 @@ def _resolve_data_root(
     poll_interval_s : float
         Seconds between directory-scan retries (default 30).
     timeout_s : float
-        Maximum seconds to wait for the session directory to appear (default 600).
+        Maximum seconds to wait for the session directory to appear (default 3600).
 
     Returns
     -------
@@ -94,13 +130,15 @@ def _resolve_data_root(
     subject_dir = cfg.server_root / cfg.subject_id
 
     if cfg.session_datetime:
-        resolved = subject_dir / cfg.session_datetime
-        log.info("data_root (explicit session_datetime): %s", resolved)
+        normalised = _normalize_session_datetime(cfg.session_datetime)
+        resolved = subject_dir / normalised
+        log.info("data_root (explicit session_datetime '%s'): %s", normalised, resolved)
         return resolved
 
     log.info(
-        "Waiting for session directory under %s (polling every %.0fs, timeout %.0fs) ...",
-        subject_dir, poll_interval_s, timeout_s,
+        "Waiting for session directory under %s "
+        "(polling every %.0fs, timeout %.0fs / ~%.0f min) ...",
+        subject_dir, poll_interval_s, timeout_s, timeout_s / 60,
     )
     deadline = time.monotonic() + timeout_s
     while True:
@@ -121,8 +159,8 @@ def _resolve_data_root(
                 "Check that robocopy is running and SERVER_ROOT / SUBJECT_ID are correct."
             )
         log.info(
-            "Session directory not yet visible on server — retrying in %.0fs (%.0fs remaining) ...",
-            poll_interval_s, remaining,
+            "No session directory yet — retrying in %.0fs (%.0f min remaining) ...",
+            poll_interval_s, remaining / 60,
         )
         time.sleep(poll_interval_s)
 
