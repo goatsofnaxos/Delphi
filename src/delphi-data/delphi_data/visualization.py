@@ -1222,22 +1222,246 @@ def plot_poke_duration_by_odor(
     return fig
 
 
+def plot_poke_raster_24h(
+    df: "pd.DataFrame",
+    subject_id: str = "",
+) -> plt.Figure:
+    """Plot poke events as a raster over a 24-hour layout.
+
+    Rows represent calendar days (oldest at top); columns represent the time
+    of day (0–24 h).  Each registered poke is drawn as a single point.
+
+    Parameters
+    ----------
+    df:
+        Per-poke event dataframe.  Must contain ``poke_registered`` and
+        ``datetime`` columns.
+    subject_id:
+        Subject identifier used in the figure title.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+    """
+    import pandas as pd
+
+    import zoneinfo
+
+    reg = df[df["poke_registered"] == True].copy()
+    reg["_dt"] = pd.to_datetime(reg["datetime"], utc=True, errors="coerce")
+    reg = reg.dropna(subset=["_dt"])
+    reg["_dt"] = reg["_dt"].dt.tz_convert(zoneinfo.ZoneInfo("America/Los_Angeles"))
+
+    if reg.empty:
+        fig, ax = plt.subplots(figsize=(14, 2))
+        ax.text(0.5, 0.5, "No registered pokes", ha="center", va="center", transform=ax.transAxes)
+        return fig
+
+    min_date = reg["_dt"].dt.normalize().min()
+    reg["_day"] = (reg["_dt"].dt.normalize() - min_date).dt.days
+    reg["_tod"] = reg["_dt"].dt.hour + reg["_dt"].dt.minute / 60.0 + reg["_dt"].dt.second / 3600.0
+
+    n_days = int(reg["_day"].max()) + 1
+    day_labels = [str((min_date + pd.Timedelta(days=i)).date()) for i in range(n_days)]
+
+    fig, ax = plt.subplots(figsize=(14, max(3, 0.35 * n_days)))
+    ax.scatter(reg["_tod"], reg["_day"], s=1, alpha=0.3, color="black", rasterized=True)
+
+    ax.set_xlim(0, 24)
+    ax.set_ylim(-0.5, n_days - 0.5)
+    ax.invert_yaxis()
+    ax.set_xlabel("Time of day (PT)")
+    ax.set_ylabel("Day")
+    ax.set_xticks(range(0, 25, 2))
+    ax.set_xticklabels([f"{h:02d}:00" for h in range(0, 25, 2)], fontsize=8)
+    ax.set_yticks(range(n_days))
+    ax.set_yticklabels(day_labels, fontsize=7)
+    ax.set_title(f"Poke Raster (24 h layout) — Subject {subject_id}")
+    ax.grid(True, axis="x", ls="--", alpha=0.4)
+    fig.tight_layout()
+    return fig
+
+
+def plot_poke_rate_datetime(
+    df: "pd.DataFrame",
+    subject_id: str = "",
+    window_minutes: int = 10,
+) -> plt.Figure:
+    """Plot a rolling poke rate with real datetime on the x-axis.
+
+    Pokes are counted per minute then smoothed with a rolling mean over
+    *window_minutes* bins.
+
+    Parameters
+    ----------
+    df:
+        Per-poke event dataframe.  Must contain ``poke_registered`` and
+        ``datetime`` columns.
+    subject_id:
+        Subject identifier used in the figure title.
+    window_minutes:
+        Rolling window width in minutes for rate smoothing.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+    """
+    import zoneinfo
+    import pandas as pd
+
+    reg = df[df["poke_registered"] == True].copy()
+    reg["_dt"] = pd.to_datetime(reg["datetime"], utc=True, errors="coerce")
+    reg = reg.dropna(subset=["_dt"]).sort_values("_dt")
+    reg["_dt"] = reg["_dt"].dt.tz_convert(zoneinfo.ZoneInfo("America/Los_Angeles"))
+
+    fig, ax = plt.subplots(figsize=(14, 4))
+
+    if reg.empty:
+        ax.text(0.5, 0.5, "No registered pokes", ha="center", va="center", transform=ax.transAxes)
+        return fig
+
+    indexed = reg.set_index("_dt")
+    counts = indexed["poke_registered"].resample("1min").count()
+    rate_hz = counts.rolling(window_minutes, center=True, min_periods=1).mean() / 60.0
+
+    ax.plot(rate_hz.index, rate_hz.values, color="black", lw=1)
+    ax.set_xlabel("Date / Time (PT)")
+    ax.set_ylabel("Poke Rate (Hz)")
+    ax.set_title(f"Poke Rate Over Time — Subject {subject_id}")
+    ax.grid(True, ls="--", alpha=0.4)
+    fig.autofmt_xdate()
+    fig.tight_layout()
+    return fig
+
+
+def plot_cumulative_pokes_datetime(
+    df: "pd.DataFrame",
+    subject_id: str = "",
+) -> plt.Figure:
+    """Plot cumulative registered poke count with real datetime on the x-axis.
+
+    Parameters
+    ----------
+    df:
+        Per-poke event dataframe.  Must contain ``poke_registered`` and
+        ``datetime`` columns.
+    subject_id:
+        Subject identifier used in the figure title.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+    """
+    import pandas as pd
+
+    reg = df[df["poke_registered"] == True].copy()
+    reg["_dt"] = pd.to_datetime(reg["datetime"], utc=True, errors="coerce")
+    reg = reg.dropna(subset=["_dt"]).sort_values("_dt")
+
+    fig, ax = plt.subplots(figsize=(14, 4))
+
+    if reg.empty:
+        ax.text(0.5, 0.5, "No registered pokes", ha="center", va="center", transform=ax.transAxes)
+        return fig
+
+    reg["_cumulative"] = range(1, len(reg) + 1)
+    ax.plot(reg["_dt"], reg["_cumulative"], color="black", lw=1.5)
+    ax.set_xlabel("Date / Time")
+    ax.set_ylabel("Cumulative poke count")
+    ax.set_title(f"Cumulative Poke Count — Subject {subject_id}")
+    ax.grid(True, ls="--", alpha=0.4)
+    fig.autofmt_xdate()
+    fig.tight_layout()
+    return fig
+
+
+def plot_summary_stats(
+    df: "pd.DataFrame",
+    subject_id: str = "",
+) -> plt.Figure:
+    """Render a summary statistics table as a figure.
+
+    Reported metrics: total pokes, number of days, mean pokes per day,
+    mean poke duration, and odors encountered.
+
+    Parameters
+    ----------
+    df:
+        Per-poke event dataframe.
+    subject_id:
+        Subject identifier used in the figure title.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+    """
+    import pandas as pd
+
+    reg = df[df["poke_registered"] == True].copy()
+    reg["_dt"] = pd.to_datetime(reg.get("datetime"), utc=True, errors="coerce")
+
+    total_pokes = len(reg)
+    dates = reg["_dt"].dt.date.dropna().unique()
+    n_days = len(dates)
+    mean_per_day = total_pokes / n_days if n_days > 0 else 0.0
+
+    dur_col = "poke_duration" if "poke_duration" in reg.columns else "poke_to_beam_offset_duration"
+    if dur_col in reg.columns:
+        durations = reg[dur_col].dropna()
+        mean_dur = durations.mean() if len(durations) > 0 else float("nan")
+        dur_str = f"{mean_dur:.3f}" if not pd.isna(mean_dur) else "N/A"
+    else:
+        dur_str = "N/A"
+
+    rows = [
+        ["Total registered pokes", f"{total_pokes:,}"],
+        ["Days recorded", str(n_days)],
+        ["Mean pokes / day", f"{mean_per_day:.1f}"],
+        ["Mean poke duration (s)", dur_str],
+    ]
+    if "odor_name" in reg.columns:
+        odors = sorted(reg["odor_name"].dropna().unique())
+        rows.append(["Odors", ", ".join(odors) if odors else "N/A"])
+
+    fig, ax = plt.subplots(figsize=(6, max(2, 0.5 * len(rows) + 1)))
+    ax.axis("off")
+    tbl = ax.table(
+        cellText=rows,
+        colLabels=["Metric", "Value"],
+        loc="center",
+        cellLoc="left",
+    )
+    tbl.auto_set_font_size(False)
+    tbl.set_fontsize(11)
+    tbl.scale(1, 1.6)
+    ax.set_title(f"Summary Statistics — Subject {subject_id}", pad=20, fontsize=12)
+    fig.tight_layout()
+    return fig
+
+
 def plot_daily_poke_count(
     df: "pd.DataFrame",
     odor_col: str = "odor_name",
+    color_by_odor: bool = True,
 ) -> plt.Figure:
-    """Plot total daily poke count, colour-coded by dominant odor.
+    """Plot total daily poke count.
 
-    Each bar represents one calendar day.  The bar colour reflects the odor
-    with the most pokes on that day.
+    Each bar represents one calendar day.  When *color_by_odor* is ``True``
+    the bar colour reflects the dominant odor on that day (suitable for
+    single-odor-per-day experiments such as Bonhoeffer).  When ``False`` all
+    bars are drawn in a neutral colour (suitable for experiments where multiple
+    odors are presented within a single day).
 
     Parameters
     ----------
     df:
         Per-poke event dataframe.  Must contain ``poke_registered``,
-        ``beam_break_onset``, and *odor_col* columns.
+        ``datetime``, and *odor_col* columns.
     odor_col:
         Column name holding odor labels.
+    color_by_odor:
+        If ``True``, colour each bar by the dominant odor on that day and add
+        a legend.  If ``False``, all bars are drawn in steel-blue.
 
     Returns
     -------
@@ -1251,24 +1475,27 @@ def plot_daily_poke_count(
 
     daily = reg.groupby("date").size().reset_index(name="count")
 
-    cmap = plt.get_cmap("Set1")
-    odors = sorted(reg[odor_col].dropna().unique())
-    odor_color = {o: cmap(i % 9) for i, o in enumerate(odors)}
-
-    # Dominant odor per day
-    dom = (
-        reg.dropna(subset=[odor_col])
-        .groupby("date")[odor_col]
-        .agg(lambda x: x.value_counts().index[0])
-    )
-    daily["dominant_odor"] = daily["date"].map(dom)
-    daily["color"] = daily["dominant_odor"].map(odor_color).fillna("gray")
+    if color_by_odor and odor_col in reg.columns:
+        cmap = plt.get_cmap("Set1")
+        odors = sorted(reg[odor_col].dropna().unique())
+        odor_color = {o: cmap(i % 9) for i, o in enumerate(odors)}
+        dom = (
+            reg.dropna(subset=[odor_col])
+            .groupby("date")[odor_col]
+            .agg(lambda x: x.value_counts().index[0])
+        )
+        daily["dominant_odor"] = daily["date"].map(dom)
+        bar_colors = daily["dominant_odor"].map(odor_color).fillna("gray").tolist()
+    else:
+        odors = []
+        odor_color = {}
+        bar_colors = ["steelblue"] * len(daily)
 
     fig, ax = plt.subplots(figsize=(max(8, 0.4 * len(daily)), 4))
     ax.bar(
         range(len(daily)),
         daily["count"],
-        color=daily["color"].tolist(),
+        color=bar_colors,
         edgecolor="white",
         linewidth=0.5,
     )
@@ -1279,12 +1506,14 @@ def plot_daily_poke_count(
     )
     ax.set_xlabel("Date")
     ax.set_ylabel("Poke count")
-    ax.set_title("Daily Poke Count (colour = dominant odor)")
+    title = "Daily Poke Count (colour = dominant odor)" if color_by_odor else "Daily Poke Count"
+    ax.set_title(title)
     ax.grid(True, axis="y", ls="--", alpha=0.4)
 
-    legend_handles = [
-        plt.Rectangle((0, 0), 1, 1, color=odor_color[o], label=o) for o in odors
-    ]
-    ax.legend(handles=legend_handles, loc="upper left", frameon=False, fontsize=8)
+    if color_by_odor and odors:
+        legend_handles = [
+            plt.Rectangle((0, 0), 1, 1, color=odor_color[o], label=o) for o in odors
+        ]
+        ax.legend(handles=legend_handles, loc="upper left", frameon=False, fontsize=8)
     fig.tight_layout()
     return fig

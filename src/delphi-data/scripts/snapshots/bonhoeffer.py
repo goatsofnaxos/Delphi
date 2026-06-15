@@ -65,6 +65,7 @@ from snapshots._common import (
     build_poke_stats,
     infer_subject_id,
     load_dataset,
+    run_common_snapshot,
     run_qc,
     try_save,
 )
@@ -140,33 +141,28 @@ def run_snapshot(
     result_dir.mkdir(parents=True, exist_ok=True)
 
     # -----------------------------------------------------------------------
-    # Load
+    # Common plots (inherited by all experiments)
     # -----------------------------------------------------------------------
-    print(f"Loading: {data_root / 'behavior' / 'delphi_dataset.csv'}")
-    df = load_dataset(data_root)
-    n_reg = (df["poke_registered"] == True).sum()
-    print(f"  {len(df)} rows  ({n_reg} registered pokes)")
-
-    if subject_id is None:
-        subject_id = infer_subject_id(data_root)
-    print(f"  Subject: {subject_id}")
-
-    source_path = str(data_root / "behavior" / "delphi_dataset.csv")
-    df["subject_id"] = subject_id
-
-    odor_mapping = build_odor_mapping(df)
-    print(f"  Odor mapping: {odor_mapping}")
-
-    # -----------------------------------------------------------------------
-    # QC (runs for every experiment type)
-    # -----------------------------------------------------------------------
-    run_qc(
-        df,
-        result_dir=result_dir,
-        subject_id=subject_id,
+    print("=== Common snapshot ===")
+    run_common_snapshot(
         data_root=data_root,
+        subject_id=subject_id,
+        tau=tau,
+        dt=dt,
+        overlap=overlap,
         camera_fps_override=camera_fps,
     )
+    print("=== Bonhoeffer-specific plots ===")
+
+    # -----------------------------------------------------------------------
+    # Reload for Bonhoeffer-specific computations
+    # -----------------------------------------------------------------------
+    df = load_dataset(data_root)
+    if subject_id is None:
+        subject_id = infer_subject_id(data_root)
+    source_path = str(data_root / "behavior" / "delphi_dataset.csv")
+    df["subject_id"] = subject_id
+    odor_mapping = build_odor_mapping(df)
 
     # -----------------------------------------------------------------------
     # Poke statistics

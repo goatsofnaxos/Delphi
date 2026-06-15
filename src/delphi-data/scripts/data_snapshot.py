@@ -61,21 +61,8 @@ def main(argv=None) -> None:
     pre_args, remaining = pre_parser.parse_known_args(argv)
 
     if pre_args.experiment is None:
-        # Print the top-level help when no experiment is given.
-        top = argparse.ArgumentParser(
-            prog="data_snapshot.py",
-            description=__doc__,
-            formatter_class=argparse.RawDescriptionHelpFormatter,
-        )
-        top.add_argument(
-            "--experiment",
-            choices=list(REGISTRY.keys()),
-            required=True,
-            metavar="EXPERIMENT",
-            help=f"Experiment type.  Available: {', '.join(REGISTRY)}",
-        )
-        top.print_help()
-        sys.exit(0)
+        # No experiment specified — run the common/universal snapshot.
+        pre_args.experiment = "common"
 
     module_path = REGISTRY[pre_args.experiment]
     mod = importlib.import_module(module_path)

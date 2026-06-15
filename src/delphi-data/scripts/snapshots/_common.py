@@ -248,6 +248,148 @@ def save_figure(fig: plt.Figure, path: pathlib.Path, title: str) -> None:
     print(f"  Saved: {path.name}")
 
 
+def run_common_snapshot(
+    data_root: pathlib.Path,
+    subject_id: str | None = None,
+    tau: float = 600.0,
+    dt: float = 60.0,
+    overlap: float = 0.5,
+    camera_fps_override: float | None = None,
+) -> None:
+    """Generate the universal/common set of figures for any experiment type.
+
+    Produces: poke raster (24 h layout), poke rate with datetime x-axis,
+    cumulative poke count, summary stats, daily poke count, IPI distributions,
+    poke duration by odor, and QC plots.  Figures are saved under
+    ``data_root/behavior/results/``.
+
+    Parameters
+    ----------
+    data_root:
+        Run-level session directory containing ``behavior/delphi_dataset.csv``.
+    subject_id:
+        Subject identifier.  Inferred from the path hierarchy when ``None``.
+    tau:
+        Exponential decay time constant for the rate estimator (seconds).
+    dt:
+        Window length for the rate estimator (seconds).
+    overlap:
+        Fractional window overlap ``[0, 1)``.
+    camera_fps_override:
+        Explicit camera frame rate (Hz) for QC plots; ``None`` to auto-detect.
+    """
+    from delphi_data.visualization import (
+        plot_cumulative_pokes_datetime,
+        plot_daily_poke_count,
+        plot_ipi_distributions,
+        plot_poke_duration_by_odor,
+        plot_poke_rate_datetime,
+        plot_poke_raster_24h,
+        plot_poke_rate_timeseries,
+        plot_summary_stats,
+    )
+
+    result_dir = data_root / "behavior" / "results"
+    result_dir.mkdir(parents=True, exist_ok=True)
+
+    print(f"Loading: {data_root / 'behavior' / 'delphi_dataset.csv'}")
+    df = load_dataset(data_root)
+    n_reg = (df["poke_registered"] == True).sum()
+    print(f"  {len(df)} rows  ({n_reg} registered pokes)")
+
+    if subject_id is None:
+        subject_id = infer_subject_id(data_root)
+    print(f"  Subject: {subject_id}")
+
+    source_path = str(data_root / "behavior" / "delphi_dataset.csv")
+    df["subject_id"] = subject_id
+
+    odor_mapping = build_odor_mapping(df)
+    print(f"  Odor mapping: {odor_mapping}")
+
+    # QC
+    run_qc(
+        df,
+        result_dir=result_dir,
+        subject_id=subject_id,
+        data_root=data_root,
+        camera_fps_override=camera_fps_override,
+    )
+
+    # Poke stats (needed for IPI and rate timeseries)
+    print("Computing poke statistics …")
+    poke_stats = build_poke_stats(
+        df=df,
+        subject_id=subject_id,
+        source_path=source_path,
+        odor_mapping=odor_mapping,
+        tau=tau,
+        dt=dt,
+        overlap=overlap,
+    )
+
+    dur_col = (
+        "poke_duration" if "poke_duration" in df.columns
+        else "poke_to_beam_offset_duration"
+    )
+
+    print("Generating figures …")
+
+    try_save(
+        plot_summary_stats,
+        result_dir / "summary_stats.png",
+        "Summary Statistics",
+        df, subject_id,
+    )
+    try_save(
+        plot_poke_raster_24h,
+        result_dir / "poke_raster_24h.png",
+        "Poke Raster (24 h layout)",
+        df, subject_id,
+    )
+    try_save(
+        plot_poke_rate_datetime,
+        result_dir / "poke_rate_datetime.png",
+        "Poke Rate Over Time",
+        df, subject_id,
+    )
+    try_save(
+        plot_cumulative_pokes_datetime,
+        result_dir / "cumulative_pokes_datetime.png",
+        "Cumulative Poke Count",
+        df, subject_id,
+    )
+    if "datetime" in df.columns:
+        try_save(
+            plot_daily_poke_count,
+            result_dir / "daily_poke_count.png",
+            "Daily Poke Count",
+            df, color_by_odor=False,
+        )
+    if poke_stats:
+        try_save(
+            plot_poke_rate_timeseries,
+            result_dir / "poke_rate_timeseries.png",
+            "Poke Rate Over Time (Exponential Decay Smoothing)",
+            poke_stats, time_unit="days",
+        )
+        try_save(
+            plot_ipi_distributions,
+            result_dir / "ipi_distributions.png",
+            "Inter-Poke Interval Distributions",
+            poke_stats,
+        )
+    if dur_col in df.columns:
+        try_save(
+            plot_poke_duration_by_odor,
+            result_dir / "poke_duration_by_odor.png",
+            "Poke Duration by Odor",
+            df, dur_col,
+        )
+
+    print(f"\nDone.  Figures saved to: {result_dir}")
+
+
 def try_save(
     plot_fn,
     path: pathlib.Path,

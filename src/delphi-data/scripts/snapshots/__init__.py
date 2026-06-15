@@ -26,6 +26,7 @@ from __future__ import annotations
 
 # Registry maps experiment name → dotted module path of run_snapshot
 REGISTRY: dict[str, str] = {
+    "common": "snapshots.common",
     "bonhoeffer": "snapshots.bonhoeffer",
 }
 
