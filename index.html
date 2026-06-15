@@ -453,6 +453,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#experiment-conductor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        experiment-conductor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#repository" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2129,6 +2140,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#experiment-conductor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        experiment-conductor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#repository" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2183,8 +2205,70 @@
 <td><a href="launcher/">launcher</a></td>
 <td>Interactive multi-experiment Bonsai workflow launcher with subject recall and session logging</td>
 </tr>
+<tr>
+<td><a href="experiment-conductor/">experiment-conductor</a></td>
+<td>End-to-end orchestrator: launch → process → metadata → S3 upload</td>
+</tr>
 </tbody>
 </table>
+<hr />
+<h2 id="experiment-conductor">experiment-conductor<a class="headerlink" href="#experiment-conductor" title="Permanent link">&para;</a></h2>
+<p>The <code>experiment-conductor</code> ties all four packages into a single supervised process so that an experimenter only needs to start one program at the beginning of a session.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>LAUNCHING ──► RUNNING ──► ENDING ──► DONE
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Launch</strong></td>
+<td>Starts the Bonsai launcher interactively; waits for workflows to appear</td>
+</tr>
+<tr>
+<td><strong>Running</strong></td>
+<td>Runs the <code>delphi-data</code> pipeline on a configurable cadence (every N minutes, or at a fixed minute past every hour); generates AIND metadata after the first consolidation; submits upload jobs to S3</td>
+</tr>
+<tr>
+<td><strong>Ending</strong></td>
+<td>Updates the acquisition end time; verifies <code>probe.json</code> for Pirouette experiments; runs a final cycle</td>
+</tr>
+<tr>
+<td><strong>Done</strong></td>
+<td>Optionally deletes large local files (video, ephys) only after confirming their chunks are present on S3</td>
+</tr>
+</tbody>
+</table>
+<p>Upload jobs are submitted to <code>aind-data-transfer-service</code> in small configurable batches.
+In-flight chunks are tracked so the same data is never submitted twice, and local files
+are never deleted until S3 confirms the transfer is complete.</p>
+<p>Three hotkeys are available while an experiment is running:</p>
+<table>
+<thead>
+<tr>
+<th>Hotkey</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ctrl+Shift+P</code></td>
+<td>Trigger a pipeline cycle immediately</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+U</code></td>
+<td>Pause / resume upload between batches</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+E</code></td>
+<td>Signal experiment end</td>
+</tr>
+</tbody>
+</table>
+<p>See the <a href="experiment-conductor/">experiment-conductor docs</a> for the full configuration reference and API.</p>
 <hr />
 <h2 id="repository">Repository<a class="headerlink" href="#repository" title="Permanent link">&para;</a></h2>
 <p>Source code: <a href="https://github.com/goatsofnaxos/Delphi">github.com/goatsofnaxos/Delphi</a></p>
