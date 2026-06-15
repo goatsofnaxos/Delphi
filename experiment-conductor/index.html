@@ -13,19 +13,19 @@
         <meta name="author" content="Delphi Analysis Team">
       
       
-        <link rel="canonical" href="https://goatsofnaxos.github.io/Delphi/delphi-data/api/">
+        <link rel="canonical" href="https://goatsofnaxos.github.io/Delphi/experiment-conductor/">
       
       
-        <link rel="prev" href="../">
+        <link rel="prev" href="../launcher/">
       
       
-        <link rel="next" href="poke_metrics/">
+        <link rel="next" href="api/">
       
       
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
@@ -34,10 +34,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -56,9 +56,9 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -83,7 +83,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-reference" class="md-skip">
+        <a href="#experiment-conductor" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +99,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Delphi" class="md-header__button md-logo" aria-label="Delphi" data-md-component="logo">
+    <a href=".." title="Delphi" class="md-header__button md-logo" aria-label="Delphi" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -229,7 +229,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href=".." class="md-tabs__link">
         
   
   
@@ -246,13 +246,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../delphi-data/" class="md-tabs__link">
           
   
   
@@ -272,7 +270,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../metadata-generator/" class="md-tabs__link">
+        <a href="../metadata-generator/" class="md-tabs__link">
           
   
   
@@ -292,7 +290,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../launcher/" class="md-tabs__link">
+        <a href="../launcher/" class="md-tabs__link">
           
   
   
@@ -308,11 +306,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../experiment-conductor/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
   
@@ -352,7 +352,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Delphi" class="md-nav__button md-logo" aria-label="Delphi" data-md-component="logo">
+    <a href=".." title="Delphi" class="md-nav__button md-logo" aria-label="Delphi" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -382,7 +382,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -406,31 +406,28 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -448,7 +445,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -466,7 +463,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../delphi-data/" class="md-nav__link">
         
   
   
@@ -491,31 +488,28 @@
                 
   
   
-    
   
   
-  
     
     
     
     
       
       
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
         
           
-          
         
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
             
   
   
@@ -533,7 +527,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -548,19 +542,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../delphi-data/api/" class="md-nav__link">
         
   
   
@@ -576,7 +561,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -589,7 +573,7 @@
   
   
     <li class="md-nav__item">
-      <a href="poke_metrics/" class="md-nav__link">
+      <a href="../delphi-data/api/poke_metrics/" class="md-nav__link">
         
   
   
@@ -617,7 +601,7 @@
   
   
     <li class="md-nav__item">
-      <a href="visualization/" class="md-nav__link">
+      <a href="../delphi-data/api/visualization/" class="md-nav__link">
         
   
   
@@ -645,7 +629,7 @@
   
   
     <li class="md-nav__item">
-      <a href="video_processing/" class="md-nav__link">
+      <a href="../delphi-data/api/video_processing/" class="md-nav__link">
         
   
   
@@ -673,7 +657,7 @@
   
   
     <li class="md-nav__item">
-      <a href="quality_control/" class="md-nav__link">
+      <a href="../delphi-data/api/quality_control/" class="md-nav__link">
         
   
   
@@ -701,7 +685,7 @@
   
   
     <li class="md-nav__item">
-      <a href="settings/" class="md-nav__link">
+      <a href="../delphi-data/api/settings/" class="md-nav__link">
         
   
   
@@ -729,7 +713,7 @@
   
   
     <li class="md-nav__item">
-      <a href="ingestion/" class="md-nav__link">
+      <a href="../delphi-data/api/ingestion/" class="md-nav__link">
         
   
   
@@ -757,7 +741,7 @@
   
   
     <li class="md-nav__item">
-      <a href="curation/" class="md-nav__link">
+      <a href="../delphi-data/api/curation/" class="md-nav__link">
         
   
   
@@ -785,7 +769,7 @@
   
   
     <li class="md-nav__item">
-      <a href="config/" class="md-nav__link">
+      <a href="../delphi-data/api/config/" class="md-nav__link">
         
   
   
@@ -813,7 +797,7 @@
   
   
     <li class="md-nav__item">
-      <a href="cli/" class="md-nav__link">
+      <a href="../delphi-data/api/cli/" class="md-nav__link">
         
   
   
@@ -855,13 +839,10 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
@@ -870,7 +851,7 @@
         <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
             
   
   
@@ -906,7 +887,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../scripts/" class="md-nav__link">
+      <a href="../delphi-data/scripts/" class="md-nav__link">
         
   
   
@@ -934,7 +915,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../scripts/full_processing_pipeline/" class="md-nav__link">
+      <a href="../delphi-data/scripts/full_processing_pipeline/" class="md-nav__link">
         
   
   
@@ -962,7 +943,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../scripts/build_dataset/" class="md-nav__link">
+      <a href="../delphi-data/scripts/build_dataset/" class="md-nav__link">
         
   
   
@@ -990,7 +971,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../scripts/data_snapshot/" class="md-nav__link">
+      <a href="../delphi-data/scripts/data_snapshot/" class="md-nav__link">
         
   
   
@@ -1018,7 +999,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../scripts/create_poke_clips/" class="md-nav__link">
+      <a href="../delphi-data/scripts/create_poke_clips/" class="md-nav__link">
         
   
   
@@ -1100,7 +1081,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../scripts/snapshots/" class="md-nav__link">
+      <a href="../delphi-data/scripts/snapshots/" class="md-nav__link">
         
   
   
@@ -1128,7 +1109,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../scripts/snapshots/bonhoeffer/" class="md-nav__link">
+      <a href="../delphi-data/scripts/snapshots/bonhoeffer/" class="md-nav__link">
         
   
   
@@ -1156,7 +1137,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../scripts/snapshots/common/" class="md-nav__link">
+      <a href="../delphi-data/scripts/snapshots/common/" class="md-nav__link">
         
   
   
@@ -1261,7 +1242,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../metadata-generator/" class="md-nav__link">
+      <a href="../metadata-generator/" class="md-nav__link">
         
   
   
@@ -1343,7 +1324,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../metadata-generator/api/" class="md-nav__link">
+      <a href="../metadata-generator/api/" class="md-nav__link">
         
   
   
@@ -1371,7 +1352,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../metadata-generator/api/cli/" class="md-nav__link">
+      <a href="../metadata-generator/api/cli/" class="md-nav__link">
         
   
   
@@ -1399,7 +1380,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../metadata-generator/api/config/" class="md-nav__link">
+      <a href="../metadata-generator/api/config/" class="md-nav__link">
         
   
   
@@ -1427,7 +1408,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../metadata-generator/api/subject/" class="md-nav__link">
+      <a href="../metadata-generator/api/subject/" class="md-nav__link">
         
   
   
@@ -1455,7 +1436,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../metadata-generator/api/instrument/" class="md-nav__link">
+      <a href="../metadata-generator/api/instrument/" class="md-nav__link">
         
   
   
@@ -1483,7 +1464,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../metadata-generator/api/acquisition/" class="md-nav__link">
+      <a href="../metadata-generator/api/acquisition/" class="md-nav__link">
         
   
   
@@ -1511,7 +1492,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../metadata-generator/api/procedures/" class="md-nav__link">
+      <a href="../metadata-generator/api/procedures/" class="md-nav__link">
         
   
   
@@ -1539,7 +1520,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../metadata-generator/api/utils/" class="md-nav__link">
+      <a href="../metadata-generator/api/utils/" class="md-nav__link">
         
   
   
@@ -1636,7 +1617,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../launcher/" class="md-nav__link">
+      <a href="../launcher/" class="md-nav__link">
         
   
   
@@ -1668,28 +1649,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -1707,7 +1691,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1722,10 +1706,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../experiment-conductor/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1741,6 +1752,94 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scheduling-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scheduling modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hotkeys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hotkeys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upload-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upload safety
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1759,10 +1858,13 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
@@ -1771,7 +1873,7 @@
         <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_2" >
         
           
-          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="">
             
   
   
@@ -1807,7 +1909,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiment-conductor/api/" class="md-nav__link">
+      <a href="api/" class="md-nav__link">
         
   
   
@@ -1835,7 +1937,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiment-conductor/api/conductor/" class="md-nav__link">
+      <a href="api/conductor/" class="md-nav__link">
         
   
   
@@ -1863,7 +1965,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiment-conductor/api/config/" class="md-nav__link">
+      <a href="api/config/" class="md-nav__link">
         
   
   
@@ -1891,7 +1993,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiment-conductor/api/state/" class="md-nav__link">
+      <a href="api/state/" class="md-nav__link">
         
   
   
@@ -1919,7 +2021,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiment-conductor/api/pipeline_bridge/" class="md-nav__link">
+      <a href="api/pipeline_bridge/" class="md-nav__link">
         
   
   
@@ -1947,7 +2049,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiment-conductor/api/metadata_bridge/" class="md-nav__link">
+      <a href="api/metadata_bridge/" class="md-nav__link">
         
   
   
@@ -1975,7 +2077,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiment-conductor/api/uploader_bridge/" class="md-nav__link">
+      <a href="api/uploader_bridge/" class="md-nav__link">
         
   
   
@@ -2003,7 +2105,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiment-conductor/api/hotkeys/" class="md-nav__link">
+      <a href="api/hotkeys/" class="md-nav__link">
         
   
   
@@ -2061,6 +2163,80 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scheduling-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scheduling modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hotkeys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hotkeys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upload-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upload safety
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2079,49 +2255,147 @@
   
 
 
-<h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
-<p>Full auto-generated API documentation for the <code>delphi_data</code> package.</p>
-<p>Each page documents one module and is rendered directly from the source
-docstrings by <a href="https://mkdocstrings.github.io/python/">mkdocstrings</a>.</p>
-<hr />
+<h1 id="experiment-conductor">experiment-conductor<a class="headerlink" href="#experiment-conductor" title="Permanent link">&para;</a></h1>
+<p>End-to-end orchestrator for Delphi chronic-recording experiments.</p>
+<p>The conductor ties together four packages into a single supervised process:</p>
 <table>
 <thead>
 <tr>
-<th>Module</th>
-<th>Description</th>
+<th>Stage</th>
+<th>Package</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="poke_metrics/">poke_metrics</a></td>
-<td>Behavioral metrics: poke rates, IPI thresholds, fold changes, cumulative counts, poke-duration statistics</td>
+<td>Experiment launch</td>
+<td><code>launcher</code></td>
 </tr>
 <tr>
-<td><a href="visualization/">visualization</a></td>
-<td>Matplotlib figure-generating functions for all metric types</td>
+<td>Data consolidation &amp; snapshots</td>
+<td><code>delphi-data</code></td>
 </tr>
 <tr>
-<td><a href="video_processing/">video_processing</a></td>
-<td>Poke-triggered MP4 clip extraction using ffmpeg</td>
+<td>AIND-compliant metadata</td>
+<td><code>metadata-generator</code></td>
 </tr>
 <tr>
-<td><a href="ingestion/">ingestion</a></td>
-<td>Raw Harp register stream → per-poke event DataFrame</td>
-</tr>
-<tr>
-<td><a href="curation/">curation</a></td>
-<td>Session directory consolidation utilities</td>
-</tr>
-<tr>
-<td><a href="config/">config</a></td>
-<td>Firmware register set definitions and resolution</td>
-</tr>
-<tr>
-<td><a href="cli/">cli</a></td>
-<td><code>delphi-data</code> command-line interface</td>
+<td>S3 upload</td>
+<td><code>aind-chronic-ephys-uploader</code></td>
 </tr>
 </tbody>
 </table>
+<hr />
+<h2 id="lifecycle">Lifecycle<a class="headerlink" href="#lifecycle" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>LAUNCHING ──► RUNNING ──► ENDING ──► DONE
+</span></code></pre></div>
+<ol>
+<li>
+<p><strong>LAUNCHING</strong> — spawns <code>launcher</code> interactively; the user selects the
+   experiment profile, subject ID, and experimenter through the launcher
+   prompts.  The conductor proceeds once Bonsai workflows are running.</p>
+</li>
+<li>
+<p><strong>RUNNING</strong> — a cadence scheduler fires a <em>cycle</em> every N minutes (or at
+   a fixed minute past every hour).  Each cycle:</p>
+</li>
+<li>Runs the full <code>delphi-data</code> pipeline (consolidate → build-dataset → snapshot).</li>
+<li>Moves Delphi metadata files to <code>behavior/metadata/</code> (once, after first
+     consolidation).</li>
+<li>Generates AIND metadata in <code>data_root/metadata/</code> (once, after metadata
+     moved).</li>
+<li>
+<p>Submits upload jobs to <code>aind-data-transfer-service</code> once ≥ 3 chunks exist
+     and all four metadata files are present.</p>
+</li>
+<li>
+<p><strong>ENDING</strong> — triggered by hotkey or Bonsai exit.  The user confirms the
+   actual end time; <code>acquisition.json</code> is updated.  For Pirouette experiments,
+   <code>probe.json</code> presence in <code>ecephys/</code> is verified.  A final cycle runs, then
+   the upload is stopped cleanly.</p>
+</li>
+<li>
+<p><strong>DONE</strong> — optional large-file deletion (only for chunks confirmed on S3).</p>
+</li>
+</ol>
+<hr />
+<h2 id="scheduling-modes">Scheduling modes<a class="headerlink" href="#scheduling-modes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th><code>.env</code> key</th>
+<th>CLI flag</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cadence (default)</td>
+<td><code>PIPELINE_CADENCE_MINUTES=60</code></td>
+<td><code>--pipeline-cadence-minutes N</code></td>
+<td>Fires every N minutes</td>
+</tr>
+<tr>
+<td>On-the-hour</td>
+<td><code>SCHEDULE_MINUTE_OF_HOUR=45</code></td>
+<td><code>--schedule-minute-of-hour N</code></td>
+<td>Fires at :NN past every hour</td>
+</tr>
+</tbody>
+</table>
+<p>Both keys are mutually exclusive; <code>SCHEDULE_MINUTE_OF_HOUR</code> takes priority when set.</p>
+<hr />
+<h2 id="hotkeys">Hotkeys<a class="headerlink" href="#hotkeys" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Hotkey</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ctrl+Shift+P</code></td>
+<td>Trigger a pipeline cycle immediately</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+U</code></td>
+<td>Pause / resume upload between batches</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+E</code></td>
+<td>Signal experiment end</td>
+</tr>
+</tbody>
+</table>
+<p>Hotkeys are configurable via <code>.env</code> (<code>HOTKEY_PIPELINE</code>, <code>HOTKEY_UPLOAD_PAUSE</code>,
+<code>HOTKEY_END_EXPERIMENT</code>).</p>
+<hr />
+<h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>src/experiment_conductor
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>cp<span class="w"> </span>.env.example<span class="w"> </span>.env<span class="w">   </span><span class="c1"># fill in DATA_ROOT, SUBJECT_ID, …</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>uv<span class="w"> </span>run<span class="w"> </span>scripts/run_conductor.py
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># or with CLI overrides:</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>uv<span class="w"> </span>run<span class="w"> </span>scripts/run_conductor.py<span class="w"> </span>--data-root<span class="w"> </span>/data/subject/session<span class="w"> </span>--dry-run
+</span></code></pre></div>
+<hr />
+<h2 id="upload-safety">Upload safety<a class="headerlink" href="#upload-safety" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>No duplicate submissions</strong> — a module-level <code>_SUBMITTED_CHUNKS</code> set tracks
+  every chunk POSTed to the transfer service.  In-flight chunks are skipped on
+  subsequent cycles even before S3 confirms them.</li>
+<li><strong>Confirmed-before-delete</strong> — local files are only removed after a live S3
+  query confirms the chunk is present.  If the query fails, deletion is aborted.</li>
+<li><strong>Keep-local patterns</strong> — <code>behavior/delphi_dataset.csv</code>,
+  <code>behavior/DelphiController/**</code>, <code>behavior/results/**</code>, and <code>metadata/**</code>
+  are never deleted regardless of the delete setting.</li>
+</ul>
+<hr />
+<h2 id="configuration-reference">Configuration reference<a class="headerlink" href="#configuration-reference" title="Permanent link">&para;</a></h2>
+<p>All options can be set in <code>.env</code> or overridden on the CLI (CLI wins).</p>
+<p>See <code>.env.example</code> in <code>src/experiment_conductor/</code> for the full list with
+descriptions.</p>
 
 
 
@@ -2177,10 +2451,10 @@ docstrings by <a href="https://mkdocstrings.github.io/python/">mkdocstrings</a>.
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
