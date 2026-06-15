@@ -66,15 +66,55 @@ Hotkeys are configurable via `.env` (`HOTKEY_PIPELINE`, `HOTKEY_UPLOAD_PAUSE`,
 
 ---
 
+## Data root resolution
+
+The conductor needs to know where the session data lives on the **local server**
+(not the acquisition computer).  Data flows:
+
+```
+Acquisition computer  ──robocopy──►  Local server  ──uploader──►  S3
+(Bonsai records here)                (pipeline runs here)
+```
+
+Configure one of two modes — not both:
+
+### Server-relative mode (recommended)
+
+Set `SERVER_ROOT` to the root of the server where data is robocopied.
+This corresponds to `remote_transfer_root_path` in the hardware schema
+(e.g. `\\allen\aind\stage\chronic`).
+
+The conductor computes `data_root` as `SERVER_ROOT / SUBJECT_ID / SESSION_DATETIME`
+after the launcher exits.  If `SESSION_DATETIME` is left blank, the conductor
+automatically detects the newest `YYYY-MM-DDTHH-MM-SS` directory under
+`SERVER_ROOT / SUBJECT_ID`, polling every 30 s until robocopy creates it
+(up to 10 minutes).
+
+```ini
+SERVER_ROOT=\\allen\aind\stage\chronic
+SESSION_DATETIME=          # leave blank to auto-detect
+SUBJECT_ID=12345
+```
+
+### Direct mode
+
+Set `DATA_ROOT` to the full session path when the directory is already known:
+
+```ini
+DATA_ROOT=\\allen\aind\stage\chronic\12345\2026-03-20T20-23-05
+```
+
+---
+
 ## Quick start
 
 ```bash
 cd src/experiment_conductor
-cp .env.example .env   # fill in DATA_ROOT, SUBJECT_ID, …
+cp .env.example .env   # set SERVER_ROOT + SUBJECT_ID (or DATA_ROOT directly)
 uv run scripts/run_conductor.py
 
 # or with CLI overrides:
-uv run scripts/run_conductor.py --data-root /data/subject/session --dry-run
+uv run scripts/run_conductor.py --server-root \\allen\aind\stage\chronic --subject-id 12345 --dry-run
 ```
 
 ---

@@ -1,12 +1,31 @@
 """Configuration loading for experiment_conductor.
 
 Merges .env file values with CLI overrides. CLI flags always win.
+
+Data root resolution
+---------------------
+``data_root`` — the session directory used by the pipeline, metadata
+generator, and uploader — is resolved in one of two ways:
+
+1. **Direct** (``DATA_ROOT``): set the full path explicitly.
+   Use this when the session directory already exists or is known up front.
+
+2. **Server-relative** (``SERVER_ROOT`` + ``SUBJECT_ID`` + optional
+   ``SESSION_DATETIME``): the conductor computes the path as
+   ``SERVER_ROOT / SUBJECT_ID / SESSION_DATETIME`` after the launcher exits.
+   ``SESSION_DATETIME`` is auto-detected (newest timestamp directory under
+   ``SERVER_ROOT / SUBJECT_ID``) when not supplied explicitly.
+   Use this for the standard workflow where data is robocopied from the
+   acquisition computer to a local server (e.g.
+   ``\\\\allen\\aind\\stage\\chronic``).
+
+Exactly one of ``DATA_ROOT`` or ``SERVER_ROOT`` must be set.
 """
 from __future__ import annotations
 
 import argparse
 import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
 
@@ -35,8 +54,23 @@ class ConductorConfig:
         One of ``delphi``, ``pirouette``, ``delphi_pirouette``.
     experiment_config : str
         Launcher profile name resolved in ``experiment_configs/``.
-    data_root : Path
-        Run-level session directory.
+    server_root : Optional[Path]
+        Root of the local server where data is robocopied from the acquisition
+        computer (e.g. ``\\\\allen\\aind\\stage\\chronic``).  Corresponds to
+        ``remote_transfer_root_path`` in the hardware schema.  When set,
+        ``data_root`` is computed as
+        ``server_root / subject_id / session_datetime`` after the launcher
+        exits.  Mutually exclusive with providing ``data_root`` directly.
+    session_datetime : Optional[str]
+        Session timestamp string in ``YYYY-MM-DDTHH-MM-SS`` format
+        (e.g. ``2026-03-20T20-23-05``).  Required when ``server_root`` is set
+        and auto-detection is not desired.  When ``None`` the conductor scans
+        ``server_root / subject_id`` for the newest timestamp directory after
+        the launcher exits.
+    data_root : Optional[Path]
+        Resolved run-level session directory on the server.  ``None`` at
+        startup when using server-relative mode; populated by the conductor
+        after ``launch_experiments`` returns.
     launcher_dir : Path
         Directory containing ``launcher.py``.
     surgery_notes_base : Optional[Path]
@@ -94,7 +128,9 @@ class ConductorConfig:
 
     experiment_type: str
     experiment_config: str
-    data_root: Path
+    server_root: Optional[Path]
+    session_datetime: Optional[str]
+    data_root: Optional[Path]          # None until resolved post-launch
     launcher_dir: Path
     surgery_notes_base: Optional[Path]
     subject_id: str
@@ -129,7 +165,21 @@ def _parse_cli() -> argparse.Namespace:
     p.add_argument("--env-file", default=".env", help="Path to .env file (default: .env)")
     p.add_argument("--experiment-type", default=None)
     p.add_argument("--experiment-config", default=None)
-    p.add_argument("--data-root", default=None, type=Path)
+    # Data root — two mutually exclusive modes
+    p.add_argument(
+        "--server-root", default=None, type=Path, metavar="PATH",
+        help="Local server root where data is robocopied (e.g. \\\\allen\\aind\\stage\\chronic). "
+             "Mutually exclusive with --data-root.",
+    )
+    p.add_argument(
+        "--session-datetime", default=None, metavar="YYYY-MM-DDTHH-MM-SS",
+        help="Session timestamp used with --server-root to build data_root. "
+             "Auto-detected from newest directory when omitted.",
+    )
+    p.add_argument(
+        "--data-root", default=None, type=Path, metavar="PATH",
+        help="Full path to the session directory. Mutually exclusive with --server-root.",
+    )
     p.add_argument("--launcher-dir", default=None, type=Path)
     p.add_argument("--surgery-notes-base", default=None, type=Path)
     p.add_argument("--subject-id", default=None)
@@ -162,7 +212,16 @@ def _parse_cli() -> argparse.Namespace:
 
 
 def build_config() -> ConductorConfig:
-    """Load .env then overlay CLI arguments to produce a ConductorConfig.
+    """Load .env then overlay CLI arguments to produce a ``ConductorConfig``.
+
+    ``data_root`` is resolved as follows:
+
+    - If ``DATA_ROOT`` / ``--data-root`` is provided, use it directly.
+    - If ``SERVER_ROOT`` / ``--server-root`` is provided, set ``data_root``
+      to ``None``; the conductor will resolve it after the launcher exits by
+      computing ``server_root / subject_id / session_datetime`` (where
+      ``session_datetime`` is auto-detected when not explicitly set).
+    - If neither is provided, raise ``ValueError``.
 
     Returns
     -------
@@ -172,7 +231,8 @@ def build_config() -> ConductorConfig:
     Raises
     ------
     ValueError
-        If required fields (data_root, subject_id) are not provided.
+        If neither ``DATA_ROOT`` nor ``SERVER_ROOT`` is provided, or if
+        ``SUBJECT_ID`` is missing.
     """
     args = _parse_cli()
     load_dotenv(args.env_file, override=False)
@@ -180,20 +240,37 @@ def build_config() -> ConductorConfig:
     def _g(env_key: str, cli_val=None, default=None):
         return cli_val if cli_val is not None else os.getenv(env_key, default)
 
-    data_root_raw = _g("DATA_ROOT", args.data_root)
-    if not data_root_raw:
-        raise ValueError("DATA_ROOT must be set (via .env or --data-root).")
-
     subject_id = _g("SUBJECT_ID", args.subject_id, "")
     if not subject_id:
         raise ValueError("SUBJECT_ID must be set (via .env or --subject-id).")
+
+    # ── Data root resolution ──────────────────────────────────────────────────
+    server_root_raw = _g("SERVER_ROOT", args.server_root)
+    data_root_raw = _g("DATA_ROOT", args.data_root)
+    session_datetime = _g("SESSION_DATETIME", args.session_datetime)
+
+    if data_root_raw and server_root_raw:
+        raise ValueError(
+            "Set either DATA_ROOT or SERVER_ROOT, not both."
+        )
+    if not data_root_raw and not server_root_raw:
+        raise ValueError(
+            "Either DATA_ROOT (full session path) or SERVER_ROOT "
+            "(e.g. \\\\allen\\aind\\stage\\chronic) must be set."
+        )
+
+    server_root = Path(server_root_raw) if server_root_raw else None
+    # data_root is None in server-relative mode — conductor fills it in post-launch
+    data_root = Path(data_root_raw) if data_root_raw else None
 
     surgery_notes_raw = _g("SURGERY_NOTES_BASE", args.surgery_notes_base)
 
     return ConductorConfig(
         experiment_type=_g("EXPERIMENT_TYPE", args.experiment_type, "delphi_pirouette"),
         experiment_config=_g("EXPERIMENT_CONFIG", args.experiment_config, "delphi_pirouette_experiment"),
-        data_root=Path(data_root_raw),
+        server_root=server_root,
+        session_datetime=session_datetime or None,
+        data_root=data_root,
         launcher_dir=Path(_g("LAUNCHER_DIR", args.launcher_dir,
                               str(Path(__file__).parents[3] / "launcher"))),
         surgery_notes_base=Path(surgery_notes_raw) if surgery_notes_raw else None,
@@ -206,7 +283,7 @@ def build_config() -> ConductorConfig:
         experimenters=_list(_g("EXPERIMENTERS", args.experimenters)),
         acquisition_type=_g("ACQUISITION_TYPE", args.acquisition_type, ""),
         delphi_experiment=_g("DELPHI_EXPERIMENT", args.delphi_experiment, "bonhoeffer"),
-        delphi_firmware=_g("DELPHI_FIRMWARE", args.delphi_firmware, "1.0.0"),
+        delphi_firmware=_g("DELPHI_FIRMWARE", args.delphi_firmware, "0.1.0"),
         upload_batch_size=int(_g("UPLOAD_BATCH_SIZE", args.upload_batch_size, 2)),
         pipeline_cadence_minutes=int(_g("PIPELINE_CADENCE_MINUTES", args.pipeline_cadence_minutes, 60)),
         schedule_minute_of_hour=int(v) if (v := _g("SCHEDULE_MINUTE_OF_HOUR", args.schedule_minute_of_hour)) is not None else None,

@@ -16,6 +16,7 @@ Each cadence cycle:
 from __future__ import annotations
 
 import logging
+import re
 import subprocess
 import sys
 import threading
@@ -50,6 +51,80 @@ log = logging.getLogger(__name__)
 # ──────────────────────────────────────────────────────────────────────────────
 
 _CYCLE_LOCK = threading.Lock()  # prevents overlapping cadence cycles
+
+_SESSION_DIR_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}$")
+
+
+def _resolve_data_root(
+    cfg: ConductorConfig,
+    poll_interval_s: float = 30.0,
+    timeout_s: float = 600.0,
+) -> Path:
+    """Compute and return the session directory on the local server.
+
+    When ``cfg.session_datetime`` is provided, returns
+    ``server_root / subject_id / session_datetime`` immediately (creating
+    nothing — the directory must be created by robocopy).
+
+    When ``session_datetime`` is ``None``, polls
+    ``server_root / subject_id /`` until at least one
+    ``YYYY-MM-DDTHH-MM-SS`` directory appears, then returns the newest one.
+    This handles the window between Bonsai starting and robocopy first copying
+    data to the server.
+
+    Parameters
+    ----------
+    cfg : ConductorConfig
+        Conductor configuration with ``server_root`` and ``subject_id`` set.
+    poll_interval_s : float
+        Seconds between directory-scan retries (default 30).
+    timeout_s : float
+        Maximum seconds to wait for the session directory to appear (default 600).
+
+    Returns
+    -------
+    Path
+        Resolved session directory path on the server.
+
+    Raises
+    ------
+    TimeoutError
+        If no session directory appears within ``timeout_s`` seconds.
+    """
+    subject_dir = cfg.server_root / cfg.subject_id
+
+    if cfg.session_datetime:
+        resolved = subject_dir / cfg.session_datetime
+        log.info("data_root (explicit session_datetime): %s", resolved)
+        return resolved
+
+    log.info(
+        "Waiting for session directory under %s (polling every %.0fs, timeout %.0fs) ...",
+        subject_dir, poll_interval_s, timeout_s,
+    )
+    deadline = time.monotonic() + timeout_s
+    while True:
+        if subject_dir.is_dir():
+            candidates = sorted(
+                d for d in subject_dir.iterdir()
+                if d.is_dir() and _SESSION_DIR_RE.match(d.name)
+            )
+            if candidates:
+                resolved = candidates[-1]  # newest lexicographically == chronologically
+                log.info("data_root (auto-detected): %s", resolved)
+                return resolved
+
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError(
+                f"No session directory found under {subject_dir} after {timeout_s:.0f}s. "
+                "Check that robocopy is running and SERVER_ROOT / SUBJECT_ID are correct."
+            )
+        log.info(
+            "Session directory not yet visible on server — retrying in %.0fs (%.0fs remaining) ...",
+            poll_interval_s, remaining,
+        )
+        time.sleep(poll_interval_s)
 
 
 def _bonsai_running() -> bool:
@@ -110,6 +185,14 @@ def launch_experiments(cfg: ConductorConfig, state: ConductorState) -> None:
     log.info("Launcher exited. Checking for running Bonsai processes ...")
     if not _bonsai_running():
         log.warning("No Bonsai process detected after launcher exit. Proceeding anyway.")
+
+    # Resolve data_root from the server path when using server-relative mode
+    if cfg.data_root is None:
+        if cfg.server_root is None:
+            raise RuntimeError("Neither data_root nor server_root is set — cannot proceed.")
+        cfg.data_root = _resolve_data_root(cfg)
+
+    log.info("Session data root: %s", cfg.data_root)
 
     with state.lock:
         state.phase = Phase.RUNNING
@@ -392,8 +475,13 @@ def main() -> None:
 
     log.info("Experiment Conductor starting.")
     log.info("  Experiment type : %s", cfg.experiment_type)
-    log.info("  Data root       : %s", cfg.data_root)
     log.info("  Subject ID      : %s", cfg.subject_id)
+    if cfg.server_root:
+        log.info("  Server root     : %s", cfg.server_root)
+        log.info("  Session DT      : %s", cfg.session_datetime or "(auto-detect after launch)")
+        log.info("  data_root       : (resolved after launcher exits)")
+    else:
+        log.info("  Data root       : %s", cfg.data_root)
     if cfg.schedule_minute_of_hour is not None:
         log.info("  Schedule        : :%02d every hour", cfg.schedule_minute_of_hour)
     else:
