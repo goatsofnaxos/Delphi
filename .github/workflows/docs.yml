@@ -34,7 +34,12 @@ jobs:
       - name: Install packages and docs dependencies
         run: |
           pip install --upgrade pip
-          pip install -e "src/delphi-data[docs]" -e "src/metadata_generator[docs]" -e "src/launcher[docs]" -e "src/experiment_conductor[docs]"
+          pip install -e "src/delphi-data[docs]" -e "src/metadata_generator[docs]" -e "src/launcher[docs]"
+          # experiment_conductor depends on aind-chronic-ephys-uploader which is not on PyPI.
+          # Install without deps (mkdocstrings only needs the package importable), then
+          # add the PyPI-available runtime deps that are imported at module level.
+          pip install --no-deps -e "src/experiment_conductor"
+          pip install psutil python-dotenv
 
       - name: Deploy docs
         run: mkdocs gh-deploy --force --clean
