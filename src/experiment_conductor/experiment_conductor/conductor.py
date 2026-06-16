@@ -264,17 +264,22 @@ def run_cadence_cycle(cfg: ConductorConfig, state: ConductorState) -> None:
         now = datetime.now(timezone.utc)
 
         # ── a. delphi-data pipeline ──────────────────────────────────────────
-        success = run_pipeline(
-            data_root=cfg.data_root,
-            experiment=cfg.delphi_experiment,
-            firmware=cfg.delphi_firmware,
-            subject_id=cfg.subject_id,
-            skip_clips=True,
-        )
-        if success:
-            with state.lock:
-                state.first_consolidation_done = True
-                state.last_pipeline_run = now
+        if not state.pipeline_enabled:
+            log.info("Pipeline disabled — skipping.")
+        else:
+            success = run_pipeline(
+                data_root=cfg.data_root,
+                experiment=cfg.delphi_experiment,
+                firmware=cfg.delphi_firmware,
+                subject_id=cfg.subject_id,
+                skip_build=cfg.pipeline_skip_build,
+                skip_clips=cfg.pipeline_skip_clips,
+                skip_snapshot=cfg.pipeline_skip_snapshot,
+            )
+            if success:
+                with state.lock:
+                    state.first_consolidation_done = True
+                    state.last_pipeline_run = now
 
         # ── b. Move Delphi metadata ──────────────────────────────────────────
         if state.first_consolidation_done and not state.delphi_metadata_moved:
@@ -283,7 +288,9 @@ def run_cadence_cycle(cfg: ConductorConfig, state: ConductorState) -> None:
                 state.delphi_metadata_moved = True
 
         # ── c. Generate AIND metadata (once) ────────────────────────────────
-        if state.delphi_metadata_moved and not state.metadata_generated:
+        if not state.metadata_enabled:
+            log.info("Metadata generation disabled — skipping.")
+        elif state.delphi_metadata_moved and not state.metadata_generated:
             ok = generate_metadata(
                 experiment_type=cfg.experiment_type,
                 subject_id=cfg.subject_id,
@@ -303,7 +310,9 @@ def run_cadence_cycle(cfg: ConductorConfig, state: ConductorState) -> None:
                     state.metadata_generated = True
 
         # ── d. Upload ────────────────────────────────────────────────────────
-        if _metadata_ready(cfg.data_root):
+        if not state.upload_enabled:
+            log.info("Upload disabled — skipping.")
+        elif _metadata_ready(cfg.data_root):
             n_chunks = _count_local_chunks(cfg.data_root)
             is_start = not state.upload_started
             if is_start and n_chunks < 3:
@@ -511,6 +520,11 @@ def main() -> None:
     cfg = build_config()
     state = ConductorState()
 
+    # Initialise runtime-mutable stage flags from config
+    state.pipeline_enabled = cfg.enable_pipeline
+    state.metadata_enabled = cfg.enable_metadata
+    state.upload_enabled = cfg.enable_upload
+
     log.info("Experiment Conductor starting.")
     log.info("  Experiment type : %s", cfg.experiment_type)
     log.info("  Subject ID      : %s", cfg.subject_id)
@@ -526,6 +540,11 @@ def main() -> None:
         log.info("  Cadence         : %d min", cfg.pipeline_cadence_minutes)
     log.info("  S3 bucket       : %s", cfg.s3_bucket)
     log.info("  Dry run         : %s", cfg.dry_run)
+    log.info("  Pipeline        : %s (skip_build=%s, skip_clips=%s, skip_snapshot=%s)",
+             "ON" if cfg.enable_pipeline else "OFF",
+             cfg.pipeline_skip_build, cfg.pipeline_skip_clips, cfg.pipeline_skip_snapshot)
+    log.info("  Metadata        : %s", "ON" if cfg.enable_metadata else "OFF")
+    log.info("  Upload          : %s", "ON" if cfg.enable_upload else "OFF")
 
     # ── Phase 1: Launch ──────────────────────────────────────────────────────
     launch_experiments(cfg, state)
@@ -554,6 +573,27 @@ def main() -> None:
     def _on_end():
         state.end_experiment_event.set()
 
+    def _toggle_pipeline():
+        with state.lock:
+            state.pipeline_enabled = not state.pipeline_enabled
+        status = "ENABLED" if state.pipeline_enabled else "DISABLED"
+        log.info("Pipeline toggled: %s", status)
+        print(f"\n[hotkey] Pipeline {status}")
+
+    def _toggle_metadata():
+        with state.lock:
+            state.metadata_enabled = not state.metadata_enabled
+        status = "ENABLED" if state.metadata_enabled else "DISABLED"
+        log.info("Metadata generation toggled: %s", status)
+        print(f"\n[hotkey] Metadata generation {status}")
+
+    def _toggle_upload():
+        with state.lock:
+            state.upload_enabled = not state.upload_enabled
+        status = "ENABLED" if state.upload_enabled else "DISABLED"
+        log.info("Upload toggled: %s", status)
+        print(f"\n[hotkey] Upload {status}")
+
     hotkeys = HotkeyListener(
         hotkey_pipeline=cfg.hotkey_pipeline,
         hotkey_upload_pause=cfg.hotkey_upload_pause,
@@ -561,14 +601,36 @@ def main() -> None:
         on_pipeline=lambda: run_cadence_cycle(cfg, state),
         on_upload_pause=toggle_upload_pause,
         on_end_experiment=_on_end,
+        hotkey_toggle_pipeline=cfg.hotkey_toggle_pipeline,
+        hotkey_toggle_metadata=cfg.hotkey_toggle_metadata,
+        hotkey_toggle_upload=cfg.hotkey_toggle_upload,
+        on_toggle_pipeline=_toggle_pipeline,
+        on_toggle_metadata=_toggle_metadata,
+        on_toggle_upload=_toggle_upload,
     )
     hotkeys.start()
 
+    toggle_lines = ""
+    if cfg.hotkey_toggle_pipeline:
+        toggle_lines += f"  {cfg.hotkey_toggle_pipeline} -> toggle pipeline on/off\n"
+    if cfg.hotkey_toggle_metadata:
+        toggle_lines += f"  {cfg.hotkey_toggle_metadata} -> toggle metadata on/off\n"
+    if cfg.hotkey_toggle_upload:
+        toggle_lines += f"  {cfg.hotkey_toggle_upload} -> toggle upload on/off\n"
+
     print(
-        f"\nExperiment running. Hotkeys:\n"
+        f"\nExperiment running."
+        f"\n  Pipeline : {'ON' if state.pipeline_enabled else 'OFF'}"
+        f"  (build={'skip' if cfg.pipeline_skip_build else 'on'}"
+        f", clips={'skip' if cfg.pipeline_skip_clips else 'on'}"
+        f", snapshot={'skip' if cfg.pipeline_skip_snapshot else 'on'})"
+        f"\n  Metadata : {'ON' if state.metadata_enabled else 'OFF'}"
+        f"\n  Upload   : {'ON' if state.upload_enabled else 'OFF'}"
+        f"\nHotkeys:\n"
         f"  {cfg.hotkey_pipeline}       -> trigger pipeline now\n"
         f"  {cfg.hotkey_upload_pause}   -> pause/resume upload\n"
         f"  {cfg.hotkey_end_experiment} -> end experiment\n"
+        f"{toggle_lines}"
         f"  Ctrl+C             -> emergency exit\n"
     )
 

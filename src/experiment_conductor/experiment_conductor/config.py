@@ -118,12 +118,36 @@ class ConductorConfig:
         If True, delete large local files after confirmed S3 upload.
     keep_local_patterns : List[str]
         Glob patterns relative to ``data_root`` to always keep locally.
+    enable_pipeline : bool
+        If False, the delphi-data pipeline step is skipped every cycle.
+        Togglable at runtime via ``HOTKEY_TOGGLE_PIPELINE``.
+    enable_metadata : bool
+        If False, AIND metadata generation is skipped.
+        Togglable at runtime via ``HOTKEY_TOGGLE_METADATA``.
+    enable_upload : bool
+        If False, the upload step is skipped every cycle.
+        Togglable at runtime via ``HOTKEY_TOGGLE_UPLOAD``.
+    pipeline_skip_build : bool
+        If True, pass ``--skip-build`` to ``delphi-data pipeline``
+        (skips the build-dataset step).
+    pipeline_skip_clips : bool
+        If True, pass ``--skip-clips`` to ``delphi-data pipeline``
+        (skips poke-clip extraction).  Defaults to True.
+    pipeline_skip_snapshot : bool
+        If True, pass ``--skip-snapshot`` to ``delphi-data pipeline``
+        (skips figure generation).
     hotkey_pipeline : str
         pynput key string to manually trigger a pipeline cycle.
     hotkey_upload_pause : str
         pynput key string to toggle upload pause/resume.
     hotkey_end_experiment : str
         pynput key string to signal experiment end.
+    hotkey_toggle_pipeline : Optional[str]
+        pynput key string to toggle pipeline enable/disable at runtime.
+    hotkey_toggle_metadata : Optional[str]
+        pynput key string to toggle metadata enable/disable at runtime.
+    hotkey_toggle_upload : Optional[str]
+        pynput key string to toggle upload enable/disable at runtime.
     """
 
     experiment_type: str
@@ -152,9 +176,18 @@ class ConductorConfig:
     dry_run: bool
     delete_after_upload: bool
     keep_local_patterns: List[str]
+    enable_pipeline: bool
+    enable_metadata: bool
+    enable_upload: bool
+    pipeline_skip_build: bool
+    pipeline_skip_clips: bool
+    pipeline_skip_snapshot: bool
     hotkey_pipeline: str
     hotkey_upload_pause: str
     hotkey_end_experiment: str
+    hotkey_toggle_pipeline: Optional[str]
+    hotkey_toggle_metadata: Optional[str]
+    hotkey_toggle_upload: Optional[str]
 
 
 def _parse_cli() -> argparse.Namespace:
@@ -296,7 +329,16 @@ def build_config() -> ConductorConfig:
         keep_local_patterns=_list(_g("KEEP_LOCAL_PATTERNS", args.keep_local_patterns,
                                      "behavior/delphi_dataset.csv,behavior/DelphiController/**,"
                                      "behavior/results/**,metadata/**")),
+        enable_pipeline=_bool(_g("ENABLE_PIPELINE", None, "true")),
+        enable_metadata=_bool(_g("ENABLE_METADATA", None, "true")),
+        enable_upload=_bool(_g("ENABLE_UPLOAD", None, "true")),
+        pipeline_skip_build=_bool(_g("PIPELINE_SKIP_BUILD", None, "false")),
+        pipeline_skip_clips=_bool(_g("PIPELINE_SKIP_CLIPS", None, "true")),
+        pipeline_skip_snapshot=_bool(_g("PIPELINE_SKIP_SNAPSHOT", None, "false")),
         hotkey_pipeline=os.getenv("HOTKEY_PIPELINE", "<ctrl>+<shift>+p"),
         hotkey_upload_pause=os.getenv("HOTKEY_UPLOAD_PAUSE", "<ctrl>+<shift>+u"),
         hotkey_end_experiment=os.getenv("HOTKEY_END_EXPERIMENT", "<ctrl>+<shift>+e"),
+        hotkey_toggle_pipeline=os.getenv("HOTKEY_TOGGLE_PIPELINE") or None,
+        hotkey_toggle_metadata=os.getenv("HOTKEY_TOGGLE_METADATA") or None,
+        hotkey_toggle_upload=os.getenv("HOTKEY_TOGGLE_UPLOAD") or None,
     )

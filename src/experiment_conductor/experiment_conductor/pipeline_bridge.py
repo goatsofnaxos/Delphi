@@ -22,7 +22,9 @@ def run_pipeline(
     experiment: str,
     firmware: str,
     subject_id: str | None = None,
+    skip_build: bool = False,
     skip_clips: bool = True,
+    skip_snapshot: bool = False,
 ) -> bool:
     """Run the delphi-data full processing pipeline for one session.
 
@@ -39,8 +41,12 @@ def run_pipeline(
         Firmware version string (e.g. ``1.0.0``).
     subject_id : str, optional
         Subject ID passed to the snapshot step.
+    skip_build : bool
+        If True, pass ``--skip-build`` to skip the build-dataset step.
     skip_clips : bool
-        If True, pass ``--skip-clips`` to the pipeline.
+        If True, pass ``--skip-clips`` to skip clip extraction.
+    skip_snapshot : bool
+        If True, pass ``--skip-snapshot`` to skip the snapshot step.
 
     Returns
     -------
@@ -56,8 +62,12 @@ def run_pipeline(
     ]
     if subject_id:
         cmd += ["--subject-id", subject_id]
+    if skip_build:
+        cmd.append("--skip-build")
     if skip_clips:
         cmd.append("--skip-clips")
+    if skip_snapshot:
+        cmd.append("--skip-snapshot")
 
     log.info("Running delphi-data pipeline: %s", " ".join(cmd))
     result = subprocess.run(cmd, capture_output=False)

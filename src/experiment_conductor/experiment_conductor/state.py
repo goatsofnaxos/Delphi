@@ -37,6 +37,15 @@ class ConductorState:
         True once the ``chronic_ephys_start`` job has been submitted.
     upload_paused : bool
         True while upload batches are paused by the user.
+    pipeline_enabled : bool
+        Whether the delphi-data pipeline step runs each cycle.  Initialised
+        from ``ENABLE_PIPELINE`` in the config; toggled at runtime by hotkey.
+    metadata_enabled : bool
+        Whether AIND metadata generation runs each cycle.  Initialised from
+        ``ENABLE_METADATA`` in the config; toggled at runtime by hotkey.
+    upload_enabled : bool
+        Whether the upload step runs each cycle.  Initialised from
+        ``ENABLE_UPLOAD`` in the config; toggled at runtime by hotkey.
     experiment_end_time : Optional[datetime]
         UTC time when the user signalled experiment end.
     last_pipeline_run : Optional[datetime]
@@ -53,6 +62,9 @@ class ConductorState:
     metadata_generated: bool = False
     upload_started: bool = False
     upload_paused: bool = False
+    pipeline_enabled: bool = True
+    metadata_enabled: bool = True
+    upload_enabled: bool = True
     experiment_end_time: Optional[datetime] = None
     last_pipeline_run: Optional[datetime] = None
     last_upload_run: Optional[datetime] = None

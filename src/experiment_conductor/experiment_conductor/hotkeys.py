@@ -51,6 +51,18 @@ class HotkeyListener:
         Called (no args) when the upload-pause hotkey fires.
     on_end_experiment : Callable
         Called (no args) when the end-experiment hotkey fires.
+    hotkey_toggle_pipeline : str, optional
+        pynput hotkey string to toggle pipeline enable/disable.
+    hotkey_toggle_metadata : str, optional
+        pynput hotkey string to toggle metadata enable/disable.
+    hotkey_toggle_upload : str, optional
+        pynput hotkey string to toggle upload enable/disable.
+    on_toggle_pipeline : Callable, optional
+        Called (no args) when the pipeline-toggle hotkey fires.
+    on_toggle_metadata : Callable, optional
+        Called (no args) when the metadata-toggle hotkey fires.
+    on_toggle_upload : Callable, optional
+        Called (no args) when the upload-toggle hotkey fires.
     """
 
     def __init__(
@@ -61,6 +73,12 @@ class HotkeyListener:
         on_pipeline: Callable,
         on_upload_pause: Callable,
         on_end_experiment: Callable,
+        hotkey_toggle_pipeline: Optional[str] = None,
+        hotkey_toggle_metadata: Optional[str] = None,
+        hotkey_toggle_upload: Optional[str] = None,
+        on_toggle_pipeline: Optional[Callable] = None,
+        on_toggle_metadata: Optional[Callable] = None,
+        on_toggle_upload: Optional[Callable] = None,
     ):
         self._hk_pipeline = _parse_hotkey_string(hotkey_pipeline)
         self._hk_pause = _parse_hotkey_string(hotkey_upload_pause)
@@ -68,6 +86,15 @@ class HotkeyListener:
         self._on_pipeline = on_pipeline
         self._on_pause = on_upload_pause
         self._on_end = on_end_experiment
+
+        # Optional toggle hotkeys
+        self._hk_toggle_pipeline = _parse_hotkey_string(hotkey_toggle_pipeline) if hotkey_toggle_pipeline else None
+        self._hk_toggle_metadata = _parse_hotkey_string(hotkey_toggle_metadata) if hotkey_toggle_metadata else None
+        self._hk_toggle_upload = _parse_hotkey_string(hotkey_toggle_upload) if hotkey_toggle_upload else None
+        self._on_toggle_pipeline = on_toggle_pipeline
+        self._on_toggle_metadata = on_toggle_metadata
+        self._on_toggle_upload = on_toggle_upload
+
         self._pressed: set = set()
         self._listener: Optional[object] = None
 
@@ -83,6 +110,15 @@ class HotkeyListener:
         elif current == self._hk_end:
             log.info("Hotkey: end experiment")
             threading.Thread(target=self._on_end, daemon=True).start()
+        elif self._hk_toggle_pipeline and current == self._hk_toggle_pipeline and self._on_toggle_pipeline:
+            log.info("Hotkey: toggle pipeline enable")
+            threading.Thread(target=self._on_toggle_pipeline, daemon=True).start()
+        elif self._hk_toggle_metadata and current == self._hk_toggle_metadata and self._on_toggle_metadata:
+            log.info("Hotkey: toggle metadata enable")
+            threading.Thread(target=self._on_toggle_metadata, daemon=True).start()
+        elif self._hk_toggle_upload and current == self._hk_toggle_upload and self._on_toggle_upload:
+            log.info("Hotkey: toggle upload enable")
+            threading.Thread(target=self._on_toggle_upload, daemon=True).start()
 
     def _on_release(self, key) -> None:
         self._pressed.discard(key)
@@ -99,10 +135,11 @@ class HotkeyListener:
         self._listener.start()
         log.info(
             "Hotkey listener started. Pipeline=%s | Pause=%s | End=%s",
-            self._hk_pipeline,
-            self._hk_pause,
-            self._hk_end,
+            self._hk_pipeline, self._hk_pause, self._hk_end,
         )
+        if self._hk_toggle_pipeline:
+            log.info("  Toggle pipeline=%s | Toggle metadata=%s | Toggle upload=%s",
+                     self._hk_toggle_pipeline, self._hk_toggle_metadata, self._hk_toggle_upload)
 
     def stop(self) -> None:
         """Stop the listener."""
