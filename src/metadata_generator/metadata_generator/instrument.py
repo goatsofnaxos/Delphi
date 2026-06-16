@@ -150,6 +150,34 @@ def parse_delphi_metadata(metadata_path: Path):
 # -------------------------
 
 
+def _normalize_probe_model(name: str) -> str:
+    """Map probe annotation names (old and new formats) to AIND EphysProbe enum values.
+
+    Handles both the old parenthesis format (e.g. "Neuropixels 2.0 (multishank)")
+    and the new dash format (e.g. "Neuropixels 2.0 - multishank"), with
+    case-insensitive matching. Falls back to "Custom" if no match is found.
+    """
+    n = name.lower().replace("-", " ").replace("(", " ").replace(")", " ")
+    if "2.0" in n and "multi" in n:
+        return "Neuropixels 2.0 (Multi Shank)"
+    elif "2.0" in n and "single" in n:
+        return "Neuropixels 2.0 (Single Shank)"
+    elif "2.0" in n and "quad" in n:
+        return "Neuropixels 2.0 (Quad Base)"
+    elif "uhd" in n and "switch" in n:
+        return "Neuropixels UHD (Switchable)"
+    elif "uhd" in n and "fixed" in n:
+        return "Neuropixels UHD (Fixed)"
+    elif "uhd" in n:
+        return "Neuropixels UHD (Fixed)"
+    elif "opto" in n:
+        return "Neuropixels Opto (Demonstrator)"
+    elif "1.0" in n:
+        return "Neuropixels 1.0"
+    else:
+        return "Custom"
+
+
 def create_instrument_metadata(
     *,
     current_experiment: str,
@@ -212,11 +240,8 @@ def create_instrument_metadata(
         with probe_json_path.open("r", encoding="utf-8") as f:
             probe_json = json.load(f)
 
-        probe_model = (
+        probe_model = _normalize_probe_model(
             probe_json["probes"][0]["annotations"]["name"]
-            .replace(" - ", " (")
-            .replace("Multishank", "Multi Shank")
-            + ")"
         )
 
         # ---- HARP
