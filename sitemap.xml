@@ -156,4 +156,24 @@
          <loc>https://goatsofnaxos.github.io/Delphi/metadata-generator/api/utils/</loc>
          <lastmod>2026-06-17</lastmod>
     </url>
+    <url>
+         <loc>https://goatsofnaxos.github.io/Delphi/tutorials/</loc>
+         <lastmod>2026-06-17</lastmod>
+    </url>
+    <url>
+         <loc>https://goatsofnaxos.github.io/Delphi/tutorials/delphi-data/</loc>
+         <lastmod>2026-06-17</lastmod>
+    </url>
+    <url>
+         <loc>https://goatsofnaxos.github.io/Delphi/tutorials/experiment-conductor/</loc>
+         <lastmod>2026-06-17</lastmod>
+    </url>
+    <url>
+         <loc>https://goatsofnaxos.github.io/Delphi/tutorials/launcher/</loc>
+         <lastmod>2026-06-17</lastmod>
+    </url>
+    <url>
+         <loc>https://goatsofnaxos.github.io/Delphi/tutorials/metadata-generator/</loc>
+         <lastmod>2026-06-17</lastmod>
+    </url>
 </urlset>
