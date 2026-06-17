@@ -63,6 +63,14 @@ class HotkeyListener:
         Called (no args) when the metadata-toggle hotkey fires.
     on_toggle_upload : Callable, optional
         Called (no args) when the upload-toggle hotkey fires.
+    hotkey_update_end_time : str, optional
+        pynput hotkey string to update the acquisition end time.
+    hotkey_retry_metadata : str, optional
+        pynput hotkey string to reset and retry metadata generation.
+    on_update_end_time : Callable, optional
+        Called (no args) when the update-end-time hotkey fires.
+    on_retry_metadata : Callable, optional
+        Called (no args) when the retry-metadata hotkey fires.
     """
 
     def __init__(
@@ -79,6 +87,10 @@ class HotkeyListener:
         on_toggle_pipeline: Optional[Callable] = None,
         on_toggle_metadata: Optional[Callable] = None,
         on_toggle_upload: Optional[Callable] = None,
+        hotkey_update_end_time: Optional[str] = None,
+        hotkey_retry_metadata: Optional[str] = None,
+        on_update_end_time: Optional[Callable] = None,
+        on_retry_metadata: Optional[Callable] = None,
     ):
         self._hk_pipeline = _parse_hotkey_string(hotkey_pipeline)
         self._hk_pause = _parse_hotkey_string(hotkey_upload_pause)
@@ -94,6 +106,12 @@ class HotkeyListener:
         self._on_toggle_pipeline = on_toggle_pipeline
         self._on_toggle_metadata = on_toggle_metadata
         self._on_toggle_upload = on_toggle_upload
+
+        # Optional action hotkeys
+        self._hk_update_end_time = _parse_hotkey_string(hotkey_update_end_time) if hotkey_update_end_time else None
+        self._hk_retry_metadata = _parse_hotkey_string(hotkey_retry_metadata) if hotkey_retry_metadata else None
+        self._on_update_end_time = on_update_end_time
+        self._on_retry_metadata = on_retry_metadata
 
         self._pressed: set = set()
         self._listener: Optional[object] = None
@@ -119,6 +137,12 @@ class HotkeyListener:
         elif self._hk_toggle_upload and current == self._hk_toggle_upload and self._on_toggle_upload:
             log.info("Hotkey: toggle upload enable")
             threading.Thread(target=self._on_toggle_upload, daemon=True).start()
+        elif self._hk_update_end_time and current == self._hk_update_end_time and self._on_update_end_time:
+            log.info("Hotkey: update acquisition end time")
+            threading.Thread(target=self._on_update_end_time, daemon=True).start()
+        elif self._hk_retry_metadata and current == self._hk_retry_metadata and self._on_retry_metadata:
+            log.info("Hotkey: retry metadata generation")
+            threading.Thread(target=self._on_retry_metadata, daemon=True).start()
 
     def _on_release(self, key) -> None:
         self._pressed.discard(key)
@@ -140,6 +164,9 @@ class HotkeyListener:
         if self._hk_toggle_pipeline:
             log.info("  Toggle pipeline=%s | Toggle metadata=%s | Toggle upload=%s",
                      self._hk_toggle_pipeline, self._hk_toggle_metadata, self._hk_toggle_upload)
+        if self._hk_update_end_time:
+            log.info("  Update end time=%s | Retry metadata=%s",
+                     self._hk_update_end_time, self._hk_retry_metadata)
 
     def stop(self) -> None:
         """Stop the listener."""

@@ -93,6 +93,20 @@ def generate_metadata(
         else:
             surgery_notes_path = None
 
+        # Probe ID from surgery notes (falls back to "Probe B" if unavailable)
+        probe_id = "Probe B"
+        if surgery_notes_path and surgery_notes_path.exists():
+            try:
+                from metadata_generator.procedures import parse_surgery_notes
+                _, _, _, probe_sn = parse_surgery_notes(surgery_notes_path)
+                if probe_sn:
+                    probe_id = probe_sn
+                    log.info("Probe ID from surgery notes: %s", probe_id)
+            except Exception as exc:
+                log.warning("Could not extract probe ID from surgery notes: %s", exc)
+        else:
+            log.warning("Surgery notes not found — using default probe_id '%s'.", probe_id)
+
         log.info("Generating subject metadata ...")
         subject = write_subject_metadata(
             subject_id=subject_id,
@@ -107,8 +121,8 @@ def generate_metadata(
             instrument_id=instrument_id,
             dataset_root=data_root,
             metadata_path=behavior_metadata_path,
-            probe_id="Probe B",
-            probe_serial_number=None,
+            probe_id=probe_id,
+            probe_serial_number=probe_id,
             delphi_computer_id=delphi_computer_id,
         )
         instrument.write_standard_file(metadata_output_path)
@@ -118,7 +132,7 @@ def generate_metadata(
             cam_assemblies, ephys_assembly = extract_camera_and_ephys_assemblies(instrument)
             # Minimal probe config for procedures
             from aind_data_schema.components.configs import ProbeConfig, EphysAssemblyConfig
-            probe_config = ProbeConfig(device_name="Probe B", transform=[])
+            probe_config = ProbeConfig(device_name=probe_id, transform=[])
             procedures = create_procedures_metadata(
                 current_experiment=experiment_type,
                 subject_id=subject_id,
@@ -154,7 +168,7 @@ def generate_metadata(
             dataset_root=data_root,
             metadata_path=behavior_metadata_path,
             ephys_assembly=ephys_assembly,
-            probe_id="Probe B",
+            probe_id=probe_id,
             cam_assemblies=cam_assemblies,
             platform_surface=platform_surface,
             odor_names=odor_names,

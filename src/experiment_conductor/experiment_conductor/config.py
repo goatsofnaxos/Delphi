@@ -89,8 +89,6 @@ class ConductorConfig:
         Surgeon names.
     experimenters : List[str]
         Experimenter names.
-    acquisition_type : str
-        Acquisition type passed to metadata-generator.
     delphi_experiment : str
         Experiment name for delphi-data snapshot (e.g. ``bonhoeffer``).
     delphi_firmware : str
@@ -148,6 +146,16 @@ class ConductorConfig:
         pynput key string to toggle metadata enable/disable at runtime.
     hotkey_toggle_upload : Optional[str]
         pynput key string to toggle upload enable/disable at runtime.
+    hotkey_update_end_time : Optional[str]
+        pynput key string to manually update the acquisition end time in
+        ``acquisition.json`` after metadata has been generated.
+    hotkey_retry_metadata : Optional[str]
+        pynput key string to reset the metadata-generated flag and re-run
+        metadata generation on the next cadence cycle.
+    chunk_camera_folder : str
+        Path relative to ``data_root`` used to count timestamp-named chunk
+        directories when gating the upload start job.  Defaults to
+        ``behavior-videos/TopCamera``.
     """
 
     experiment_type: str
@@ -164,7 +172,6 @@ class ConductorConfig:
     delphi_computer_id: str
     surgeons: List[str]
     experimenters: List[str]
-    acquisition_type: str
     delphi_experiment: str
     delphi_firmware: str
     upload_batch_size: int
@@ -188,6 +195,9 @@ class ConductorConfig:
     hotkey_toggle_pipeline: Optional[str]
     hotkey_toggle_metadata: Optional[str]
     hotkey_toggle_upload: Optional[str]
+    hotkey_update_end_time: Optional[str]
+    hotkey_retry_metadata: Optional[str]
+    chunk_camera_folder: str
 
 
 def _parse_cli() -> argparse.Namespace:
@@ -222,7 +232,6 @@ def _parse_cli() -> argparse.Namespace:
     p.add_argument("--delphi-computer-id", default=None)
     p.add_argument("--surgeons", default=None, help="Comma-separated surgeon names")
     p.add_argument("--experimenters", default=None, help="Comma-separated experimenter names")
-    p.add_argument("--acquisition-type", default=None)
     p.add_argument("--delphi-experiment", default=None)
     p.add_argument("--delphi-firmware", default=None)
     p.add_argument(
@@ -314,7 +323,6 @@ def build_config() -> ConductorConfig:
         delphi_computer_id=_g("DELPHI_COMPUTER_ID", args.delphi_computer_id, ""),
         surgeons=_list(_g("SURGEONS", args.surgeons)),
         experimenters=_list(_g("EXPERIMENTERS", args.experimenters)),
-        acquisition_type=_g("ACQUISITION_TYPE", args.acquisition_type, ""),
         delphi_experiment=_g("DELPHI_EXPERIMENT", args.delphi_experiment, "bonhoeffer"),
         delphi_firmware=_g("DELPHI_FIRMWARE", args.delphi_firmware, "0.1.0"),
         upload_batch_size=int(_g("UPLOAD_BATCH_SIZE", args.upload_batch_size, 2)),
@@ -341,4 +349,7 @@ def build_config() -> ConductorConfig:
         hotkey_toggle_pipeline=os.getenv("HOTKEY_TOGGLE_PIPELINE") or None,
         hotkey_toggle_metadata=os.getenv("HOTKEY_TOGGLE_METADATA") or None,
         hotkey_toggle_upload=os.getenv("HOTKEY_TOGGLE_UPLOAD") or None,
+        hotkey_update_end_time=os.getenv("HOTKEY_UPDATE_END_TIME") or None,
+        hotkey_retry_metadata=os.getenv("HOTKEY_RETRY_METADATA") or None,
+        chunk_camera_folder=_g("CHUNK_CAMERA_FOLDER", None, "behavior-videos/TopCamera"),
     )

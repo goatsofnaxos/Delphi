@@ -180,13 +180,32 @@ def _bonsai_running() -> bool:
 
 def _count_local_chunks(data_root: Path, folder: str = "behavior-videos/TopCamera") -> int:
     """Count timestamp-named directories (chunks) in the camera folder."""
-    import re
-
     chunk_re = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}")
     target = data_root / folder
     if not target.exists():
         return 0
     return sum(1 for d in target.iterdir() if d.is_dir() and chunk_re.fullmatch(d.name))
+
+
+def _get_session_start_time(data_root: Path) -> datetime:
+    """Return the UTC creation time of the earliest file found in *data_root*.
+
+    On Windows ``st_ctime`` is the file creation time.  Falls back to
+    ``datetime.now(UTC)`` if the directory is empty or unreadable.
+    """
+    earliest: Optional[float] = None
+    try:
+        for f in data_root.rglob("*"):
+            if f.is_file():
+                t = f.stat().st_ctime
+                if earliest is None or t < earliest:
+                    earliest = t
+    except Exception as exc:
+        log.warning("Could not scan data_root for start time: %s", exc)
+    if earliest is not None:
+        return datetime.fromtimestamp(earliest, tz=timezone.utc)
+    log.warning("No files found in data_root; using current time as start_time.")
+    return datetime.now(timezone.utc)
 
 
 def _metadata_ready(data_root: Path) -> bool:
@@ -234,9 +253,11 @@ def launch_experiments(cfg: ConductorConfig, state: ConductorState) -> None:
 
     log.info("Session data root: %s", cfg.data_root)
 
+    start_time = _get_session_start_time(cfg.data_root)
     with state.lock:
         state.phase = Phase.RUNNING
-        state.start_time = datetime.now(timezone.utc)
+        state.start_time = start_time
+    log.info("Session start time (earliest file): %s", start_time.isoformat())
     log.info("=== PHASE: RUNNING ===")
 
 
@@ -311,7 +332,7 @@ def run_cadence_cycle(cfg: ConductorConfig, state: ConductorState) -> None:
                 protocol_id=cfg.protocol_id,
                 instrument_id=cfg.instrument_id,
                 experiment_room=cfg.experiment_room,
-                acquisition_type=cfg.acquisition_type,
+                acquisition_type=cfg.experiment_type,
                 delphi_computer_id=cfg.delphi_computer_id,
                 surgeons=cfg.surgeons,
                 experimenters=cfg.experimenters,
@@ -320,14 +341,21 @@ def run_cadence_cycle(cfg: ConductorConfig, state: ConductorState) -> None:
                 metadata_output_path=cfg.data_root / "metadata",
             )
             if ok:
+                initial_end_time = datetime.now(timezone.utc)
                 with state.lock:
                     state.metadata_generated = True
+                    if state.experiment_end_time is None:
+                        state.experiment_end_time = initial_end_time
+                    end_time_snapshot = state.experiment_end_time
+                update_acquisition_end_time(
+                    cfg.data_root / "metadata", end_time_snapshot
+                )
 
         # ── d. Upload ────────────────────────────────────────────────────────
         if not state.upload_enabled:
             log.info("Upload disabled — skipping.")
         elif _metadata_ready(cfg.data_root):
-            n_chunks = _count_local_chunks(cfg.data_root)
+            n_chunks = _count_local_chunks(cfg.data_root, folder=cfg.chunk_camera_folder)
             is_start = not state.upload_started
             if is_start and n_chunks < 3:
                 log.info(
@@ -459,20 +487,28 @@ def end_experiment(cfg: ConductorConfig, state: ConductorState) -> None:
     with state.lock:
         state.phase = Phase.ENDING
 
-    # Prompt for actual end time
-    raw = input(
-        "\nExperiment ended. Enter end time as HH:MM (UTC, 24h) or press Enter for now: "
-    ).strip()
+    # Prompt for end time — show the current value if already set via hotkey
+    with state.lock:
+        current_end = state.experiment_end_time
+    if current_end:
+        prompt = (
+            f"\nExperiment ended. Current end time: {current_end.strftime('%H:%M')} UTC. "
+            "Enter new HH:MM to override, or press Enter to keep it: "
+        )
+    else:
+        prompt = "\nExperiment ended. Enter end time as HH:MM (UTC, 24h) or press Enter for now: "
+
+    raw = input(prompt).strip()
     if raw:
         try:
             now = datetime.now(timezone.utc)
             h, m = (int(x) for x in raw.split(":"))
             end_time = now.replace(hour=h, minute=m, second=0, microsecond=0)
         except Exception:
-            log.warning("Could not parse time '%s'; using current UTC time.", raw)
-            end_time = datetime.now(timezone.utc)
+            log.warning("Could not parse time '%s'; keeping existing end time.", raw)
+            end_time = current_end or datetime.now(timezone.utc)
     else:
-        end_time = datetime.now(timezone.utc)
+        end_time = current_end or datetime.now(timezone.utc)
 
     with state.lock:
         state.experiment_end_time = end_time
@@ -492,8 +528,13 @@ def end_experiment(cfg: ConductorConfig, state: ConductorState) -> None:
             )
             input("Press Enter to continue once probe.json is in place ...")
 
-    # Final pipeline + upload cycle
+    # Final pipeline + upload cycle — wait for any in-flight cycle to finish
+    # first so the lock is free and the final cycle is guaranteed to run.
     log.info("Running final processing and upload cycle ...")
+    if not _CYCLE_LOCK.acquire(timeout=300):
+        log.warning("Timed out waiting for in-flight cycle; final cycle may be incomplete.")
+    else:
+        _CYCLE_LOCK.release()
     run_cadence_cycle(cfg, state)
 
     # Stop upload cleanly
@@ -615,6 +656,36 @@ def main() -> None:
         log.info("Upload toggled: %s", status)
         print(f"\n[hotkey] Upload {status}")
 
+    def _update_end_time():
+        """Prompt for a new end time and update acquisition.json."""
+        raw = input(
+            "\n[hotkey] Enter new end time as HH:MM (UTC, 24h) or press Enter for now: "
+        ).strip()
+        if raw:
+            try:
+                now = datetime.now(timezone.utc)
+                h, m = (int(x) for x in raw.split(":"))
+                new_end = now.replace(hour=h, minute=m, second=0, microsecond=0)
+            except Exception:
+                log.warning("Could not parse time '%s'; using current UTC time.", raw)
+                new_end = datetime.now(timezone.utc)
+        else:
+            new_end = datetime.now(timezone.utc)
+        with state.lock:
+            state.experiment_end_time = new_end
+        log.info("End time updated to %s", new_end.isoformat())
+        print(f"[hotkey] End time updated to {new_end.isoformat()}")
+        if state.metadata_generated:
+            update_acquisition_end_time(cfg.data_root / "metadata", new_end)
+
+    def _retry_metadata():
+        """Reset the metadata-generated flag so the next cycle regenerates it."""
+        with state.lock:
+            state.metadata_generated = False
+        log.info("Metadata retry requested — will regenerate on next cycle.")
+        print("\n[hotkey] Metadata will regenerate on the next cycle.")
+        threading.Thread(target=lambda: run_cadence_cycle(cfg, state), daemon=True).start()
+
     hotkeys = HotkeyListener(
         hotkey_pipeline=cfg.hotkey_pipeline,
         hotkey_upload_pause=cfg.hotkey_upload_pause,
@@ -628,6 +699,10 @@ def main() -> None:
         on_toggle_pipeline=_toggle_pipeline,
         on_toggle_metadata=_toggle_metadata,
         on_toggle_upload=_toggle_upload,
+        hotkey_update_end_time=cfg.hotkey_update_end_time,
+        hotkey_retry_metadata=cfg.hotkey_retry_metadata,
+        on_update_end_time=_update_end_time,
+        on_retry_metadata=_retry_metadata,
     )
     hotkeys.start()
 
@@ -638,6 +713,10 @@ def main() -> None:
         toggle_lines += f"  {cfg.hotkey_toggle_metadata} -> toggle metadata on/off\n"
     if cfg.hotkey_toggle_upload:
         toggle_lines += f"  {cfg.hotkey_toggle_upload} -> toggle upload on/off\n"
+    if cfg.hotkey_update_end_time:
+        toggle_lines += f"  {cfg.hotkey_update_end_time} -> update acquisition end time\n"
+    if cfg.hotkey_retry_metadata:
+        toggle_lines += f"  {cfg.hotkey_retry_metadata} -> retry metadata generation\n"
 
     print(
         f"\nExperiment running."

@@ -46,6 +46,8 @@ class ConductorState:
     upload_enabled : bool
         Whether the upload step runs each cycle.  Initialised from
         ``ENABLE_UPLOAD`` in the config; toggled at runtime by hotkey.
+    start_time : Optional[datetime]
+        UTC time when the RUNNING phase began (after launcher exits).
     experiment_end_time : Optional[datetime]
         UTC time when the user signalled experiment end.
     last_pipeline_run : Optional[datetime]
@@ -65,6 +67,7 @@ class ConductorState:
     pipeline_enabled: bool = True
     metadata_enabled: bool = True
     upload_enabled: bool = True
+    start_time: Optional[datetime] = None
     experiment_end_time: Optional[datetime] = None
     last_pipeline_run: Optional[datetime] = None
     last_upload_run: Optional[datetime] = None
