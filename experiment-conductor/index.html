@@ -1782,6 +1782,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#experiment-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experiment types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#scheduling-modes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2220,6 +2231,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#experiment-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experiment types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#scheduling-modes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2376,7 +2398,8 @@
 <p><strong>RUNNING</strong> — a cadence scheduler fires a <em>cycle</em> every N minutes (or at
    a fixed minute past every hour).  Each cycle:</p>
 </li>
-<li>Runs the full <code>delphi-data</code> pipeline (consolidate → build-dataset → snapshot).</li>
+<li>Runs the full <code>delphi-data</code> pipeline (consolidate → build-dataset → snapshot),
+     always with <code>--append</code> so new Harp data accumulates in the existing CSV.</li>
 <li>Moves Delphi metadata files to <code>behavior/metadata/</code> (once, after first
      consolidation).</li>
 <li>Generates AIND metadata in <code>data_root/metadata/</code> (once, after metadata
@@ -2395,6 +2418,43 @@
 <p><strong>DONE</strong> — optional large-file deletion (only for chunks confirmed on S3).</p>
 </li>
 </ol>
+<hr />
+<h2 id="experiment-types">Experiment types<a class="headerlink" href="#experiment-types" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th><code>EXPERIMENT_TYPE</code></th>
+<th style="text-align: center;">Delphi pipeline</th>
+<th style="text-align: center;">Pirouette consolidation</th>
+<th style="text-align: center;">Probe metadata</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>delphi</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td><code>pirouette</code></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">✓ (once)</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td><code>delphi_pirouette</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓ (once)</td>
+<td style="text-align: center;">✓</td>
+</tr>
+</tbody>
+</table>
+<p>For <code>pirouette</code> and <code>delphi_pirouette</code>, a <code>probe.json</code> with the Neuropixels
+serial number must be present in <code>ecephys/</code> before the experiment ends.
+The full CCFv3 <code>ProbeConfig</code> (coordinates, BREGMA_ARI coordinate system,
+chronic implant note) is extracted from <code>acquisition.json</code> and written into
+<code>procedures.json</code> automatically.</p>
 <hr />
 <h2 id="scheduling-modes">Scheduling modes<a class="headerlink" href="#scheduling-modes" title="Permanent link">&para;</a></h2>
 <table>
@@ -2428,26 +2488,63 @@
 <thead>
 <tr>
 <th>Hotkey</th>
+<th><code>.env</code> key</th>
+<th>Default</th>
 <th>Action</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>Ctrl+Shift+P</code></td>
+<td><code>HOTKEY_PIPELINE</code></td>
+<td><code>&lt;ctrl&gt;+&lt;shift&gt;+p</code></td>
 <td>Trigger a pipeline cycle immediately</td>
 </tr>
 <tr>
 <td><code>Ctrl+Shift+U</code></td>
+<td><code>HOTKEY_UPLOAD_PAUSE</code></td>
+<td><code>&lt;ctrl&gt;+&lt;shift&gt;+u</code></td>
 <td>Pause / resume upload between batches</td>
 </tr>
 <tr>
 <td><code>Ctrl+Shift+E</code></td>
+<td><code>HOTKEY_END_EXPERIMENT</code></td>
+<td><code>&lt;ctrl&gt;+&lt;shift&gt;+e</code></td>
 <td>Signal experiment end</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+1</code></td>
+<td><code>HOTKEY_TOGGLE_PIPELINE</code></td>
+<td><code>&lt;ctrl&gt;+&lt;shift&gt;+1</code></td>
+<td>Toggle pipeline on / off</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+2</code></td>
+<td><code>HOTKEY_TOGGLE_METADATA</code></td>
+<td><code>&lt;ctrl&gt;+&lt;shift&gt;+2</code></td>
+<td>Toggle metadata generation on / off</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+3</code></td>
+<td><code>HOTKEY_TOGGLE_UPLOAD</code></td>
+<td><code>&lt;ctrl&gt;+&lt;shift&gt;+3</code></td>
+<td>Toggle upload on / off</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+T</code></td>
+<td><code>HOTKEY_UPDATE_END_TIME</code></td>
+<td><code>&lt;ctrl&gt;+&lt;shift&gt;+t</code></td>
+<td>Update the session end time manually</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+R</code></td>
+<td><code>HOTKEY_RETRY_METADATA</code></td>
+<td><code>&lt;ctrl&gt;+&lt;shift&gt;+r</code></td>
+<td>Re-run metadata generation immediately</td>
 </tr>
 </tbody>
 </table>
-<p>Hotkeys are configurable via <code>.env</code> (<code>HOTKEY_PIPELINE</code>, <code>HOTKEY_UPLOAD_PAUSE</code>,
-<code>HOTKEY_END_EXPERIMENT</code>).</p>
+<p>All hotkeys are configurable via <code>.env</code> or CLI flags.</p>
 <hr />
 <h2 id="data-root-resolution">Data root resolution<a class="headerlink" href="#data-root-resolution" title="Permanent link">&para;</a></h2>
 <p>The conductor needs to know where the session data lives on the <strong>local server</strong>
@@ -2459,19 +2556,19 @@
 <h3 id="server-relative-mode-recommended">Server-relative mode (recommended)<a class="headerlink" href="#server-relative-mode-recommended" title="Permanent link">&para;</a></h3>
 <p>Set <code>SERVER_ROOT</code> to the root of the server where data is robocopied.
 This corresponds to <code>remote_transfer_root_path</code> in the hardware schema
-(e.g. <code>\\allen\aind\stage\chronic</code>).</p>
+(e.g. <code>\allen\aind\stage\chronic</code>).</p>
 <p>The conductor computes <code>data_root</code> as <code>SERVER_ROOT / SUBJECT_ID / SESSION_DATETIME</code>
 after the launcher exits.  If <code>SESSION_DATETIME</code> is left blank, the conductor
 automatically detects the newest <code>YYYY-MM-DDTHH-MM-SS</code> directory under
 <code>SERVER_ROOT / SUBJECT_ID</code>, polling every 30 s until robocopy creates it
 (up to 10 minutes).</p>
-<div class="language-ini highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="na">SERVER_ROOT</span><span class="o">=</span><span class="s">\\allen\aind\stage\chronic</span>
+<div class="language-ini highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="na">SERVER_ROOT</span><span class="o">=</span><span class="s">\allen\aind\stage\chronic</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="na">SESSION_DATETIME</span><span class="o">=</span><span class="w">          </span><span class="c1"># leave blank to auto-detect</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="na">SUBJECT_ID</span><span class="o">=</span><span class="s">12345</span>
 </span></code></pre></div>
 <h3 id="direct-mode">Direct mode<a class="headerlink" href="#direct-mode" title="Permanent link">&para;</a></h3>
 <p>Set <code>DATA_ROOT</code> to the full session path when the directory is already known:</p>
-<div class="language-ini highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="na">DATA_ROOT</span><span class="o">=</span><span class="s">\\allen\aind\stage\chronic\12345\2026-03-20T20-23-05</span>
+<div class="language-ini highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="na">DATA_ROOT</span><span class="o">=</span><span class="s">\allen\aind\stage\chronic\12345\2026-03-20T20-23-05</span>
 </span></code></pre></div>
 <hr />
 <h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
@@ -2480,7 +2577,7 @@ automatically detects the newest <code>YYYY-MM-DDTHH-MM-SS</code> directory unde
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>uv<span class="w"> </span>run<span class="w"> </span>scripts/run_conductor.py
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># or with CLI overrides:</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>uv<span class="w"> </span>run<span class="w"> </span>scripts/run_conductor.py<span class="w"> </span>--server-root<span class="w"> </span><span class="se">\\</span>allen<span class="se">\a</span>ind<span class="se">\s</span>tage<span class="se">\c</span>hronic<span class="w"> </span>--subject-id<span class="w"> </span><span class="m">12345</span><span class="w"> </span>--dry-run
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>uv<span class="w"> </span>run<span class="w"> </span>scripts/run_conductor.py<span class="w"> </span>--server-root<span class="w"> </span><span class="se">\a</span>llen<span class="se">\a</span>ind<span class="se">\s</span>tage<span class="se">\c</span>hronic<span class="w"> </span>--subject-id<span class="w"> </span><span class="m">12345</span><span class="w"> </span>--dry-run
 </span></code></pre></div>
 <hr />
 <h2 id="upload-safety">Upload safety<a class="headerlink" href="#upload-safety" title="Permanent link">&para;</a></h2>
