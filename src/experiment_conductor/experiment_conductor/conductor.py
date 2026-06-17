@@ -9,7 +9,9 @@ Lifecycle
 
 Each cadence cycle:
   a. Run delphi-data pipeline (consolidate + build-dataset + snapshot).
+     For pirouette-only experiments: runs consolidation only (no build/snapshot).
   b. After first consolidation: move Delphi metadata files.
+     Skipped for pirouette-only experiments (no Delphi controller data).
   c. After metadata moved (once): generate AIND metadata.
   d. If AIND metadata exists + >=3 local chunks: submit upload job.
 """
@@ -34,7 +36,7 @@ from experiment_conductor.metadata_bridge import (
     update_acquisition_end_time,
     verify_probe_json,
 )
-from experiment_conductor.pipeline_bridge import move_delphi_metadata, run_pipeline
+from experiment_conductor.pipeline_bridge import move_delphi_metadata, run_consolidation, run_pipeline
 from experiment_conductor.state import ConductorState, Phase
 from experiment_conductor.uploader_bridge import (
     UPLOAD_PAUSE_EVENT,
@@ -263,9 +265,19 @@ def run_cadence_cycle(cfg: ConductorConfig, state: ConductorState) -> None:
         log.info("--- Cadence cycle started ---")
         now = datetime.now(timezone.utc)
 
-        # ── a. delphi-data pipeline ──────────────────────────────────────────
+        # ── a. delphi-data pipeline / consolidation ──────────────────────────
+        is_delphi = "delphi" in cfg.experiment_type
         if not state.pipeline_enabled:
             log.info("Pipeline disabled — skipping.")
+        elif not is_delphi:
+            # Pirouette-only: no Delphi controller data, but still consolidate
+            # run sub-directories so ecephys data is in canonical layout.
+            if not state.first_consolidation_done:
+                success = run_consolidation(data_root=cfg.data_root)
+                if success:
+                    with state.lock:
+                        state.first_consolidation_done = True
+                        state.last_pipeline_run = now
         else:
             success = run_pipeline(
                 data_root=cfg.data_root,
@@ -282,7 +294,9 @@ def run_cadence_cycle(cfg: ConductorConfig, state: ConductorState) -> None:
                     state.last_pipeline_run = now
 
         # ── b. Move Delphi metadata ──────────────────────────────────────────
-        if state.first_consolidation_done and not state.delphi_metadata_moved:
+        if not is_delphi:
+            pass  # no Delphi metadata files to move
+        elif state.first_consolidation_done and not state.delphi_metadata_moved:
             move_delphi_metadata(cfg.data_root)
             with state.lock:
                 state.delphi_metadata_moved = True
@@ -524,6 +538,13 @@ def main() -> None:
     state.pipeline_enabled = cfg.enable_pipeline
     state.metadata_enabled = cfg.enable_metadata
     state.upload_enabled = cfg.enable_upload
+
+    # For pirouette-only experiments there is no Delphi controller data, so the
+    # pipeline and metadata-move steps are skipped.  Pre-set the gate flag so
+    # AIND metadata generation isn't blocked waiting for a pipeline that will
+    # never run.
+    if "delphi" not in cfg.experiment_type:
+        state.delphi_metadata_moved = True
 
     log.info("Experiment Conductor starting.")
     log.info("  Experiment type : %s", cfg.experiment_type)

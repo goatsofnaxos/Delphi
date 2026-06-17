@@ -78,6 +78,33 @@ def run_pipeline(
     return True
 
 
+def run_consolidation(data_root: Path) -> bool:
+    """Run only the session-run consolidation step for a session directory.
+
+    Merges multiple run sub-directories (if present) into the earliest one via
+    ``delphi-data consolidate``.  Used for pirouette-only experiments that have
+    no Delphi controller data and therefore cannot run the full pipeline.
+
+    Parameters
+    ----------
+    data_root : Path
+        Run-level session directory.
+
+    Returns
+    -------
+    bool
+        True if consolidation succeeded, False otherwise.
+    """
+    cmd = [sys.executable, "-m", "delphi_data.cli", "consolidate", "--data-root", str(data_root)]
+    log.info("Running delphi-data consolidate: %s", " ".join(cmd))
+    result = subprocess.run(cmd, capture_output=False)
+    if result.returncode != 0:
+        log.error("delphi-data consolidate failed (exit %d)", result.returncode)
+        return False
+    log.info("delphi-data consolidate completed successfully.")
+    return True
+
+
 def move_delphi_metadata(data_root: Path) -> list:
     """Move HardwareSettings/RuleSettings JSONL files to behavior/metadata/.
 
