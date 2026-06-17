@@ -45,6 +45,12 @@ theme:
 # ---------------------------------------------------------------------------
 nav:
   - Home: index.md
+  - Tutorials:
+    - Overview: tutorials/index.md
+    - launcher: tutorials/launcher.md
+    - delphi-data: tutorials/delphi-data.md
+    - metadata-generator: tutorials/metadata-generator.md
+    - experiment-conductor: tutorials/experiment-conductor.md
   - delphi-data:
     - Overview: delphi-data/index.md
     - API Reference:
