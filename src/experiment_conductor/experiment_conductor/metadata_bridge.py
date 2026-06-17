@@ -1,13 +1,14 @@
 """Bridge to the metadata-generator package.
 
-Builds a PipelineConfig from the conductor config and calls the per-modality
-generation functions. Also handles updating the acquisition end time.
+Mirrors the logic of ``metadata_generator/scripts/generate_all_metadata.py``
+but driven by :class:`ConductorConfig` instead of env/CLI config.  Each
+metadata file is generated independently so a failure in one step does not
+abort the others.
 """
 from __future__ import annotations
 
 import json
 import logging
-import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -33,7 +34,9 @@ def generate_metadata(
     """Generate AIND-compliant metadata files to ``metadata_output_path``.
 
     Calls :mod:`metadata_generator` functions to produce ``subject.json``,
-    ``procedures.json``, ``instrument.json``, and ``acquisition.json``.
+    ``instrument.json``, ``acquisition.json``, and ``procedures.json``.
+    Each file is wrapped in its own try/except; a failure in one does not
+    prevent the others from being written.
 
     Parameters
     ----------
@@ -65,56 +68,72 @@ def generate_metadata(
     Returns
     -------
     bool
-        True on success, False if an exception occurred.
+        True if all files were generated without errors, False if any step
+        raised an exception.
     """
-    try:
-        from metadata_generator.config import PipelineConfig
-        from metadata_generator.subject import write_subject_metadata
-        from metadata_generator.instrument import create_instrument_metadata
-        from metadata_generator.procedures import create_procedures_metadata
-        from metadata_generator.acquisition import create_acquisition_metadata
-        from metadata_generator.utils import (
-            extract_camera_and_ephys_assemblies,
-            get_delphi_odor_channel_indices,
-            get_delphi_odor_names,
-            get_platform_surface_from_instrument,
-            get_probe_config_from_acquisition,
+    from metadata_generator.subject import write_subject_metadata
+    from metadata_generator.instrument import create_instrument_metadata
+    from metadata_generator.procedures import create_procedures_metadata, parse_surgery_notes
+    from metadata_generator.acquisition import create_acquisition_metadata
+    from metadata_generator.utils import (
+        extract_camera_and_ephys_assemblies,
+        get_delphi_odor_channel_indices,
+        get_delphi_odor_names,
+        get_platform_surface_from_instrument,
+        get_probe_config_from_acquisition,
+    )
+    from aind_data_schema.core.instrument import Instrument
+    from aind_data_schema.core.acquisition import Acquisition
+    from aind_data_schema.core.procedures import Procedures
+
+    metadata_output_path.mkdir(parents=True, exist_ok=True)
+    behavior_metadata_path = data_root / "behavior" / "metadata"
+    any_error = False
+
+    # ── Resolve surgery notes path and probe ID ───────────────────────────────
+    if surgery_notes_base and subject_id:
+        surgery_notes_path = (
+            surgery_notes_base / subject_id
+            / f"{subject_id}_craniotomy-implantation.docx"
         )
+    else:
+        surgery_notes_path = None
 
-        metadata_output_path.mkdir(parents=True, exist_ok=True)
-        behavior_metadata_path = data_root / "behavior" / "metadata"
+    probe_id = "Probe B"
+    if surgery_notes_path and surgery_notes_path.exists():
+        try:
+            _, _, _, probe_sn = parse_surgery_notes(surgery_notes_path)
+            if probe_sn:
+                probe_id = probe_sn
+                log.info("Probe ID from surgery notes: %s", probe_id)
+        except Exception as exc:
+            log.warning("Could not extract probe ID from surgery notes: %s", exc)
+    else:
+        log.warning("Surgery notes not found — using default probe_id '%s'.", probe_id)
 
-        # Surgery notes path
-        if surgery_notes_base and subject_id:
-            surgery_notes_path = (
-                surgery_notes_base / subject_id
-                / f"{subject_id}_craniotomy-implantation.docx"
-            )
-        else:
-            surgery_notes_path = None
+    probe_serial_number = probe_id
 
-        # Probe ID from surgery notes (falls back to "Probe B" if unavailable)
-        probe_id = "Probe B"
-        if surgery_notes_path and surgery_notes_path.exists():
-            try:
-                from metadata_generator.procedures import parse_surgery_notes
-                _, _, _, probe_sn = parse_surgery_notes(surgery_notes_path)
-                if probe_sn:
-                    probe_id = probe_sn
-                    log.info("Probe ID from surgery notes: %s", probe_id)
-            except Exception as exc:
-                log.warning("Could not extract probe ID from surgery notes: %s", exc)
-        else:
-            log.warning("Surgery notes not found — using default probe_id '%s'.", probe_id)
-
-        log.info("Generating subject metadata ...")
-        subject = write_subject_metadata(
+    # ── subject.json ──────────────────────────────────────────────────────────
+    log.info("Generating subject.json ...")
+    try:
+        write_subject_metadata(
             subject_id=subject_id,
             output_directory=metadata_output_path,
             allow_fallback=True,
         )
+        log.info("subject.json generated.")
+    except Exception as exc:
+        log.error("Error generating subject.json: %s", exc, exc_info=True)
+        any_error = True
 
-        log.info("Generating instrument metadata ...")
+    # ── instrument.json ───────────────────────────────────────────────────────
+    log.info("Generating instrument.json ...")
+    cam_assemblies = None
+    ephys_assembly = None
+    platform_surface = None
+    odor_names = None
+    odor_channels = None
+    try:
         instrument = create_instrument_metadata(
             current_experiment=experiment_type,
             experiment_room=experiment_room,
@@ -122,42 +141,28 @@ def generate_metadata(
             dataset_root=data_root,
             metadata_path=behavior_metadata_path,
             probe_id=probe_id,
-            probe_serial_number=probe_id,
+            probe_serial_number=probe_serial_number,
             delphi_computer_id=delphi_computer_id,
         )
-        instrument.write_standard_file(metadata_output_path)
+        Instrument.model_validate_json(instrument.model_dump_json()).write_standard_file(
+            output_directory=metadata_output_path
+        )
+        log.info("instrument.json generated.")
 
-        # Procedures (requires surgery notes for pirouette)
-        if "pirouette" in experiment_type and surgery_notes_path and surgery_notes_path.exists():
-            cam_assemblies, ephys_assembly = extract_camera_and_ephys_assemblies(instrument)
-            # Minimal probe config for procedures
-            from aind_data_schema.components.configs import ProbeConfig, EphysAssemblyConfig
-            probe_config = ProbeConfig(device_name=probe_id, transform=[])
-            procedures = create_procedures_metadata(
-                current_experiment=experiment_type,
-                subject_id=subject_id,
-                protocol_id=protocol_id,
-                surgeons=surgeons,
-                surgery_notes_path=surgery_notes_path,
-                probe_device=ephys_assembly,
-                probe_config=probe_config,
-            )
-        else:
-            from aind_data_schema.core.procedures import Procedures
-            procedures = Procedures(subject_id=subject_id)
-        procedures.write_standard_file(metadata_output_path)
-
-        log.info("Generating acquisition metadata ...")
         cam_assemblies, ephys_assembly = extract_camera_and_ephys_assemblies(instrument)
-        odor_names = None
-        odor_channels = None
-        if "delphi" in experiment_type:
-            try:
-                odor_names = get_delphi_odor_names(behavior_metadata_path)
-                odor_channels = get_delphi_odor_channel_indices(instrument)
-            except Exception as exc:
-                log.warning("Could not read Delphi odor info: %s", exc)
         platform_surface = get_platform_surface_from_instrument(instrument)
+        if "delphi" in experiment_type:
+            odor_names = get_delphi_odor_names(behavior_metadata_path)
+            odor_channels = get_delphi_odor_channel_indices(instrument)
+            log.info("Odor channels: %s  names: %s", odor_channels, odor_names)
+    except Exception as exc:
+        log.error("Error generating instrument.json: %s", exc, exc_info=True)
+        any_error = True
+
+    # ── acquisition.json ──────────────────────────────────────────────────────
+    log.info("Generating acquisition.json ...")
+    probe_config = None
+    try:
         acquisition = create_acquisition_metadata(
             current_experiment=experiment_type,
             acquisition_type=acquisition_type,
@@ -171,17 +176,49 @@ def generate_metadata(
             probe_id=probe_id,
             cam_assemblies=cam_assemblies,
             platform_surface=platform_surface,
-            odor_names=odor_names,
-            odor_channels=odor_channels,
+            odor_names=odor_names if "delphi" in experiment_type else None,
+            odor_channels=odor_channels if "delphi" in experiment_type else None,
         )
-        acquisition.write_standard_file(metadata_output_path)
-
-        log.info("AIND metadata written to %s", metadata_output_path)
-        return True
-
+        Acquisition.model_validate_json(acquisition.model_dump_json()).write_standard_file(
+            output_directory=metadata_output_path
+        )
+        log.info("acquisition.json generated.")
+        probe_config = get_probe_config_from_acquisition(acquisition)
     except Exception as exc:
-        log.error("Metadata generation failed: %s", exc, exc_info=True)
-        return False
+        log.error("Error generating acquisition.json: %s", exc, exc_info=True)
+        any_error = True
+
+    # ── procedures.json ───────────────────────────────────────────────────────
+    log.info("Generating procedures.json ...")
+    try:
+        if surgery_notes_path and surgery_notes_path.exists() and probe_config is not None:
+            procedures = create_procedures_metadata(
+                current_experiment=experiment_type,
+                subject_id=subject_id,
+                protocol_id=protocol_id,
+                surgeons=surgeons,
+                surgery_notes_path=surgery_notes_path,
+                probe_device=ephys_assembly.probes[0],
+                probe_config=probe_config,
+            )
+        else:
+            log.warning(
+                "Surgery notes missing or acquisition failed — writing minimal procedures.json."
+            )
+            procedures = Procedures(subject_id=subject_id)
+        Procedures.model_validate_json(procedures.model_dump_json()).write_standard_file(
+            output_directory=metadata_output_path
+        )
+        log.info("procedures.json generated.")
+    except Exception as exc:
+        log.error("Error generating procedures.json: %s", exc, exc_info=True)
+        any_error = True
+
+    if any_error:
+        log.warning("Metadata generation completed with errors — check logs above.")
+    else:
+        log.info("AIND metadata written to %s", metadata_output_path)
+    return not any_error
 
 
 def update_acquisition_end_time(

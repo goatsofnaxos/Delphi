@@ -39,7 +39,6 @@ from experiment_conductor.metadata_bridge import (
 from experiment_conductor.pipeline_bridge import move_delphi_metadata, run_consolidation, run_pipeline
 from experiment_conductor.state import ConductorState, Phase
 from experiment_conductor.uploader_bridge import (
-    UPLOAD_PAUSE_EVENT,
     delete_local_files_after_upload,
     run_upload_cycle,
     stop_upload,

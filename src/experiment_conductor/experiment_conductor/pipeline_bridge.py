@@ -9,7 +9,6 @@ from __future__ import annotations
 import logging
 import subprocess
 import sys
-from datetime import datetime, timezone
 from pathlib import Path
 
 from delphi_data.curation import consolidate_metadata_files
