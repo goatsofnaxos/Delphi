@@ -25,7 +25,8 @@ LAUNCHING ──► RUNNING ──► ENDING ──► DONE
 
 2. **RUNNING** — a cadence scheduler fires a *cycle* every N minutes (or at
    a fixed minute past every hour).  Each cycle:
-   - Runs the full `delphi-data` pipeline (consolidate → build-dataset → snapshot).
+   - Runs the full `delphi-data` pipeline (consolidate → build-dataset → snapshot),
+     always with `--append` so new Harp data accumulates in the existing CSV.
    - Moves Delphi metadata files to `behavior/metadata/` (once, after first
      consolidation).
    - Generates AIND metadata in `data_root/metadata/` (once, after metadata
@@ -42,6 +43,22 @@ LAUNCHING ──► RUNNING ──► ENDING ──► DONE
 
 ---
 
+## Experiment types
+
+| `EXPERIMENT_TYPE` | Delphi pipeline | Pirouette consolidation | Probe metadata |
+|-------------------|:--------------:|:----------------------:|:--------------:|
+| `delphi`          | ✓              |                        |                |
+| `pirouette`       |                | ✓ (once)               | ✓              |
+| `delphi_pirouette`| ✓              | ✓ (once)               | ✓              |
+
+For `pirouette` and `delphi_pirouette`, a `probe.json` with the Neuropixels
+serial number must be present in `ecephys/` before the experiment ends.
+The full CCFv3 `ProbeConfig` (coordinates, BREGMA_ARI coordinate system,
+chronic implant note) is extracted from `acquisition.json` and written into
+`procedures.json` automatically.
+
+---
+
 ## Scheduling modes
 
 | Mode | `.env` key | CLI flag | Behaviour |
@@ -55,14 +72,18 @@ Both keys are mutually exclusive; `SCHEDULE_MINUTE_OF_HOUR` takes priority when 
 
 ## Hotkeys
 
-| Hotkey | Action |
-|--------|--------|
-| `Ctrl+Shift+P` | Trigger a pipeline cycle immediately |
-| `Ctrl+Shift+U` | Pause / resume upload between batches |
-| `Ctrl+Shift+E` | Signal experiment end |
+| Hotkey | `.env` key | Default | Action |
+|--------|-----------|---------|--------|
+| `Ctrl+Shift+P` | `HOTKEY_PIPELINE` | `<ctrl>+<shift>+p` | Trigger a pipeline cycle immediately |
+| `Ctrl+Shift+U` | `HOTKEY_UPLOAD_PAUSE` | `<ctrl>+<shift>+u` | Pause / resume upload between batches |
+| `Ctrl+Shift+E` | `HOTKEY_END_EXPERIMENT` | `<ctrl>+<shift>+e` | Signal experiment end |
+| `Ctrl+Shift+1` | `HOTKEY_TOGGLE_PIPELINE` | `<ctrl>+<shift>+1` | Toggle pipeline on / off |
+| `Ctrl+Shift+2` | `HOTKEY_TOGGLE_METADATA` | `<ctrl>+<shift>+2` | Toggle metadata generation on / off |
+| `Ctrl+Shift+3` | `HOTKEY_TOGGLE_UPLOAD` | `<ctrl>+<shift>+3` | Toggle upload on / off |
+| `Ctrl+Shift+T` | `HOTKEY_UPDATE_END_TIME` | `<ctrl>+<shift>+t` | Update the session end time manually |
+| `Ctrl+Shift+R` | `HOTKEY_RETRY_METADATA` | `<ctrl>+<shift>+r` | Re-run metadata generation immediately |
 
-Hotkeys are configurable via `.env` (`HOTKEY_PIPELINE`, `HOTKEY_UPLOAD_PAUSE`,
-`HOTKEY_END_EXPERIMENT`).
+All hotkeys are configurable via `.env` or CLI flags.
 
 ---
 
@@ -82,7 +103,7 @@ Configure one of two modes — not both:
 
 Set `SERVER_ROOT` to the root of the server where data is robocopied.
 This corresponds to `remote_transfer_root_path` in the hardware schema
-(e.g. `\\allen\aind\stage\chronic`).
+(e.g. `\allen\aind\stage\chronic`).
 
 The conductor computes `data_root` as `SERVER_ROOT / SUBJECT_ID / SESSION_DATETIME`
 after the launcher exits.  If `SESSION_DATETIME` is left blank, the conductor
@@ -91,7 +112,7 @@ automatically detects the newest `YYYY-MM-DDTHH-MM-SS` directory under
 (up to 10 minutes).
 
 ```ini
-SERVER_ROOT=\\allen\aind\stage\chronic
+SERVER_ROOT=\allen\aind\stage\chronic
 SESSION_DATETIME=          # leave blank to auto-detect
 SUBJECT_ID=12345
 ```
@@ -101,7 +122,7 @@ SUBJECT_ID=12345
 Set `DATA_ROOT` to the full session path when the directory is already known:
 
 ```ini
-DATA_ROOT=\\allen\aind\stage\chronic\12345\2026-03-20T20-23-05
+DATA_ROOT=\allen\aind\stage\chronic\12345\2026-03-20T20-23-05
 ```
 
 ---
@@ -114,7 +135,7 @@ cp .env.example .env   # set SERVER_ROOT + SUBJECT_ID (or DATA_ROOT directly)
 uv run scripts/run_conductor.py
 
 # or with CLI overrides:
-uv run scripts/run_conductor.py --server-root \\allen\aind\stage\chronic --subject-id 12345 --dry-run
+uv run scripts/run_conductor.py --server-root \allen\aind\stage\chronic --subject-id 12345 --dry-run
 ```
 
 ---

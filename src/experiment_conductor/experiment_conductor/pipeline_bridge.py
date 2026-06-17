@@ -61,6 +61,7 @@ def run_pipeline(
     ]
     if subject_id:
         cmd += ["--subject-id", subject_id]
+    cmd.append("--append")  # always merge new Harp data into existing CSV
     if skip_build:
         cmd.append("--skip-build")
     if skip_clips:

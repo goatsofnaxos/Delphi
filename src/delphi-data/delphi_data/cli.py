@@ -68,6 +68,7 @@ def _cmd_pipeline(args: argparse.Namespace) -> None:
         skip_build=args.skip_build,
         skip_clips=args.skip_clips,
         skip_snapshot=args.skip_snapshot,
+        append=args.append,
     )
     import sys
     sys.exit(1 if "failed" in result.values() else 0)
@@ -271,6 +272,14 @@ def _build_parser() -> argparse.ArgumentParser:
                         help="Skip the create-clips step.")
     p_pipe.add_argument("--skip-snapshot", action="store_true", default=False,
                         help="Skip the snapshot step.")
+    p_pipe.add_argument(
+        "--append", action="store_true", default=_s.dataset_append,
+        help=(
+            "Append new rows to an existing delphi_dataset.csv rather than skipping "
+            "the build step.  Deduplicates on beam_break_onset.  "
+            f"[env: DELPHI_DATASET_APPEND, current: {_s.dataset_append}]"
+        ),
+    )
     p_pipe.set_defaults(func=_cmd_pipeline)
 
     # ------------------------------------------------------------------
