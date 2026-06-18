@@ -135,7 +135,7 @@ def _parse_args(argv=None) -> argparse.Namespace:
     Returns
     -------
     argparse.Namespace
-        Parsed argument namespace with ``session_dir``, ``firmware``, and
+        Parsed argument namespace with ``data_root``, ``firmware``, and
         ``no_consolidate`` attributes.
     """
     parser = argparse.ArgumentParser(
@@ -163,7 +163,7 @@ def _parse_args(argv=None) -> argparse.Namespace:
 if __name__ == "__main__":
     args = _parse_args()
     build_dataset(
-        session_dir=pathlib.Path(args.data_root),
+        data_root=pathlib.Path(args.data_root),
         firmware=args.firmware,
         consolidate_runs=not args.no_consolidate,
     )
