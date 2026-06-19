@@ -26,7 +26,12 @@ _pkg_root = _script_dir.parent
 if str(_pkg_root) not in sys.path:
     sys.path.insert(0, str(_pkg_root))
 
-from delphi_data.curation import consolidate_metadata_files, consolidate_session_runs
+from delphi_data.curation import (
+    collect_run_dirs,
+    consolidate_metadata_files,
+    consolidate_session_runs,
+    find_earliest_run,
+)
 from delphi_data.ingestion import ingest
 
 
@@ -46,8 +51,11 @@ def build_dataset(
     Parameters
     ----------
     data_root:
-        Path to the run-level session directory (contains ``behavior/`` and
-        timestamp-named run sub-directories).
+        Path to either the session root (containing timestamp-named run
+        sub-directories) or a single run directory (containing ``behavior/``
+        directly).  When timestamp sub-directories are found, the script
+        consolidates them (if ``consolidate_runs`` is True) and descends into
+        the earliest run directory automatically.
     firmware:
         Firmware version string, e.g. ``"0.1.0"``.  Pass ``None`` to
         auto-detect from ``device.yml`` inside the session.
@@ -66,20 +74,29 @@ def build_dataset(
     pd.DataFrame
         The per-poke event dataframe that was saved to CSV.
     """
-    run_dirs = [p for p in data_root.iterdir() if p.is_dir()]
-    multiple_runs_detected = len(run_dirs) > 1
+    # Detect timestamp-named run sub-directories.  Their presence means data_root
+    # is a session root rather than a run directory itself.
+    ts_run_dirs = collect_run_dirs(str(data_root))
 
-    if multiple_runs_detected:
-        print(f"Detected {len(run_dirs)} run directories in session: {data_root}")
+    if len(ts_run_dirs) > 1:
+        print(f"Detected {len(ts_run_dirs)} run directories in session: {data_root}")
+        if consolidate_runs:
+            print("Consolidating run directories …")
+            consolidate_session_runs(str(data_root))
+            print("Consolidation complete.")
+        else:
+            print("Warning: multiple runs detected but consolidation is disabled.")
+        # After consolidation (or if skipped) use the earliest run dir.
+        ts_run_dirs = collect_run_dirs(str(data_root))
+        data_root = pathlib.Path(find_earliest_run(ts_run_dirs))
+        print(f"Using run directory: {data_root}")
+    elif len(ts_run_dirs) == 1:
+        # Single run sub-directory — descend into it.
+        data_root = pathlib.Path(ts_run_dirs[0])
+        print(f"Single run detected — using run directory: {data_root}")
     else:
-        print(f"Single run detected in session: {data_root}")
-
-    if multiple_runs_detected and consolidate_runs:
-        print("Consolidating run directories …")
-        consolidate_session_runs(str(data_root))
-        print("Consolidation complete.")
-    elif multiple_runs_detected and not consolidate_runs:
-        print("Warning: multiple runs detected but consolidation is disabled.")
+        # No timestamp sub-directories: data_root is already a run directory.
+        print(f"Using run directory: {data_root}")
 
     # Move any HardwareSettings / RuleSettings files that landed in the
     # top-level metadata/ directory instead of behavior/metadata/.
