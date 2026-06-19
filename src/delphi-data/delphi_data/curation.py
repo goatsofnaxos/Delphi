@@ -138,6 +138,32 @@ def find_earliest_run(run_dirs: list) -> str:
     return min(run_dirs, key=lambda p: os.path.basename(p))
 
 
+def resolve_run_dir(session_root) -> "pathlib.Path":
+    """Return the effective run directory for a session root.
+
+    If *session_root* contains timestamp-named sub-directories (i.e. it is a
+    session root that has one or more run sub-directories), the lexicographically
+    earliest one is returned.  If no timestamp sub-directories exist the path is
+    returned unchanged — it is already a run directory.
+
+    Parameters
+    ----------
+    session_root:
+        Path to the session root directory or an already-resolved run directory.
+
+    Returns
+    -------
+    pathlib.Path
+        The earliest run sub-directory, or *session_root* if none exist.
+    """
+    import pathlib
+    session_root = pathlib.Path(session_root)
+    run_dirs = collect_run_dirs(str(session_root))
+    if run_dirs:
+        return pathlib.Path(find_earliest_run(run_dirs))
+    return session_root
+
+
 def count_files(directory: str) -> int:
     """Count all files recursively under *directory*.
 

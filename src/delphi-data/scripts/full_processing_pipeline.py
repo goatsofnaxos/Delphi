@@ -67,6 +67,7 @@ for _p in [str(_pkg_root), str(_here)]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
+from delphi_data.curation import resolve_run_dir
 from delphi_data.settings import settings as _s
 from snapshots import REGISTRY as _REGISTRY
 
@@ -363,6 +364,13 @@ def run_pipeline(
         status["build"] = "ok" if ok else "failed"
         print(f"  -> {status['build'].upper()}  ({time.perf_counter() - t0:.1f} s)\n")
 
+    # After build (which may have consolidated run dirs), resolve the actual
+    # run directory.  All subsequent steps operate on the run dir, not the
+    # session root.
+    run_dir = resolve_run_dir(data_root)
+    if run_dir != data_root:
+        print(f"  [info] Resolved run directory: {run_dir}\n")
+
     # -----------------------------------------------------------------------
     # Step 2 — Create poke clips
     # -----------------------------------------------------------------------
@@ -371,7 +379,7 @@ def run_pipeline(
         status["clips"] = "skipped"
     else:
         t0 = time.perf_counter()
-        ok = run_create_clips(data_root, n_workers, no_delete)
+        ok = run_create_clips(run_dir, n_workers, no_delete)
         status["clips"] = "ok" if ok else "failed"
         print(f"  -> {status['clips'].upper()}  ({time.perf_counter() - t0:.1f} s)\n")
 
@@ -384,7 +392,7 @@ def run_pipeline(
     else:
         t0 = time.perf_counter()
         ok = run_snapshot(
-            data_root=data_root,
+            data_root=run_dir,
             experiment=experiment,
             subject_id=subject_id,
             tau=tau,

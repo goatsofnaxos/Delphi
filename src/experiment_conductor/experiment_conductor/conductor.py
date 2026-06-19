@@ -207,6 +207,31 @@ def _get_session_start_time(data_root: Path) -> datetime:
     return datetime.now(timezone.utc)
 
 
+def _resolve_run_dir(session_root: Path) -> Path:
+    """Return the earliest timestamp-named run sub-directory inside *session_root*.
+
+    If *session_root* contains no timestamp-named sub-directories it is returned
+    unchanged — it is already a run directory.  This is called after every
+    pipeline/consolidation step so that metadata, upload, and chunk-counting
+    always target the canonical run directory rather than the session root.
+
+    Parameters
+    ----------
+    session_root : Path
+        Session root (or an already-resolved run directory).
+
+    Returns
+    -------
+    Path
+        Earliest run sub-directory, or *session_root* if none exist.
+    """
+    from delphi_data.curation import collect_run_dirs, find_earliest_run
+    run_dirs = collect_run_dirs(str(session_root))
+    if run_dirs:
+        return Path(find_earliest_run(run_dirs))
+    return session_root
+
+
 def _metadata_ready(data_root: Path) -> bool:
     """Return True if all four AIND metadata files exist."""
     meta_dir = data_root / "metadata"
@@ -313,11 +338,17 @@ def run_cadence_cycle(cfg: ConductorConfig, state: ConductorState) -> None:
                     state.first_consolidation_done = True
                     state.last_pipeline_run = now
 
+        # Resolve the earliest run directory after consolidation.
+        # cfg.data_root is the session root; all steps below must operate on
+        # the run dir (behavior/, ecephys/, metadata/ all live inside it).
+        run_dir = _resolve_run_dir(cfg.data_root)
+        log.debug("Effective run directory: %s", run_dir)
+
         # ── b. Move Delphi metadata ──────────────────────────────────────────
         if not is_delphi:
             pass  # no Delphi metadata files to move
         elif state.first_consolidation_done and not state.delphi_metadata_moved:
-            move_delphi_metadata(cfg.data_root)
+            move_delphi_metadata(run_dir)
             with state.lock:
                 state.delphi_metadata_moved = True
 
@@ -335,9 +366,9 @@ def run_cadence_cycle(cfg: ConductorConfig, state: ConductorState) -> None:
                 delphi_computer_id=cfg.delphi_computer_id,
                 surgeons=cfg.surgeons,
                 experimenters=cfg.experimenters,
-                data_root=cfg.data_root,
+                data_root=run_dir,
                 surgery_notes_base=cfg.surgery_notes_base,
-                metadata_output_path=cfg.data_root / "metadata",
+                metadata_output_path=run_dir / "metadata",
             )
             if ok:
                 initial_end_time = datetime.now(timezone.utc)
@@ -347,14 +378,14 @@ def run_cadence_cycle(cfg: ConductorConfig, state: ConductorState) -> None:
                         state.experiment_end_time = initial_end_time
                     end_time_snapshot = state.experiment_end_time
                 update_acquisition_end_time(
-                    cfg.data_root / "metadata", end_time_snapshot
+                    run_dir / "metadata", end_time_snapshot
                 )
 
         # ── d. Upload ────────────────────────────────────────────────────────
         if not state.upload_enabled:
             log.info("Upload disabled — skipping.")
-        elif _metadata_ready(cfg.data_root):
-            n_chunks = _count_local_chunks(cfg.data_root, folder=cfg.chunk_camera_folder)
+        elif _metadata_ready(run_dir):
+            n_chunks = _count_local_chunks(run_dir, folder=cfg.chunk_camera_folder)
             is_start = not state.upload_started
             if is_start and n_chunks < 3:
                 log.info(
@@ -363,7 +394,7 @@ def run_cadence_cycle(cfg: ConductorConfig, state: ConductorState) -> None:
             else:
                 acq_start = state.start_time or datetime.now(timezone.utc)
                 ok = run_upload_cycle(
-                    source_directory=str(cfg.data_root),
+                    source_directory=str(run_dir),
                     subject_id=cfg.subject_id,
                     acq_datetime=acq_start,
                     project_name=cfg.project_name,
@@ -514,13 +545,14 @@ def end_experiment(cfg: ConductorConfig, state: ConductorState) -> None:
 
     log.info("Experiment end time: %s", end_time.isoformat())
 
-    # Update acquisition.json
+    # Update acquisition.json — resolve run dir to find metadata/
+    run_dir = _resolve_run_dir(cfg.data_root)
     if state.metadata_generated:
-        update_acquisition_end_time(cfg.data_root / "metadata", end_time)
+        update_acquisition_end_time(run_dir / "metadata", end_time)
 
     # Pirouette: verify probe.json
     if "pirouette" in cfg.experiment_type.lower():
-        if not verify_probe_json(cfg.data_root):
+        if not verify_probe_json(run_dir):
             print(
                 "\nWARNING: probe.json missing from ecephys/. "
                 "Place it there before the upload is submitted."
@@ -543,7 +575,7 @@ def end_experiment(cfg: ConductorConfig, state: ConductorState) -> None:
     if cfg.delete_after_upload and state.upload_started:
         log.info("Deleting large local files (delete_after_upload=true) ...")
         delete_local_files_after_upload(
-            data_root=cfg.data_root,
+            data_root=run_dir,
             keep_patterns=cfg.keep_local_patterns,
             s3_bucket=cfg.s3_bucket,
             subject_id=cfg.subject_id,
