@@ -316,13 +316,13 @@ def run_cadence_cycle(cfg: ConductorConfig, state: ConductorState) -> None:
             log.info("Pipeline disabled — skipping.")
         elif not is_delphi:
             # Pirouette-only: no Delphi controller data, but still consolidate
-            # run sub-directories so ecephys data is in canonical layout.
-            if not state.first_consolidation_done:
-                success = run_consolidation(data_root=cfg.data_root)
-                if success:
-                    with state.lock:
-                        state.first_consolidation_done = True
-                        state.last_pipeline_run = now
+            # run sub-directories on every cycle so any new run created by a
+            # Bonsai restart gets merged into the earliest run directory.
+            success = run_consolidation(data_root=cfg.data_root)
+            if success:
+                with state.lock:
+                    state.first_consolidation_done = True
+                    state.last_pipeline_run = now
         else:
             success = run_pipeline(
                 data_root=cfg.data_root,
