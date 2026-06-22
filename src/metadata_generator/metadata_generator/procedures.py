@@ -951,7 +951,14 @@ def create_procedures_metadata(
         # Headframe surgery date
         match = re.search(r"(\d{1,2}/\d{1,2}/\d{2,4})", parsed_data.get("surgery_history"))
         date_str = match.group(1)
-        headframe_surgery_date = datetime.strptime(date_str, "%m/%d/%y")
+        for _fmt in ("%m/%d/%Y", "%m/%d/%y"):
+            try:
+                headframe_surgery_date = datetime.strptime(date_str, _fmt)
+                break
+            except ValueError:
+                continue
+        else:
+            raise ValueError(f"Could not parse headframe surgery date: {date_str!r}")
 
         headframe_surgery = Surgery(
             protocol_id=protocol_id,
