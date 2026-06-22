@@ -1478,7 +1478,8 @@ def copy_and_patch_aind_session_json(
 
     try:
         dst.write_text(json.dumps(obj, indent=2, ensure_ascii=False), encoding="utf-8")
-        TEMP_SESSION_FILES.append(str(dst))
+        # Do NOT register in TEMP_SESSION_FILES — the patched AindBehaviorSessionModel
+        # file must be kept after the launcher exits so downstream tools can read it.
     except Exception as e:
         print(f"Warning: could not write patched AIND session JSON: {e}")
     return str(dst)
