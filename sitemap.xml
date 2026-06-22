@@ -2,178 +2,178 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/api/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/api/cli/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/api/config/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/api/curation/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/api/ingestion/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/api/poke_metrics/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/api/quality_control/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/api/settings/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/api/video_processing/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/api/visualization/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/scripts/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/scripts/build_dataset/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/scripts/create_poke_clips/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/scripts/data_snapshot/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/scripts/full_processing_pipeline/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/scripts/snapshots/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/scripts/snapshots/bonhoeffer/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/delphi-data/scripts/snapshots/common/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/conductor/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/config/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/hotkeys/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/metadata_bridge/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/pipeline_bridge/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/state/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/uploader_bridge/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/launcher/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/metadata-generator/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/metadata-generator/api/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/metadata-generator/api/acquisition/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/metadata-generator/api/cli/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/metadata-generator/api/config/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/metadata-generator/api/instrument/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/metadata-generator/api/procedures/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/metadata-generator/api/subject/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/metadata-generator/api/utils/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/tutorials/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/tutorials/delphi-data/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/tutorials/experiment-conductor/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/tutorials/launcher/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/tutorials/metadata-generator/</loc>
-         <lastmod>2026-06-19</lastmod>
+         <lastmod>2026-06-22</lastmod>
     </url>
 </urlset>
