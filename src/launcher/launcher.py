@@ -1881,11 +1881,15 @@ def wait_for_workflows():
         print("\nStopped waiting. Workflows may still be running.")
 
 
-def _kill_pids_on_ports(ports: List[int]) -> None:
-    """Kill any process holding a listening or established socket on *ports*.
+_SOCKET_KILL_NAMES = ("bonsai", "openephys", "open_ephys")
 
-    Uses ``netstat -ano`` to find owning PIDs, then taskkill.  Safe to call
-    even when no process holds the port (does nothing).
+
+def _kill_pids_on_ports(ports: List[int]) -> None:
+    """Kill Bonsai/OpenEphys processes holding sockets on *ports*.
+
+    Uses ``netstat -ano`` to find owning PIDs.  Only kills processes whose
+    name contains "bonsai" or "openephys"; any other process holding the port
+    is reported but skipped to avoid collateral damage.
 
     Parameters
     ----------
@@ -1914,6 +1918,14 @@ def _kill_pids_on_ports(ports: List[int]) -> None:
                         name = proc.name()
                     except (psutil.NoSuchProcess, psutil.AccessDenied):
                         name = "unknown"
+                    name_lower = name.lower()
+                    is_expected = any(kw in name_lower for kw in _SOCKET_KILL_NAMES)
+                    if not is_expected:
+                        print(
+                            f"  [SKIP] Port {port} held by '{name}' (PID {pid})"
+                            " — not a Bonsai/OpenEphys process. Free it manually if needed."
+                        )
+                        continue
                     print(f"  Killing PID {pid} ({name}) holding port {port} ...")
                     subprocess.run(
                         ["taskkill", "/PID", str(pid), "/F", "/T"],
@@ -2009,44 +2021,72 @@ def kill_bonsai_and_free_sockets(sessions_to_launch: List[Dict[str, Any]]) -> No
 
 def relaunch_workflows(
     sessions_to_launch: List[Dict[str, Any]],
-    auto_start: bool,
     parallel: bool,
 ) -> None:
-    """Kill current Bonsai workflows, free sockets, then relaunch with the same parameters.
+    """Kill current Bonsai workflows, free sockets, then open them in editor mode.
 
-    Useful after a hardware buffer overflow or NetMQ ``AddressAlreadyInUseException``
-    that leaves sockets bound.  The same Bonsai commands and parameters that
-    were used at the start of the session are reused.
+    Always opens without ``--start`` so the workflow is visible in the editor
+    but not running.  When both Delphi and Pirouette sessions are present the
+    user is prompted to choose which type to open.
 
     Parameters
     ----------
     sessions_to_launch : list of dict
         Session dicts as assembled by the launcher (each has ``bonsai_cmd``,
         ``workflow``, and ``params`` keys).
-    auto_start : bool
-        Whether to pass ``--start`` to Bonsai.
     parallel : bool
-        When ``True``, launch all workflows simultaneously; otherwise stagger.
+        When ``True``, open all workflows simultaneously; otherwise stagger.
     """
     if not sessions_to_launch:
         print("No session information available — cannot relaunch.")
         return
 
+    # Determine which experiment types are present
+    exp_keys = list(dict.fromkeys(s["exp_key"] for s in sessions_to_launch))
+    has_delphi = any(
+        "delphi" in k.lower() and "pirouette" not in k.lower() for k in exp_keys
+    )
+    has_pirouette = any("pirouette" in k.lower() for k in exp_keys)
+
+    sessions_filtered = sessions_to_launch
+    if has_delphi and has_pirouette:
+        print("\nWhich workflows to open?")
+        print("  1. All")
+        print("  2. Delphi only")
+        print("  3. Pirouette only")
+        while True:
+            choice = input("Select: ").strip()
+            if choice == "1":
+                break
+            elif choice == "2":
+                sessions_filtered = [
+                    s for s in sessions_to_launch
+                    if "pirouette" not in s["exp_key"].lower()
+                ]
+                break
+            elif choice == "3":
+                sessions_filtered = [
+                    s for s in sessions_to_launch
+                    if "pirouette" in s["exp_key"].lower()
+                ]
+                break
+            print("Invalid selection.")
+
     print("\nKilling existing workflows and freeing sockets ...")
     kill_bonsai_and_free_sockets(sessions_to_launch)
 
-    print("\nRelaunching Bonsai workflows ...")
+    print("\nOpening Bonsai workflow(s) in editor mode ...")
     if parallel:
-        for s in sessions_to_launch:
-            p = launch_bonsai(s["bonsai_cmd"], s["workflow"], s["params"], auto_start)
+        for s in sessions_filtered:
+            p = launch_bonsai(s["bonsai_cmd"], s["workflow"], s["params"], auto_start=False)
             WORKFLOW_PROCS.append(p)
     else:
-        for idx, s in enumerate(sessions_to_launch):
-            p = launch_bonsai(s["bonsai_cmd"], s["workflow"], s["params"], auto_start)
+        for idx, s in enumerate(sessions_filtered):
+            p = launch_bonsai(s["bonsai_cmd"], s["workflow"], s["params"], auto_start=False)
             WORKFLOW_PROCS.append(p)
-            if idx < len(sessions_to_launch) - 1:
+            if idx < len(sessions_filtered) - 1:
                 time.sleep(1.5)
-    print("Bonsai workflows relaunched.")
+    print("Bonsai workflow(s) opened.")
 
 
 def cleanup_temp_files_and_processes():
@@ -2773,7 +2813,7 @@ def main():
                 print("  4. Wait for workflows")
                 print("  5. Exit & cleanup")
                 print("  6. Kill sockets (free ZMQ / TCP ports)")
-                print("  7. Relaunch Bonsai (kill + free sockets + relaunch)")
+                print("  7. Open Bonsai (kill + free sockets + open in editor)")
                 if not pir_selected:
                     print("  (Pirouette not selected — lifealert disabled)")
 
@@ -2801,7 +2841,7 @@ def main():
                     kill_bonsai_and_free_sockets(sessions_to_launch)
 
                 elif sel == "7":
-                    relaunch_workflows(sessions_to_launch, auto_start, parallel)
+                    relaunch_workflows(sessions_to_launch, parallel)
 
                 else:
                     print("Invalid selection.")
