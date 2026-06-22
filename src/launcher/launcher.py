@@ -1881,6 +1881,174 @@ def wait_for_workflows():
         print("\nStopped waiting. Workflows may still be running.")
 
 
+def _kill_pids_on_ports(ports: List[int]) -> None:
+    """Kill any process holding a listening or established socket on *ports*.
+
+    Uses ``netstat -ano`` to find owning PIDs, then taskkill.  Safe to call
+    even when no process holds the port (does nothing).
+
+    Parameters
+    ----------
+    ports : list of int
+        TCP port numbers to check.
+    """
+    for port in ports:
+        try:
+            result = subprocess.run(
+                ["netstat", "-ano"],
+                capture_output=True, text=True,
+                creationflags=subprocess.CREATE_NO_WINDOW,
+            )
+            for line in result.stdout.splitlines():
+                if f":{port}" in line and ("LISTENING" in line or "ESTABLISHED" in line or "TIME_WAIT" in line):
+                    parts = line.split()
+                    pid_str = parts[-1]
+                    try:
+                        pid = int(pid_str)
+                    except ValueError:
+                        continue
+                    if pid <= 4:  # skip System/Idle
+                        continue
+                    try:
+                        proc = psutil.Process(pid)
+                        name = proc.name()
+                    except (psutil.NoSuchProcess, psutil.AccessDenied):
+                        name = "unknown"
+                    print(f"  Killing PID {pid} ({name}) holding port {port} ...")
+                    subprocess.run(
+                        ["taskkill", "/PID", str(pid), "/F", "/T"],
+                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                        creationflags=subprocess.CREATE_NO_WINDOW,
+                    )
+        except Exception as exc:
+            print(f"  Warning: could not scan port {port}: {exc}")
+
+
+def kill_bonsai_and_free_sockets(sessions_to_launch: List[Dict[str, Any]]) -> None:
+    """Kill all Bonsai workflow processes and release bound TCP/ZMQ ports.
+
+    Bonsai's NetMQ (ZMQ) publisher and the Open Ephys TCP socket both bind
+    ports that Windows keeps in TIME_WAIT or CLOSE_WAIT even after the Bonsai
+    process exits, preventing a new Bonsai instance from binding them.  This
+    function:
+
+    1. Hard-kills all tracked Bonsai workflow processes.
+    2. Finds the ports declared in the session ``ConnectionString`` parameters
+       plus the Open Ephys socket port (default 9001) and kills any remaining
+       owners.
+    3. Waits 2 s for Windows to release the handles.
+
+    Parameters
+    ----------
+    sessions_to_launch : list of dict
+        Session dicts as assembled by the launcher.  Used to read
+        ``ConnectionString`` values so their ports are freed.
+    """
+    # --- 1. Kill tracked Bonsai processes ---
+    running = [p for p in WORKFLOW_PROCS if p.poll() is None]
+    if running:
+        print("Killing Bonsai workflow processes ...")
+        for p in running:
+            try:
+                subprocess.run(
+                    ["taskkill", "/PID", str(p.pid), "/F", "/T"],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                    creationflags=subprocess.CREATE_NO_WINDOW,
+                )
+            except Exception:
+                pass
+        try:
+            psutil.wait_procs(running, timeout=8)
+        except Exception:
+            pass
+    else:
+        print("No tracked Bonsai processes running.")
+
+    # Also kill any stray Bonsai.exe processes not in WORKFLOW_PROCS
+    for proc in psutil.process_iter(["name", "pid"]):
+        try:
+            if "bonsai" in (proc.info["name"] or "").lower():
+                print(f"  Killing stray Bonsai process: PID {proc.info['pid']}")
+                subprocess.run(
+                    ["taskkill", "/PID", str(proc.info["pid"]), "/F", "/T"],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                    creationflags=subprocess.CREATE_NO_WINDOW,
+                )
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            pass
+
+    WORKFLOW_PROCS.clear()
+
+    # --- 2. Collect ports to free ---
+    ports_to_free: List[int] = []
+
+    # Parse ConnectionString ports from session params  e.g. "@tcp://localhost:5557"
+    for s in sessions_to_launch:
+        cs = s.get("params", {}).get("ConnectionString", "")
+        if cs:
+            import re as _re
+            m = _re.search(r":(\d+)\s*$", cs.strip())
+            if m:
+                ports_to_free.append(int(m.group(1)))
+
+    # Open Ephys Bonsai socket default port
+    ports_to_free.append(9001)
+
+    # Deduplicate
+    ports_to_free = list(dict.fromkeys(ports_to_free))
+
+    if ports_to_free:
+        print(f"Freeing ports: {ports_to_free} ...")
+        _kill_pids_on_ports(ports_to_free)
+
+    # --- 3. Grace period for Windows handle release ---
+    print("Waiting 2 s for Windows to release socket handles ...")
+    time.sleep(2.0)
+    print("Sockets freed.")
+
+
+def relaunch_workflows(
+    sessions_to_launch: List[Dict[str, Any]],
+    auto_start: bool,
+    parallel: bool,
+) -> None:
+    """Kill current Bonsai workflows, free sockets, then relaunch with the same parameters.
+
+    Useful after a hardware buffer overflow or NetMQ ``AddressAlreadyInUseException``
+    that leaves sockets bound.  The same Bonsai commands and parameters that
+    were used at the start of the session are reused.
+
+    Parameters
+    ----------
+    sessions_to_launch : list of dict
+        Session dicts as assembled by the launcher (each has ``bonsai_cmd``,
+        ``workflow``, and ``params`` keys).
+    auto_start : bool
+        Whether to pass ``--start`` to Bonsai.
+    parallel : bool
+        When ``True``, launch all workflows simultaneously; otherwise stagger.
+    """
+    if not sessions_to_launch:
+        print("No session information available — cannot relaunch.")
+        return
+
+    print("\nKilling existing workflows and freeing sockets ...")
+    kill_bonsai_and_free_sockets(sessions_to_launch)
+
+    print("\nRelaunching Bonsai workflows ...")
+    if parallel:
+        for s in sessions_to_launch:
+            p = launch_bonsai(s["bonsai_cmd"], s["workflow"], s["params"], auto_start)
+            WORKFLOW_PROCS.append(p)
+    else:
+        for idx, s in enumerate(sessions_to_launch):
+            p = launch_bonsai(s["bonsai_cmd"], s["workflow"], s["params"], auto_start)
+            WORKFLOW_PROCS.append(p)
+            if idx < len(sessions_to_launch) - 1:
+                time.sleep(1.5)
+    print("Bonsai workflows relaunched.")
+
+
 def cleanup_temp_files_and_processes():
     """Stop lifealert processes and delete all registered temporary session files.
 
@@ -2604,6 +2772,8 @@ def main():
                 print("  3. Show status")
                 print("  4. Wait for workflows")
                 print("  5. Exit & cleanup")
+                print("  6. Kill sockets (free ZMQ / TCP ports)")
+                print("  7. Relaunch Bonsai (kill + free sockets + relaunch)")
                 if not pir_selected:
                     print("  (Pirouette not selected — lifealert disabled)")
 
@@ -2616,7 +2786,7 @@ def main():
                         print("Pirouette not selected.")
 
                 elif sel == "2":
-                    stop_lifealert()  # Updated function will hard-kill uv + children
+                    stop_lifealert()
 
                 elif sel == "3":
                     show_status()
@@ -2626,6 +2796,12 @@ def main():
 
                 elif sel == "5":
                     break
+
+                elif sel == "6":
+                    kill_bonsai_and_free_sockets(sessions_to_launch)
+
+                elif sel == "7":
+                    relaunch_workflows(sessions_to_launch, auto_start, parallel)
 
                 else:
                     print("Invalid selection.")
