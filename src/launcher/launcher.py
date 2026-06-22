@@ -2048,31 +2048,29 @@ def relaunch_workflows(
     )
     has_pirouette = any("pirouette" in k.lower() for k in exp_keys)
 
-    # Build the menu — always shown so the user can narrow to one type
-    options: List[tuple] = [("1", "All", sessions_to_launch)]
-    if has_delphi:
-        delphi_sessions = [
-            s for s in sessions_to_launch if "pirouette" not in s["exp_key"].lower()
-        ]
-        options.append(("2", "Delphi only", delphi_sessions))
-    if has_pirouette:
-        pir_sessions = [
-            s for s in sessions_to_launch if "pirouette" in s["exp_key"].lower()
-        ]
-        options.append(("3", "Pirouette only", pir_sessions))
-
-    print("\nWhich workflows to open?")
-    for num, label, _ in options:
-        print(f"  {num}. {label}")
-
     sessions_filtered = sessions_to_launch
-    while True:
-        choice = input("Select: ").strip()
-        match = next((sess for num, _, sess in options if num == choice), None)
-        if match is not None:
-            sessions_filtered = match
-            break
-        print("Invalid selection.")
+    if has_delphi and has_pirouette:
+        print("\nWhich workflows to open?")
+        print("  1. All")
+        print("  2. Delphi only")
+        print("  3. Pirouette only")
+        while True:
+            choice = input("Select: ").strip()
+            if choice == "1":
+                break
+            elif choice == "2":
+                sessions_filtered = [
+                    s for s in sessions_to_launch
+                    if "pirouette" not in s["exp_key"].lower()
+                ]
+                break
+            elif choice == "3":
+                sessions_filtered = [
+                    s for s in sessions_to_launch
+                    if "pirouette" in s["exp_key"].lower()
+                ]
+                break
+            print("Invalid selection.")
 
     print("\nKilling existing workflows and freeing sockets ...")
     kill_bonsai_and_free_sockets(sessions_to_launch)
