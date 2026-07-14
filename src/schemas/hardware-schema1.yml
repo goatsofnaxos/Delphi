@@ -1,9 +1,9 @@
 # yaml-language-server: $schema=hardware-schema.json
 subject_id: 'test'
-session_time: '2024-06-01T12:00:00Z'
-logging_root_path: D:/data
-robocopy_script_path: C:/Users/svc_aind_chronic/Documents/code/Delphi/src/python/robocopy.py
-remote_transfer_root_path: //allen/aind/stage/chronic/data
+session_time: '2026-07-14T13:45:00Z'
+logging_root_path: C:/Users/NewDelphiPC-01/Delphi
+robocopy_script_path: "C:/Users/NewDelphiPC-01/Documents/GitHub/Delphi/src/python/robocopy.py"
+remote_transfer_root_path: Z:/delphi_data/test
 
 delphi_controller:
   final_valve_energized_time_us: 0
