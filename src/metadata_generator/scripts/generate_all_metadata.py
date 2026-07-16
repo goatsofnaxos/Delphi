@@ -44,6 +44,18 @@ from metadata_generator.utils import (
 from metadata_generator.config import build_config, MetadataGenerationConfig
 
 import traceback
+from pathlib import Path as _Path
+
+
+def _write_utf8(model_obj, output_dir: _Path) -> None:
+    """Write an aind-data-schema model to JSON with explicit UTF-8 encoding.
+
+    Replaces write_standard_file which on Windows defaults to cp1252 and
+    produces files that downstream UTF-8 readers (e.g. aind_metadata_mapper)
+    cannot parse when the content contains characters like em dashes.
+    """
+    filename = output_dir / model_obj.default_filename()
+    filename.write_text(model_obj.model_dump_json(indent=3), encoding="utf-8")
 
 
 def main():
@@ -125,7 +137,7 @@ def main():
             )
             serialized = instrument.model_dump_json()
             deserialized = Instrument.model_validate_json(serialized)
-            deserialized.write_standard_file(output_directory=METADATA_OUTPUT_PATH)
+            _write_utf8(deserialized, METADATA_OUTPUT_PATH)
             print("✅ instrument.json generated.")
 
             # Pull objects needed downstream
@@ -177,7 +189,7 @@ def main():
             )
             serialized = acquisition.model_dump_json()
             deserialized = Acquisition.model_validate_json(serialized)
-            deserialized.write_standard_file(output_directory=METADATA_OUTPUT_PATH)
+            _write_utf8(deserialized, METADATA_OUTPUT_PATH)
             print("✅ acquisition.json generated.")
 
             # Probe config for procedures metadata
@@ -206,7 +218,7 @@ def main():
             )
             serialized = procedures.model_dump_json()
             deserialized = Procedures.model_validate_json(serialized)
-            deserialized.write_standard_file(output_directory=METADATA_OUTPUT_PATH)
+            _write_utf8(deserialized, METADATA_OUTPUT_PATH)
             print("✅ procedures.json generated.")
         except Exception as e:
             print(f"Error generating procedures.json: {e}")
