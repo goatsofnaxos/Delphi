@@ -65,8 +65,12 @@
               <Combinator xsi:type="p2:RuleTimer">
                 <p2:DueTimes>
                   <p2:RuleSchedule>
-                    <p2:DueTime>2026-05-15T11:01:00</p2:DueTime>
+                    <p2:DueTime>2026-05-15T13:47:00</p2:DueTime>
                     <p2:RuleSchema>schemas\rule-3.yml</p2:RuleSchema>
+                  </p2:RuleSchedule>
+                  <p2:RuleSchedule>
+                    <p2:DueTime>2026-05-15T13:50:00</p2:DueTime>
+                    <p2:RuleSchema>schemas\rule-4.yml</p2:RuleSchema>
                   </p2:RuleSchedule>
                 </p2:DueTimes>
               </Combinator>
@@ -1351,8 +1355,8 @@
                 <spk:Index xsi:nil="true" />
                 <spk:SerialNumber>26047899</spk:SerialNumber>
                 <spk:ColorProcessing>Default</spk:ColorProcessing>
-                <aeon:ExposureTime>5000</aeon:ExposureTime>
-                <aeon:Gain>20</aeon:Gain>
+                <aeon:ExposureTime>1000</aeon:ExposureTime>
+                <aeon:Gain>0</aeon:Gain>
                 <aeon:Binning>1</aeon:Binning>
               </Combinator>
             </Expression>
@@ -1440,8 +1444,8 @@
                 <spk:Index xsi:nil="true" />
                 <spk:SerialNumber>26030525</spk:SerialNumber>
                 <spk:ColorProcessing>Default</spk:ColorProcessing>
-                <p6:ExposureTime>5000</p6:ExposureTime>
-                <p6:Gain>20</p6:Gain>
+                <p6:ExposureTime>1000</p6:ExposureTime>
+                <p6:Gain>0</p6:Gain>
                 <p6:Binning>1</p6:Binning>
               </Combinator>
             </Expression>
@@ -1799,7 +1803,7 @@
                                 </PropertyMappings>
                               </Expression>
                               <Expression xsi:type="io:CsvWriter">
-                                <io:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-15T18-00-08\behavior-videos\PortCamera\PortCamera_2026-05-15T18-00-00.csv</io:FileName>
+                                <io:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-06-05T22-24-02\behavior-videos\PortCamera\PortCamera_2026-06-05T22-00-00.csv</io:FileName>
                                 <io:Append>false</io:Append>
                                 <io:Overwrite>false</io:Overwrite>
                                 <io:Suffix>None</io:Suffix>
@@ -1831,7 +1835,7 @@
                               </Expression>
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="p7:FfmpegVideoWriter">
-                                  <p7:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-15T18-00-08\behavior-videos\PortCamera\PortCamera_2026-05-15T18-00-00.mp4</p7:FileName>
+                                  <p7:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-06-05T22-24-02\behavior-videos\PortCamera\PortCamera_2026-06-05T22-00-00.mp4</p7:FileName>
                                   <p7:Overwrite>false</p7:Overwrite>
                                   <p7:FrameRate>100</p7:FrameRate>
                                   <p7:Verbosity>Verbose</p7:Verbosity>
@@ -2000,7 +2004,7 @@
                                 </PropertyMappings>
                               </Expression>
                               <Expression xsi:type="io:CsvWriter">
-                                <io:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-15T18-00-08\behavior-videos\OverheadCamera\OverheadCamera_2026-05-15T18-00-00.csv</io:FileName>
+                                <io:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-06-05T22-24-02\behavior-videos\OverheadCamera\OverheadCamera_2026-06-05T22-00-00.csv</io:FileName>
                                 <io:Append>false</io:Append>
                                 <io:Overwrite>false</io:Overwrite>
                                 <io:Suffix>None</io:Suffix>
@@ -2032,7 +2036,7 @@
                               </Expression>
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="p7:FfmpegVideoWriter">
-                                  <p7:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-15T18-00-08\behavior-videos\OverheadCamera\OverheadCamera_2026-05-15T18-00-00.mp4</p7:FileName>
+                                  <p7:FileName>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-06-05T22-24-02\behavior-videos\OverheadCamera\OverheadCamera_2026-06-05T22-00-00.mp4</p7:FileName>
                                   <p7:Overwrite>false</p7:Overwrite>
                                   <p7:FrameRate>30</p7:FrameRate>
                                   <p7:Verbosity>Verbose</p7:Verbosity>
@@ -2502,7 +2506,7 @@ groupMasks:
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="io:WriteAllText">
-                            <io:Path>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-05-15T18-00-08\behavior\DelphiController\device.yml</io:Path>
+                            <io:Path>C:\Users\svc_aind_chronic\Documents\data_mouse8\2026-06-05T22-24-02\behavior\DelphiController\device.yml</io:Path>
                             <io:Overwrite>false</io:Overwrite>
                             <io:Append>false</io:Append>
                           </Combinator>
@@ -2734,13 +2738,19 @@ groupMasks:
         <Selector>Value.Item1</Selector>
       </Expression>
       <Expression xsi:type="VisualizerMapping" />
-      <Expression xsi:type="SubscribeSubject">
-        <Name>Video1Feed</Name>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="SubscribeSubject">
+          <Name>Video1Feed</Name>
+        </Builder>
       </Expression>
-      <Expression xsi:type="MemberSelector">
-        <Selector>Value.Item1</Selector>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="MemberSelector">
+          <Selector>Value.Item1</Selector>
+        </Builder>
       </Expression>
-      <Expression xsi:type="VisualizerMapping" />
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="VisualizerMapping" />
+      </Expression>
       <Expression xsi:type="viz:TableLayoutPanelBuilder">
         <viz:ColumnCount>5</viz:ColumnCount>
         <viz:RowCount>2</viz:RowCount>
