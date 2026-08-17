@@ -338,6 +338,220 @@ namespace HardwareSchema
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class DeLuxDriver
+    {
+    
+        private string _comPort;
+    
+        private int _ch1Current;
+    
+        private int _ch1PulseFrequency;
+    
+        private double _ch1PulseDutyCycle;
+    
+        private int _ch2Current;
+    
+        private int _ch2PulseFrequency;
+    
+        private double _ch2PulseDutyCycle;
+    
+        private int _ch3Current;
+    
+        private int _ch3PulseFrequency;
+    
+        private double _ch3PulseDutyCycle;
+    
+        public DeLuxDriver()
+        {
+        }
+    
+        protected DeLuxDriver(DeLuxDriver other)
+        {
+            _comPort = other._comPort;
+            _ch1Current = other._ch1Current;
+            _ch1PulseFrequency = other._ch1PulseFrequency;
+            _ch1PulseDutyCycle = other._ch1PulseDutyCycle;
+            _ch2Current = other._ch2Current;
+            _ch2PulseFrequency = other._ch2PulseFrequency;
+            _ch2PulseDutyCycle = other._ch2PulseDutyCycle;
+            _ch3Current = other._ch3Current;
+            _ch3PulseFrequency = other._ch3PulseFrequency;
+            _ch3PulseDutyCycle = other._ch3PulseDutyCycle;
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="com_port")]
+        public string ComPort
+        {
+            get
+            {
+                return _comPort;
+            }
+            set
+            {
+                _comPort = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch1_current")]
+        public int Ch1Current
+        {
+            get
+            {
+                return _ch1Current;
+            }
+            set
+            {
+                _ch1Current = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch1_pulse_frequency")]
+        public int Ch1PulseFrequency
+        {
+            get
+            {
+                return _ch1PulseFrequency;
+            }
+            set
+            {
+                _ch1PulseFrequency = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch1_pulse_duty_cycle")]
+        public double Ch1PulseDutyCycle
+        {
+            get
+            {
+                return _ch1PulseDutyCycle;
+            }
+            set
+            {
+                _ch1PulseDutyCycle = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch2_current")]
+        public int Ch2Current
+        {
+            get
+            {
+                return _ch2Current;
+            }
+            set
+            {
+                _ch2Current = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch2_pulse_frequency")]
+        public int Ch2PulseFrequency
+        {
+            get
+            {
+                return _ch2PulseFrequency;
+            }
+            set
+            {
+                _ch2PulseFrequency = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch2_pulse_duty_cycle")]
+        public double Ch2PulseDutyCycle
+        {
+            get
+            {
+                return _ch2PulseDutyCycle;
+            }
+            set
+            {
+                _ch2PulseDutyCycle = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch3_current")]
+        public int Ch3Current
+        {
+            get
+            {
+                return _ch3Current;
+            }
+            set
+            {
+                _ch3Current = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch3_pulse_frequency")]
+        public int Ch3PulseFrequency
+        {
+            get
+            {
+                return _ch3PulseFrequency;
+            }
+            set
+            {
+                _ch3PulseFrequency = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ch3_pulse_duty_cycle")]
+        public double Ch3PulseDutyCycle
+        {
+            get
+            {
+                return _ch3PulseDutyCycle;
+            }
+            set
+            {
+                _ch3PulseDutyCycle = value;
+            }
+        }
+    
+        public System.IObservable<DeLuxDriver> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new DeLuxDriver(this)));
+        }
+    
+        public System.IObservable<DeLuxDriver> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new DeLuxDriver(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("ComPort = " + _comPort + ", ");
+            stringBuilder.Append("Ch1Current = " + _ch1Current + ", ");
+            stringBuilder.Append("Ch1PulseFrequency = " + _ch1PulseFrequency + ", ");
+            stringBuilder.Append("Ch1PulseDutyCycle = " + _ch1PulseDutyCycle + ", ");
+            stringBuilder.Append("Ch2Current = " + _ch2Current + ", ");
+            stringBuilder.Append("Ch2PulseFrequency = " + _ch2PulseFrequency + ", ");
+            stringBuilder.Append("Ch2PulseDutyCycle = " + _ch2PulseDutyCycle + ", ");
+            stringBuilder.Append("Ch3Current = " + _ch3Current + ", ");
+            stringBuilder.Append("Ch3PulseFrequency = " + _ch3PulseFrequency + ", ");
+            stringBuilder.Append("Ch3PulseDutyCycle = " + _ch3PulseDutyCycle);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
     public partial class DelphiController
     {
     
@@ -361,8 +575,6 @@ namespace HardwareSchema
     
         private int _odorDwellTimeUs;
     
-        private string _comPort;
-    
         public DelphiController()
         {
         }
@@ -374,12 +586,8 @@ namespace HardwareSchema
             _maxOdorDeliveryTimeUs = other._maxOdorDeliveryTimeUs;
             _minPokeTimeUs = other._minPokeTimeUs;
             _minOdorDeliveryTimeUs = other._minOdorDeliveryTimeUs;
-            _odorTransitionTimeUs = other._odorTransitionTimeUs;
-            _pokePin = other._pokePin;
-            _vacuumSetupTimeUs = other._vacuumSetupTimeUs;
-            _vacuumCloseTimeUs = other._vacuumCloseTimeUs;
+            _odorSetupTimeUs = other._odorSetupTimeUs;
             _odorDwellTimeUs = other._odorDwellTimeUs;
-            _comPort = other._comPort;
         }
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="com_port")]
@@ -512,6 +720,291 @@ namespace HardwareSchema
             }
         }
     
+        public System.IObservable<DelphiController> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new DelphiController(this)));
+        }
+    
+        public System.IObservable<DelphiController> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new DelphiController(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("ComPort = " + _comPort + ", ");
+            stringBuilder.Append("PokePin = " + _pokePin + ", ");
+            stringBuilder.Append("MaxOdorDeliveryTimeUs = " + _maxOdorDeliveryTimeUs + ", ");
+            stringBuilder.Append("MinPokeTimeUs = " + _minPokeTimeUs + ", ");
+            stringBuilder.Append("MinOdorDeliveryTimeUs = " + _minOdorDeliveryTimeUs + ", ");
+            stringBuilder.Append("OdorSetupTimeUs = " + _odorSetupTimeUs + ", ");
+            stringBuilder.Append("OdorDwellTimeUs = " + _odorDwellTimeUs);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class FluidicSettings
+    {
+    
+        private int _leakFlowmeterAdc;
+    
+        private double _leakThreshold;
+    
+        private int _manualFlometerAdc;
+    
+        private double _manualFlowmeterTargetFlowRate;
+    
+        private double _manualFlowmeterFlowRateTolerance;
+    
+        private int _proportionalValveFlowmeter0Adc;
+    
+        private double _proportionalValveFlowmeter0TargetFlowrate;
+    
+        private int _proportionalValveFlowmeter1Adc;
+    
+        private double _proportionalValveFlowmeter1TargetFlowrate;
+    
+        private int _proportionalValveFlowmeter2Adc;
+    
+        private double _proportionalValveFlowmeter2TargetFlowrate;
+    
+        public FluidicSettings()
+        {
+        }
+    
+        protected FluidicSettings(FluidicSettings other)
+        {
+            _leakFlowmeterAdc = other._leakFlowmeterAdc;
+            _leakThreshold = other._leakThreshold;
+            _manualFlometerAdc = other._manualFlometerAdc;
+            _manualFlowmeterTargetFlowRate = other._manualFlowmeterTargetFlowRate;
+            _manualFlowmeterFlowRateTolerance = other._manualFlowmeterFlowRateTolerance;
+            _proportionalValveFlowmeter0Adc = other._proportionalValveFlowmeter0Adc;
+            _proportionalValveFlowmeter0TargetFlowrate = other._proportionalValveFlowmeter0TargetFlowrate;
+            _proportionalValveFlowmeter1Adc = other._proportionalValveFlowmeter1Adc;
+            _proportionalValveFlowmeter1TargetFlowrate = other._proportionalValveFlowmeter1TargetFlowrate;
+            _proportionalValveFlowmeter2Adc = other._proportionalValveFlowmeter2Adc;
+            _proportionalValveFlowmeter2TargetFlowrate = other._proportionalValveFlowmeter2TargetFlowrate;
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="leak_flowmeter_adc")]
+        public int LeakFlowmeterAdc
+        {
+            get
+            {
+                return _leakFlowmeterAdc;
+            }
+            set
+            {
+                _leakFlowmeterAdc = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="leak_threshold")]
+        public double LeakThreshold
+        {
+            get
+            {
+                return _leakThreshold;
+            }
+            set
+            {
+                _leakThreshold = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="manual_flometer_adc")]
+        public int ManualFlometerAdc
+        {
+            get
+            {
+                return _manualFlometerAdc;
+            }
+            set
+            {
+                _manualFlometerAdc = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="manual_flowmeter_target_flow_rate")]
+        public double ManualFlowmeterTargetFlowRate
+        {
+            get
+            {
+                return _manualFlowmeterTargetFlowRate;
+            }
+            set
+            {
+                _manualFlowmeterTargetFlowRate = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="manual_flowmeter_flow_rate_tolerance")]
+        public double ManualFlowmeterFlowRateTolerance
+        {
+            get
+            {
+                return _manualFlowmeterFlowRateTolerance;
+            }
+            set
+            {
+                _manualFlowmeterFlowRateTolerance = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="proportional_valve_flowmeter_0_adc")]
+        public int ProportionalValveFlowmeter0Adc
+        {
+            get
+            {
+                return _proportionalValveFlowmeter0Adc;
+            }
+            set
+            {
+                _proportionalValveFlowmeter0Adc = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="proportional_valve_flowmeter_0_target_flowrate")]
+        public double ProportionalValveFlowmeter0TargetFlowrate
+        {
+            get
+            {
+                return _proportionalValveFlowmeter0TargetFlowrate;
+            }
+            set
+            {
+                _proportionalValveFlowmeter0TargetFlowrate = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="proportional_valve_flowmeter_1_adc")]
+        public int ProportionalValveFlowmeter1Adc
+        {
+            get
+            {
+                return _proportionalValveFlowmeter1Adc;
+            }
+            set
+            {
+                _proportionalValveFlowmeter1Adc = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="proportional_valve_flowmeter_1_target_flowrate")]
+        public double ProportionalValveFlowmeter1TargetFlowrate
+        {
+            get
+            {
+                return _proportionalValveFlowmeter1TargetFlowrate;
+            }
+            set
+            {
+                _proportionalValveFlowmeter1TargetFlowrate = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="proportional_valve_flowmeter_2_adc")]
+        public int ProportionalValveFlowmeter2Adc
+        {
+            get
+            {
+                return _proportionalValveFlowmeter2Adc;
+            }
+            set
+            {
+                _proportionalValveFlowmeter2Adc = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="proportional_valve_flowmeter_2_target_flowrate")]
+        public double ProportionalValveFlowmeter2TargetFlowrate
+        {
+            get
+            {
+                return _proportionalValveFlowmeter2TargetFlowrate;
+            }
+            set
+            {
+                _proportionalValveFlowmeter2TargetFlowrate = value;
+            }
+        }
+    
+        public System.IObservable<FluidicSettings> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new FluidicSettings(this)));
+        }
+    
+        public System.IObservable<FluidicSettings> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new FluidicSettings(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("LeakFlowmeterAdc = " + _leakFlowmeterAdc + ", ");
+            stringBuilder.Append("LeakThreshold = " + _leakThreshold + ", ");
+            stringBuilder.Append("ManualFlometerAdc = " + _manualFlometerAdc + ", ");
+            stringBuilder.Append("ManualFlowmeterTargetFlowRate = " + _manualFlowmeterTargetFlowRate + ", ");
+            stringBuilder.Append("ManualFlowmeterFlowRateTolerance = " + _manualFlowmeterFlowRateTolerance + ", ");
+            stringBuilder.Append("ProportionalValveFlowmeter0Adc = " + _proportionalValveFlowmeter0Adc + ", ");
+            stringBuilder.Append("ProportionalValveFlowmeter0TargetFlowrate = " + _proportionalValveFlowmeter0TargetFlowrate + ", ");
+            stringBuilder.Append("ProportionalValveFlowmeter1Adc = " + _proportionalValveFlowmeter1Adc + ", ");
+            stringBuilder.Append("ProportionalValveFlowmeter1TargetFlowrate = " + _proportionalValveFlowmeter1TargetFlowrate + ", ");
+            stringBuilder.Append("ProportionalValveFlowmeter2Adc = " + _proportionalValveFlowmeter2Adc + ", ");
+            stringBuilder.Append("ProportionalValveFlowmeter2TargetFlowrate = " + _proportionalValveFlowmeter2TargetFlowrate);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class WhiteRabbit
+    {
+    
+        private string _comPort;
+    
+        public WhiteRabbit()
+        {
+        }
+    
+        protected WhiteRabbit(WhiteRabbit other)
+        {
+            _comPort = other._comPort;
+        }
+    
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="com_port")]
         public string ComPort
         {
@@ -525,14 +1018,14 @@ namespace HardwareSchema
             }
         }
     
-        public System.IObservable<DelphiController> Generate()
+        public System.IObservable<WhiteRabbit> Generate()
         {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new DelphiController(this)));
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new WhiteRabbit(this)));
         }
     
-        public System.IObservable<DelphiController> Generate<TSource>(System.IObservable<TSource> source)
+        public System.IObservable<WhiteRabbit> Generate<TSource>(System.IObservable<TSource> source)
         {
-            return System.Reactive.Linq.Observable.Select(source, _ => new DelphiController(this));
+            return System.Reactive.Linq.Observable.Select(source, _ => new WhiteRabbit(this));
         }
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
@@ -588,11 +1081,20 @@ namespace HardwareSchema
     
         private CameraSettings1 _cameraSettings1;
     
+        private FluidicSettings _fluidicSettings;
+    
+        private DeLuxDriver _deluxDriver;
+    
+        private WhiteRabbit _whiteRabbit;
+    
         public HardwareSchema()
         {
             _delphiController = new DelphiController();
             _cameraSettings = new CameraSettings();
             _cameraSettings1 = new CameraSettings1();
+            _fluidicSettings = new FluidicSettings();
+            _deluxDriver = new DeLuxDriver();
+            _whiteRabbit = new WhiteRabbit();
         }
     
         protected HardwareSchema(HardwareSchema other)
@@ -605,6 +1107,35 @@ namespace HardwareSchema
             _delphiController = other._delphiController;
             _cameraSettings = other._cameraSettings;
             _cameraSettings1 = other._cameraSettings1;
+            _fluidicSettings = other._fluidicSettings;
+            _deluxDriver = other._deluxDriver;
+            _whiteRabbit = other._whiteRabbit;
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="subject_id")]
+        public string SubjectId
+        {
+            get
+            {
+                return _subjectId;
+            }
+            set
+            {
+                _subjectId = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="session_time")]
+        public string SessionTime
+        {
+            get
+            {
+                return _sessionTime;
+            }
+            set
+            {
+                _sessionTime = value;
+            }
         }
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="logging_root_path")]
@@ -688,6 +1219,48 @@ namespace HardwareSchema
             }
         }
     
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="fluidic_settings")]
+        public FluidicSettings FluidicSettings
+        {
+            get
+            {
+                return _fluidicSettings;
+            }
+            set
+            {
+                _fluidicSettings = value;
+            }
+        }
+    
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="delux_driver")]
+        public DeLuxDriver DeluxDriver
+        {
+            get
+            {
+                return _deluxDriver;
+            }
+            set
+            {
+                _deluxDriver = value;
+            }
+        }
+    
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="white_rabbit")]
+        public WhiteRabbit WhiteRabbit
+        {
+            get
+            {
+                return _whiteRabbit;
+            }
+            set
+            {
+                _whiteRabbit = value;
+            }
+        }
+    
         public System.IObservable<HardwareSchema> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new HardwareSchema(this)));
@@ -707,7 +1280,10 @@ namespace HardwareSchema
             stringBuilder.Append("RobocopyScriptPath = " + _robocopyScriptPath + ", ");
             stringBuilder.Append("DelphiController = " + _delphiController + ", ");
             stringBuilder.Append("CameraSettings = " + _cameraSettings + ", ");
-            stringBuilder.Append("CameraSettings1 = " + _cameraSettings1);
+            stringBuilder.Append("CameraSettings1 = " + _cameraSettings1 + ", ");
+            stringBuilder.Append("FluidicSettings = " + _fluidicSettings + ", ");
+            stringBuilder.Append("DeluxDriver = " + _deluxDriver + ", ");
+            stringBuilder.Append("WhiteRabbit = " + _whiteRabbit);
             return true;
         }
     
@@ -756,6 +1332,11 @@ namespace HardwareSchema
             return Process<CameraSettings1>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<DeLuxDriver> source)
+        {
+            return Process<DeLuxDriver>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<DelphiController> source)
         {
             return Process<DelphiController>(source);
@@ -787,6 +1368,7 @@ namespace HardwareSchema
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraSettings1>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DeLuxDriver>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<FluidicSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<WhiteRabbit>))]
