@@ -567,12 +567,6 @@ namespace HardwareSchema
     
         private int _odorSetupTimeUs;
     
-        private int _pokePin;
-    
-        private int _vacuumSetupTimeUs;
-    
-        private int _vacuumCloseTimeUs;
-    
         private int _odorDwellTimeUs;
     
         public DelphiController()
@@ -665,45 +659,6 @@ namespace HardwareSchema
             set
             {
                 _odorSetupTimeUs = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="odor_dwell_time_us")]
-        public int OdorDwellTimeUs
-        {
-            get
-            {
-                return _odorDwellTimeUs;
-            }
-            set
-            {
-                _pokePin = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="vacuum_setup_time_us")]
-        public int VacuumSetupTimeUs
-        {
-            get
-            {
-                return _vacuumSetupTimeUs;
-            }
-            set
-            {
-                _vacuumSetupTimeUs = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="vacuum_close_time_us")]
-        public int VacuumCloseTimeUs
-        {
-            get
-            {
-                return _vacuumCloseTimeUs;
-            }
-            set
-            {
-                _vacuumCloseTimeUs = value;
             }
         }
     
@@ -1030,16 +985,6 @@ namespace HardwareSchema
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
-            stringBuilder.Append("ComPort = " + _comPort + ", ");
-            stringBuilder.Append("PokePin = " + _pokePin + ", ");
-            stringBuilder.Append("MaxOdorDeliveryTimeUs = " + _maxOdorDeliveryTimeUs + ", ");
-            stringBuilder.Append("MinPokeTimeUs = " + _minPokeTimeUs + ", ");
-            stringBuilder.Append("MinOdorDeliveryTimeUs = " + _minOdorDeliveryTimeUs + ", ");
-            stringBuilder.Append("OdorTransitionTimeUs = " + _odorTransitionTimeUs + ", ");
-            stringBuilder.Append("PokePin = " + _pokePin + ", ");
-            stringBuilder.Append("VacuumSetupTimeUs = " + _vacuumSetupTimeUs + ", ");
-            stringBuilder.Append("VacuumCloseTimeUs = " + _vacuumCloseTimeUs + ", ");
-            stringBuilder.Append("OdorDwellTimeUs = " + _odorDwellTimeUs + ", ");
             stringBuilder.Append("ComPort = " + _comPort);
             return true;
         }
