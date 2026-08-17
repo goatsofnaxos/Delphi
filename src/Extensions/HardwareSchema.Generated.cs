@@ -1083,32 +1083,6 @@ namespace HardwareSchema
             }
         }
     
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="subject_id")]
-        public string SubjectId
-        {
-            get
-            {
-                return _subjectId;
-            }
-            set
-            {
-                _subjectId = value;
-            }
-        }
-    
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="session_time")]
-        public string SessionTime
-        {
-            get
-            {
-                return _sessionTime;
-            }
-            set
-            {
-                _sessionTime = value;
-            }
-        }
-    
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="logging_root_path")]
         public string LoggingRootPath
         {
