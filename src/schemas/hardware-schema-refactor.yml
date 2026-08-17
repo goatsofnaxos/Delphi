@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=hardware-schema.json
+subject_id: '841322'
+session_time: '2026-03-19T18-54-37'
+logging_root_path: C:\Users\svc_aind_chronic\Documents\data\test_data\local
+remote_transfer_root_path: C:\Users\svc_aind_chronic\Documents\data\test_data\robocopy
+
+delphi_controller:
+  com_port: COM8
+  poke_pin: 22
+  max_odor_delivery_time_us: 10000000
+  min_poke_time_us: 10000
+  min_odor_delivery_time_us: 10000
+  odor_setup_time_us: 10000
+  odor_dwell_time_us: 0
+
+delux_driver:
+  com_port: COM9
+  ch1_current: 1200
+  ch1_pulse_frequency: 90
+  ch1_pulse_duty_cycle: 0.25
+  ch2_current: 1200
+  ch2_pulse_frequency: 90
+  ch2_pulse_duty_cycle: 0.25
+  ch3_current: 0
+  ch3_pulse_frequency: 0
+  ch3_pulse_duty_cycle: 0
+
+white_rabbit:
+  com_port: COM6
+
+fluidic_settings:
+  leak_flowmeter_adc: 3
+  leak_threshold: 75
+  manual_flometer_adc: 2
+  manual_flowmeter_target_flow_rate: 75
+  manual_flowmeter_flow_rate_tolerance: 5
+  proportional_valve_flowmeter_0_adc: 1
+  proportional_valve_flowmeter_0_target_flowrate: 75
+  proportional_valve_flowmeter_1_adc: 0
+  proportional_valve_flowmeter_1_target_flowrate: 75
+  proportional_valve_flowmeter_2_adc: -1
+  proportional_valve_flowmeter_2_target_flowrate: 75
+
+camera_settings:
+  camera_name: PortCamera
+  frame_rate: 90
+  exposure: 2500
+  duty_cycle: 0.5
+  serial_number: '23373886'
+  ffmpeg_input: -colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear
+  ffmpeg_output: -vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_qsv -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M
+
+camera_settings1:
+  camera_name: TopCamera
+  frame_rate: 45
+  exposure: 2500
+  duty_cycle: 0.5
+  serial_number: '23373886'
+  ffmpeg_input: -colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear
+  ffmpeg_output: -vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v h264_qsv -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M
