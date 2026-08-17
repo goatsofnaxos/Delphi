@@ -94,11 +94,81 @@
       "title": "CameraSettings1",
       "type": "object"
     },
+    "DeLuxDriver": {
+      "properties": {
+        "com_port": {
+          "title": "Com Port",
+          "type": "string"
+        },
+        "ch1_current": {
+          "minimum": 0,
+          "title": "Ch1 Current",
+          "type": "integer"
+        },
+        "ch1_pulse_frequency": {
+          "minimum": 0,
+          "title": "Ch1 Pulse Frequency",
+          "type": "integer"
+        },
+        "ch1_pulse_duty_cycle": {
+          "minimum": 0.0,
+          "title": "Ch1 Pulse Duty Cycle",
+          "type": "number"
+        },
+        "ch2_current": {
+          "minimum": 0,
+          "title": "Ch2 Current",
+          "type": "integer"
+        },
+        "ch2_pulse_frequency": {
+          "minimum": 0,
+          "title": "Ch2 Pulse Frequency",
+          "type": "integer"
+        },
+        "ch2_pulse_duty_cycle": {
+          "minimum": 0.0,
+          "title": "Ch2 Pulse Duty Cycle",
+          "type": "number"
+        },
+        "ch3_current": {
+          "minimum": 0,
+          "title": "Ch3 Current",
+          "type": "integer"
+        },
+        "ch3_pulse_frequency": {
+          "minimum": 0,
+          "title": "Ch3 Pulse Frequency",
+          "type": "integer"
+        },
+        "ch3_pulse_duty_cycle": {
+          "minimum": 0.0,
+          "title": "Ch3 Pulse Duty Cycle",
+          "type": "number"
+        }
+      },
+      "required": [
+        "com_port",
+        "ch1_current",
+        "ch1_pulse_frequency",
+        "ch1_pulse_duty_cycle",
+        "ch2_current",
+        "ch2_pulse_frequency",
+        "ch2_pulse_duty_cycle",
+        "ch3_current",
+        "ch3_pulse_frequency",
+        "ch3_pulse_duty_cycle"
+      ],
+      "title": "DeLuxDriver",
+      "type": "object"
+    },
     "DelphiController": {
       "properties": {
-        "final_valve_energized_time_us": {
-          "minimum": 0,
-          "title": "Final Valve Energized Time Us",
+        "com_port": {
+          "title": "Com Port",
+          "type": "string"
+        },
+        "poke_pin": {
+          "title": "Poke Pin",
           "type": "integer"
         },
         "max_odor_delivery_time_us": {
@@ -116,49 +186,114 @@
           "title": "Min Odor Delivery Time Us",
           "type": "integer"
         },
-        "odor_transition_time_us": {
+        "odor_setup_time_us": {
           "minimum": 0,
-          "title": "Odor Transition Time Us",
-          "type": "integer"
-        },
-        "poke_pin": {
-          "default": 22,
-          "minimum": 0,
-          "title": "Poke Pin",
-          "type": "integer"
-        },
-        "vacuum_setup_time_us": {
-          "minimum": 0,
-          "title": "Vacuum Setup Time Us",
-          "type": "integer"
-        },
-        "vacuum_close_time_us": {
-          "minimum": 0,
-          "title": "Vacuum Close Time Us",
+          "title": "Odor Setup Time Us",
           "type": "integer"
         },
         "odor_dwell_time_us": {
           "minimum": 0,
           "title": "Odor Dwell Time Us",
           "type": "integer"
+        }
+      },
+      "required": [
+        "com_port",
+        "poke_pin",
+        "max_odor_delivery_time_us",
+        "min_poke_time_us",
+        "min_odor_delivery_time_us",
+        "odor_setup_time_us",
+        "odor_dwell_time_us"
+      ],
+      "title": "DelphiController",
+      "type": "object"
+    },
+    "FluidicSettings": {
+      "properties": {
+        "leak_flowmeter_adc": {
+          "minimum": 0,
+          "title": "Leak Flowmeter Adc",
+          "type": "integer"
         },
+        "leak_threshold": {
+          "minimum": 0.0,
+          "title": "Leak Threshold",
+          "type": "number"
+        },
+        "manual_flometer_adc": {
+          "minimum": 0,
+          "title": "Manual Flometer Adc",
+          "type": "integer"
+        },
+        "manual_flowmeter_target_flow_rate": {
+          "minimum": 0.0,
+          "title": "Manual Flowmeter Target Flow Rate",
+          "type": "number"
+        },
+        "manual_flowmeter_flow_rate_tolerance": {
+          "minimum": 0.0,
+          "title": "Manual Flowmeter Flow Rate Tolerance",
+          "type": "number"
+        },
+        "proportional_valve_flowmeter_0_adc": {
+          "minimum": 0,
+          "title": "Proportional Valve Flowmeter 0 Adc",
+          "type": "integer"
+        },
+        "proportional_valve_flowmeter_0_target_flowrate": {
+          "minimum": 0.0,
+          "title": "Proportional Valve Flowmeter 0 Target Flowrate",
+          "type": "number"
+        },
+        "proportional_valve_flowmeter_1_adc": {
+          "minimum": 0,
+          "title": "Proportional Valve Flowmeter 1 Adc",
+          "type": "integer"
+        },
+        "proportional_valve_flowmeter_1_target_flowrate": {
+          "minimum": 0.0,
+          "title": "Proportional Valve Flowmeter 1 Target Flowrate",
+          "type": "number"
+        },
+        "proportional_valve_flowmeter_2_adc": {
+          "minimum": 0,
+          "title": "Proportional Valve Flowmeter 2 Adc",
+          "type": "integer"
+        },
+        "proportional_valve_flowmeter_2_target_flowrate": {
+          "minimum": 0.0,
+          "title": "Proportional Valve Flowmeter 2 Target Flowrate",
+          "type": "number"
+        }
+      },
+      "required": [
+        "leak_flowmeter_adc",
+        "leak_threshold",
+        "manual_flometer_adc",
+        "manual_flowmeter_target_flow_rate",
+        "manual_flowmeter_flow_rate_tolerance",
+        "proportional_valve_flowmeter_0_adc",
+        "proportional_valve_flowmeter_0_target_flowrate",
+        "proportional_valve_flowmeter_1_adc",
+        "proportional_valve_flowmeter_1_target_flowrate",
+        "proportional_valve_flowmeter_2_adc",
+        "proportional_valve_flowmeter_2_target_flowrate"
+      ],
+      "title": "FluidicSettings",
+      "type": "object"
+    },
+    "WhiteRabbit": {
+      "properties": {
         "com_port": {
           "title": "Com Port",
           "type": "string"
         }
       },
       "required": [
-        "final_valve_energized_time_us",
-        "max_odor_delivery_time_us",
-        "min_poke_time_us",
-        "min_odor_delivery_time_us",
-        "odor_transition_time_us",
-        "vacuum_setup_time_us",
-        "vacuum_close_time_us",
-        "odor_dwell_time_us",
         "com_port"
       ],
-      "title": "DelphiController",
+      "title": "WhiteRabbit",
       "type": "object"
     }
   },
@@ -191,6 +326,15 @@
     },
     "camera_settings1": {
       "$ref": "#/$defs/CameraSettings1"
+    },
+    "fluidic_settings": {
+      "$ref": "#/$defs/FluidicSettings"
+    },
+    "delux_driver": {
+      "$ref": "#/$defs/DeLuxDriver"
+    },
+    "white_rabbit": {
+      "$ref": "#/$defs/WhiteRabbit"
     }
   },
   "required": [
@@ -201,7 +345,10 @@
     "robocopy_script_path",
     "delphi_controller",
     "camera_settings",
-    "camera_settings1"
+    "camera_settings1",
+    "fluidic_settings",
+    "delux_driver",
+    "white_rabbit"
   ],
   "title": "HardwareSchema",
   "type": "object"
