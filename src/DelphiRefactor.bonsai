@@ -1271,7 +1271,7 @@ groupMasks:
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="io:WriteAllText">
-                            <io:Path>C:\Users\svc_aind_chronic\Documents\data\test_data\local/841322/2026-03-19T18-54-37\2026-08-17T21-08-49\behavior\DelphiController\device.yml</io:Path>
+                            <io:Path>C:\Users\svc_aind_chronic\Documents\data\test_data\local/841322/2026-03-19T18-54-37\2026-08-17T22-04-21\behavior\DelphiController\device.yml</io:Path>
                             <io:Overwrite>false</io:Overwrite>
                             <io:Append>false</io:Append>
                           </Combinator>
@@ -1727,7 +1727,7 @@ groupMasks:
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="io:WriteAllText">
-                            <io:Path>C:\Users\svc_aind_chronic\Documents\data\test_data\local/841322/2026-03-19T18-54-37\2026-08-17T21-08-49\behavior\DeLux\device.yml</io:Path>
+                            <io:Path>C:\Users\svc_aind_chronic\Documents\data\test_data\local/841322/2026-03-19T18-54-37\2026-08-17T22-04-21\behavior\DeLux\device.yml</io:Path>
                             <io:Overwrite>false</io:Overwrite>
                             <io:Append>false</io:Append>
                           </Combinator>
@@ -1794,7 +1794,7 @@ groupMasks:
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="io:WriteAllText">
-                            <io:Path>C:\Users\svc_aind_chronic\Documents\data\test_data\local/841322/2026-03-19T18-54-37\2026-08-17T21-08-49\behavior\WhiteRabbit\device.yml</io:Path>
+                            <io:Path>C:\Users\svc_aind_chronic\Documents\data\test_data\local/841322/2026-03-19T18-54-37\2026-08-17T22-04-21\behavior\WhiteRabbit\device.yml</io:Path>
                             <io:Overwrite>false</io:Overwrite>
                             <io:Append>false</io:Append>
                           </Combinator>
@@ -1890,85 +1890,104 @@ groupMasks:
                 </Edges>
               </Workflow>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="Combinator">
-                <Combinator xsi:type="rx:Timer">
-                  <rx:DueTime>PT10S</rx:DueTime>
-                  <rx:Period>PT1H</rx:Period>
-                </Combinator>
-              </Builder>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Timer">
+                <rx:DueTime>PT10S</rx:DueTime>
+                <rx:Period>PT1H</rx:Period>
+              </Combinator>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="Unit" />
+            <Expression xsi:type="Unit" />
+            <Expression xsi:type="MulticastSubject">
+              <Name>StartRobocopy</Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="MulticastSubject">
-                <Name>StartRobocopy</Name>
-              </Builder>
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p6:Unit">
+              <rx:Name>StartRobocopy</rx:Name>
             </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="rx:BehaviorSubject" TypeArguments="p6:Unit">
-                <rx:Name>StartRobocopy</rx:Name>
-              </Builder>
-            </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="rx:SelectMany">
-                <Name>Robocopy</Name>
-                <Workflow>
-                  <Nodes>
-                    <Expression xsi:type="WorkflowInput">
-                      <Name>Source1</Name>
-                    </Expression>
-                    <Expression xsi:type="SubscribeSubject">
-                      <Name>HardwareSchema</Name>
-                    </Expression>
-                    <Expression xsi:type="MemberSelector">
-                      <Selector>LoggingRootPath</Selector>
-                    </Expression>
-                    <Expression xsi:type="SubscribeSubject">
-                      <Name>HardwareSchema</Name>
-                    </Expression>
-                    <Expression xsi:type="MemberSelector">
-                      <Selector>RemoteTransferRootPath</Selector>
-                    </Expression>
-                    <Expression xsi:type="Combinator">
-                      <Combinator xsi:type="rx:Zip" />
-                    </Expression>
-                    <Expression xsi:type="Format">
-                      <Format>python\robocopy.py {0} {1}</Format>
-                      <Selector>Item1,Item2</Selector>
-                    </Expression>
-                    <Expression xsi:type="PropertyMapping">
-                      <PropertyMappings>
-                        <Property Name="Arguments" />
-                      </PropertyMappings>
-                    </Expression>
-                    <Expression xsi:type="Combinator">
-                      <Combinator xsi:type="io:StartProcess">
-                        <io:FileName>..\.venv\Scripts\python.exe</io:FileName>
-                        <io:Arguments>python\robocopy.py C:\Users\svc_aind_chronic\Documents\data_mouse8 \\Allen\aind\stage\chronic\Delphi\2026-05-27\data_mouse8</io:Arguments>
-                      </Combinator>
-                    </Expression>
-                    <Expression xsi:type="Combinator">
-                      <Combinator xsi:type="rx:Take">
-                        <rx:Count>1</rx:Count>
-                      </Combinator>
-                    </Expression>
-                    <Expression xsi:type="WorkflowOutput" />
-                  </Nodes>
-                  <Edges>
-                    <Edge From="1" To="2" Label="Source1" />
-                    <Edge From="2" To="5" Label="Source1" />
-                    <Edge From="3" To="4" Label="Source1" />
-                    <Edge From="4" To="5" Label="Source2" />
-                    <Edge From="5" To="6" Label="Source1" />
-                    <Edge From="6" To="7" Label="Source1" />
-                    <Edge From="7" To="8" Label="Source1" />
-                    <Edge From="8" To="9" Label="Source1" />
-                    <Edge From="9" To="10" Label="Source1" />
-                  </Edges>
-                </Workflow>
-              </Builder>
+            <Expression xsi:type="rx:SelectMany">
+              <Name>Robocopy</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>HardwareSchema</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>RobocopyScriptPath</Selector>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>SessionPath</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>HardwareSchema</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>RemoteTransferRootPath</Selector>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>HardwareSchema</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>SubjectId</Selector>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>HardwareSchema</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>SessionTime</Selector>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Format">
+                    <Format>{0}/{1}/{2}</Format>
+                    <Selector>Item1,Item2,Item3</Selector>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Format">
+                    <Format>{0} {1} {2}</Format>
+                    <Selector>Item1,Item2,Item3</Selector>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="Arguments" Selector="it" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="io:StartProcess">
+                      <io:FileName>..\.venv\Scripts\python.exe</io:FileName>
+                      <io:Arguments>C:/Users/svc_aind_chronic/Documents/code/Delphi/src/python/robocopy.py D:/data/22222222/2026-03-17T21-26-19 //allen/aind/stage/chronic/22222222/2026-03-17T21-26-19</io:Arguments>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Take">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="12" Label="Source1" />
+                  <Edge From="3" To="12" Label="Source2" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="10" Label="Source1" />
+                  <Edge From="6" To="7" Label="Source1" />
+                  <Edge From="7" To="10" Label="Source2" />
+                  <Edge From="8" To="9" Label="Source1" />
+                  <Edge From="9" To="10" Label="Source3" />
+                  <Edge From="10" To="11" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source3" />
+                  <Edge From="12" To="13" Label="Source1" />
+                  <Edge From="13" To="14" Label="Source1" />
+                  <Edge From="14" To="15" Label="Source1" />
+                  <Edge From="15" To="16" Label="Source1" />
+                  <Edge From="16" To="17" Label="Source1" />
+                </Edges>
+              </Workflow>
             </Expression>
           </Nodes>
           <Edges>

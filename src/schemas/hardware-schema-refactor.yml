@@ -3,6 +3,7 @@ subject_id: '841322'
 session_time: '2026-03-19T18-54-37'
 logging_root_path: C:\Users\svc_aind_chronic\Documents\data\test_data\local
 remote_transfer_root_path: C:\Users\svc_aind_chronic\Documents\data\test_data\robocopy
+robocopy_script_path: C:/Users/svc_aind_chronic/Documents/code/Delphi/src/python/robocopy.py
 
 delphi_controller:
   com_port: COM8

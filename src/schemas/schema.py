@@ -20,11 +20,11 @@ class FluidicSettings(BaseModel):
     manual_flometer_adc: int = Field(ge=0)
     manual_flowmeter_target_flow_rate: float = Field(ge=0)
     manual_flowmeter_flow_rate_tolerance: float = Field(ge=0)
-    proportional_valve_flowmeter_0_adc: int = Field(ge=0)
+    proportional_valve_flowmeter_0_adc: int = Field(ge=-1)
     proportional_valve_flowmeter_0_target_flowrate: float = Field(ge=0)
-    proportional_valve_flowmeter_1_adc: int = Field(ge=0)
+    proportional_valve_flowmeter_1_adc: int = Field(ge=-1)
     proportional_valve_flowmeter_1_target_flowrate: float = Field(ge=0)
-    proportional_valve_flowmeter_2_adc: int = Field(ge=0)
+    proportional_valve_flowmeter_2_adc: int = Field(ge=-1)
     proportional_valve_flowmeter_2_target_flowrate: float = Field(ge=0)
 
 class DeLuxDriver(BaseModel):

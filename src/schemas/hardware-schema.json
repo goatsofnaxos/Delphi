@@ -237,57 +237,7 @@
           "type": "number"
         },
         "proportional_valve_flowmeter_0_adc": {
-          "minimum": 0,
-          "title": "Proportional Valve Flowmeter 0 Adc",
-          "type": "integer"
-        },
-        "odor_dwell_time_us": {
-          "minimum": 0,
-          "title": "Odor Dwell Time Us",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "com_port",
-        "poke_pin",
-        "max_odor_delivery_time_us",
-        "min_poke_time_us",
-        "min_odor_delivery_time_us",
-        "odor_setup_time_us",
-        "odor_dwell_time_us"
-      ],
-      "title": "DelphiController",
-      "type": "object"
-    },
-    "FluidicSettings": {
-      "properties": {
-        "leak_flowmeter_adc": {
-          "minimum": 0,
-          "title": "Leak Flowmeter Adc",
-          "type": "integer"
-        },
-        "leak_threshold": {
-          "minimum": 0.0,
-          "title": "Leak Threshold",
-          "type": "number"
-        },
-        "manual_flometer_adc": {
-          "minimum": 0,
-          "title": "Manual Flometer Adc",
-          "type": "integer"
-        },
-        "manual_flowmeter_target_flow_rate": {
-          "minimum": 0.0,
-          "title": "Manual Flowmeter Target Flow Rate",
-          "type": "number"
-        },
-        "manual_flowmeter_flow_rate_tolerance": {
-          "minimum": 0.0,
-          "title": "Manual Flowmeter Flow Rate Tolerance",
-          "type": "number"
-        },
-        "proportional_valve_flowmeter_0_adc": {
-          "minimum": 0,
+          "minimum": -1,
           "title": "Proportional Valve Flowmeter 0 Adc",
           "type": "integer"
         },
@@ -297,7 +247,7 @@
           "type": "number"
         },
         "proportional_valve_flowmeter_1_adc": {
-          "minimum": 0,
+          "minimum": -1,
           "title": "Proportional Valve Flowmeter 1 Adc",
           "type": "integer"
         },
@@ -307,7 +257,7 @@
           "type": "number"
         },
         "proportional_valve_flowmeter_2_adc": {
-          "minimum": 0,
+          "minimum": -1,
           "title": "Proportional Valve Flowmeter 2 Adc",
           "type": "integer"
         },
