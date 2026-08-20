@@ -1,7 +1,8 @@
 # yaml-language-server: $schema=hardware-schema.json
 
-logging_root_path: C:\Users\delphi_03\delphi\HIW\2026073102
-remote_transfer_root_path: \\129.105.30.83\files\delphi_data\20260731\2026073102
+logging_root_path: C:\Users\delphi_03\delphi\HIW\2026082002
+remote_transfer_root_path: \\129.105.30.83\files\delphi_data\20260820\2026082002
+
 delphi_controller:
   final_valve_energized_time_us: 110000
   max_odor_delivery_time_us: 10000000
