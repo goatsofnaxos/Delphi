@@ -6,22 +6,12 @@
     "Delphi": {
       "root": "../../..",
       "workflow": "src/DelphiMain.bonsai",
-      "session_count": 3,
+      "session_count": 1,
       "session_parameters": [
         {
           "HardwareSettings": "src/schemas/hardware-schema.yml",
           "RuleSettings": "src/schemas/rule-1.yml",
           "NextRuleSettings": "src/schemas/rule-2.yml"
-        },
-        {
-          "HardwareSettings": "src/schemas/hardware-schema2.yml",
-          "RuleSettings": "src/schemas/rule-3.yml",
-          "NextRuleSettings": "src/schemas/rule-4.yml"
-        },
-        {
-          "HardwareSettings": "src/schemas/hardware-schema3.yml",
-          "RuleSettings": "src/schemas/rule-5.yml",
-          "NextRuleSettings": "src/schemas/rule-6.yml"
         }
       ]
     }
