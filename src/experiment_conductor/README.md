@@ -1,87 +1,127 @@
-# Experiment Conductor
+# experiment-conductor
 
-Orchestrates the full Delphi experiment workflow: launch → processing → metadata generation → S3 upload.
+Network-drive watcher that orchestrates post-acquisition processing for
+Delphi and Pirouette sessions.  Run on any machine (local workstation or VM)
+with access to the shared drive where the acquisition computer saves data.
 
-## Purpose
+## What it does
 
-The conductor ties together four sibling packages into a single supervised session loop:
+The conductor polls one or more **watch paths** for new session directories
+and runs each session through a five-step cadence:
 
-1. **Launcher** — spawns Bonsai workflows via the launcher subprocess.
-2. **delphi-data pipeline** — runs data consolidation, dataset build, and behavioral snapshot on a configurable cadence.
-3. **metadata-generator** — builds AIND-compliant JSON metadata once Delphi hardware/settings files are available.
-4. **aind-chronic-ephys-uploader** — submits `chronic_ephys_start` / `chronic_ephys_chunk` jobs to `aind-data-transfer-service`.
+| Step | Action |
+|------|--------|
+| Consolidate | Merge Bonsai restart sub-directories into the earliest run dir; relocate `HardwareSettings` / `RuleSettings` JSONL files to `behavior/metadata/` |
+| Metadata check | Verify `subject.json`, `instrument.json`, `acquisition.json`, `procedures.json` are present; generate them via `metadata_generator` if not |
+| Build dataset | Run `delphi-data pipeline` if a `DelphiController*.jsonl` file is present (creates / appends `delphi_dataset.csv` and figures) |
+| Noise floor | *(optional)* Estimate the RMS noise floor per channel from raw Open Ephys or SpikeGLX data; write `ecephys/noise_floor.json` |
+| Upload | Submit chunk upload jobs to the AIND data-transfer service via `aind-chronic-ephys-uploader` |
 
-## Usage
+Sessions are processed concurrently (up to 4 at once) and state is persisted
+to a JSON file so work survives restarts.
+
+## Quick start
 
 ```bash
-# From the experiment_conductor directory
-uv run scripts/run_conductor.py
+# 1. Copy and edit the config
+cp .env.example .env
 
-# Or with explicit overrides (all .env keys can be passed as flags)
-uv run scripts/run_conductor.py \
-    --data-root /data/subject_id/2026-01-01T00-00-00 \
-    --subject-id 123456 \
-    --experiment-type delphi_pirouette \
-    --dry-run
+# 2. Install (from the Delphi repo root)
+uv pip install -e "src/experiment_conductor"
+
+# 3. Run
+conductor
 ```
 
-All options can also be set in a `.env` file — copy `.env.example` to `.env` and fill in the values.
-CLI flags **always override** `.env` values.
-
-## .env Keys
-
-| Key | Description |
-|-----|-------------|
-| `EXPERIMENT_TYPE` | `delphi`, `pirouette`, or `delphi_pirouette` |
-| `EXPERIMENT_CONFIG` | Launcher profile name (resolved in `experiment_configs/`) |
-| `DATA_ROOT` | **Required.** Run-level session directory |
-| `LAUNCHER_DIR` | Absolute path to launcher directory |
-| `SURGERY_NOTES_BASE` | Base path for surgery notes (subject subfolder appended automatically) |
-| `SUBJECT_ID` | **Required.** Mouse subject ID |
-| `PROTOCOL_ID` | AIND protocol ID |
-| `INSTRUMENT_ID` | Instrument identifier |
-| `EXPERIMENT_ROOM` | Physical room number |
-| `DELPHI_COMPUTER_ID` | Hostname of the Delphi acquisition computer |
-| `SURGEONS` | Comma-separated surgeon names |
-| `EXPERIMENTERS` | Comma-separated experimenter names |
-| `ACQUISITION_TYPE` | Passed to metadata-generator |
-| `DELPHI_EXPERIMENT` | Experiment name for delphi-data (e.g. `bonhoeffer`) |
-| `DELPHI_FIRMWARE` | Firmware version string (e.g. `1.0.0`) |
-| `PIPELINE_CADENCE_MINUTES` | How often to run the processing + upload cycle (default: 60) |
-| `S3_BUCKET` | S3 bucket name (default: `aind-open-data`) |
-| `CONTACT_EMAIL` | Contact email for upload job notifications |
-| `PROJECT_NAME` | AIND project name |
-| `DRY_RUN` | `true` to print upload requests without submitting |
-| `DELETE_AFTER_UPLOAD` | `true` to delete large local files after confirmed upload |
-| `KEEP_LOCAL_PATTERNS` | Comma-separated glob patterns to keep locally even when deleting |
-
-## Hotkeys
-
-| Hotkey | Action |
-|--------|--------|
-| `Ctrl+Shift+P` | Trigger a pipeline cycle immediately |
-| `Ctrl+Shift+U` | Pause / resume upload batches |
-| `Ctrl+Shift+E` | Signal experiment end |
-| `Ctrl+C` | Emergency exit |
-
-Hotkeys are configurable via `HOTKEY_PIPELINE`, `HOTKEY_UPLOAD_PAUSE`, and `HOTKEY_END_EXPERIMENT` in `.env`.
-
-## Upload Phases
-
-1. **`chronic_ephys_start`** — submitted once, when AIND metadata is ready AND ≥ 3 local chunks exist. Sends the first chunk plus the `metadata/` directory to DocDB.
-2. **`chronic_ephys_chunk`** — submitted on every subsequent cadence cycle, uploading pending chunks in batches.
-3. **Final cycle** — triggered automatically at experiment end; uploads any remaining chunks.
-
-Between batches the conductor respects a pause event (Ctrl+Shift+U) and a stop event (set at experiment end) so uploads can be halted cleanly without data loss.
-
-## Development
+Watch paths and specific sessions can also be passed on the command line:
 
 ```bash
-cd src/experiment_conductor
-uv venv --python 3.12
-uv pip install -e ".[dev]" \
-    -e "../delphi-data[all]" \
-    -e "../metadata_generator" \
-    -e "../launcher" \
-    -e "path/to/aind-chronic-ephys-uploader"
+# Monitor a network share
+conductor --watch-paths "\\\\server\\data\\chronic"
+
+# Or register a specific session directly (subject ID inferred from parent dir)
+conductor --add-session "\\\\server\\data\\chronic\\842456\\2026-03-20T20-23-05"
+```
+
+## Directory layout expected
+
+```
+<watch_path>/
+└── <subject_id>/                     # e.g. 842456
+    └── <YYYY-MM-DDTHH-MM-SS>/        # session root (e.g. 2026-03-20T20-23-05)
+        ├── <YYYY-MM-DDTHH-MM-SS>/    # run dir (Bonsai writes here)
+        │   ├── behavior/
+        │   │   └── DelphiController_*.jsonl
+        │   └── behavior-videos/
+        │       └── TopCamera/
+        │           └── <chunk_ts>/
+        └── <YYYY-MM-DDTHH-MM-SS>/    # second run dir (if Bonsai restarted)
+```
+
+After consolidation, all run dirs are merged into the earliest one.
+
+## Configuration
+
+All settings are read from `.env` (and/or shell environment) with optional
+CLI overrides.  Copy `.env.example` and fill in your values.
+
+### Minimum required fields
+
+| Variable | Description |
+|----------|-------------|
+| `CONDUCTOR_WATCH_PATHS` | Comma-separated list of root directories to monitor |
+| `CONDUCTOR_PROTOCOL_ID` | AIND protocol ID |
+| `CONDUCTOR_INSTRUMENT_ID` | Rig identifier |
+| `CONDUCTOR_EXPERIMENT_ROOM` | Physical room identifier |
+| `CONDUCTOR_DELPHI_COMPUTER_ID` | Acquisition computer hostname |
+| `CONDUCTOR_CONTACT_EMAIL` | Email for upload job notifications |
+| `CONDUCTOR_PROJECT_NAME` | AIND project name |
+
+### Key settings
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `CONDUCTOR_EXPERIMENT_TYPE` | `delphi` | `delphi` / `pirouette` / `delphi_pirouette` |
+| `CONDUCTOR_ENABLE_PIPELINE` | `true` | Run delphi-data processing |
+| `CONDUCTOR_PIPELINE_CADENCE_MINUTES` | `60` | How often to process each session |
+| `CONDUCTOR_ENABLE_METADATA` | `true` | Generate AIND metadata JSON files |
+| `CONDUCTOR_ENABLE_NOISE_FLOOR` | `false` | Estimate ephys noise floor |
+| `CONDUCTOR_ENABLE_UPLOAD` | `true` | Submit S3 upload jobs |
+| `CONDUCTOR_DRY_RUN` | `false` | Print upload requests without submitting |
+| `CONDUCTOR_STATE_FILE` | — | Path for persisting session states |
+| `CONDUCTOR_POLL_INTERVAL_S` | `60` | Watch-path scan interval (seconds) |
+
+See `.env.example` for the full list with descriptions.
+
+## Adding new sessions at runtime
+
+The conductor automatically picks up new session directories that appear
+under any configured watch path.  You can also register a specific directory
+immediately without restarting:
+
+```bash
+# Add a single session on the fly (keep the existing conductor running and
+# run this in a second terminal):
+conductor --add-session "\\\\server\\data\\842456\\2026-04-15T09-30-00"
+```
+
+Or just add the subject's directory to `CONDUCTOR_WATCH_PATHS` — the next
+poll will discover all sessions under it automatically.
+
+## Session lifecycle
+
+```
+DISCOVERED → CONSOLIDATING → METADATA_CHECK → METADATA_GENERATING
+           → BUILDING → NOISE_FLOOR → UPLOADING → (loops back to CONSOLIDATING)
+```
+
+Sessions with persistent errors are marked `ERROR` after
+`CONDUCTOR_MAX_CONSECUTIVE_ERRORS` (default 5) consecutive failures and
+skipped until the underlying issue is resolved.
+
+## Development install
+
+```bash
+uv pip install -e "src/experiment_conductor[dev]"
+pytest src/experiment_conductor/tests/
 ```
