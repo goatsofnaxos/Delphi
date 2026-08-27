@@ -152,35 +152,66 @@ def _parse_args(argv=None) -> argparse.Namespace:
     Returns
     -------
     argparse.Namespace
-        Parsed argument namespace with ``data_root``, ``firmware``, and
-        ``no_consolidate`` attributes.
+        Parsed argument namespace with ``data_root``, ``firmware``,
+        ``no_consolidate``, and ``consolidate_only`` attributes.
     """
     parser = argparse.ArgumentParser(
         description=(
             "Build a Delphi behavioral dataset CSV from a raw session directory.\n\n"
-            "The output is written to <SESSION_DIR>/behavior/delphi_dataset.csv."
+            "The output is written to <SESSION_DIR>/behavior/delphi_dataset.csv.\n\n"
+            "Pass --consolidate-only to merge run sub-directories without building\n"
+            "the dataset CSV (useful for Pirouette sessions)."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "--data-root", required=True,
-        help="Path to the run-level session directory.",
+        help="Path to the session root or run-level directory.",
     )
     parser.add_argument(
-        "--firmware", required=True,
-        help='Firmware version string, e.g. "0.1.0".',
+        "--firmware",
+        default=None,
+        help='Firmware version string, e.g. "0.1.0". Required unless --consolidate-only.',
     )
     parser.add_argument(
         "--no-consolidate", action="store_true", default=False,
         help="Disable automatic consolidation of multiple run sub-directories.",
+    )
+    parser.add_argument(
+        "--consolidate-only", action="store_true", default=False,
+        help=(
+            "Consolidate run sub-directories and move metadata files, then exit "
+            "without building the dataset CSV. --firmware is not required."
+        ),
     )
     return parser.parse_args(argv)
 
 
 if __name__ == "__main__":
     args = _parse_args()
-    build_dataset(
-        data_root=pathlib.Path(args.data_root),
-        firmware=args.firmware,
-        consolidate_runs=not args.no_consolidate,
-    )
+
+    if args.consolidate_only:
+        from delphi_data.curation import (
+            consolidate_metadata_files,
+            consolidate_session_runs,
+            resolve_run_dir,
+        )
+        data_root = pathlib.Path(args.data_root)
+        print(f"Consolidating run directories in: {data_root}")
+        consolidate_session_runs(str(data_root))
+        run_dir = resolve_run_dir(data_root)
+        print(f"Moving metadata files in: {run_dir}")
+        moved = consolidate_metadata_files(run_dir)
+        if moved:
+            print(f"  Moved {len(moved)} metadata file(s) to behavior/metadata/")
+        print("Done.")
+    else:
+        if not args.firmware:
+            import sys
+            print("error: --firmware is required when not using --consolidate-only")
+            sys.exit(1)
+        build_dataset(
+            data_root=pathlib.Path(args.data_root),
+            firmware=args.firmware,
+            consolidate_runs=not args.no_consolidate,
+        )
