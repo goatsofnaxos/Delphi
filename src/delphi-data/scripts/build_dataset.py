@@ -40,7 +40,7 @@ from delphi_data.curation import (
     find_earliest_run,
 )
 from delphi_data.ingestion import ingest
-from delphi_data.settings import Settings as _Settings
+from delphi_data.settings import _Settings
 
 _s = _Settings()
 
