@@ -38,6 +38,62 @@ from delphi_data.settings import Settings as _Settings
 _s = _Settings()
 
 
+def consolidate_session(
+    data_root: pathlib.Path,
+    consolidate_runs: bool = True,
+) -> pathlib.Path:
+    """Consolidate run sub-directories and move metadata files into place.
+
+    Detects timestamp-named run sub-directories inside *data_root*, merges
+    them into the earliest one (when *consolidate_runs* is ``True``), descends
+    into that run directory, and moves any ``HardwareSettings`` /
+    ``RuleSettings`` JSONL files from a top-level ``metadata/`` directory into
+    ``behavior/metadata/``.
+
+    Parameters
+    ----------
+    data_root:
+        Path to the session root or an already-resolved run directory.
+    consolidate_runs:
+        When ``True`` and multiple run sub-directories are detected, merge them
+        into the earliest one.  When ``False``, a warning is printed and the
+        earliest run directory is still selected.
+
+    Returns
+    -------
+    pathlib.Path
+        The resolved run directory (earliest timestamp sub-directory, or
+        *data_root* unchanged when no timestamp sub-directories exist).
+    """
+    ts_run_dirs = collect_run_dirs(str(data_root))
+
+    if len(ts_run_dirs) > 1:
+        print(f"Detected {len(ts_run_dirs)} run directories in session: {data_root}")
+        if consolidate_runs:
+            print("Consolidating run directories …")
+            consolidate_session_runs(str(data_root))
+            print("Consolidation complete.")
+        else:
+            print("Warning: multiple runs detected but consolidation is disabled.")
+        ts_run_dirs = collect_run_dirs(str(data_root))
+        data_root = pathlib.Path(find_earliest_run(ts_run_dirs))
+        print(f"Using run directory: {data_root}")
+    elif len(ts_run_dirs) == 1:
+        data_root = pathlib.Path(ts_run_dirs[0])
+        print(f"Single run detected — using run directory: {data_root}")
+    else:
+        print(f"Using run directory: {data_root}")
+
+    print("Consolidating metadata files …")
+    moved = consolidate_metadata_files(data_root)
+    if moved:
+        print(f"  Moved {len(moved)} metadata file(s) to behavior/metadata/")
+    else:
+        print("  No metadata files to move.")
+
+    return data_root
+
+
 def build_dataset(
     data_root: pathlib.Path,
     firmware: str,
@@ -77,38 +133,7 @@ def build_dataset(
     pd.DataFrame
         The per-poke event dataframe that was saved to CSV.
     """
-    # Detect timestamp-named run sub-directories.  Their presence means data_root
-    # is a session root rather than a run directory itself.
-    ts_run_dirs = collect_run_dirs(str(data_root))
-
-    if len(ts_run_dirs) > 1:
-        print(f"Detected {len(ts_run_dirs)} run directories in session: {data_root}")
-        if consolidate_runs:
-            print("Consolidating run directories …")
-            consolidate_session_runs(str(data_root))
-            print("Consolidation complete.")
-        else:
-            print("Warning: multiple runs detected but consolidation is disabled.")
-        # After consolidation (or if skipped) use the earliest run dir.
-        ts_run_dirs = collect_run_dirs(str(data_root))
-        data_root = pathlib.Path(find_earliest_run(ts_run_dirs))
-        print(f"Using run directory: {data_root}")
-    elif len(ts_run_dirs) == 1:
-        # Single run sub-directory — descend into it.
-        data_root = pathlib.Path(ts_run_dirs[0])
-        print(f"Single run detected — using run directory: {data_root}")
-    else:
-        # No timestamp sub-directories: data_root is already a run directory.
-        print(f"Using run directory: {data_root}")
-
-    # Move any HardwareSettings / RuleSettings files that landed in the
-    # top-level metadata/ directory instead of behavior/metadata/.
-    print("Consolidating metadata files …")
-    moved = consolidate_metadata_files(data_root)
-    if moved:
-        print(f"  Moved {len(moved)} metadata file(s) to behavior/metadata/")
-    else:
-        print("  No metadata files to move.")
+    data_root = consolidate_session(data_root, consolidate_runs=consolidate_runs)
 
     df = ingest(
         data_root_path=data_root,
@@ -199,19 +224,7 @@ if __name__ == "__main__":
     args = _parse_args()
 
     if args.consolidate_only:
-        from delphi_data.curation import (
-            consolidate_metadata_files,
-            consolidate_session_runs,
-            resolve_run_dir,
-        )
-        data_root = pathlib.Path(args.data_root)
-        print(f"Consolidating run directories in: {data_root}")
-        consolidate_session_runs(str(data_root))
-        run_dir = resolve_run_dir(data_root)
-        print(f"Moving metadata files in: {run_dir}")
-        moved = consolidate_metadata_files(run_dir)
-        if moved:
-            print(f"  Moved {len(moved)} metadata file(s) to behavior/metadata/")
+        consolidate_session(pathlib.Path(args.data_root), consolidate_runs=True)
         print("Done.")
     else:
         if not args.firmware:
