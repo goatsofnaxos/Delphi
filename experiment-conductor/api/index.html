@@ -19,7 +19,7 @@
         <link rel="prev" href="../">
       
       
-        <link rel="next" href="conductor/">
+        <link rel="next" href="cli/">
       
       
         
@@ -83,7 +83,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-reference" class="md-skip">
+        <a href="#api-reference-experiment-conductor" class="md-skip">
           Skip to content
         </a>
       
@@ -2053,14 +2053,14 @@
   
   
     <li class="md-nav__item">
-      <a href="conductor/" class="md-nav__link">
+      <a href="cli/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    conductor
+    cli
   
 
     
@@ -2109,14 +2109,70 @@
   
   
     <li class="md-nav__item">
-      <a href="state/" class="md-nav__link">
+      <a href="session/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    state
+    session
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="session_manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    session_manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="watcher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    watcher
   
 
     
@@ -2193,14 +2249,14 @@
   
   
     <li class="md-nav__item">
-      <a href="uploader_bridge/" class="md-nav__link">
+      <a href="noise_floor/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    uploader_bridge
+    noise_floor
   
 
     
@@ -2221,14 +2277,14 @@
   
   
     <li class="md-nav__item">
-      <a href="hotkeys/" class="md-nav__link">
+      <a href="uploader_bridge/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    hotkeys
+    uploader_bridge
   
 
     
@@ -2297,43 +2353,50 @@
   
 
 
-<h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
-<p>Module-by-module reference for <code>experiment_conductor</code>.</p>
+<h1 id="api-reference-experiment-conductor">API Reference — experiment-conductor<a class="headerlink" href="#api-reference-experiment-conductor" title="Permanent link">&para;</a></h1>
 <table>
 <thead>
 <tr>
 <th>Module</th>
-<th>Purpose</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="conductor/">conductor</a></td>
-<td>Main orchestration logic and entry point</td>
+<td><a href="cli/">cli</a></td>
+<td>Command-line entry point (<code>conductor</code> command)</td>
 </tr>
 <tr>
 <td><a href="config/">config</a></td>
-<td><code>.env</code> + CLI configuration loading</td>
+<td><code>ConductorConfig</code> dataclass and <code>build_config()</code> loader</td>
 </tr>
 <tr>
-<td><a href="state/">state</a></td>
-<td>Thread-safe phase/state management</td>
+<td><a href="session/">session</a></td>
+<td><code>SessionPhase</code> enum and <code>SessionState</code> dataclass</td>
+</tr>
+<tr>
+<td><a href="session_manager/">session_manager</a></td>
+<td><code>SessionManager</code> — multi-session orchestrator and main loop</td>
+</tr>
+<tr>
+<td><a href="watcher/">watcher</a></td>
+<td>Network-drive session discovery (<code>discover_sessions</code>)</td>
 </tr>
 <tr>
 <td><a href="pipeline_bridge/">pipeline_bridge</a></td>
-<td>delphi-data pipeline integration</td>
+<td>delphi-data consolidation and dataset building</td>
 </tr>
 <tr>
 <td><a href="metadata_bridge/">metadata_bridge</a></td>
-<td>AIND metadata generation and updates</td>
+<td>AIND metadata check and generation</td>
+</tr>
+<tr>
+<td><a href="noise_floor/">noise_floor</a></td>
+<td>Ephys noise-floor estimation from raw binary data</td>
 </tr>
 <tr>
 <td><a href="uploader_bridge/">uploader_bridge</a></td>
-<td>S3 upload job submission with pause/resume</td>
-</tr>
-<tr>
-<td><a href="hotkeys/">hotkeys</a></td>
-<td>Global hotkey listener</td>
+<td>S3 upload job submission with duplicate-submission protection</td>
 </tr>
 </tbody>
 </table>

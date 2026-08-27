@@ -83,7 +83,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tutorial-experiment-conductor" class="md-skip">
+        <a href="#experiment-conductor-complete-tutorial" class="md-skip">
           Skip to content
         </a>
       
@@ -660,10 +660,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#0-prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Prerequisites
+        0. Prerequisites
       
     </span>
   </a>
@@ -671,10 +671,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-1-configure-env" class="md-nav__link">
+  <a href="#1-understanding-the-directory-layout" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 1 — Configure .env
+        1. Understanding the directory layout
       
     </span>
   </a>
@@ -682,22 +682,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-start-the-conductor" class="md-nav__link">
+  <a href="#2-configure-env" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 2 — Start the conductor
+        2. Configure .env
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Step 2 — Start the conductor">
+    <nav class="md-nav" aria-label="2. Configure .env">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#launching" class="md-nav__link">
+  <a href="#2a-watch-paths-required-first" class="md-nav__link">
     <span class="md-ellipsis">
       
-        LAUNCHING
+        2a. Watch paths (required first)
       
     </span>
   </a>
@@ -705,10 +705,65 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#running" class="md-nav__link">
+  <a href="#2b-experiment-identity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        RUNNING
+        2b. Experiment identity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2c-delphi-data-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2c. delphi-data pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2d-metadata-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2d. Metadata generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2e-ephys-noise-floor-estimation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2e. Ephys noise-floor estimation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2f-s3-upload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2f. S3 upload
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2g-polling-and-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2g. Polling and state
       
     </span>
   </a>
@@ -721,10 +776,288 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-3-monitor-progress" class="md-nav__link">
+  <a href="#3-start-the-conductor" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 3 — Monitor progress
+        3. Start the conductor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Start the conductor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#useful-cli-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Useful CLI flags
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-what-happens-step-by-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. What happens — step by step
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. What happens — step by step">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#4a-session-discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4a. Session discovery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4b-minimum-age-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4b. Minimum age gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4c-per-session-cadence-cycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4c. Per-session cadence cycle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4c. Per-session cadence cycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-consolidation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1 — Consolidation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-metadata-check-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2 — Metadata check / generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-delphi-data-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3 — delphi-data pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-noise-floor-estimation-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4 — Noise floor estimation (optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-s3-upload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5 — S3 upload
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-adding-new-sessions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Adding new sessions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Adding new sessions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automatic-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic (recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manual-register-a-specific-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual — register a specific path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-noise-floor-estimation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Noise floor estimation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Noise floor estimation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-was-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What was implemented
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neuropixels-20-custom-gain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neuropixels 2.0 / custom gain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limitation-method-assumed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitation — method assumed
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-state-persistence-and-restart-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. State persistence and restart recovery
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. State persistence and restart recovery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resetting-a-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resetting a session
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-monitoring-multiple-sessions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Monitoring multiple sessions
       
     </span>
   </a>
@@ -732,10 +1065,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-4-signal-end-of-experiment" class="md-nav__link">
+  <a href="#9-skipping-individual-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 4 — Signal end-of-experiment
+        9. Skipping individual steps
       
     </span>
   </a>
@@ -743,10 +1076,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-5-optional-delete-large-local-files" class="md-nav__link">
+  <a href="#10-complete-env-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 5 — Optional: delete large local files
+        10. Complete .env example
       
     </span>
   </a>
@@ -754,32 +1087,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dry-run-mode" class="md-nav__link">
+  <a href="#11-troubleshooting" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dry-run mode
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pirouette-specific-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pirouette-specific notes
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Troubleshooting
+        11. Troubleshooting
       
     </span>
   </a>
@@ -2216,14 +2527,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiment-conductor/api/conductor/" class="md-nav__link">
+      <a href="../../experiment-conductor/api/cli/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    conductor
+    cli
   
 
     
@@ -2272,14 +2583,70 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiment-conductor/api/state/" class="md-nav__link">
+      <a href="../../experiment-conductor/api/session/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    state
+    session
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiment-conductor/api/session_manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    session_manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../experiment-conductor/api/watcher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    watcher
   
 
     
@@ -2356,14 +2723,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiment-conductor/api/uploader_bridge/" class="md-nav__link">
+      <a href="../../experiment-conductor/api/noise_floor/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    uploader_bridge
+    noise_floor
   
 
     
@@ -2384,14 +2751,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../experiment-conductor/api/hotkeys/" class="md-nav__link">
+      <a href="../../experiment-conductor/api/uploader_bridge/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    hotkeys
+    uploader_bridge
   
 
     
@@ -2449,10 +2816,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#0-prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Prerequisites
+        0. Prerequisites
       
     </span>
   </a>
@@ -2460,10 +2827,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-1-configure-env" class="md-nav__link">
+  <a href="#1-understanding-the-directory-layout" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 1 — Configure .env
+        1. Understanding the directory layout
       
     </span>
   </a>
@@ -2471,22 +2838,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-start-the-conductor" class="md-nav__link">
+  <a href="#2-configure-env" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 2 — Start the conductor
+        2. Configure .env
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Step 2 — Start the conductor">
+    <nav class="md-nav" aria-label="2. Configure .env">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#launching" class="md-nav__link">
+  <a href="#2a-watch-paths-required-first" class="md-nav__link">
     <span class="md-ellipsis">
       
-        LAUNCHING
+        2a. Watch paths (required first)
       
     </span>
   </a>
@@ -2494,10 +2861,65 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#running" class="md-nav__link">
+  <a href="#2b-experiment-identity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        RUNNING
+        2b. Experiment identity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2c-delphi-data-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2c. delphi-data pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2d-metadata-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2d. Metadata generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2e-ephys-noise-floor-estimation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2e. Ephys noise-floor estimation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2f-s3-upload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2f. S3 upload
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2g-polling-and-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2g. Polling and state
       
     </span>
   </a>
@@ -2510,10 +2932,288 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-3-monitor-progress" class="md-nav__link">
+  <a href="#3-start-the-conductor" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 3 — Monitor progress
+        3. Start the conductor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Start the conductor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#useful-cli-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Useful CLI flags
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-what-happens-step-by-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. What happens — step by step
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. What happens — step by step">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#4a-session-discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4a. Session discovery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4b-minimum-age-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4b. Minimum age gate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4c-per-session-cadence-cycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4c. Per-session cadence cycle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4c. Per-session cadence cycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-consolidation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1 — Consolidation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-metadata-check-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2 — Metadata check / generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-delphi-data-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3 — delphi-data pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-noise-floor-estimation-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4 — Noise floor estimation (optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-s3-upload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5 — S3 upload
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-adding-new-sessions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Adding new sessions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Adding new sessions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automatic-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic (recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manual-register-a-specific-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual — register a specific path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-noise-floor-estimation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Noise floor estimation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Noise floor estimation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-was-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What was implemented
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#neuropixels-20-custom-gain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neuropixels 2.0 / custom gain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limitation-method-assumed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitation — method assumed
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-state-persistence-and-restart-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. State persistence and restart recovery
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. State persistence and restart recovery">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resetting-a-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resetting a session
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-monitoring-multiple-sessions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Monitoring multiple sessions
       
     </span>
   </a>
@@ -2521,10 +3221,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-4-signal-end-of-experiment" class="md-nav__link">
+  <a href="#9-skipping-individual-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 4 — Signal end-of-experiment
+        9. Skipping individual steps
       
     </span>
   </a>
@@ -2532,10 +3232,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-5-optional-delete-large-local-files" class="md-nav__link">
+  <a href="#10-complete-env-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 5 — Optional: delete large local files
+        10. Complete .env example
       
     </span>
   </a>
@@ -2543,32 +3243,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dry-run-mode" class="md-nav__link">
+  <a href="#11-troubleshooting" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dry-run mode
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pirouette-specific-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Pirouette-specific notes
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Troubleshooting
+        11. Troubleshooting
       
     </span>
   </a>
@@ -2595,203 +3273,673 @@
   
 
 
-<h1 id="tutorial-experiment-conductor">Tutorial: experiment-conductor<a class="headerlink" href="#tutorial-experiment-conductor" title="Permanent link">&para;</a></h1>
-<p>The conductor wraps the launcher, <code>delphi-data</code>, <code>metadata-generator</code>, and the S3 uploader into a single supervised process for live chronic-recording sessions.  Start it before the experiment, and it handles data processing, metadata generation, and upload automatically until you signal end-of-experiment.</p>
+<h1 id="experiment-conductor-complete-tutorial">Experiment Conductor — Complete Tutorial<a class="headerlink" href="#experiment-conductor-complete-tutorial" title="Permanent link">&para;</a></h1>
+<p>The experiment conductor watches a shared network drive for Delphi / Pirouette
+acquisition sessions and automatically orchestrates everything that happens
+after Bonsai stops recording: directory consolidation, AIND metadata
+generation, behavioral dataset building, ephys noise-floor estimation, and
+S3 upload.</p>
+<p>It runs on a <strong>local workstation or VM</strong> with network access to the drive
+where the acquisition computer saves data.  It does <strong>not</strong> launch or control
+Bonsai and does <strong>not</strong> need to run on the acquisition computer.</p>
 <hr />
-<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<p>All four packages must be installed and accessible in the same Python environment:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>src/experiment_conductor
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>uv<span class="w"> </span>sync
-</span></code></pre></div>
-<p>Confirm the other packages are reachable:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import delphi_data, metadata_generator, launcher; print('ok')"</span>
-</span></code></pre></div>
-<hr />
-<h2 id="step-1-configure-env">Step 1 — Configure <code>.env</code><a class="headerlink" href="#step-1-configure-env" title="Permanent link">&para;</a></h2>
-<p>Copy the example and fill in your session details:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cp<span class="w"> </span>src/experiment_conductor/.env.example<span class="w"> </span>src/experiment_conductor/.env
-</span></code></pre></div>
-<p>Minimum required fields:</p>
-<div class="language-ini highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="na">EXPERIMENT_TYPE</span><span class="o">=</span><span class="s">delphi_pirouette</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="na">EXPERIMENT_CONFIG</span><span class="o">=</span><span class="s">delphi_pirouette_experiment</span><span class="w">   </span><span class="c1"># launcher profile name</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Path to server root (data_root is resolved automatically after launcher exits)</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="na">SERVER_ROOT</span><span class="o">=</span><span class="s">\allen\aind\stage\chronic</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="na">SUBJECT_ID</span><span class="o">=</span><span class="s">842456</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1"># Metadata inputs</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="na">PROTOCOL_ID</span><span class="o">=</span><span class="s">DRn20231002</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="na">INSTRUMENT_ID</span><span class="o">=</span><span class="s">delphi-rig-0</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="na">EXPERIMENT_ROOM</span><span class="o">=</span><span class="s">447</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="na">EXPERIMENTERS</span><span class="o">=</span><span class="s">B. Pratt</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="na">SURGEONS</span><span class="o">=</span><span class="s">John Smith</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="na">SURGERY_NOTES_BASE</span><span class="o">=</span><span class="s">\allen\aind\scratch\chronos\surgeryNotes</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="c1"># delphi-data pipeline</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="na">DELPHI_EXPERIMENT</span><span class="o">=</span><span class="s">bonhoeffer</span>
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="na">DELPHI_FIRMWARE</span><span class="o">=</span><span class="s">0.1.0</span>
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>
-</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="c1"># Upload</span>
-</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="na">S3_BUCKET</span><span class="o">=</span><span class="s">aind-open-data</span>
-</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="na">CONTACT_EMAIL</span><span class="o">=</span><span class="s">brandon.pratt@alleninstitute.org</span>
-</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="na">PROJECT_NAME</span><span class="o">=</span><span class="s">Chronos</span>
-</span></code></pre></div>
-<p>Leave <code>SESSION_DATETIME</code> blank — the conductor detects the newest session directory automatically after the launcher exits.</p>
-<hr />
-<h2 id="step-2-start-the-conductor">Step 2 — Start the conductor<a class="headerlink" href="#step-2-start-the-conductor" title="Permanent link">&para;</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">cd</span><span class="w"> </span>src/experiment_conductor
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>uv<span class="w"> </span>run<span class="w"> </span>scripts/run_conductor.py
-</span></code></pre></div>
-<p>The conductor transitions through four states:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>LAUNCHING ──► RUNNING ──► ENDING ──► DONE
-</span></code></pre></div>
-<h3 id="launching">LAUNCHING<a class="headerlink" href="#launching" title="Permanent link">&para;</a></h3>
-<p>The launcher opens (<code>launcher.py --experiment &lt;EXPERIMENT_CONFIG&gt;</code>).  You complete the subject-ID and experimenter prompts in the launcher's terminal interface, then Bonsai starts.  The conductor blocks here until Bonsai exits.</p>
-<p>After Bonsai finishes launching, the conductor resolves <code>data_root</code> (polling up to 10 minutes for robocopy to create the session directory on the server).</p>
-<h3 id="running">RUNNING<a class="headerlink" href="#running" title="Permanent link">&para;</a></h3>
-<p>A cadence scheduler fires a <strong>cycle</strong> every <code>PIPELINE_CADENCE_MINUTES</code> minutes (default 60), or at a fixed <code>SCHEDULE_MINUTE_OF_HOUR</code> if set.  The first cycle fires immediately.</p>
-<p>Each cycle performs four steps in order:</p>
+<h2 id="0-prerequisites">0. Prerequisites<a class="headerlink" href="#0-prerequisites" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Step</th>
-<th>What happens</th>
+<th>Requirement</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>a. Pipeline</strong></td>
-<td>Runs <code>delphi-data pipeline --append</code> — consolidates run dirs, rebuilds the behavioral dataset with new Harp data, saves snapshot figures.</td>
+<td>Python 3.11+</td>
+<td><code>uv</code> is recommended for environment management</td>
 </tr>
 <tr>
-<td><strong>b. Move metadata</strong></td>
-<td>Moves <code>HardwareSettings</code>/<code>RuleSettings</code> JSONL files to <code>behavior/metadata/</code> (once only).</td>
+<td>Network share access</td>
+<td>Read/write to the drive where data is saved</td>
 </tr>
 <tr>
-<td><strong>c. Generate AIND metadata</strong></td>
-<td>Writes <code>subject.json</code>, <code>instrument.json</code>, <code>acquisition.json</code>, <code>procedures.json</code> to <code>metadata/</code> (once only; skipped on subsequent cycles).</td>
+<td>AIND VPN access</td>
+<td>Required for subject metadata lookups (<code>subject.json</code>)</td>
 </tr>
 <tr>
-<td><strong>d. Upload</strong></td>
-<td>Submits camera-video chunks to the AIND transfer service once ≥ 3 chunks exist and all four metadata files are present.</td>
+<td>Surgery notes DOCX</td>
+<td><code>\\allen\aind\scratch\chronos\surgeryNotes\&lt;subject_id&gt;\&lt;subject_id&gt;_craniotomy-implantation.docx</code></td>
+</tr>
+<tr>
+<td><code>aind-chronic-ephys-uploader</code></td>
+<td>Installed editable or on your Python path</td>
 </tr>
 </tbody>
 </table>
-<p>For <strong>pirouette-only</strong> experiments the pipeline step is replaced by a single <code>delphi-data consolidate</code> call (run once).  Step b is skipped because there are no Delphi controller metadata files.</p>
-<hr />
-<h2 id="step-3-monitor-progress">Step 3 — Monitor progress<a class="headerlink" href="#step-3-monitor-progress" title="Permanent link">&para;</a></h2>
-<p>The conductor logs all activity to stdout.  Key log lines:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>INFO  Cadence cycle starting (cycle #3) ...
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>INFO  delphi-data pipeline completed successfully.
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>INFO  AIND metadata written to /data/842456/2026-03-20T20-23-05/metadata
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>INFO  Submitted upload job for chunk_0 (job_id=abc123)
+<p>Install all Delphi packages from the repo root:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>uv<span class="w"> </span>sync
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">"src/experiment_conductor"</span>
 </span></code></pre></div>
-<p>Use the runtime hotkeys to interact without stopping the process:</p>
-<table>
-<thead>
-<tr>
-<th>Hotkey</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>Ctrl+Shift+P</code></td>
-<td>Trigger a pipeline cycle immediately</td>
-</tr>
-<tr>
-<td><code>Ctrl+Shift+U</code></td>
-<td>Pause / resume upload</td>
-</tr>
-<tr>
-<td><code>Ctrl+Shift+E</code></td>
-<td>Signal end-of-experiment</td>
-</tr>
-<tr>
-<td><code>Ctrl+Shift+T</code></td>
-<td>Update acquisition end time (prompts for HH:MM)</td>
-</tr>
-<tr>
-<td><code>Ctrl+Shift+R</code></td>
-<td>Retry metadata generation on the next cycle</td>
-</tr>
-<tr>
-<td><code>Ctrl+Shift+1</code></td>
-<td>Toggle pipeline on / off</td>
-</tr>
-<tr>
-<td><code>Ctrl+Shift+2</code></td>
-<td>Toggle metadata generation on / off</td>
-</tr>
-<tr>
-<td><code>Ctrl+Shift+3</code></td>
-<td>Toggle upload on / off</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="step-4-signal-end-of-experiment">Step 4 — Signal end-of-experiment<a class="headerlink" href="#step-4-signal-end-of-experiment" title="Permanent link">&para;</a></h2>
-<p>Press <strong>Ctrl+Shift+E</strong> (or the key mapped to <code>HOTKEY_END_EXPERIMENT</code>) when the experiment is over.  The conductor:</p>
-<ol>
-<li>Shows the current end time (if already set by <code>Ctrl+Shift+T</code>).</li>
-<li>Prompts you to confirm or enter a new end time (<code>HH:MM</code> in local time, or press Enter to use now).</li>
-<li>For pirouette experiments, verifies that <code>probe.json</code> exists in <code>ecephys/</code>.</li>
-<li>Waits for any in-flight cycle to finish.</li>
-<li>Runs one final cycle to capture the last data.</li>
-<li>Updates <code>acquisition_end_time</code> in <code>acquisition.json</code>.</li>
-<li>Stops the upload cleanly.</li>
-</ol>
-<hr />
-<h2 id="step-5-optional-delete-large-local-files">Step 5 — Optional: delete large local files<a class="headerlink" href="#step-5-optional-delete-large-local-files" title="Permanent link">&para;</a></h2>
-<p>When <code>DELETE_AFTER_UPLOAD=true</code> is set, the conductor deletes <code>behavior-videos/</code> and <code>ecephys/</code> from the local server after each chunk is confirmed present on S3.  Files matching <code>KEEP_LOCAL_PATTERNS</code> are never deleted:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>behavior/delphi_dataset.csv
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>behavior/DelphiController/**
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>behavior/results/**
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>metadata/**
-</span></code></pre></div>
-<p>You are prompted to confirm deletion at the end of the run if <code>DELETE_AFTER_UPLOAD=true</code>.</p>
-<hr />
-<h2 id="dry-run-mode">Dry-run mode<a class="headerlink" href="#dry-run-mode" title="Permanent link">&para;</a></h2>
-<p>Set <code>DRY_RUN=true</code> (or pass <code>--dry-run</code>) to run the full state machine without actually submitting upload jobs:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>uv<span class="w"> </span>run<span class="w"> </span>scripts/run_conductor.py<span class="w"> </span>--dry-run
+<p>Verify the install:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>conductor<span class="w"> </span>--help
 </span></code></pre></div>
 <hr />
-<h2 id="pirouette-specific-notes">Pirouette-specific notes<a class="headerlink" href="#pirouette-specific-notes" title="Permanent link">&para;</a></h2>
+<h2 id="1-understanding-the-directory-layout">1. Understanding the directory layout<a class="headerlink" href="#1-understanding-the-directory-layout" title="Permanent link">&para;</a></h2>
+<p>The conductor expects data saved in this structure on the network drive:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>&lt;watch_path&gt;/
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>└── &lt;subject_id&gt;/                           # e.g. 842456
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    └── 2026-03-20T20-23-05/                # session root (YYYY-MM-DDTHH-MM-SS)
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        ├── 2026-03-20T20-23-37/            # run dir — Bonsai writes here
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        │   ├── behavior/
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        │   │   ├── DelphiController/       # Harp binary data (.bin files)
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        │   │   │   ├── DelphiController_32_2026-03-20T20-00-00.bin
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        │   │   │   └── ...
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>        │   │   ├── HardwareSettings_*.jsonl
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        │   │   ├── RuleSettings_*.jsonl
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        │   │   └── metadata/               # created by conductor
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        │   │       ├── HardwareSettings_*.jsonl  (moved here)
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>        │   │       └── RuleSettings_*.jsonl      (moved here)
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>        │   ├── behavior-videos/
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>        │   │   └── TopCamera/
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>        │   │       ├── 2026-03-20T20-23-37/  # chunk dirs (one per recording segment)
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>        │   │       ├── 2026-03-20T21-23-37/
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>        │   │       └── ...
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>        │   ├── ecephys/                    # Pirouette/combined sessions only
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>        │   │   ├── continuous.dat          # Open Ephys data
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>        │   │   └── noise_floor.json        # written by conductor
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>        │   └── metadata/                   # written by conductor
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>        │       ├── subject.json
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>        │       ├── instrument.json
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>        │       ├── acquisition.json
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>        │       └── procedures.json
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>        └── 2026-03-20T21-45-00/            # second run dir (if Bonsai restarted)
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>            └── behavior/
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>                └── ...
+</span></code></pre></div>
+<p><strong>Key points:</strong></p>
 <ul>
-<li>Set <code>EXPERIMENT_TYPE=pirouette</code> (or <code>delphi_pirouette</code>).</li>
-<li><code>probe.json</code> must be present in <code>ecephys/</code> before end-of-experiment is signalled.  The conductor warns if it is missing.</li>
-<li>The CCFv3 <code>ProbeConfig</code> (atlas coordinates, BREGMA_ARI coordinate system, chronic implant note) is extracted from <code>acquisition.json</code> automatically and written into <code>procedures.json</code>.</li>
-<li>The delphi pipeline step is skipped for <code>pirouette</code>-only experiments; <code>delphi-data consolidate</code> runs once instead.</li>
+<li>The <strong>session root</strong> (e.g. <code>2026-03-20T20-23-05</code>) is what the conductor
+  discovers.  Its name is the timestamp when the session was started.</li>
+<li>Inside the session root, one or more <strong>run dirs</strong> may exist — one per Bonsai
+  launch.  If the experimenter stopped and restarted Bonsai mid-session, there
+  will be two.</li>
+<li>The conductor consolidates multiple run dirs into the <strong>earliest</strong> one on
+  every cycle.</li>
 </ul>
 <hr />
-<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h2 id="2-configure-env">2. Configure <code>.env</code><a class="headerlink" href="#2-configure-env" title="Permanent link">&para;</a></h2>
+<p>The conductor reads all settings from a <code>.env</code> file in whichever directory
+you run it from (or from the environment).</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">cd</span><span class="w"> </span>src/experiment_conductor
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+</span></code></pre></div>
+<p>Then open <code>.env</code> in a text editor.  The groups below are presented in the
+order you'll typically fill them in.</p>
+<h3 id="2a-watch-paths-required-first">2a. Watch paths (required first)<a class="headerlink" href="#2a-watch-paths-required-first" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a># Comma-separated list of root directories to monitor.
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a># The conductor scans &lt;watch_path&gt;/&lt;subject_id&gt;/&lt;session_ts&gt;/ automatically.
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a># UNC paths work on Windows.
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>CONDUCTOR_WATCH_PATHS=\\allen\aind\stage\chronic
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a># To monitor multiple roots:
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a># CONDUCTOR_WATCH_PATHS=\\allen\aind\stage\chronic,D:\local_data\chronic
+</span></code></pre></div>
+<h3 id="2b-experiment-identity">2b. Experiment identity<a class="headerlink" href="#2b-experiment-identity" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a># Experiment type: delphi | pirouette | delphi_pirouette
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>CONDUCTOR_EXPERIMENT_TYPE=delphi
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a># Acquisition type used in acquisition.json
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a># (typically "ChronicRecording" for Delphi/Pirouette)
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>CONDUCTOR_ACQUISITION_TYPE=ChronicRecording
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a># AIND protocol ID
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>CONDUCTOR_PROTOCOL_ID=2115
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a># Rig identifier (must match an AIND instrument record)
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>CONDUCTOR_INSTRUMENT_ID=323_EPHYS1_OPTO_20240223
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a># Physical experiment room
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>CONDUCTOR_EXPERIMENT_ROOM=323
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a># Hostname of the acquisition computer (used for instrument.json)
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>CONDUCTOR_DELPHI_COMPUTER_ID=W10DT714023
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a># Comma-separated names
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>CONDUCTOR_SURGEONS=Scientist A
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>CONDUCTOR_EXPERIMENTERS=Scientist B
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a># Base path for surgery notes DOCX files.
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a># The conductor appends: &lt;base&gt;/&lt;subject_id&gt;/&lt;subject_id&gt;_craniotomy-implantation.docx
+</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>CONDUCTOR_SURGERY_NOTES_BASE=\\allen\aind\scratch\chronos\surgeryNotes
+</span></code></pre></div>
+<h3 id="2c-delphi-data-pipeline">2c. delphi-data pipeline<a class="headerlink" href="#2c-delphi-data-pipeline" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a># Experiment name for the snapshot step (must match an entry in snapshots/REGISTRY)
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>CONDUCTOR_DELPHI_EXPERIMENT=bonhoeffer
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a># Harp firmware version (determines which registers are read)
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>CONDUCTOR_DELPHI_FIRMWARE=0.1.0
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a># Enable the pipeline (build-dataset + snapshot)
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>CONDUCTOR_ENABLE_PIPELINE=true
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a># How often to run a processing cycle per session (minutes)
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a># Each session is processed independently on this cadence.
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>CONDUCTOR_PIPELINE_CADENCE_MINUTES=60
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a># Skip individual pipeline steps to save time:
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>CONDUCTOR_PIPELINE_SKIP_BUILD=false      # false = run build-dataset
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>CONDUCTOR_PIPELINE_SKIP_CLIPS=true       # true  = skip poke-clip extraction (slow)
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>CONDUCTOR_PIPELINE_SKIP_SNAPSHOT=false   # false = run snapshot (figures)
+</span></code></pre></div>
+<h3 id="2d-metadata-generation">2d. Metadata generation<a class="headerlink" href="#2d-metadata-generation" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a># Enable AIND metadata JSON generation
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>CONDUCTOR_ENABLE_METADATA=true
+</span></code></pre></div>
+<p>When enabled the conductor generates <code>subject.json</code>, <code>instrument.json</code>,
+<code>acquisition.json</code>, and <code>procedures.json</code> the first time it sees a session
+whose <code>metadata/</code> directory is incomplete.  Subsequent cycles skip this step
+unless files are manually deleted.</p>
+<div class="admonition note">
+<p class="admonition-title">VPN required for subject.json</p>
+<p><code>subject.json</code> is fetched from the AIND metadata service.  You must be
+on the AIND VPN.  If the service is unavailable, the conductor falls back
+to a minimal stub and logs a warning.</p>
+</div>
+<h3 id="2e-ephys-noise-floor-estimation">2e. Ephys noise-floor estimation<a class="headerlink" href="#2e-ephys-noise-floor-estimation" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a># Enable RMS noise-floor estimation from raw ephys data
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>CONDUCTOR_ENABLE_NOISE_FLOOR=false    # set true for Pirouette / combined sessions
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a># How many seconds of data to use (from the start of the recording)
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>CONDUCTOR_NOISE_FLOOR_N_SECONDS=10.0
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a># Optional: limit to first N channels (0 = all channels)
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>CONDUCTOR_NOISE_FLOOR_MAX_CHANNELS=0
+</span></code></pre></div>
+<p>See <a href="#6-noise-floor-estimation">Section 6</a> for full details.</p>
+<h3 id="2f-s3-upload">2f. S3 upload<a class="headerlink" href="#2f-s3-upload" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a># Enable S3 upload
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>CONDUCTOR_ENABLE_UPLOAD=true
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a># Target S3 bucket
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>CONDUCTOR_S3_BUCKET=aind-open-data
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a># Email for upload-job status notifications
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>CONDUCTOR_CONTACT_EMAIL=you@alleninstitute.org
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a># AIND project name
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>CONDUCTOR_PROJECT_NAME=DynamicRoutingTask
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a># Chunks submitted per upload POST request
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>CONDUCTOR_UPLOAD_BATCH_SIZE=2
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a># Skip the N most-recent chunks (avoid uploading data still being written)
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>CONDUCTOR_NUM_LAST_CHUNKS_TO_IGNORE=2
+</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>
+</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a># Print upload requests but do not submit them (useful for testing)
+</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>CONDUCTOR_DRY_RUN=false
+</span><span id="__span-9-21"><a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>
+</span><span id="__span-9-22"><a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a># Delete large local files after confirming S3 upload
+</span><span id="__span-9-23"><a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>CONDUCTOR_DELETE_AFTER_UPLOAD=false
+</span><span id="__span-9-24"><a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a>
+</span><span id="__span-9-25"><a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a># Always keep these files locally (glob patterns relative to run dir)
+</span><span id="__span-9-26"><a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a>CONDUCTOR_KEEP_LOCAL_PATTERNS=behavior/delphi_dataset.csv,behavior/DelphiController/**,behavior/results/**,behavior/metadata/**
+</span></code></pre></div>
+<h3 id="2g-polling-and-state">2g. Polling and state<a class="headerlink" href="#2g-polling-and-state" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a># How often to scan for new sessions (seconds)
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>CONDUCTOR_POLL_INTERVAL_S=60.0
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a># Don't process a session until it's this old (minutes)
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a># Gives the acquisition computer time to finish writing before the first cycle.
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>CONDUCTOR_MIN_SESSION_AGE_MINUTES=5.0
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a># After this many consecutive errors, mark a session ERROR (requires manual fix)
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>CONDUCTOR_MAX_CONSECUTIVE_ERRORS=5
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a># After an error, back off for this many minutes before retrying
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>CONDUCTOR_ERROR_BACKOFF_MINUTES=30.0
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a># Persist session state here so work survives restarts (leave blank to disable)
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>CONDUCTOR_STATE_FILE=conductor_state.json
+</span></code></pre></div>
+<hr />
+<h2 id="3-start-the-conductor">3. Start the conductor<a class="headerlink" href="#3-start-the-conductor" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>conductor
+</span></code></pre></div>
+<p>You'll see a startup summary, then the conductor enters its polling loop:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>2026-03-20T21:00:00  INFO  …cli              === Experiment Conductor ===
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>2026-03-20T21:00:00  INFO  …cli                Experiment type : delphi
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>2026-03-20T21:00:00  INFO  …cli                Watch paths     : 1 configured
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>2026-03-20T21:00:00  INFO  …cli                  \\allen\aind\stage\chronic
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>2026-03-20T21:00:00  INFO  …cli                Cadence         : 60 min
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>2026-03-20T21:00:00  INFO  …cli                S3 bucket       : aind-open-data
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>2026-03-20T21:00:00  INFO  …cli                Dry run         : False
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>2026-03-20T21:00:00  INFO  …cli                Pipeline        : ON  (build=on, clips=skip, snapshot=on)
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>2026-03-20T21:00:00  INFO  …cli                Metadata        : ON
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>2026-03-20T21:00:00  INFO  …cli                Noise floor     : OFF
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>2026-03-20T21:00:00  INFO  …cli                Upload          : ON
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>2026-03-20T21:00:00  INFO  …session_manager  Session manager started. Watching 1 path(s). Poll interval: 60 s. Cadence: 60 min.
+</span></code></pre></div>
+<p>Press <code>Ctrl+C</code> to stop gracefully (current cycle finishes, then conductor exits).</p>
+<h3 id="useful-cli-flags">Useful CLI flags<a class="headerlink" href="#useful-cli-flags" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>conductor<span class="w"> </span>--dry-run<span class="w">               </span><span class="c1"># test run: all steps except real upload POSTs</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>conductor<span class="w"> </span>--log-level<span class="w"> </span>DEBUG<span class="w">       </span><span class="c1"># verbose output (shows every directory scan)</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>conductor<span class="w"> </span>--state-file<span class="w"> </span>/path/to/state.json<span class="w">   </span><span class="c1"># override CONDUCTOR_STATE_FILE</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>conductor<span class="w"> </span>--watch-paths<span class="w"> </span><span class="s2">"D:\data"</span><span class="w"> </span><span class="c1"># override CONDUCTOR_WATCH_PATHS from CLI</span>
+</span></code></pre></div>
+<hr />
+<h2 id="4-what-happens-step-by-step">4. What happens — step by step<a class="headerlink" href="#4-what-happens-step-by-step" title="Permanent link">&para;</a></h2>
+<h3 id="4a-session-discovery">4a. Session discovery<a class="headerlink" href="#4a-session-discovery" title="Permanent link">&para;</a></h3>
+<p>Every <code>CONDUCTOR_POLL_INTERVAL_S</code> seconds (default 60 s), the conductor scans
+each watch path for new session directories:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>2026-03-20T21:00:01  INFO  …session_manager  Registered session: subject=842456  ts=2026-03-20T20-23-05
+</span></code></pre></div>
+<p>A session is detected if:</p>
+<ul>
+<li>Its directory name matches <code>YYYY-MM-DDTHH-MM-SS</code></li>
+<li>It contains at least one run sub-directory (also timestamp-named) with a
+  <code>behavior/</code> folder</li>
+</ul>
+<p>New sessions discovered by subsequent scans are registered and processed
+without restarting the conductor.</p>
+<h3 id="4b-minimum-age-gate">4b. Minimum age gate<a class="headerlink" href="#4b-minimum-age-gate" title="Permanent link">&para;</a></h3>
+<p>A newly registered session is <strong>not processed</strong> until it is at least
+<code>CONDUCTOR_MIN_SESSION_AGE_MINUTES</code> old (default 5 min).  This prevents
+the conductor from touching a session while Bonsai is still actively writing.</p>
+<h3 id="4c-per-session-cadence-cycle">4c. Per-session cadence cycle<a class="headerlink" href="#4c-per-session-cadence-cycle" title="Permanent link">&para;</a></h3>
+<p>Once a session is due (older than the minimum age and the cadence interval
+has elapsed since the last cycle), the conductor runs these five steps <strong>in
+sequence</strong>:</p>
+<hr />
+<h4 id="step-1-consolidation">Step 1 — Consolidation<a class="headerlink" href="#step-1-consolidation" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>2026-03-20T21:05:00  INFO  …session_manager  [842456] Consolidating run directories.
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>2026-03-20T21:05:01  INFO  …pipeline_bridge  Running delphi-data consolidate: ...
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>2026-03-20T21:05:03  INFO  …pipeline_bridge  delphi-data consolidate completed successfully.
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>2026-03-20T21:05:03  INFO  …pipeline_bridge  Moving Delphi metadata JSONL files to behavior/metadata/ ...
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>2026-03-20T21:05:03  INFO  …pipeline_bridge  Moved 2 metadata file(s).
+</span></code></pre></div>
+<p>What this does:</p>
+<ol>
+<li><strong>Merges run sub-directories</strong> — if the experimenter restarted Bonsai
+   mid-session, two run dirs exist (e.g. <code>2026-03-20T20-23-37/</code> and
+   <code>2026-03-20T21-45-00/</code>).  All files from later dirs are moved into the
+   earliest, then empty dirs are removed.</li>
+<li><strong>Moves JSONL metadata files</strong> — <code>HardwareSettings_*.jsonl</code> and
+   <code>RuleSettings_*.jsonl</code> are moved from <code>behavior/</code> into <code>behavior/metadata/</code>
+   so the metadata generator can find them.</li>
+</ol>
+<p>After consolidation the conductor resolves the <strong>canonical run dir</strong> (the one
+remaining timestamp-named sub-directory) and uses it for all subsequent steps.</p>
+<hr />
+<h4 id="step-2-metadata-check-generation">Step 2 — Metadata check / generation<a class="headerlink" href="#step-2-metadata-check-generation" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>2026-03-20T21:05:04  INFO  …session_manager  [842456] METADATA_CHECK
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>2026-03-20T21:05:04  INFO  …session_manager  [842456] Generating AIND metadata.
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>2026-03-20T21:05:04  INFO  …metadata_bridge  Generating subject.json ...
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>2026-03-20T21:05:05  INFO  …metadata_bridge  subject.json generated.
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>2026-03-20T21:05:05  INFO  …metadata_bridge  Generating instrument.json ...
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>2026-03-20T21:05:06  INFO  …metadata_bridge  Odor channels: [0, 1, 2, 4]  names: ['blank', 'isoamyl acetate', 'methyl valerate', 'ethyl butyrate']
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>2026-03-20T21:05:06  INFO  …metadata_bridge  instrument.json generated.
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>2026-03-20T21:05:06  INFO  …metadata_bridge  Generating acquisition.json ...
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>2026-03-20T21:05:07  INFO  …metadata_bridge  acquisition.json generated.
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>2026-03-20T21:05:07  INFO  …metadata_bridge  Generating procedures.json ...
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>2026-03-20T21:05:08  INFO  …metadata_bridge  procedures.json generated.
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>2026-03-20T21:05:08  INFO  …metadata_bridge  All AIND metadata written to …/metadata.
+</span></code></pre></div>
+<p>The conductor checks whether all four files exist in <code>&lt;run_dir&gt;/metadata/</code>.
+If any are missing, it calls <code>metadata_generator</code> to produce them:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>subject.json</code></td>
+<td>AIND metadata service (requires VPN)</td>
+</tr>
+<tr>
+<td><code>instrument.json</code></td>
+<td><code>HardwareSettings_*.jsonl</code> + <code>RuleSettings_*.jsonl</code> from <code>behavior/metadata/</code></td>
+</tr>
+<tr>
+<td><code>acquisition.json</code></td>
+<td>JSONL files + file creation times for session start/end</td>
+</tr>
+<tr>
+<td><code>procedures.json</code></td>
+<td>Surgery notes DOCX (e.g. <code>\\allen\aind\scratch\chronos\surgeryNotes\842456\842456_craniotomy-implantation.docx</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>After generating metadata, <code>acquisition_end_time</code> in <code>acquisition.json</code> is
+stamped with the current UTC time as a placeholder.  Update it later if
+needed:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">experiment_conductor.metadata_bridge</span><span class="w"> </span><span class="kn">import</span> <span class="n">update_acquisition_end_time</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="n">update_acquisition_end_time</span><span class="p">(</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>    <span class="n">Path</span><span class="p">(</span><span class="sa">r</span><span class="s2">"</span><span class="se">\\</span><span class="s2">allen\aind\stage\chronic\842456\2026-03-20T20-23-05\2026-03-20T20-23-37\metadata"</span><span class="p">),</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>    <span class="n">datetime</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="p">)</span>
+</span></code></pre></div>
+<hr />
+<h4 id="step-3-delphi-data-pipeline">Step 3 — delphi-data pipeline<a class="headerlink" href="#step-3-delphi-data-pipeline" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>2026-03-20T21:05:09  INFO  …session_manager  [842456] Running delphi-data pipeline.
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>2026-03-20T21:05:09  INFO  …pipeline_bridge  Running delphi-data pipeline: python -m delphi_data.cli pipeline --data-root ... --experiment bonhoeffer --firmware 0.1.0 --subject-id 842456 --append --skip-clips
+</span></code></pre></div>
+<p>This step only runs if <code>behavior/DelphiController/</code> exists under the run dir
+(confirming Bonsai wrote Harp data).  It calls <code>delphi-data pipeline</code>, which:</p>
+<ol>
+<li><strong>Ingests Harp data</strong> from <code>behavior/DelphiController/</code> → poke events</li>
+<li><strong>Builds / appends</strong> <code>behavior/delphi_dataset.csv</code></li>
+<li><strong>Generates analysis figures</strong> in <code>behavior/results/</code></li>
+</ol>
+<p>On the first cycle the full CSV is built; on subsequent cycles <code>--append</code>
+is passed so only new Harp data is added to the existing CSV.</p>
+<hr />
+<h4 id="step-4-noise-floor-estimation-optional">Step 4 — Noise floor estimation (optional)<a class="headerlink" href="#step-4-noise-floor-estimation-optional" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>2026-03-20T21:05:45  INFO  …session_manager  [842456] Estimating noise floor.
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>2026-03-20T21:05:45  INFO  …noise_floor      Estimating noise floor from …/ecephys/continuous.dat
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>2026-03-20T21:05:47  INFO  …noise_floor      Noise floor estimate: 384 channels, median RMS = 8.43 µV (from 300000 samples).
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>2026-03-20T21:05:47  INFO  …noise_floor      Noise floor saved: …/ecephys/noise_floor.json
+</span></code></pre></div>
+<p>Only runs when <code>CONDUCTOR_ENABLE_NOISE_FLOOR=true</code>.  See <a href="#6-noise-floor-estimation">Section 6</a>.</p>
+<hr />
+<h4 id="step-5-s3-upload">Step 5 — S3 upload<a class="headerlink" href="#step-5-s3-upload" title="Permanent link">&para;</a></h4>
+<p>The conductor submits upload jobs to the AIND data-transfer service.</p>
+<p><strong>First cycle (start job):</strong> requires ≥3 video chunks to exist locally.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>2026-03-20T22:05:00  INFO  …session_manager  [842456] Running upload cycle (is_start=True).
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>2026-03-20T22:05:00  INFO  …uploader_bridge  Chunks — local: 5  S3 confirmed: 0  in-flight (this session): 0
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>2026-03-20T22:05:01  INFO  …uploader_bridge  Submitting 1 batch(es) covering 1 chunk(s).
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>2026-03-20T22:05:02  INFO  …uploader_bridge  Submitted batch 1/1 (1 chunk(s)).  Total in-flight: 1.
+</span></code></pre></div>
+<p><strong>Subsequent cycles (chunk jobs):</strong> new chunks not yet on S3 are submitted.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>2026-03-20T23:05:00  INFO  …uploader_bridge  Chunks — local: 8  S3 confirmed: 3  in-flight (this session): 0
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>2026-03-20T23:05:01  INFO  …uploader_bridge  Submitting 1 batch(es) covering 3 chunk(s).
+</span></code></pre></div>
+<p>The last <code>CONDUCTOR_NUM_LAST_CHUNKS_TO_IGNORE</code> chunks (default 2) are always
+skipped in case data is still being written to them.</p>
+<hr />
+<h2 id="5-adding-new-sessions">5. Adding new sessions<a class="headerlink" href="#5-adding-new-sessions" title="Permanent link">&para;</a></h2>
+<h3 id="automatic-recommended">Automatic (recommended)<a class="headerlink" href="#automatic-recommended" title="Permanent link">&para;</a></h3>
+<p>Any new <code>&lt;subject_id&gt;/&lt;session_ts&gt;/</code> directory that appears under a watch path
+is automatically discovered on the next poll and processed without any
+intervention.</p>
+<h3 id="manual-register-a-specific-path">Manual — register a specific path<a class="headerlink" href="#manual-register-a-specific-path" title="Permanent link">&para;</a></h3>
+<p>To register a session that is not under any watch path, or to register it
+immediately rather than waiting for the next poll:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>conductor<span class="w"> </span>--add-session<span class="w"> </span><span class="s2">"\\allen\aind\stage\chronic\842456\2026-04-15T09-30-00"</span>
+</span></code></pre></div>
+<p>The subject ID is inferred from the parent directory name.  Alternatively,
+add a new watch path to <code>.env</code> and restart:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>CONDUCTOR_WATCH_PATHS=\\allen\aind\stage\chronic,\\allen\aind\stage\pirouette
+</span></code></pre></div>
+<hr />
+<h2 id="6-noise-floor-estimation">6. Noise floor estimation<a class="headerlink" href="#6-noise-floor-estimation" title="Permanent link">&para;</a></h2>
+<h3 id="what-was-implemented">What was implemented<a class="headerlink" href="#what-was-implemented" title="Permanent link">&para;</a></h3>
+<p>The conductor estimates the <strong>RMS noise floor</strong> per channel from raw binary
+ephys data.  This is a standard measure of recording quality — values of
+5–15 µV (median) indicate a healthy recording; values above 30 µV may
+indicate poor grounding, excessive motion, or probe damage.</p>
+<p>Enable it in <code>.env</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>CONDUCTOR_ENABLE_NOISE_FLOOR=true
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>CONDUCTOR_NOISE_FLOOR_N_SECONDS=10.0    # read first 10 s
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>CONDUCTOR_NOISE_FLOOR_MAX_CHANNELS=0    # 0 = all channels
+</span></code></pre></div>
+<h3 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h3>
+<ol>
+<li>The conductor searches for <code>ecephys/</code> under the run dir.</li>
+<li>It finds the first continuous binary data file:</li>
+<li>SpikeGLX: <code>*.ap.bin</code> (paired with <code>*.meta</code>)</li>
+<li>Open Ephys: <code>continuous.dat</code> (with 1024-byte ASCII header)</li>
+<li>Fallback: any <code>*.dat</code> or <code>*.bin</code></li>
+<li>It reads <code>n_seconds</code> worth of samples from the start of the file.</li>
+<li>It computes <code>RMS = sqrt(mean(samples²))</code> per channel.</li>
+<li>It scales from raw int16 LSB to µV using <code>uv_per_bit = 0.195</code> (the
+   Neuropixels 1.0 AP-band calibration factor at gain=500).</li>
+<li>Results are written to <code>ecephys/noise_floor.json</code>.</li>
+</ol>
+<h3 id="output-file">Output file<a class="headerlink" href="#output-file" title="Permanent link">&para;</a></h3>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="p">{</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="w">  </span><span class="nt">"channel_rms_uv"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">8.1</span><span class="p">,</span><span class="w"> </span><span class="mf">7.9</span><span class="p">,</span><span class="w"> </span><span class="mf">9.3</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">],</span><span class="w">   </span><span class="c1">// one value per channel</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">  </span><span class="nt">"median_rms_uv"</span><span class="p">:</span><span class="w"> </span><span class="mf">8.43</span><span class="p">,</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">  </span><span class="nt">"n_samples"</span><span class="p">:</span><span class="w"> </span><span class="mi">300000</span><span class="p">,</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">  </span><span class="nt">"n_channels"</span><span class="p">:</span><span class="w"> </span><span class="mi">384</span><span class="p">,</span>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="w">  </span><span class="nt">"sample_rate_hz"</span><span class="p">:</span><span class="w"> </span><span class="mf">30000.0</span><span class="p">,</span>
+</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="w">  </span><span class="nt">"uv_per_bit"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.195</span><span class="p">,</span>
+</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="w">  </span><span class="nt">"source_file"</span><span class="p">:</span><span class="w"> </span><span class="s2">"...\\ecephys\\continuous.dat"</span><span class="p">,</span>
+</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="w">  </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-03-20T21:05:47+00:00"</span>
+</span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="neuropixels-20-custom-gain">Neuropixels 2.0 / custom gain<a class="headerlink" href="#neuropixels-20-custom-gain" title="Permanent link">&para;</a></h3>
+<p>The default <code>uv_per_bit = 0.195</code> is correct for <strong>Neuropixels 1.0</strong> at the
+default AP gain (500).  For <strong>Neuropixels 2.0</strong>, the conversion is
+<code>0.0125 µV/bit</code>.  You can override this in a custom script:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">experiment_conductor.noise_floor</span><span class="w"> </span><span class="kn">import</span> <span class="n">estimate_noise_floor</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="n">result</span> <span class="o">=</span> <span class="n">estimate_noise_floor</span><span class="p">(</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>    <span class="n">Path</span><span class="p">(</span><span class="sa">r</span><span class="s2">"</span><span class="se">\\</span><span class="s2">allen\aind\stage\chronic\842456\2026-03-20T20-23-05\2026-03-20T20-23-37"</span><span class="p">),</span>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>    <span class="n">n_seconds</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
+</span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>    <span class="n">uv_per_bit</span><span class="o">=</span><span class="mf">0.0125</span><span class="p">,</span>   <span class="c1"># NP2.0</span>
+</span><span id="__span-26-8"><a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="p">)</span>
+</span><span id="__span-26-9"><a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Median RMS: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'median_rms_uv'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> µV"</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">One estimate per session</p>
+<p>The noise floor is estimated <strong>once per session</strong> (on the first cycle
+after metadata is present) and not recalculated on subsequent cycles.
+To force a re-run, delete <code>ecephys/noise_floor.json</code> and delete the
+session entry from <code>conductor_state.json</code>.</p>
+</div>
+<h3 id="limitation-method-assumed">Limitation — method assumed<a class="headerlink" href="#limitation-method-assumed" title="Permanent link">&para;</a></h3>
+<p>The noise floor implementation uses a <strong>simple whole-segment RMS</strong> approach
+(no spike removal, no bandpass filtering).  If you discussed a different
+method (e.g. MAD-based estimation, inter-spike-interval blanking, or a
+specific frequency band) in a prior conversation, the current implementation
+can be updated in <code>noise_floor.py:estimate_noise_floor()</code>.</p>
+<hr />
+<h2 id="7-state-persistence-and-restart-recovery">7. State persistence and restart recovery<a class="headerlink" href="#7-state-persistence-and-restart-recovery" title="Permanent link">&para;</a></h2>
+<p>If <code>CONDUCTOR_STATE_FILE</code> is set, the conductor writes a JSON file containing
+the current state of every known session after each poll:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="p">{</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="w">  </span><span class="nt">"\\\\allen\\aind\\stage\\chronic\\842456\\2026-03-20T20-23-05"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">    </span><span class="nt">"data_root"</span><span class="p">:</span><span class="w"> </span><span class="s2">"\\\\allen\\aind\\stage\\chronic\\842456\\2026-03-20T20-23-05"</span><span class="p">,</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">    </span><span class="nt">"subject_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"842456"</span><span class="p">,</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">    </span><span class="nt">"session_datetime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-03-20T20-23-05"</span><span class="p">,</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">    </span><span class="nt">"run_dir"</span><span class="p">:</span><span class="w"> </span><span class="s2">"...\\2026-03-20T20-23-37"</span><span class="p">,</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="w">    </span><span class="nt">"phase"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UPLOADING"</span><span class="p">,</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="w">    </span><span class="nt">"consolidation_done"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="w">    </span><span class="nt">"metadata_present"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="w">    </span><span class="nt">"metadata_generated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="w">    </span><span class="nt">"dataset_built"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="w">    </span><span class="nt">"noise_floor_estimated"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+</span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a><span class="w">    </span><span class="nt">"upload_started"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="w">    </span><span class="nt">"last_processed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-03-20T22:05:03"</span><span class="p">,</span>
+</span><span id="__span-27-15"><a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="w">    </span><span class="err">...</span>
+</span><span id="__span-27-16"><a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-27-17"><a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>On restart, the conductor reads this file and skips any steps already marked
+<code>true</code>.  This means:</p>
+<ul>
+<li>Consolidation that already ran is not repeated.</li>
+<li>Metadata that was successfully generated is not regenerated.</li>
+<li>Upload jobs that were submitted are not re-submitted.</li>
+</ul>
+<h3 id="resetting-a-session">Resetting a session<a class="headerlink" href="#resetting-a-session" title="Permanent link">&para;</a></h3>
+<p>To force a session to re-run from the beginning, either:</p>
+<ol>
+<li>Edit the state JSON file and delete the session's entry, or</li>
+<li>Delete the state file entirely (<code>rm conductor_state.json</code>).</li>
+</ol>
+<p>On the next poll the session will be re-discovered and processed from scratch.</p>
+<p>To re-run only a specific step:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="n">path</span> <span class="o">=</span> <span class="s2">"conductor_state.json"</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="n">key</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"</span><span class="se">\\</span><span class="s2">allen\aind\stage\chronic\842456\2026-03-20T20-23-05"</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>    <span class="n">state</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="c1"># Force metadata to regenerate on the next cycle</span>
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="n">state</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">"metadata_present"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="n">state</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">"metadata_generated"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="__span-28-11"><a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a>
+</span><span id="__span-28-12"><a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="__span-28-13"><a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a>    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span></code></pre></div>
+<hr />
+<h2 id="8-monitoring-multiple-sessions">8. Monitoring multiple sessions<a class="headerlink" href="#8-monitoring-multiple-sessions" title="Permanent link">&para;</a></h2>
+<p>The conductor processes up to <strong>4 sessions concurrently</strong> using a thread pool.
+Each session logs with its subject ID as a prefix, making it easy to follow:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>2026-03-20T22:00:00  INFO  …  [842456] Running delphi-data pipeline.
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>2026-03-20T22:00:01  INFO  …  [801055] Consolidating run directories.
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>2026-03-20T22:00:02  INFO  …  [842456] Running upload cycle (is_start=True).
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>2026-03-20T22:00:05  INFO  …  [111111] Generating AIND metadata.
+</span></code></pre></div>
+<p>To see the status of all sessions at any time, read the state file:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>python<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="s">import json</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="s">from pathlib import Path</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="s">state = json.loads(Path("conductor_state.json").read_text())</span>
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="s">for key, s in state.items():</span>
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="s">    print(f"{s['subject_id']}  {s['session_datetime']}  phase={s['phase']}"</span>
+</span><span id="__span-30-8"><a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a><span class="s">          f"  errors={s['consecutive_errors']}")</span>
+</span><span id="__span-30-9"><a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a><span class="s">EOF</span>
+</span></code></pre></div>
+<hr />
+<h2 id="9-skipping-individual-steps">9. Skipping individual steps<a class="headerlink" href="#9-skipping-individual-steps" title="Permanent link">&para;</a></h2>
+<p>Disable any step globally in <code>.env</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>CONDUCTOR_ENABLE_PIPELINE=false    # skip delphi-data pipeline
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>CONDUCTOR_ENABLE_METADATA=false    # skip metadata generation
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>CONDUCTOR_ENABLE_NOISE_FLOOR=false # skip noise floor (default)
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>CONDUCTOR_ENABLE_UPLOAD=false      # skip S3 upload
+</span></code></pre></div>
+<p>Or skip individual sub-steps of the pipeline:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>CONDUCTOR_PIPELINE_SKIP_BUILD=true      # don't run build-dataset
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>CONDUCTOR_PIPELINE_SKIP_CLIPS=true      # don't extract poke clips (default)
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>CONDUCTOR_PIPELINE_SKIP_SNAPSHOT=true   # don't generate figures
+</span></code></pre></div>
+<hr />
+<h2 id="10-complete-env-example">10. Complete <code>.env</code> example<a class="headerlink" href="#10-complete-env-example" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a># Watch paths
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>CONDUCTOR_WATCH_PATHS=\\allen\aind\stage\chronic
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a># Experiment identity
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>CONDUCTOR_EXPERIMENT_TYPE=delphi
+</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>CONDUCTOR_ACQUISITION_TYPE=ChronicRecording
+</span><span id="__span-33-7"><a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a>CONDUCTOR_PROTOCOL_ID=2115
+</span><span id="__span-33-8"><a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a>CONDUCTOR_INSTRUMENT_ID=323_EPHYS1_OPTO_20240223
+</span><span id="__span-33-9"><a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a>CONDUCTOR_EXPERIMENT_ROOM=323
+</span><span id="__span-33-10"><a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a>CONDUCTOR_DELPHI_COMPUTER_ID=W10DT714023
+</span><span id="__span-33-11"><a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a>CONDUCTOR_SURGEONS=Scientist A,Scientist B
+</span><span id="__span-33-12"><a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a>CONDUCTOR_EXPERIMENTERS=Scientist A
+</span><span id="__span-33-13"><a id="__codelineno-33-13" name="__codelineno-33-13" href="#__codelineno-33-13"></a>CONDUCTOR_SURGERY_NOTES_BASE=\\allen\aind\scratch\chronos\surgeryNotes
+</span><span id="__span-33-14"><a id="__codelineno-33-14" name="__codelineno-33-14" href="#__codelineno-33-14"></a>
+</span><span id="__span-33-15"><a id="__codelineno-33-15" name="__codelineno-33-15" href="#__codelineno-33-15"></a># Pipeline
+</span><span id="__span-33-16"><a id="__codelineno-33-16" name="__codelineno-33-16" href="#__codelineno-33-16"></a>CONDUCTOR_DELPHI_EXPERIMENT=bonhoeffer
+</span><span id="__span-33-17"><a id="__codelineno-33-17" name="__codelineno-33-17" href="#__codelineno-33-17"></a>CONDUCTOR_DELPHI_FIRMWARE=0.1.0
+</span><span id="__span-33-18"><a id="__codelineno-33-18" name="__codelineno-33-18" href="#__codelineno-33-18"></a>CONDUCTOR_ENABLE_PIPELINE=true
+</span><span id="__span-33-19"><a id="__codelineno-33-19" name="__codelineno-33-19" href="#__codelineno-33-19"></a>CONDUCTOR_PIPELINE_CADENCE_MINUTES=60
+</span><span id="__span-33-20"><a id="__codelineno-33-20" name="__codelineno-33-20" href="#__codelineno-33-20"></a>CONDUCTOR_PIPELINE_SKIP_BUILD=false
+</span><span id="__span-33-21"><a id="__codelineno-33-21" name="__codelineno-33-21" href="#__codelineno-33-21"></a>CONDUCTOR_PIPELINE_SKIP_CLIPS=true
+</span><span id="__span-33-22"><a id="__codelineno-33-22" name="__codelineno-33-22" href="#__codelineno-33-22"></a>CONDUCTOR_PIPELINE_SKIP_SNAPSHOT=false
+</span><span id="__span-33-23"><a id="__codelineno-33-23" name="__codelineno-33-23" href="#__codelineno-33-23"></a>
+</span><span id="__span-33-24"><a id="__codelineno-33-24" name="__codelineno-33-24" href="#__codelineno-33-24"></a># Metadata
+</span><span id="__span-33-25"><a id="__codelineno-33-25" name="__codelineno-33-25" href="#__codelineno-33-25"></a>CONDUCTOR_ENABLE_METADATA=true
+</span><span id="__span-33-26"><a id="__codelineno-33-26" name="__codelineno-33-26" href="#__codelineno-33-26"></a>
+</span><span id="__span-33-27"><a id="__codelineno-33-27" name="__codelineno-33-27" href="#__codelineno-33-27"></a># Noise floor (set true for Pirouette / combined sessions)
+</span><span id="__span-33-28"><a id="__codelineno-33-28" name="__codelineno-33-28" href="#__codelineno-33-28"></a>CONDUCTOR_ENABLE_NOISE_FLOOR=false
+</span><span id="__span-33-29"><a id="__codelineno-33-29" name="__codelineno-33-29" href="#__codelineno-33-29"></a>CONDUCTOR_NOISE_FLOOR_N_SECONDS=10.0
+</span><span id="__span-33-30"><a id="__codelineno-33-30" name="__codelineno-33-30" href="#__codelineno-33-30"></a>CONDUCTOR_NOISE_FLOOR_MAX_CHANNELS=0
+</span><span id="__span-33-31"><a id="__codelineno-33-31" name="__codelineno-33-31" href="#__codelineno-33-31"></a>
+</span><span id="__span-33-32"><a id="__codelineno-33-32" name="__codelineno-33-32" href="#__codelineno-33-32"></a># Upload
+</span><span id="__span-33-33"><a id="__codelineno-33-33" name="__codelineno-33-33" href="#__codelineno-33-33"></a>CONDUCTOR_ENABLE_UPLOAD=true
+</span><span id="__span-33-34"><a id="__codelineno-33-34" name="__codelineno-33-34" href="#__codelineno-33-34"></a>CONDUCTOR_S3_BUCKET=aind-open-data
+</span><span id="__span-33-35"><a id="__codelineno-33-35" name="__codelineno-33-35" href="#__codelineno-33-35"></a>CONDUCTOR_CONTACT_EMAIL=you@alleninstitute.org
+</span><span id="__span-33-36"><a id="__codelineno-33-36" name="__codelineno-33-36" href="#__codelineno-33-36"></a>CONDUCTOR_PROJECT_NAME=DynamicRoutingTask
+</span><span id="__span-33-37"><a id="__codelineno-33-37" name="__codelineno-33-37" href="#__codelineno-33-37"></a>CONDUCTOR_UPLOAD_BATCH_SIZE=2
+</span><span id="__span-33-38"><a id="__codelineno-33-38" name="__codelineno-33-38" href="#__codelineno-33-38"></a>CONDUCTOR_NUM_LAST_CHUNKS_TO_IGNORE=2
+</span><span id="__span-33-39"><a id="__codelineno-33-39" name="__codelineno-33-39" href="#__codelineno-33-39"></a>CONDUCTOR_DRY_RUN=false
+</span><span id="__span-33-40"><a id="__codelineno-33-40" name="__codelineno-33-40" href="#__codelineno-33-40"></a>CONDUCTOR_DELETE_AFTER_UPLOAD=false
+</span><span id="__span-33-41"><a id="__codelineno-33-41" name="__codelineno-33-41" href="#__codelineno-33-41"></a>CONDUCTOR_KEEP_LOCAL_PATTERNS=behavior/delphi_dataset.csv,behavior/DelphiController/**,behavior/results/**,behavior/metadata/**
+</span><span id="__span-33-42"><a id="__codelineno-33-42" name="__codelineno-33-42" href="#__codelineno-33-42"></a>
+</span><span id="__span-33-43"><a id="__codelineno-33-43" name="__codelineno-33-43" href="#__codelineno-33-43"></a># Polling / error handling
+</span><span id="__span-33-44"><a id="__codelineno-33-44" name="__codelineno-33-44" href="#__codelineno-33-44"></a>CONDUCTOR_POLL_INTERVAL_S=60.0
+</span><span id="__span-33-45"><a id="__codelineno-33-45" name="__codelineno-33-45" href="#__codelineno-33-45"></a>CONDUCTOR_MIN_SESSION_AGE_MINUTES=5.0
+</span><span id="__span-33-46"><a id="__codelineno-33-46" name="__codelineno-33-46" href="#__codelineno-33-46"></a>CONDUCTOR_MAX_CONSECUTIVE_ERRORS=5
+</span><span id="__span-33-47"><a id="__codelineno-33-47" name="__codelineno-33-47" href="#__codelineno-33-47"></a>CONDUCTOR_ERROR_BACKOFF_MINUTES=30.0
+</span><span id="__span-33-48"><a id="__codelineno-33-48" name="__codelineno-33-48" href="#__codelineno-33-48"></a>
+</span><span id="__span-33-49"><a id="__codelineno-33-49" name="__codelineno-33-49" href="#__codelineno-33-49"></a># State persistence
+</span><span id="__span-33-50"><a id="__codelineno-33-50" name="__codelineno-33-50" href="#__codelineno-33-50"></a>CONDUCTOR_STATE_FILE=conductor_state.json
+</span></code></pre></div>
+<hr />
+<h2 id="11-troubleshooting">11. Troubleshooting<a class="headerlink" href="#11-troubleshooting" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
 <th>Symptom</th>
+<th>Most likely cause</th>
 <th>Fix</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Conductor can't find <code>data_root</code></td>
-<td>Check that robocopy is running and that <code>SERVER_ROOT</code> and <code>SUBJECT_ID</code> are set correctly.  The conductor polls for up to 10 minutes.</td>
+<td>No sessions discovered</td>
+<td>Watch path unreachable or wrong structure</td>
+<td>Verify path exists and contains <code>&lt;subject_id&gt;/&lt;session_ts&gt;/</code> sub-dirs</td>
 </tr>
 <tr>
-<td><code>delphi-data pipeline</code> exits non-zero</td>
-<td>Check that <code>DELPHI_EXPERIMENT</code> and <code>DELPHI_FIRMWARE</code> match valid values for the session.</td>
+<td>Session discovered but never processed</td>
+<td>Minimum-age gate not met</td>
+<td>Wait 5 min or set <code>CONDUCTOR_MIN_SESSION_AGE_MINUTES=0</code></td>
 </tr>
 <tr>
-<td>Metadata generation fails</td>
-<td>Confirm VPN/network is active (for subject fetch), that <code>SURGERY_NOTES_BASE</code> points to the correct share, and that <code>behavior/metadata/</code> contains the JSONL files.</td>
+<td><code>Metadata already present</code> but files look wrong</td>
+<td>Old/corrupt JSON files</td>
+<td>Delete <code>run_dir/metadata/*.json</code> and the state entry; conductor will regenerate</td>
 </tr>
 <tr>
-<td>Upload not starting</td>
-<td>Check that <code>S3_BUCKET</code>, <code>CONTACT_EMAIL</code>, and <code>PROJECT_NAME</code> are set, and that ≥ 3 camera-video chunks exist under <code>CHUNK_CAMERA_FOLDER</code>.</td>
+<td><code>subject.json</code> fails</td>
+<td>AIND metadata service unreachable</td>
+<td>Check VPN; conductor falls back to a minimal stub</td>
 </tr>
 <tr>
-<td><code>probe.json</code> warning at end</td>
-<td>Copy the Neuropixels <code>probe.json</code> file from the acquisition computer to <code>ecephys/</code> on the server before signalling end.</td>
+<td><code>procedures.json</code> minimal (no surgery data)</td>
+<td>Surgery notes DOCX not found</td>
+<td>Place DOCX at <code>&lt;CONDUCTOR_SURGERY_NOTES_BASE&gt;/&lt;subject_id&gt;/&lt;subject_id&gt;_craniotomy-implantation.docx</code></td>
+</tr>
+<tr>
+<td>Pipeline step skipped</td>
+<td><code>behavior/DelphiController/</code> missing</td>
+<td>Bonsai may not have written Harp data; check acquisition computer</td>
+</tr>
+<tr>
+<td>Upload skipped with "Need ≥3 chunks"</td>
+<td>Too few video chunk dirs</td>
+<td>Wait for recording to accumulate; check <code>behavior-videos/TopCamera/</code></td>
+</tr>
+<tr>
+<td>Upload skipped with "already exists"</td>
+<td>S3 start job already submitted before</td>
+<td>Normal — conductor detected the session is already started in DocDB</td>
+</tr>
+<tr>
+<td><code>NOISE_FLOOR</code> step skipped silently</td>
+<td>No <code>ecephys/</code> directory</td>
+<td>Expected for Delphi-only sessions; set <code>CONDUCTOR_ENABLE_NOISE_FLOOR=false</code></td>
+</tr>
+<tr>
+<td>Session marked <code>ERROR</code></td>
+<td>5 consecutive failures</td>
+<td>Read the <code>error_message</code> in state file; fix root cause; reset state entry</td>
+</tr>
+<tr>
+<td>Conductor hangs on <code>Ctrl+C</code></td>
+<td>Upload batch in progress</td>
+<td>Wait for current batch POST to complete (usually &lt;10 s)</td>
 </tr>
 </tbody>
 </table>

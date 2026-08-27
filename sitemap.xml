@@ -89,6 +89,10 @@
          <lastmod>2026-08-27</lastmod>
     </url>
     <url>
+         <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/cli/</loc>
+         <lastmod>2026-08-27</lastmod>
+    </url>
+    <url>
          <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/conductor/</loc>
          <lastmod>2026-08-27</lastmod>
     </url>
@@ -105,7 +109,19 @@
          <lastmod>2026-08-27</lastmod>
     </url>
     <url>
+         <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/noise_floor/</loc>
+         <lastmod>2026-08-27</lastmod>
+    </url>
+    <url>
          <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/pipeline_bridge/</loc>
+         <lastmod>2026-08-27</lastmod>
+    </url>
+    <url>
+         <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/session/</loc>
+         <lastmod>2026-08-27</lastmod>
+    </url>
+    <url>
+         <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/session_manager/</loc>
          <lastmod>2026-08-27</lastmod>
     </url>
     <url>
@@ -114,6 +130,10 @@
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/uploader_bridge/</loc>
+         <lastmod>2026-08-27</lastmod>
+    </url>
+    <url>
+         <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/watcher/</loc>
          <lastmod>2026-08-27</lastmod>
     </url>
     <url>

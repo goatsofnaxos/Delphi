@@ -2117,14 +2117,14 @@
   
   
     <li class="md-nav__item">
-      <a href="experiment-conductor/api/conductor/" class="md-nav__link">
+      <a href="experiment-conductor/api/cli/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    conductor
+    cli
   
 
     
@@ -2173,14 +2173,70 @@
   
   
     <li class="md-nav__item">
-      <a href="experiment-conductor/api/state/" class="md-nav__link">
+      <a href="experiment-conductor/api/session/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    state
+    session
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="experiment-conductor/api/session_manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    session_manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="experiment-conductor/api/watcher/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    watcher
   
 
     
@@ -2257,14 +2313,14 @@
   
   
     <li class="md-nav__item">
-      <a href="experiment-conductor/api/uploader_bridge/" class="md-nav__link">
+      <a href="experiment-conductor/api/noise_floor/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    uploader_bridge
+    noise_floor
   
 
     
@@ -2285,14 +2341,14 @@
   
   
     <li class="md-nav__item">
-      <a href="experiment-conductor/api/hotkeys/" class="md-nav__link">
+      <a href="experiment-conductor/api/uploader_bridge/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    hotkeys
+    uploader_bridge
   
 
     
@@ -2428,68 +2484,66 @@
 </tr>
 <tr>
 <td><a href="experiment-conductor/">experiment-conductor</a></td>
-<td>End-to-end orchestrator: launch → process → metadata → S3 upload</td>
+<td>Network-drive watcher that orchestrates multi-session metadata generation, delphi-data processing, noise-floor estimation, and S3 upload</td>
 </tr>
 </tbody>
 </table>
 <hr />
 <h2 id="experiment-conductor">experiment-conductor<a class="headerlink" href="#experiment-conductor" title="Permanent link">&para;</a></h2>
-<p>The <code>experiment-conductor</code> ties all four packages into a single supervised process so that an experimenter only needs to start one program at the beginning of a session.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>LAUNCHING ──► RUNNING ──► ENDING ──► DONE
+<p>The <code>experiment-conductor</code> runs on a local workstation or VM with access to
+the shared network drive where the acquisition computer saves data.  It
+<strong>does not</strong> control Bonsai or run on the acquisition computer.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>watch path scan → discover sessions → per-session cadence cycle
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                                          │
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                               ┌──────────▼──────────┐
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                               │  CONSOLIDATING       │ merge run dirs
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                               │  METADATA_CHECK      │ verify JSON files
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                               │  METADATA_GENERATING │ generate if missing
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                               │  BUILDING            │ delphi-data pipeline
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                               │  NOISE_FLOOR         │ RMS per channel
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                               │  UPLOADING           │ submit chunk jobs
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                               └─────────────────────-┘
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                               (repeats every cadence interval)
 </span></code></pre></div>
 <table>
 <thead>
 <tr>
-<th>Stage</th>
+<th>Phase</th>
 <th>What happens</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Launch</strong></td>
-<td>Starts the Bonsai launcher interactively; waits for workflows to appear</td>
+<td><strong>Consolidating</strong></td>
+<td>Merge Bonsai restart run dirs into the earliest; move JSONL metadata to <code>behavior/metadata/</code></td>
 </tr>
 <tr>
-<td><strong>Running</strong></td>
-<td>Runs the <code>delphi-data</code> pipeline on a configurable cadence (every N minutes, or at a fixed minute past every hour); generates AIND metadata after the first consolidation; submits upload jobs to S3</td>
+<td><strong>Metadata check / generate</strong></td>
+<td>Check for all four AIND JSON files; run <code>metadata_generator</code> if any are missing</td>
 </tr>
 <tr>
-<td><strong>Ending</strong></td>
-<td>Updates the acquisition end time; verifies <code>probe.json</code> for Pirouette experiments; runs a final cycle</td>
+<td><strong>Building</strong></td>
+<td>Run <code>delphi-data pipeline</code> if <code>DelphiController*.jsonl</code> is present (builds / appends <code>delphi_dataset.csv</code> and analysis figures)</td>
 </tr>
 <tr>
-<td><strong>Done</strong></td>
-<td>Optionally deletes large local files (video, ephys) only after confirming their chunks are present on S3</td>
+<td><strong>Noise floor</strong></td>
+<td><em>(optional)</em> Estimate RMS noise floor per channel from raw Open Ephys / SpikeGLX data; write <code>ecephys/noise_floor.json</code></td>
+</tr>
+<tr>
+<td><strong>Uploading</strong></td>
+<td>Submit chunk upload jobs to the AIND data-transfer service via <code>aind-chronic-ephys-uploader</code></td>
 </tr>
 </tbody>
 </table>
-<p>Upload jobs are submitted to <code>aind-data-transfer-service</code> in small configurable batches.
-In-flight chunks are tracked so the same data is never submitted twice, and local files
-are never deleted until S3 confirms the transfer is complete.</p>
-<p>Three hotkeys are available while an experiment is running:</p>
-<table>
-<thead>
-<tr>
-<th>Hotkey</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>Ctrl+Shift+P</code></td>
-<td>Trigger a pipeline cycle immediately</td>
-</tr>
-<tr>
-<td><code>Ctrl+Shift+U</code></td>
-<td>Pause / resume upload between batches</td>
-</tr>
-<tr>
-<td><code>Ctrl+Shift+E</code></td>
-<td>Signal experiment end</td>
-</tr>
-</tbody>
-</table>
-<p>See the <a href="experiment-conductor/">experiment-conductor docs</a> for the full configuration reference and API.</p>
+<p>Multiple sessions are processed concurrently (up to 4 at a time).  State is
+persisted to a JSON file so work survives conductor restarts.  Upload safety
+guarantees:</p>
+<ul>
+<li><strong>No duplicate submissions</strong> — in-flight chunks tracked across cadence cycles</li>
+<li><strong>Confirmed-before-delete</strong> — local files only removed after S3 confirmation</li>
+</ul>
+<p>See the <a href="experiment-conductor/">experiment-conductor docs</a> for the
+full configuration reference and API.</p>
 <hr />
 <h2 id="repository">Repository<a class="headerlink" href="#repository" title="Permanent link">&para;</a></h2>
 <p>Source code: <a href="https://github.com/goatsofnaxos/Delphi">github.com/goatsofnaxos/Delphi</a></p>
