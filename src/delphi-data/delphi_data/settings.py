@@ -254,6 +254,10 @@ class _Settings:
     no_consolidate:
         Disable automatic run-directory consolidation in ``build-dataset``.
         ``DELPHI_NO_CONSOLIDATE`` — default ``False``.
+    consolidate_only:
+        Consolidate run sub-directories and move metadata files, then exit
+        without building the dataset CSV.  Overrides ``no_consolidate`` and
+        makes ``firmware`` optional.  ``DELPHI_CONSOLIDATE_ONLY`` — default ``False``.
     skip_build:
         Skip the build-dataset step in the full pipeline.
         ``DELPHI_SKIP_BUILD`` — default ``False``.
@@ -294,6 +298,7 @@ class _Settings:
     # Build / ingest settings
     firmware:           Optional[str]  = _optional_str("DELPHI_FIRMWARE")
     no_consolidate:     bool           = _bool("DELPHI_NO_CONSOLIDATE", False)
+    consolidate_only:   bool           = _bool("DELPHI_CONSOLIDATE_ONLY", False)
     dataset_append:     bool           = _bool("DELPHI_DATASET_APPEND", False)
 
     # Pipeline step toggles
@@ -325,6 +330,7 @@ class _Settings:
             f"workers={self.workers}",
             f"no_delete={self.no_delete}",
             f"no_consolidate={self.no_consolidate}",
+            f"consolidate_only={self.consolidate_only}",
             f"experiment={self.experiment!r}",
             f"skip_build={self.skip_build}",
             f"skip_clips={self.skip_clips}",

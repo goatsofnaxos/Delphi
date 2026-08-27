@@ -33,6 +33,9 @@ from delphi_data.curation import (
     find_earliest_run,
 )
 from delphi_data.ingestion import ingest
+from delphi_data.settings import Settings as _Settings
+
+_s = _Settings()
 
 
 def build_dataset(
@@ -175,13 +178,18 @@ def _parse_args(argv=None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--no-consolidate", action="store_true", default=False,
-        help="Disable automatic consolidation of multiple run sub-directories.",
+        help=(
+            "Disable automatic consolidation of multiple run sub-directories.  "
+            "[env: DELPHI_NO_CONSOLIDATE]"
+        ),
     )
     parser.add_argument(
-        "--consolidate-only", action="store_true", default=False,
+        "--consolidate-only", action="store_true", default=_s.consolidate_only,
         help=(
             "Consolidate run sub-directories and move metadata files, then exit "
-            "without building the dataset CSV. --firmware is not required."
+            "without building the dataset CSV.  --firmware is not required.  "
+            "Overrides --no-consolidate when set.  "
+            f"[env: DELPHI_CONSOLIDATE_ONLY, current: {_s.consolidate_only}]"
         ),
     )
     return parser.parse_args(argv)
