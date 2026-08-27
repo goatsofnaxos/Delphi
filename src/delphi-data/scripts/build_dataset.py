@@ -8,6 +8,13 @@ Usage::
 
     python build_dataset.py --data-root /path/to/run_dir --firmware 0.1.0
     python build_dataset.py --data-root /path/to/run_dir --firmware 0.1.0 --no-consolidate
+    python build_dataset.py --consolidate-only  # when DELPHI_DATA_ROOT set in .env
+
+All arguments can be defaulted via ``DELPHI_*`` environment variables or a
+``.env`` file in the project root.  When ``DELPHI_DATA_ROOT`` and
+``DELPHI_FIRMWARE`` are set, the script can be invoked with no arguments::
+
+    python build_dataset.py
 
 This script is also available via the installed ``delphi-data`` CLI::
 
@@ -193,19 +200,27 @@ def _parse_args(argv=None) -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
-        "--data-root", required=True,
-        help="Path to the session root or run-level directory.",
+        "--data-root",
+        default=_s.data_root,
+        required=_s.data_root is None,
+        help=(
+            "Path to the session root or run-level directory.  "
+            f"[env: DELPHI_DATA_ROOT, current: {_s.data_root!r}]"
+        ),
     )
     parser.add_argument(
         "--firmware",
-        default=None,
-        help='Firmware version string, e.g. "0.1.0". Required unless --consolidate-only.',
+        default=_s.firmware,
+        help=(
+            'Firmware version string, e.g. "0.1.0". Required unless --consolidate-only.  '
+            f"[env: DELPHI_FIRMWARE, current: {_s.firmware!r}]"
+        ),
     )
     parser.add_argument(
-        "--no-consolidate", action="store_true", default=False,
+        "--no-consolidate", action="store_true", default=_s.no_consolidate,
         help=(
             "Disable automatic consolidation of multiple run sub-directories.  "
-            "[env: DELPHI_NO_CONSOLIDATE]"
+            f"[env: DELPHI_NO_CONSOLIDATE, current: {_s.no_consolidate}]"
         ),
     )
     parser.add_argument(
