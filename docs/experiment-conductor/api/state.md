@@ -1,6 +1,10 @@
 # state
 
-Thread-safe experiment state.  The `Phase` enum and `ConductorState` dataclass
-are the single source of truth for lifecycle transitions across threads.
+!!! warning "Deprecated"
+    `state.py` has been replaced by [`session`](session.md).
+    This page is retained for reference only.
 
-::: experiment_conductor.state
+`ConductorState` and the `Phase` enum have been replaced by
+[`SessionState`](session.md#experiment_conductor.session.SessionState) and
+[`SessionPhase`](session.md#experiment_conductor.session.SessionPhase), which
+track the lifecycle of individual sessions rather than a single global state.

@@ -91,13 +91,15 @@ nav:
     - Overview: experiment-conductor/index.md
     - API Reference:
       - Overview: experiment-conductor/api/index.md
-      - conductor: experiment-conductor/api/conductor.md
+      - cli: experiment-conductor/api/cli.md
       - config: experiment-conductor/api/config.md
-      - state: experiment-conductor/api/state.md
+      - session: experiment-conductor/api/session.md
+      - session_manager: experiment-conductor/api/session_manager.md
+      - watcher: experiment-conductor/api/watcher.md
       - pipeline_bridge: experiment-conductor/api/pipeline_bridge.md
       - metadata_bridge: experiment-conductor/api/metadata_bridge.md
+      - noise_floor: experiment-conductor/api/noise_floor.md
       - uploader_bridge: experiment-conductor/api/uploader_bridge.md
-      - hotkeys: experiment-conductor/api/hotkeys.md
 
 # ---------------------------------------------------------------------------
 # Plugins

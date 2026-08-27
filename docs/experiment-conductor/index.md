@@ -1,161 +1,119 @@
-# experiment-conductor
+# Experiment Conductor
 
-End-to-end orchestrator for Delphi chronic-recording experiments.
+The experiment conductor watches a shared network drive for new acquisition
+sessions and automatically orchestrates the full post-acquisition pipeline.
+It runs on a local workstation or VM with network access to where the
+acquisition computer saves data — it does **not** run on the acquisition
+computer and does **not** control Bonsai.
 
-The conductor ties together four packages into a single supervised process:
-
-| Stage | Package |
-|-------|---------|
-| Experiment launch | `launcher` |
-| Data consolidation & snapshots | `delphi-data` |
-| AIND-compliant metadata | `metadata-generator` |
-| S3 upload | `aind-chronic-ephys-uploader` |
-
----
-
-## Lifecycle
+## Architecture
 
 ```
-LAUNCHING ──► RUNNING ──► ENDING ──► DONE
+Shared network drive
+└── <watch_path>/
+    └── <subject_id>/
+        └── <session_ts>/       ← discovered automatically
+            ├── <run_ts>/       ← run dir (Bonsai data here)
+            └── <run_ts>/       ← second run dir if Bonsai restarted
+
+conductor (local PC / VM)
+├── watcher.py        scan watch paths for new sessions
+├── session_manager.py orchestrate cadence cycles (up to 4 sessions in parallel)
+│   ├── pipeline_bridge.py  → delphi-data consolidate / pipeline
+│   ├── metadata_bridge.py  → metadata_generator (4 AIND JSON files)
+│   ├── noise_floor.py      → RMS noise floor from raw ephys data
+│   └── uploader_bridge.py  → aind-chronic-ephys-uploader → S3
+├── session.py        per-session state machine
+└── config.py         .env + CLI configuration
 ```
 
-1. **LAUNCHING** — spawns `launcher` interactively; the user selects the
-   experiment profile, subject ID, and experimenter through the launcher
-   prompts.  The conductor proceeds once Bonsai workflows are running.
+## Session lifecycle
 
-2. **RUNNING** — a cadence scheduler fires a *cycle* every N minutes (or at
-   a fixed minute past every hour).  Each cycle:
-   - Runs the full `delphi-data` pipeline (consolidate → build-dataset → snapshot),
-     always with `--append` so new Harp data accumulates in the existing CSV.
-   - Moves Delphi metadata files to `behavior/metadata/` (once, after first
-     consolidation).
-   - Generates AIND metadata in `data_root/metadata/` (once, after metadata
-     moved).
-   - Submits upload jobs to `aind-data-transfer-service` once ≥ 3 chunks exist
-     and all four metadata files are present.
+Each discovered session passes through the following phases on every cadence cycle:
 
-3. **ENDING** — triggered by hotkey or Bonsai exit.  The user confirms the
-   actual end time; `acquisition.json` is updated.  For Pirouette experiments,
-   `probe.json` presence in `ecephys/` is verified.  A final cycle runs, then
-   the upload is stopped cleanly.
+| Phase | What happens |
+|-------|-------------|
+| `DISCOVERED` | Session directory found; waiting for minimum age before processing |
+| `CONSOLIDATING` | Merge Bonsai restart run dirs into the earliest; move JSONL metadata files to `behavior/metadata/` |
+| `METADATA_CHECK` | Check for `subject.json`, `instrument.json`, `acquisition.json`, `procedures.json` |
+| `METADATA_GENERATING` | Run `metadata_generator` to produce any missing JSON files |
+| `BUILDING` | Run `delphi-data pipeline` if `DelphiController*.jsonl` is present (builds/appends `delphi_dataset.csv` and figures) |
+| `NOISE_FLOOR` | Estimate RMS noise floor per channel from raw Open Ephys / SpikeGLX data |
+| `UPLOADING` | Submit chunk upload jobs to AIND data-transfer service |
+| `ERROR` | Unrecoverable error after `MAX_CONSECUTIVE_ERRORS` failures |
 
-4. **DONE** — optional large-file deletion (only for chunks confirmed on S3).
+After the UPLOADING phase the session loops back to CONSOLIDATING on the next
+cadence cycle (new data may have arrived).
 
----
+## Supported experiment types
 
-## Experiment types
-
-| `EXPERIMENT_TYPE` | Delphi pipeline | Pirouette consolidation | Probe metadata |
-|-------------------|:--------------:|:----------------------:|:--------------:|
-| `delphi`          | ✓              |                        |                |
-| `pirouette`       |                | ✓ (once)               | ✓              |
-| `delphi_pirouette`| ✓              | ✓ (once)               | ✓              |
-
-For `pirouette` and `delphi_pirouette`, a `probe.json` with the Neuropixels
-serial number must be present in `ecephys/` before the experiment ends.
-The full CCFv3 `ProbeConfig` (coordinates, BREGMA_ARI coordinate system,
-chronic implant note) is extracted from `acquisition.json` and written into
-`procedures.json` automatically.
-
----
-
-## Scheduling modes
-
-| Mode | `.env` key | CLI flag | Behaviour |
-|------|-----------|----------|-----------|
-| Cadence (default) | `PIPELINE_CADENCE_MINUTES=60` | `--pipeline-cadence-minutes N` | Fires every N minutes |
-| On-the-hour | `SCHEDULE_MINUTE_OF_HOUR=45` | `--schedule-minute-of-hour N` | Fires at :NN past every hour |
-
-Both keys are mutually exclusive; `SCHEDULE_MINUTE_OF_HOUR` takes priority when set.
-
----
-
-## Hotkeys
-
-| Hotkey | `.env` key | Default | Action |
-|--------|-----------|---------|--------|
-| `Ctrl+Shift+P` | `HOTKEY_PIPELINE` | `<ctrl>+<shift>+p` | Trigger a pipeline cycle immediately |
-| `Ctrl+Shift+U` | `HOTKEY_UPLOAD_PAUSE` | `<ctrl>+<shift>+u` | Pause / resume upload between batches |
-| `Ctrl+Shift+E` | `HOTKEY_END_EXPERIMENT` | `<ctrl>+<shift>+e` | Signal experiment end |
-| `Ctrl+Shift+1` | `HOTKEY_TOGGLE_PIPELINE` | `<ctrl>+<shift>+1` | Toggle pipeline on / off |
-| `Ctrl+Shift+2` | `HOTKEY_TOGGLE_METADATA` | `<ctrl>+<shift>+2` | Toggle metadata generation on / off |
-| `Ctrl+Shift+3` | `HOTKEY_TOGGLE_UPLOAD` | `<ctrl>+<shift>+3` | Toggle upload on / off |
-| `Ctrl+Shift+T` | `HOTKEY_UPDATE_END_TIME` | `<ctrl>+<shift>+t` | Update the session end time manually |
-| `Ctrl+Shift+R` | `HOTKEY_RETRY_METADATA` | `<ctrl>+<shift>+r` | Re-run metadata generation immediately |
-
-All hotkeys are configurable via `.env` or CLI flags.
-
----
+| Type | Consolidation | Dataset build | Metadata | Upload |
+|------|:---:|:---:|:---:|:---:|
+| `delphi` | ✓ | ✓ (requires DelphiController file) | ✓ | ✓ |
+| `pirouette` | ✓ | — | ✓ | ✓ |
+| `delphi_pirouette` | ✓ | ✓ | ✓ | ✓ |
 
 ## Data root resolution
 
-The conductor needs to know where the session data lives on the **local server**
-(not the acquisition computer).  Data flows:
+The conductor discovers sessions by scanning each watch path for the pattern::
 
-```
-Acquisition computer  ──robocopy──►  Local server  ──uploader──►  S3
-(Bonsai records here)                (pipeline runs here)
-```
+    <watch_path>/<subject_id>/<YYYY-MM-DDTHH-MM-SS>/
 
-Configure one of two modes — not both:
+where `<YYYY-MM-DDTHH-MM-SS>` is a Bonsai session timestamp directory
+containing at least one run sub-directory.  After consolidation the earliest
+run sub-directory becomes the **run dir** — this is where all subsequent
+steps write their output.
 
-### Server-relative mode (recommended)
+## Configuration
 
-Set `SERVER_ROOT` to the root of the server where data is robocopied.
-This corresponds to `remote_transfer_root_path` in the hardware schema
-(e.g. `\allen\aind\stage\chronic`).
+All settings are loaded from a `.env` file (and/or shell environment),
+optionally overridden by CLI flags.
 
-The conductor computes `data_root` as `SERVER_ROOT / SUBJECT_ID / SESSION_DATETIME`
-after the launcher exits.  If `SESSION_DATETIME` is left blank, the conductor
-automatically detects the newest `YYYY-MM-DDTHH-MM-SS` directory under
-`SERVER_ROOT / SUBJECT_ID`, polling every 30 s until robocopy creates it
-(up to 10 minutes).
+### Minimum required variables
 
-```ini
-SERVER_ROOT=\allen\aind\stage\chronic
-SESSION_DATETIME=          # leave blank to auto-detect
-SUBJECT_ID=12345
-```
+| Variable | Description |
+|----------|-------------|
+| `CONDUCTOR_WATCH_PATHS` | Comma-separated directories to monitor |
+| `CONDUCTOR_PROTOCOL_ID` | AIND protocol ID |
+| `CONDUCTOR_INSTRUMENT_ID` | Rig identifier |
+| `CONDUCTOR_EXPERIMENT_ROOM` | Physical room |
+| `CONDUCTOR_DELPHI_COMPUTER_ID` | Acquisition computer hostname |
+| `CONDUCTOR_CONTACT_EMAIL` | Email for upload notifications |
+| `CONDUCTOR_PROJECT_NAME` | AIND project name |
 
-### Direct mode
+### Key optional settings
 
-Set `DATA_ROOT` to the full session path when the directory is already known:
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `CONDUCTOR_EXPERIMENT_TYPE` | `delphi` | Experiment type |
+| `CONDUCTOR_PIPELINE_CADENCE_MINUTES` | `60` | Processing interval per session |
+| `CONDUCTOR_ENABLE_NOISE_FLOOR` | `false` | Estimate ephys noise floor |
+| `CONDUCTOR_DRY_RUN` | `false` | No real upload requests |
+| `CONDUCTOR_STATE_FILE` | — | JSON file for state persistence |
+| `CONDUCTOR_POLL_INTERVAL_S` | `60` | Watch-path scan interval (s) |
+| `CONDUCTOR_MIN_SESSION_AGE_MINUTES` | `5` | Minimum age before processing |
 
-```ini
-DATA_ROOT=\allen\aind\stage\chronic\12345\2026-03-20T20-23-05
-```
+See `.env.example` for the full reference.
 
----
+## Upload safety
+
+Two guarantees prevent data loss:
+
+1. **No duplicate submissions** — `_SUBMITTED_CHUNKS` (module-level, thread-safe)
+   tracks every chunk submitted in the current process.  In-flight chunks are
+   never re-submitted across cadence cycles.
+
+2. **Confirmed-before-delete** — `delete_local_files_after_upload` queries S3
+   directly before removing any file.  Only chunks confirmed present in the
+   bucket are eligible for local deletion.
 
 ## Quick start
 
 ```bash
-cd src/experiment_conductor
-cp .env.example .env   # set SERVER_ROOT + SUBJECT_ID (or DATA_ROOT directly)
-uv run scripts/run_conductor.py
+cp .env.example .env
+# Edit .env — set CONDUCTOR_WATCH_PATHS, protocol/instrument/room IDs, etc.
 
-# or with CLI overrides:
-uv run scripts/run_conductor.py --server-root \allen\aind\stage\chronic --subject-id 12345 --dry-run
+conductor                              # start watching
+conductor --add-session /path/to/session   # register a specific session
+conductor --dry-run                    # test mode — no real uploads
 ```
-
----
-
-## Upload safety
-
-- **No duplicate submissions** — a module-level `_SUBMITTED_CHUNKS` set tracks
-  every chunk POSTed to the transfer service.  In-flight chunks are skipped on
-  subsequent cycles even before S3 confirms them.
-- **Confirmed-before-delete** — local files are only removed after a live S3
-  query confirms the chunk is present.  If the query fails, deletion is aborted.
-- **Keep-local patterns** — `behavior/delphi_dataset.csv`,
-  `behavior/DelphiController/**`, `behavior/results/**`, and `metadata/**`
-  are never deleted regardless of the delete setting.
-
----
-
-## Configuration reference
-
-All options can be set in `.env` or overridden on the CLI (CLI wins).
-
-See `.env.example` in `src/experiment_conductor/` for the full list with
-descriptions.

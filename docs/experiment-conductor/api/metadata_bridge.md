@@ -1,9 +1,11 @@
 # metadata_bridge
 
-AIND-compliant metadata generation and post-hoc updates.
+AIND metadata check and generation.
 
-Wraps `metadata-generator` to produce `subject.json`, `acquisition.json`,
-`procedures.json`, and `instrument.json`.  Also handles updating the
-acquisition end time and verifying `probe.json` for Pirouette experiments.
+`check_metadata_present` verifies that all four required JSON files exist in
+the `metadata/` sub-directory of the run dir.  `generate_metadata` calls the
+`metadata_generator` package to produce `subject.json`, `instrument.json`,
+`acquisition.json`, and `procedures.json`, with each file written
+independently so a failure in one does not prevent the others.
 
 ::: experiment_conductor.metadata_bridge

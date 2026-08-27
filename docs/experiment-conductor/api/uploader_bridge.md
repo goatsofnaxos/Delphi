@@ -1,12 +1,16 @@
 # uploader_bridge
 
-S3 upload job submission with pause/resume and duplicate-submission protection.
+S3 upload job submission with duplicate-submission protection.
 
-Key guarantees:
+Two safety guarantees:
 
-- **No duplicate submissions** — `_SUBMITTED_CHUNKS` tracks every chunk POSTed
-  this session; in-flight chunks are excluded from subsequent cycles.
-- **Confirmed-before-delete** — `delete_local_files_after_upload` queries S3
-  directly before removing any file; chunks not yet confirmed are left untouched.
+1. **No duplicate submissions** — `_SUBMITTED_CHUNKS` (thread-safe `set`)
+   tracks every chunk submitted this process run.  In-flight chunks are
+   never re-submitted across cadence cycles, even though they are not yet
+   visible in S3.
+
+2. **Confirmed-before-delete** — `delete_local_files_after_upload` queries S3
+   before touching any local file.  Only chunks confirmed present in the
+   bucket are eligible for deletion.
 
 ::: experiment_conductor.uploader_bridge

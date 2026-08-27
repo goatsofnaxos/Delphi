@@ -11,38 +11,47 @@ Delphi is an olfactory operant-conditioning apparatus and software ecosystem for
 | [delphi-data](delphi-data/index.md) | Ingest, curate, analyse, and visualise behavioral data from Delphi and Pirouette sessions |
 | [metadata-generator](metadata-generator/index.md) | Generate AIND v2 metadata (subject, procedures, instrument, acquisition) |
 | [launcher](launcher/index.md) | Interactive multi-experiment Bonsai workflow launcher with subject recall and session logging |
-| [experiment-conductor](experiment-conductor/index.md) | End-to-end orchestrator: launch → process → metadata → S3 upload |
+| [experiment-conductor](experiment-conductor/index.md) | Network-drive watcher that orchestrates multi-session metadata generation, delphi-data processing, noise-floor estimation, and S3 upload |
 
 ---
 
 ## experiment-conductor
 
-The `experiment-conductor` ties all four packages into a single supervised process so that an experimenter only needs to start one program at the beginning of a session.
+The `experiment-conductor` runs on a local workstation or VM with access to
+the shared network drive where the acquisition computer saves data.  It
+**does not** control Bonsai or run on the acquisition computer.
 
 ```
-LAUNCHING ──► RUNNING ──► ENDING ──► DONE
+watch path scan → discover sessions → per-session cadence cycle
+                                          │
+                               ┌──────────▼──────────┐
+                               │  CONSOLIDATING       │ merge run dirs
+                               │  METADATA_CHECK      │ verify JSON files
+                               │  METADATA_GENERATING │ generate if missing
+                               │  BUILDING            │ delphi-data pipeline
+                               │  NOISE_FLOOR         │ RMS per channel
+                               │  UPLOADING           │ submit chunk jobs
+                               └─────────────────────-┘
+                               (repeats every cadence interval)
 ```
 
-| Stage | What happens |
+| Phase | What happens |
 |-------|-------------|
-| **Launch** | Starts the Bonsai launcher interactively; waits for workflows to appear |
-| **Running** | Runs the `delphi-data` pipeline on a configurable cadence (every N minutes, or at a fixed minute past every hour); generates AIND metadata after the first consolidation; submits upload jobs to S3 |
-| **Ending** | Updates the acquisition end time; verifies `probe.json` for Pirouette experiments; runs a final cycle |
-| **Done** | Optionally deletes large local files (video, ephys) only after confirming their chunks are present on S3 |
+| **Consolidating** | Merge Bonsai restart run dirs into the earliest; move JSONL metadata to `behavior/metadata/` |
+| **Metadata check / generate** | Check for all four AIND JSON files; run `metadata_generator` if any are missing |
+| **Building** | Run `delphi-data pipeline` if `DelphiController*.jsonl` is present (builds / appends `delphi_dataset.csv` and analysis figures) |
+| **Noise floor** | *(optional)* Estimate RMS noise floor per channel from raw Open Ephys / SpikeGLX data; write `ecephys/noise_floor.json` |
+| **Uploading** | Submit chunk upload jobs to the AIND data-transfer service via `aind-chronic-ephys-uploader` |
 
-Upload jobs are submitted to `aind-data-transfer-service` in small configurable batches.
-In-flight chunks are tracked so the same data is never submitted twice, and local files
-are never deleted until S3 confirms the transfer is complete.
+Multiple sessions are processed concurrently (up to 4 at a time).  State is
+persisted to a JSON file so work survives conductor restarts.  Upload safety
+guarantees:
 
-Three hotkeys are available while an experiment is running:
+- **No duplicate submissions** — in-flight chunks tracked across cadence cycles
+- **Confirmed-before-delete** — local files only removed after S3 confirmation
 
-| Hotkey | Action |
-|--------|--------|
-| `Ctrl+Shift+P` | Trigger a pipeline cycle immediately |
-| `Ctrl+Shift+U` | Pause / resume upload between batches |
-| `Ctrl+Shift+E` | Signal experiment end |
-
-See the [experiment-conductor docs](experiment-conductor/index.md) for the full configuration reference and API.
+See the [experiment-conductor docs](experiment-conductor/index.md) for the
+full configuration reference and API.
 
 ---
 

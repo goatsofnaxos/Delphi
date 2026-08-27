@@ -40,7 +40,7 @@ jobs:
           # Install without deps (mkdocstrings only needs the package importable), then
           # add the PyPI-available runtime deps that are imported at module level.
           pip install --no-deps -e "src/experiment_conductor"
-          pip install psutil python-dotenv
+          pip install numpy python-dotenv boto3 aind-data-schema
 
       - name: Deploy docs
         run: mkdocs gh-deploy --force --clean

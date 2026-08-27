@@ -1,13 +1,13 @@
-# API Reference
+# API Reference — experiment-conductor
 
-Module-by-module reference for `experiment_conductor`.
-
-| Module | Purpose |
-|--------|---------|
-| [conductor](conductor.md) | Main orchestration logic and entry point |
-| [config](config.md) | `.env` + CLI configuration loading |
-| [state](state.md) | Thread-safe phase/state management |
-| [pipeline_bridge](pipeline_bridge.md) | delphi-data pipeline integration |
-| [metadata_bridge](metadata_bridge.md) | AIND metadata generation and updates |
-| [uploader_bridge](uploader_bridge.md) | S3 upload job submission with pause/resume |
-| [hotkeys](hotkeys.md) | Global hotkey listener |
+| Module | Description |
+|--------|-------------|
+| [cli](cli.md) | Command-line entry point (`conductor` command) |
+| [config](config.md) | `ConductorConfig` dataclass and `build_config()` loader |
+| [session](session.md) | `SessionPhase` enum and `SessionState` dataclass |
+| [session_manager](session_manager.md) | `SessionManager` — multi-session orchestrator and main loop |
+| [watcher](watcher.md) | Network-drive session discovery (`discover_sessions`) |
+| [pipeline_bridge](pipeline_bridge.md) | delphi-data consolidation and dataset building |
+| [metadata_bridge](metadata_bridge.md) | AIND metadata check and generation |
+| [noise_floor](noise_floor.md) | Ephys noise-floor estimation from raw binary data |
+| [uploader_bridge](uploader_bridge.md) | S3 upload job submission with duplicate-submission protection |

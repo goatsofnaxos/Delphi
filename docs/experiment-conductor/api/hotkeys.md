@@ -1,6 +1,9 @@
 # hotkeys
 
-Global hotkey listener backed by `pynput`.  Runs in a daemon thread so it
-does not block the main experiment loop.
+!!! warning "Removed"
+    Hotkey support has been removed from the refactored conductor.
 
-::: experiment_conductor.hotkeys
+The conductor now runs headlessly on a shared network drive and no longer
+listens for global keyboard shortcuts.  Graceful shutdown is handled via
+`SIGINT` / `SIGTERM` (e.g. `Ctrl+C` in the terminal where the conductor is
+running, or `kill <pid>`).
