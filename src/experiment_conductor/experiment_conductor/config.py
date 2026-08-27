@@ -1,36 +1,32 @@
-"""Configuration loading for experiment_conductor.
+"""Configuration for the experiment conductor.
 
-Merges .env file values with CLI overrides. CLI flags always win.
+All settings are loaded from a ``.env`` file (and/or shell environment) and
+may be overridden on the command line.  CLI flags always win over env-file
+values.
 
-Data root resolution
----------------------
-``data_root`` — the session directory used by the pipeline, metadata
-generator, and uploader — is resolved in one of two ways:
+Environment variable reference
+-------------------------------
+See ``.env.example`` for the full list with descriptions.  The key groups are:
 
-1. **Direct** (``DATA_ROOT``): set the full path explicitly.
-   Use this when the session directory already exists or is known up front.
-
-2. **Server-relative** (``SERVER_ROOT`` + ``SUBJECT_ID`` + optional
-   ``SESSION_DATETIME``): the conductor computes the path as
-   ``SERVER_ROOT / SUBJECT_ID / SESSION_DATETIME`` after the launcher exits.
-   ``SESSION_DATETIME`` is auto-detected (newest timestamp directory under
-   ``SERVER_ROOT / SUBJECT_ID``) when not supplied explicitly.
-   Use this for the standard workflow where data is robocopied from the
-   acquisition computer to a local server (e.g.
-   ``\\\\allen\\aind\\stage\\chronic``).
-
-Exactly one of ``DATA_ROOT`` or ``SERVER_ROOT`` must be set.
+* ``CONDUCTOR_WATCH_PATHS``     — comma-separated paths to monitor
+* ``CONDUCTOR_EXPERIMENT_TYPE`` — ``delphi`` | ``pirouette`` | ``delphi_pirouette``
+* ``CONDUCTOR_PROTOCOL_ID``, ``INSTRUMENT_ID``, etc.  — metadata fields
+* ``CONDUCTOR_ENABLE_PIPELINE``, ``CONDUCTOR_ENABLE_METADATA``, ``CONDUCTOR_ENABLE_UPLOAD``
+* ``CONDUCTOR_DRY_RUN``         — submit no real upload requests
+* ``CONDUCTOR_STATE_FILE``      — path for persisting session state across restarts
 """
 from __future__ import annotations
 
 import argparse
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional
 
 from dotenv import load_dotenv
 
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _bool(v: str | None, default: bool = False) -> bool:
     if v is None:
@@ -44,237 +40,249 @@ def _list(v: str | None) -> List[str]:
     return [s.strip() for s in v.split(",") if s.strip()]
 
 
+def _int(v: str | None, default: int) -> int:
+    try:
+        return int(v)  # type: ignore[arg-type]
+    except (TypeError, ValueError):
+        return default
+
+
+def _float(v: str | None, default: float) -> float:
+    try:
+        return float(v)  # type: ignore[arg-type]
+    except (TypeError, ValueError):
+        return default
+
+
+# ── Dataclass ─────────────────────────────────────────────────────────────────
+
 @dataclass
 class ConductorConfig:
     """Merged configuration for the experiment conductor.
 
+    All attributes correspond to an environment variable with the prefix
+    ``CONDUCTOR_`` (or the legacy name documented in ``.env.example``).
+
     Parameters
     ----------
+    watch_paths : list of Path
+        Root directories to scan for new acquisition sessions.  Each watch
+        path is expected to contain ``<subject_id>/<session_timestamp>/``
+        sub-directories.
     experiment_type : str
         One of ``delphi``, ``pirouette``, ``delphi_pirouette``.
-    experiment_config : str
-        Launcher profile name resolved in ``experiment_configs/``.
-    server_root : Optional[Path]
-        Root of the local server where data is robocopied from the acquisition
-        computer (e.g. ``\\\\allen\\aind\\stage\\chronic``).  Corresponds to
-        ``remote_transfer_root_path`` in the hardware schema.  When set,
-        ``data_root`` is computed as
-        ``server_root / subject_id / session_datetime`` after the launcher
-        exits.  Mutually exclusive with providing ``data_root`` directly.
-    session_datetime : Optional[str]
-        Session timestamp string in ``YYYY-MM-DDTHH-MM-SS`` format
-        (e.g. ``2026-03-20T20-23-05``).  Required when ``server_root`` is set
-        and auto-detection is not desired.  When ``None`` the conductor scans
-        ``server_root / subject_id`` for the newest timestamp directory after
-        the launcher exits.
-    data_root : Optional[Path]
-        Resolved run-level session directory on the server.  ``None`` at
-        startup when using server-relative mode; populated by the conductor
-        after ``launch_experiments`` returns.
-    launcher_dir : Path
-        Directory containing ``launcher.py``.
-    surgery_notes_base : Optional[Path]
-        Base directory for surgery notes; subject subfolder appended automatically.
-    subject_id : str
-        Mouse subject ID.
+    acquisition_type : str
+        Acquisition type string passed to the AIND metadata schema
+        (e.g. ``"ChronicRecording"``).
     protocol_id : str
-        AIND protocol ID.
+        AIND protocol ID string.
     instrument_id : str
-        Instrument identifier.
+        Rig/instrument identifier.
     experiment_room : str
         Physical room identifier.
     delphi_computer_id : str
         Hostname of the Delphi acquisition computer.
-    surgeons : List[str]
-        Surgeon names.
-    experimenters : List[str]
-        Experimenter names.
+    surgeons : list of str
+        Surgeon names for procedures metadata.
+    experimenters : list of str
+        Experimenter names for acquisition metadata.
+    surgery_notes_base : Path or None
+        Base directory for surgery notes DOCX files.  Subject subfolder is
+        appended automatically: ``surgery_notes_base / subject_id / ...``.
     delphi_experiment : str
-        Experiment name for delphi-data snapshot (e.g. ``bonhoeffer``).
+        Experiment name for the delphi-data snapshot step (e.g. ``bonhoeffer``).
     delphi_firmware : str
-        Firmware version string for delphi-data ingestion.
-    upload_batch_size : int
-        Number of chunks submitted to the transfer service per batch (default 2).
-        The transfer service processes each chunk independently; keep this small
-        to avoid overwhelming the queue.
+        Firmware version string for delphi-data ingestion (e.g. ``0.1.0``).
+    enable_pipeline : bool
+        If *False*, the delphi-data build/snapshot step is skipped.
     pipeline_cadence_minutes : int
-        How often (minutes) to run the processing + upload cycle.
-        Ignored when ``schedule_minute_of_hour`` is set.
-    schedule_minute_of_hour : Optional[int]
-        When set (0–59), run each cycle at that minute past every hour
-        (e.g. ``45`` → 10:45, 11:45, …).  Mutually exclusive with
-        ``pipeline_cadence_minutes``; this takes priority when both are set.
+        How often (in minutes) to run a full processing cycle per session.
+    pipeline_skip_build : bool
+        Pass ``--skip-build`` to ``delphi-data pipeline``.
+    pipeline_skip_clips : bool
+        Pass ``--skip-clips`` to ``delphi-data pipeline`` (default True).
+    pipeline_skip_snapshot : bool
+        Pass ``--skip-snapshot`` to ``delphi-data pipeline``.
+    enable_metadata : bool
+        If *False*, AIND metadata generation is skipped.
+    enable_noise_floor : bool
+        If *True*, estimate the ephys noise floor each cycle.
+    noise_floor_n_seconds : float
+        Duration (seconds) of data to read for noise-floor estimation.
+    noise_floor_max_channels : int or None
+        Limit the noise-floor estimate to the first N channels.
+    enable_upload : bool
+        If *False*, the S3 upload step is skipped.
     s3_bucket : str
-        S3 bucket name.
+        S3 bucket for upload (default ``"aind-open-data"``).
     contact_email : str
-        Contact email for upload job notifications.
+        Email address for upload job notifications.
     project_name : str
         AIND project name for the upload job.
+    upload_batch_size : int
+        Number of chunks submitted per upload batch (default 2).
+    num_last_chunks_to_ignore : int
+        Most-recent chunks to skip when uploading (avoids in-progress data).
     dry_run : bool
-        If True, print upload requests without submitting.
+        If *True*, print upload requests without submitting them.
     delete_after_upload : bool
-        If True, delete large local files after confirmed S3 upload.
-    keep_local_patterns : List[str]
-        Glob patterns relative to ``data_root`` to always keep locally.
-    enable_pipeline : bool
-        If False, the delphi-data pipeline step is skipped every cycle.
-        Togglable at runtime via ``HOTKEY_TOGGLE_PIPELINE``.
-    enable_metadata : bool
-        If False, AIND metadata generation is skipped.
-        Togglable at runtime via ``HOTKEY_TOGGLE_METADATA``.
-    enable_upload : bool
-        If False, the upload step is skipped every cycle.
-        Togglable at runtime via ``HOTKEY_TOGGLE_UPLOAD``.
-    pipeline_skip_build : bool
-        If True, pass ``--skip-build`` to ``delphi-data pipeline``
-        (skips the build-dataset step).
-    pipeline_skip_clips : bool
-        If True, pass ``--skip-clips`` to ``delphi-data pipeline``
-        (skips poke-clip extraction).  Defaults to True.
-    pipeline_skip_snapshot : bool
-        If True, pass ``--skip-snapshot`` to ``delphi-data pipeline``
-        (skips figure generation).
-    hotkey_pipeline : str
-        pynput key string to manually trigger a pipeline cycle.
-    hotkey_upload_pause : str
-        pynput key string to toggle upload pause/resume.
-    hotkey_end_experiment : str
-        pynput key string to signal experiment end.
-    hotkey_toggle_pipeline : Optional[str]
-        pynput key string to toggle pipeline enable/disable at runtime.
-    hotkey_toggle_metadata : Optional[str]
-        pynput key string to toggle metadata enable/disable at runtime.
-    hotkey_toggle_upload : Optional[str]
-        pynput key string to toggle upload enable/disable at runtime.
-    hotkey_update_end_time : Optional[str]
-        pynput key string to manually update the acquisition end time in
-        ``acquisition.json`` after metadata has been generated.
-    hotkey_retry_metadata : Optional[str]
-        pynput key string to reset the metadata-generated flag and re-run
-        metadata generation on the next cadence cycle.
+        If *True*, remove large local files after confirming S3 upload.
+    keep_local_patterns : list of str
+        Glob patterns (relative to the run directory) that are always kept
+        locally even when ``delete_after_upload`` is enabled.
+    poll_interval_s : float
+        How often (in seconds) the watcher scans for new session directories.
+    min_session_age_minutes : float
+        A newly discovered session is not processed until it is at least this
+        many minutes old (gives the acquisition computer time to write data).
+    max_consecutive_errors : int
+        A session is marked ``ERROR`` after this many consecutive failures.
+    error_backoff_minutes : float
+        After an error the session is skipped for this many minutes before
+        being retried.
+    state_file : Path or None
+        If set, session states are persisted to this JSON file so work
+        survives conductor restarts.
     chunk_camera_folder : str
-        Path relative to ``data_root`` used to count timestamp-named chunk
-        directories when gating the upload start job.  Defaults to
-        ``behavior-videos/TopCamera``.
+        Path relative to the run directory used to count chunk directories
+        when gating the initial upload start job.
     """
 
+    # ── Watch paths ───────────────────────────────────────────────────────────
+    watch_paths: List[Path]
+
+    # ── Session identity ──────────────────────────────────────────────────────
     experiment_type: str
-    experiment_config: str
-    server_root: Optional[Path]
-    session_datetime: Optional[str]
-    data_root: Optional[Path]          # None until resolved post-launch
-    launcher_dir: Path
-    surgery_notes_base: Optional[Path]
-    subject_id: str
+    acquisition_type: str
     protocol_id: str
     instrument_id: str
     experiment_room: str
     delphi_computer_id: str
     surgeons: List[str]
     experimenters: List[str]
+    surgery_notes_base: Optional[Path]
+
+    # ── Pipeline ──────────────────────────────────────────────────────────────
     delphi_experiment: str
     delphi_firmware: str
-    upload_batch_size: int
-    pipeline_cadence_minutes: int
-    schedule_minute_of_hour: Optional[int]
-    s3_bucket: str
-    contact_email: str
-    project_name: str
-    dry_run: bool
-    delete_after_upload: bool
-    keep_local_patterns: List[str]
     enable_pipeline: bool
-    enable_metadata: bool
-    enable_upload: bool
+    pipeline_cadence_minutes: int
     pipeline_skip_build: bool
     pipeline_skip_clips: bool
     pipeline_skip_snapshot: bool
-    hotkey_pipeline: str
-    hotkey_upload_pause: str
-    hotkey_end_experiment: str
-    hotkey_toggle_pipeline: Optional[str]
-    hotkey_toggle_metadata: Optional[str]
-    hotkey_toggle_upload: Optional[str]
-    hotkey_update_end_time: Optional[str]
-    hotkey_retry_metadata: Optional[str]
+
+    # ── Metadata ──────────────────────────────────────────────────────────────
+    enable_metadata: bool
+
+    # ── Noise floor ───────────────────────────────────────────────────────────
+    enable_noise_floor: bool
+    noise_floor_n_seconds: float
+    noise_floor_max_channels: Optional[int]
+
+    # ── Upload ────────────────────────────────────────────────────────────────
+    enable_upload: bool
+    s3_bucket: str
+    contact_email: str
+    project_name: str
+    upload_batch_size: int
+    num_last_chunks_to_ignore: int
+    dry_run: bool
+    delete_after_upload: bool
+    keep_local_patterns: List[str]
+
+    # ── Polling / error handling ───────────────────────────────────────────────
+    poll_interval_s: float
+    min_session_age_minutes: float
+    max_consecutive_errors: int
+    error_backoff_minutes: float
+
+    # ── State persistence ─────────────────────────────────────────────────────
+    state_file: Optional[Path]
+
+    # ── Misc ──────────────────────────────────────────────────────────────────
     chunk_camera_folder: str
 
 
+# ── Builder ───────────────────────────────────────────────────────────────────
+
 def _parse_cli() -> argparse.Namespace:
-    """Build and parse the CLI argument parser."""
     p = argparse.ArgumentParser(
-        description="Experiment Conductor — orchestrates launch, processing, metadata, and upload."
+        prog="conductor",
+        description=(
+            "Experiment Conductor — watches a shared network drive for new "
+            "acquisition sessions and orchestrates metadata generation, "
+            "delphi-data processing, noise-floor estimation, and S3 upload."
+        ),
     )
-    p.add_argument("--env-file", default=".env", help="Path to .env file (default: .env)")
+    p.add_argument(
+        "--env-file", default=".env", metavar="PATH",
+        help="Path to .env file (default: .env in cwd).",
+    )
+    p.add_argument(
+        "--watch-paths", default=None, metavar="PATH[,PATH…]",
+        help=(
+            "Comma-separated list of root directories to monitor for new "
+            "sessions.  Overrides CONDUCTOR_WATCH_PATHS."
+        ),
+    )
+    p.add_argument(
+        "--add-session", action="append", dest="extra_sessions",
+        metavar="PATH",
+        help=(
+            "Immediately register a specific session directory for "
+            "processing.  May be repeated.  The parent directory's name is "
+            "used as the subject ID."
+        ),
+    )
     p.add_argument("--experiment-type", default=None)
-    p.add_argument("--experiment-config", default=None)
-    # Data root — two mutually exclusive modes
-    p.add_argument(
-        "--server-root", default=None, type=Path, metavar="PATH",
-        help="Local server root where data is robocopied (e.g. \\\\allen\\aind\\stage\\chronic). "
-             "Mutually exclusive with --data-root.",
-    )
-    p.add_argument(
-        "--session-datetime", default=None, metavar="YYYY-MM-DDTHH-MM-SS",
-        help="Session timestamp used with --server-root to build data_root. "
-             "Auto-detected from newest directory when omitted.",
-    )
-    p.add_argument(
-        "--data-root", default=None, type=Path, metavar="PATH",
-        help="Full path to the session directory. Mutually exclusive with --server-root.",
-    )
-    p.add_argument("--launcher-dir", default=None, type=Path)
-    p.add_argument("--surgery-notes-base", default=None, type=Path)
-    p.add_argument("--subject-id", default=None)
     p.add_argument("--protocol-id", default=None)
     p.add_argument("--instrument-id", default=None)
     p.add_argument("--experiment-room", default=None)
     p.add_argument("--delphi-computer-id", default=None)
-    p.add_argument("--surgeons", default=None, help="Comma-separated surgeon names")
-    p.add_argument("--experimenters", default=None, help="Comma-separated experimenter names")
+    p.add_argument("--surgeons", default=None, metavar="NAME[,NAME…]")
+    p.add_argument("--experimenters", default=None, metavar="NAME[,NAME…]")
+    p.add_argument("--surgery-notes-base", default=None, type=Path)
     p.add_argument("--delphi-experiment", default=None)
     p.add_argument("--delphi-firmware", default=None)
     p.add_argument(
-        "--upload-batch-size", default=None, type=int, metavar="N",
-        help="Chunks per upload batch submitted to the transfer service (default 2).",
-    )
-    p.add_argument("--pipeline-cadence-minutes", default=None, type=int)
-    p.add_argument(
-        "--schedule-minute-of-hour",
-        default=None, type=int, metavar="MINUTE",
-        help="Run cycles at this minute past every hour (0-59). Overrides --pipeline-cadence-minutes.",
+        "--pipeline-cadence-minutes", default=None, type=int, metavar="N",
     )
     p.add_argument("--s3-bucket", default=None)
     p.add_argument("--contact-email", default=None)
     p.add_argument("--project-name", default=None)
-    p.add_argument("--dry-run", action="store_true", default=None)
-    p.add_argument("--delete-after-upload", action="store_true", default=None)
-    p.add_argument("--keep-local-patterns", default=None)
+    p.add_argument(
+        "--upload-batch-size", default=None, type=int, metavar="N",
+    )
+    p.add_argument(
+        "--dry-run", action="store_true", default=None,
+        help="Print upload requests without submitting them.",
+    )
+    p.add_argument(
+        "--log-level", default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR"],
+    )
+    p.add_argument(
+        "--state-file", default=None, type=Path, metavar="PATH",
+        help="Persist session states to this JSON file across restarts.",
+    )
     return p.parse_args()
 
 
 def build_config() -> ConductorConfig:
-    """Load .env then overlay CLI arguments to produce a ``ConductorConfig``.
+    """Load ``.env`` then overlay CLI arguments to produce a :class:`ConductorConfig`.
 
-    ``data_root`` is resolved as follows:
-
-    - If ``DATA_ROOT`` / ``--data-root`` is provided, use it directly.
-    - If ``SERVER_ROOT`` / ``--server-root`` is provided, set ``data_root``
-      to ``None``; the conductor will resolve it after the launcher exits by
-      computing ``server_root / subject_id / session_datetime`` (where
-      ``session_datetime`` is auto-detected when not explicitly set).
-    - If neither is provided, raise ``ValueError``.
+    Priority (highest to lowest): CLI flags > environment variables > ``.env``
+    file > hard-coded defaults.
 
     Returns
     -------
     ConductorConfig
-        Fully merged and validated configuration.
 
     Raises
     ------
     ValueError
-        If neither ``DATA_ROOT`` nor ``SERVER_ROOT`` is provided, or if
-        ``SUBJECT_ID`` is missing.
+        If ``CONDUCTOR_WATCH_PATHS`` is not set and ``--watch-paths`` is not
+        provided (at least one watch path is required).
     """
     args = _parse_cli()
     load_dotenv(args.env_file, override=False)
@@ -282,74 +290,88 @@ def build_config() -> ConductorConfig:
     def _g(env_key: str, cli_val=None, default=None):
         return cli_val if cli_val is not None else os.getenv(env_key, default)
 
-    subject_id = _g("SUBJECT_ID", args.subject_id, "")
-    if not subject_id:
-        raise ValueError("SUBJECT_ID must be set (via .env or --subject-id).")
+    # ── Watch paths ────────────────────────────────────────────────────────────
+    watch_raw = _g("CONDUCTOR_WATCH_PATHS", args.watch_paths, "")
+    watch_paths = [Path(p) for p in _list(watch_raw)] if watch_raw else []
 
-    # ── Data root resolution ──────────────────────────────────────────────────
-    server_root_raw = _g("SERVER_ROOT", args.server_root)
-    data_root_raw = _g("DATA_ROOT", args.data_root)
-    session_datetime = _g("SESSION_DATETIME", args.session_datetime)
+    # ── Surgery notes base ─────────────────────────────────────────────────────
+    surgery_raw = _g(
+        "CONDUCTOR_SURGERY_NOTES_BASE",
+        args.surgery_notes_base,
+        r"\\allen\aind\scratch\chronos\surgeryNotes",
+    )
+    surgery_notes_base = Path(surgery_raw) if surgery_raw else None
 
-    if data_root_raw and server_root_raw:
-        raise ValueError(
-            "Set either DATA_ROOT or SERVER_ROOT, not both."
-        )
-    if not data_root_raw and not server_root_raw:
-        raise ValueError(
-            "Either DATA_ROOT (full session path) or SERVER_ROOT "
-            "(e.g. \\\\allen\\aind\\stage\\chronic) must be set."
-        )
+    # ── State file ─────────────────────────────────────────────────────────────
+    state_raw = _g("CONDUCTOR_STATE_FILE", args.state_file)
+    state_file = Path(state_raw) if state_raw else None
 
-    server_root = Path(server_root_raw) if server_root_raw else None
-    # data_root is None in server-relative mode — conductor fills it in post-launch
-    data_root = Path(data_root_raw) if data_root_raw else None
-
-    surgery_notes_raw = _g("SURGERY_NOTES_BASE", args.surgery_notes_base)
+    # ── Noise floor max channels (0 means None) ────────────────────────────────
+    nf_max_raw = _g("CONDUCTOR_NOISE_FLOOR_MAX_CHANNELS", None, "0")
+    noise_floor_max_channels: Optional[int] = None
+    try:
+        nf_max = int(nf_max_raw)  # type: ignore[arg-type]
+        if nf_max > 0:
+            noise_floor_max_channels = nf_max
+    except (TypeError, ValueError):
+        pass
 
     return ConductorConfig(
-        experiment_type=_g("EXPERIMENT_TYPE", args.experiment_type, "delphi_pirouette"),
-        experiment_config=_g("EXPERIMENT_CONFIG", args.experiment_config, "delphi_pirouette_experiment"),
-        server_root=server_root,
-        session_datetime=session_datetime or None,
-        data_root=data_root,
-        launcher_dir=Path(_g("LAUNCHER_DIR", args.launcher_dir,
-                              str(Path(__file__).parents[3] / "launcher"))),
-        surgery_notes_base=Path(surgery_notes_raw) if surgery_notes_raw else None,
-        subject_id=subject_id,
-        protocol_id=_g("PROTOCOL_ID", args.protocol_id, ""),
-        instrument_id=_g("INSTRUMENT_ID", args.instrument_id, ""),
-        experiment_room=_g("EXPERIMENT_ROOM", args.experiment_room, ""),
-        delphi_computer_id=_g("DELPHI_COMPUTER_ID", args.delphi_computer_id, ""),
-        surgeons=_list(_g("SURGEONS", args.surgeons)),
-        experimenters=_list(_g("EXPERIMENTERS", args.experimenters)),
-        delphi_experiment=_g("DELPHI_EXPERIMENT", args.delphi_experiment, "bonhoeffer"),
-        delphi_firmware=_g("DELPHI_FIRMWARE", args.delphi_firmware, "0.1.0"),
-        upload_batch_size=int(_g("UPLOAD_BATCH_SIZE", args.upload_batch_size, 2)),
-        pipeline_cadence_minutes=int(_g("PIPELINE_CADENCE_MINUTES", args.pipeline_cadence_minutes, 60)),
-        schedule_minute_of_hour=int(v) if (v := _g("SCHEDULE_MINUTE_OF_HOUR", args.schedule_minute_of_hour)) is not None else None,
-        s3_bucket=_g("S3_BUCKET", args.s3_bucket, "aind-open-data"),
-        contact_email=_g("CONTACT_EMAIL", args.contact_email, ""),
-        project_name=_g("PROJECT_NAME", args.project_name, ""),
-        dry_run=_bool(_g("DRY_RUN", "true" if args.dry_run else None, "false")),
-        delete_after_upload=_bool(_g("DELETE_AFTER_UPLOAD",
-                                     "true" if args.delete_after_upload else None, "false")),
-        keep_local_patterns=_list(_g("KEEP_LOCAL_PATTERNS", args.keep_local_patterns,
-                                     "behavior/delphi_dataset.csv,behavior/DelphiController/**,"
-                                     "behavior/results/**,metadata/**")),
-        enable_pipeline=_bool(_g("ENABLE_PIPELINE", None, "true")),
-        enable_metadata=_bool(_g("ENABLE_METADATA", None, "true")),
-        enable_upload=_bool(_g("ENABLE_UPLOAD", None, "true")),
-        pipeline_skip_build=_bool(_g("PIPELINE_SKIP_BUILD", None, "false")),
-        pipeline_skip_clips=_bool(_g("PIPELINE_SKIP_CLIPS", None, "true")),
-        pipeline_skip_snapshot=_bool(_g("PIPELINE_SKIP_SNAPSHOT", None, "false")),
-        hotkey_pipeline=os.getenv("HOTKEY_PIPELINE", "<ctrl>+<shift>+p"),
-        hotkey_upload_pause=os.getenv("HOTKEY_UPLOAD_PAUSE", "<ctrl>+<shift>+u"),
-        hotkey_end_experiment=os.getenv("HOTKEY_END_EXPERIMENT", "<ctrl>+<shift>+e"),
-        hotkey_toggle_pipeline=os.getenv("HOTKEY_TOGGLE_PIPELINE") or None,
-        hotkey_toggle_metadata=os.getenv("HOTKEY_TOGGLE_METADATA") or None,
-        hotkey_toggle_upload=os.getenv("HOTKEY_TOGGLE_UPLOAD") or None,
-        hotkey_update_end_time=os.getenv("HOTKEY_UPDATE_END_TIME") or None,
-        hotkey_retry_metadata=os.getenv("HOTKEY_RETRY_METADATA") or None,
-        chunk_camera_folder=_g("CHUNK_CAMERA_FOLDER", None, "behavior-videos/TopCamera"),
+        watch_paths=watch_paths,
+        experiment_type=_g("CONDUCTOR_EXPERIMENT_TYPE", args.experiment_type, "delphi"),
+        acquisition_type=_g("CONDUCTOR_ACQUISITION_TYPE", None, "ChronicRecording"),
+        protocol_id=_g("CONDUCTOR_PROTOCOL_ID", args.protocol_id, ""),
+        instrument_id=_g("CONDUCTOR_INSTRUMENT_ID", args.instrument_id, ""),
+        experiment_room=_g("CONDUCTOR_EXPERIMENT_ROOM", args.experiment_room, ""),
+        delphi_computer_id=_g("CONDUCTOR_DELPHI_COMPUTER_ID", args.delphi_computer_id, ""),
+        surgeons=_list(_g("CONDUCTOR_SURGEONS", args.surgeons)),
+        experimenters=_list(_g("CONDUCTOR_EXPERIMENTERS", args.experimenters)),
+        surgery_notes_base=surgery_notes_base,
+        delphi_experiment=_g("CONDUCTOR_DELPHI_EXPERIMENT", args.delphi_experiment, "bonhoeffer"),
+        delphi_firmware=_g("CONDUCTOR_DELPHI_FIRMWARE", args.delphi_firmware, "0.1.0"),
+        enable_pipeline=_bool(_g("CONDUCTOR_ENABLE_PIPELINE", None, "true")),
+        pipeline_cadence_minutes=_int(
+            _g("CONDUCTOR_PIPELINE_CADENCE_MINUTES", args.pipeline_cadence_minutes), 60
+        ),
+        pipeline_skip_build=_bool(_g("CONDUCTOR_PIPELINE_SKIP_BUILD", None, "false")),
+        pipeline_skip_clips=_bool(_g("CONDUCTOR_PIPELINE_SKIP_CLIPS", None, "true")),
+        pipeline_skip_snapshot=_bool(_g("CONDUCTOR_PIPELINE_SKIP_SNAPSHOT", None, "false")),
+        enable_metadata=_bool(_g("CONDUCTOR_ENABLE_METADATA", None, "true")),
+        enable_noise_floor=_bool(_g("CONDUCTOR_ENABLE_NOISE_FLOOR", None, "false")),
+        noise_floor_n_seconds=_float(_g("CONDUCTOR_NOISE_FLOOR_N_SECONDS", None, "10.0"), 10.0),
+        noise_floor_max_channels=noise_floor_max_channels,
+        enable_upload=_bool(_g("CONDUCTOR_ENABLE_UPLOAD", None, "true")),
+        s3_bucket=_g("CONDUCTOR_S3_BUCKET", args.s3_bucket, "aind-open-data"),
+        contact_email=_g("CONDUCTOR_CONTACT_EMAIL", args.contact_email, ""),
+        project_name=_g("CONDUCTOR_PROJECT_NAME", args.project_name, ""),
+        upload_batch_size=_int(
+            _g("CONDUCTOR_UPLOAD_BATCH_SIZE", args.upload_batch_size), 2
+        ),
+        num_last_chunks_to_ignore=_int(
+            _g("CONDUCTOR_NUM_LAST_CHUNKS_TO_IGNORE", None, "2"), 2
+        ),
+        dry_run=_bool(_g("CONDUCTOR_DRY_RUN", "true" if args.dry_run else None, "false")),
+        delete_after_upload=_bool(_g("CONDUCTOR_DELETE_AFTER_UPLOAD", None, "false")),
+        keep_local_patterns=_list(
+            _g(
+                "CONDUCTOR_KEEP_LOCAL_PATTERNS",
+                None,
+                "behavior/delphi_dataset.csv,behavior/DelphiController/**,"
+                "behavior/results/**,behavior/metadata/**",
+            )
+        ),
+        poll_interval_s=_float(_g("CONDUCTOR_POLL_INTERVAL_S", None, "60.0"), 60.0),
+        min_session_age_minutes=_float(
+            _g("CONDUCTOR_MIN_SESSION_AGE_MINUTES", None, "5.0"), 5.0
+        ),
+        max_consecutive_errors=_int(
+            _g("CONDUCTOR_MAX_CONSECUTIVE_ERRORS", None, "5"), 5
+        ),
+        error_backoff_minutes=_float(
+            _g("CONDUCTOR_ERROR_BACKOFF_MINUTES", None, "30.0"), 30.0
+        ),
+        state_file=state_file,
+        chunk_camera_folder=_g(
+            "CONDUCTOR_CHUNK_CAMERA_FOLDER", None, "behavior-videos/TopCamera"
+        ),
     )

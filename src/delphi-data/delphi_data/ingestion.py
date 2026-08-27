@@ -227,6 +227,10 @@ def build_odor_map(metadata_path: pathlib.Path) -> dict:
     odor_map = {}
     seen_conflicts = defaultdict(set)
 
+    if not os.path.isdir(metadata_path):
+        print(f"  [warn] metadata path not found: {metadata_path} — odor map will be empty.")
+        return odor_map
+
     for file in os.listdir(metadata_path):
         if "RuleSettings" not in file:
             continue
@@ -563,6 +567,10 @@ def build_dataframe(
     poke_times = data["PokeState"]
     beam_breaks = data["RawPokeState"]
 
+    # Diagnostics: print row counts for key registers to help spot empty streams.
+    _stream_sizes = {k: len(v) for k, v in data.items()}
+    print("  Register stream sizes:", _stream_sizes)
+
     metadata_path = root_path / "behavior" / "metadata"
     odor_map = build_odor_map(metadata_path)
 
@@ -574,6 +582,24 @@ def build_dataframe(
     )
     valve_times = aeon_api.to_seconds(valve_state.index)
     poke_times_sec = aeon_api.to_seconds(poke_times[poke_times["PokeState"] == 1].index)
+
+    print(
+        f"  Events found — beam-break onsets: {len(break_onsets)}, "
+        f"offsets: {len(break_offsets)}, poke times: {len(poke_times_sec)}, "
+        f"valve transitions: {len(valve_times)}"
+    )
+
+    if len(break_onsets) == 0:
+        raise RuntimeError(
+            "No beam-break onset events found in RawPokeState register.\n"
+            "Possible causes:\n"
+            "  • Wrong --firmware version (files loaded but register addresses mismatch)\n"
+            "  • RawPokeState binary files missing from behavior/DelphiController/\n"
+            "  • Data recorded with a firmware that uses different register values\n"
+            f"Register stream sizes: {_stream_sizes}\n"
+            f"RawPokeState unique values: "
+            f"{sorted(beam_breaks['RawPokeState'].unique().tolist()) if not beam_breaks.empty else '(empty)'}"
+        )
 
     df = parse_data(
         break_onsets=break_onsets,

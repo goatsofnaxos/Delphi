@@ -1,9 +1,15 @@
 """Bridge to the metadata-generator package.
 
-Mirrors the logic of ``metadata_generator/scripts/generate_all_metadata.py``
-but driven by :class:`ConductorConfig` instead of env/CLI config.  Each
-metadata file is generated independently so a failure in one step does not
-abort the others.
+Mirrors the logic of ``metadata_generator``'s individual builder modules but
+driven by the conductor's own configuration rather than a separate CLI.  Each
+JSON file is generated in an independent try/except block so a failure in one
+step does not prevent the others from being written.
+
+Metadata location
+-----------------
+All four AIND JSON files are written to ``<run_dir>/metadata/``.  The
+conductor always passes the run-level directory (the earliest run sub-directory
+after consolidation) rather than the session root.
 """
 from __future__ import annotations
 
@@ -14,6 +20,34 @@ from pathlib import Path
 from typing import Optional
 
 log = logging.getLogger(__name__)
+
+_REQUIRED_FILES = (
+    "subject.json",
+    "instrument.json",
+    "acquisition.json",
+    "procedures.json",
+)
+
+
+def check_metadata_present(run_dir: Path) -> bool:
+    """Return *True* if all four AIND metadata JSON files exist.
+
+    Checks the ``metadata/`` sub-directory of *run_dir*.  This is the
+    canonical location where :func:`generate_metadata` writes its output.
+
+    Parameters
+    ----------
+    run_dir : Path
+        Run-level session directory (the earliest run sub-directory after
+        consolidation).
+
+    Returns
+    -------
+    bool
+        *True* only if every required file is present.
+    """
+    metadata_dir = run_dir / "metadata"
+    return all((metadata_dir / f).exists() for f in _REQUIRED_FILES)
 
 
 def generate_metadata(
@@ -41,17 +75,17 @@ def generate_metadata(
     Parameters
     ----------
     experiment_type : str
-        One of ``delphi``, ``pirouette``, ``delphi_pirouette``.
+        One of ``"delphi"``, ``"pirouette"``, ``"delphi_pirouette"``.
     subject_id : str
-        Mouse subject ID.
+        Numeric AIND subject identifier.
     protocol_id : str
-        AIND protocol ID.
+        AIND protocol ID string.
     instrument_id : str
-        Instrument identifier.
+        Rig/instrument identifier.
     experiment_room : str
         Physical room identifier.
     acquisition_type : str
-        Acquisition type string.
+        Acquisition type string (e.g. ``"ChronicRecording"``).
     delphi_computer_id : str
         Hostname of the Delphi acquisition computer.
     surgeons : list of str
@@ -59,17 +93,18 @@ def generate_metadata(
     experimenters : list of str
         Experimenter names.
     data_root : Path
-        Run-level session directory.
+        Run-level session directory.  Passed to instrument/acquisition builders
+        to locate JSONL metadata files in ``behavior/metadata/``.
     surgery_notes_base : Path, optional
-        Base directory for surgery notes.
+        Base directory for surgery notes.  Subject subfolder appended
+        automatically: ``surgery_notes_base / subject_id / …``.
     metadata_output_path : Path
-        Directory where metadata JSON files will be written.
+        Directory where JSON files will be written (``run_dir / "metadata"``).
 
     Returns
     -------
     bool
-        True if all files were generated without errors, False if any step
-        raised an exception.
+        *True* if all four files were generated without errors.
     """
     from metadata_generator.subject import write_subject_metadata
     from metadata_generator.instrument import create_instrument_metadata
@@ -91,13 +126,12 @@ def generate_metadata(
     any_error = False
 
     # ── Resolve surgery notes path and probe ID ───────────────────────────────
+    surgery_notes_path: Optional[Path] = None
     if surgery_notes_base and subject_id:
         surgery_notes_path = (
             surgery_notes_base / subject_id
             / f"{subject_id}_craniotomy-implantation.docx"
         )
-    else:
-        surgery_notes_path = None
 
     probe_id = "Probe B"
     if surgery_notes_path and surgery_notes_path.exists():
@@ -109,7 +143,10 @@ def generate_metadata(
         except Exception as exc:
             log.warning("Could not extract probe ID from surgery notes: %s", exc)
     else:
-        log.warning("Surgery notes not found — using default probe_id '%s'.", probe_id)
+        log.warning(
+            "Surgery notes not found at expected path — using default probe_id '%s'.",
+            probe_id,
+        )
 
     probe_serial_number = probe_id
 
@@ -192,18 +229,20 @@ def generate_metadata(
     log.info("Generating procedures.json ...")
     try:
         if surgery_notes_path and surgery_notes_path.exists() and probe_config is not None:
+            probe_device = ephys_assembly.probes[0] if ephys_assembly else None
             procedures = create_procedures_metadata(
                 current_experiment=experiment_type,
                 subject_id=subject_id,
                 protocol_id=protocol_id,
                 surgeons=surgeons,
                 surgery_notes_path=surgery_notes_path,
-                probe_device=ephys_assembly.probes[0],
+                probe_device=probe_device,
                 probe_config=probe_config,
             )
         else:
             log.warning(
-                "Surgery notes missing or acquisition failed — writing minimal procedures.json."
+                "Surgery notes missing or acquisition failed — "
+                "writing minimal procedures.json."
             )
             procedures = Procedures(subject_id=subject_id)
         Procedures.model_validate_json(procedures.model_dump_json()).write_standard_file(
@@ -215,9 +254,9 @@ def generate_metadata(
         any_error = True
 
     if any_error:
-        log.warning("Metadata generation completed with errors — check logs above.")
+        log.warning("Metadata generation completed with errors — see log above.")
     else:
-        log.info("AIND metadata written to %s", metadata_output_path)
+        log.info("All AIND metadata written to %s.", metadata_output_path)
     return not any_error
 
 
@@ -225,35 +264,35 @@ def update_acquisition_end_time(
     metadata_output_path: Path,
     end_time: datetime,
 ) -> bool:
-    """Update ``acquisition_end_time`` in an existing ``acquisition.json``.
+    """Patch ``acquisition_end_time`` in an existing ``acquisition.json``.
 
-    Reads the JSON, updates the end time field, and writes the file back.
+    Reads the file, updates the field, and writes it back in-place.
 
     Parameters
     ----------
     metadata_output_path : Path
         Directory containing ``acquisition.json``.
     end_time : datetime
-        The actual UTC experiment end time.
+        New UTC end time to write.
 
     Returns
     -------
     bool
-        True on success, False if the file does not exist or update failed.
+        *True* on success.
     """
     acq_path = metadata_output_path / "acquisition.json"
     if not acq_path.exists():
-        log.error("acquisition.json not found at %s", acq_path)
+        log.error("acquisition.json not found at %s.", acq_path)
         return False
     try:
         with acq_path.open("r", encoding="utf-8") as f:
             data = json.load(f)
-        data["acquisition_end_time"] = end_time.isoformat(timespec="microseconds").replace(
-            "+00:00", "Z"
+        data["acquisition_end_time"] = (
+            end_time.isoformat(timespec="microseconds").replace("+00:00", "Z")
         )
         with acq_path.open("w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
-        log.info("Updated acquisition_end_time to %s", end_time.isoformat())
+        log.info("Updated acquisition_end_time → %s.", end_time.isoformat())
         return True
     except Exception as exc:
         log.error("Failed to update acquisition end time: %s", exc, exc_info=True)
@@ -271,11 +310,14 @@ def verify_probe_json(data_root: Path) -> bool:
     Returns
     -------
     bool
-        True if the file exists, False otherwise.
+        *True* if the file exists.
     """
     probe_path = data_root / "ecephys" / "probe.json"
     if probe_path.exists():
-        log.info("probe.json found at %s", probe_path)
+        log.info("probe.json found at %s.", probe_path)
         return True
-    log.warning("probe.json NOT found at %s — Pirouette upload requires this file.", probe_path)
+    log.warning(
+        "probe.json NOT found at %s — Pirouette upload requires this file.",
+        probe_path,
+    )
     return False

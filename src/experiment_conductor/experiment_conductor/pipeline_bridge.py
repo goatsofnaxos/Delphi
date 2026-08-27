@@ -1,12 +1,14 @@
 """Bridge to the delphi-data processing pipeline.
 
-Calls ``delphi-data pipeline`` as a subprocess so that its internal
-``sys.path`` manipulation does not interfere with the conductor's imports.
-Also exposes ``consolidate_metadata_files`` directly.
+Calls ``delphi-data pipeline`` and ``delphi-data consolidate`` as subprocesses
+so that the package's internal ``sys.path`` manipulation does not interfere
+with the conductor's imports.  Consolidation and metadata-file relocation are
+also exposed as direct Python calls via :mod:`delphi_data.curation`.
 """
 from __future__ import annotations
 
 import logging
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -14,6 +16,71 @@ from pathlib import Path
 from delphi_data.curation import consolidate_metadata_files
 
 log = logging.getLogger(__name__)
+
+# Matches YYYY-MM-DDTHH-MM-SS (Bonsai timestamp format)
+_TIMESTAMP_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}$")
+
+
+def has_delphi_controller_file(data_root: Path) -> bool:
+    """Return *True* if Delphi controller Harp data exists under *data_root*.
+
+    Checks for the ``behavior/DelphiController/`` directory that Bonsai
+    creates when writing Harp register data from the Delphi controller.  The
+    directory contains ``*.bin`` files (one per Harp register).  Its presence
+    indicates that a ``delphi-data pipeline`` run is meaningful.
+
+    The search walks up to two levels deep so it works whether *data_root* is
+    the session root (containing a run sub-directory) or an already-resolved
+    run directory.
+
+    Parameters
+    ----------
+    data_root : Path
+        Session root or run-level directory to search.
+
+    Returns
+    -------
+    bool
+    """
+    # Check directly inside run dir: behavior/DelphiController/
+    direct = data_root / "behavior" / "DelphiController"
+    if direct.is_dir():
+        log.debug("Found DelphiController dir: %s", direct)
+        return True
+    # Check one level deeper (session root contains run sub-directory)
+    for child in data_root.iterdir():
+        if child.is_dir() and _TIMESTAMP_RE.match(child.name):
+            candidate = child / "behavior" / "DelphiController"
+            if candidate.is_dir():
+                log.debug("Found DelphiController dir: %s", candidate)
+                return True
+    return False
+
+
+def resolve_run_dir(session_root: Path) -> Path:
+    """Return the earliest run sub-directory inside *session_root*.
+
+    After consolidation there is exactly one timestamp-named sub-directory;
+    before consolidation the earliest one is the canonical run dir.  If no
+    timestamp-named children exist, *session_root* is returned unchanged —
+    it is already a run directory.
+
+    Parameters
+    ----------
+    session_root : Path
+        Session root directory (e.g. ``…/842456/2026-03-20T20-23-05``).
+
+    Returns
+    -------
+    Path
+        Earliest run sub-directory, or *session_root* if none exist.
+    """
+    from delphi_data.curation import collect_run_dirs, find_earliest_run
+
+    run_dirs = collect_run_dirs(str(session_root))
+    if run_dirs:
+        return Path(find_earliest_run(run_dirs))
+    return session_root
 
 
 def run_pipeline(
@@ -24,33 +91,38 @@ def run_pipeline(
     skip_build: bool = False,
     skip_clips: bool = True,
     skip_snapshot: bool = False,
+    append: bool = True,
 ) -> bool:
     """Run the delphi-data full processing pipeline for one session.
 
-    Invokes ``delphi-data pipeline`` as a subprocess. Consolidation is always
-    enabled. Clip extraction is skipped by default (large and slow).
+    Invokes ``delphi-data pipeline`` as a subprocess.  Consolidation is
+    handled separately by :func:`run_consolidation` before this is called.
 
     Parameters
     ----------
     data_root : Path
-        Run-level session directory.
+        Run-level session directory (the earliest run dir, not the session root).
     experiment : str
-        Experiment name (e.g. ``bonhoeffer``).
+        Experiment name for the snapshot step (e.g. ``bonhoeffer``).
     firmware : str
-        Firmware version string (e.g. ``1.0.0``).
+        Firmware version string for Harp ingestion (e.g. ``1.0.0``).
     subject_id : str, optional
         Subject ID passed to the snapshot step.
     skip_build : bool
-        If True, pass ``--skip-build`` to skip the build-dataset step.
+        If *True*, pass ``--skip-build`` to omit the build-dataset step.
     skip_clips : bool
-        If True, pass ``--skip-clips`` to skip clip extraction.
+        If *True*, pass ``--skip-clips`` to skip poke-clip extraction.
+        Defaults to *True* because clip extraction is slow.
     skip_snapshot : bool
-        If True, pass ``--skip-snapshot`` to skip the snapshot step.
+        If *True*, pass ``--skip-snapshot`` to skip figure generation.
+    append : bool
+        If *True*, pass ``--append`` to merge new Harp data into the existing
+        CSV rather than overwriting it.  Default *True*.
 
     Returns
     -------
     bool
-        True if the pipeline exited successfully, False otherwise.
+        *True* if the pipeline exited successfully.
     """
     cmd = [
         sys.executable, "-m", "delphi_data.cli",
@@ -61,7 +133,8 @@ def run_pipeline(
     ]
     if subject_id:
         cmd += ["--subject-id", subject_id]
-    cmd.append("--append")  # always merge new Harp data into existing CSV
+    if append:
+        cmd.append("--append")
     if skip_build:
         cmd.append("--skip-build")
     if skip_clips:
@@ -72,58 +145,65 @@ def run_pipeline(
     log.info("Running delphi-data pipeline: %s", " ".join(cmd))
     result = subprocess.run(cmd, capture_output=False)
     if result.returncode != 0:
-        log.error("delphi-data pipeline failed (exit %d)", result.returncode)
+        log.error("delphi-data pipeline failed (exit %d).", result.returncode)
         return False
     log.info("delphi-data pipeline completed successfully.")
     return True
 
 
 def run_consolidation(data_root: Path) -> bool:
-    """Run only the session-run consolidation step for a session directory.
+    """Merge multiple run sub-directories into the earliest one.
 
-    Merges multiple run sub-directories (if present) into the earliest one via
-    ``delphi-data consolidate``.  Used for pirouette-only experiments that have
-    no Delphi controller data and therefore cannot run the full pipeline.
+    Invokes ``delphi-data consolidate`` as a subprocess.  Used for
+    pirouette-only experiments that have no Delphi controller data, or as a
+    first step before running the full pipeline.
 
     Parameters
     ----------
     data_root : Path
-        Run-level session directory.
+        Session root directory (the directory that *contains* the
+        run-timestamp sub-directories).
 
     Returns
     -------
     bool
-        True if consolidation succeeded, False otherwise.
+        *True* if consolidation succeeded.
     """
-    cmd = [sys.executable, "-m", "delphi_data.cli", "consolidate", "--data-root", str(data_root)]
+    cmd = [
+        sys.executable, "-m", "delphi_data.cli",
+        "consolidate",
+        "--data-root", str(data_root),
+    ]
     log.info("Running delphi-data consolidate: %s", " ".join(cmd))
     result = subprocess.run(cmd, capture_output=False)
     if result.returncode != 0:
-        log.error("delphi-data consolidate failed (exit %d)", result.returncode)
+        log.error("delphi-data consolidate failed (exit %d).", result.returncode)
         return False
     log.info("delphi-data consolidate completed successfully.")
     return True
 
 
 def move_delphi_metadata(data_root: Path) -> list:
-    """Move HardwareSettings/RuleSettings JSONL files to behavior/metadata/.
+    """Move ``HardwareSettings`` / ``RuleSettings`` JSONL files to ``behavior/metadata/``.
 
-    Wraps :func:`delphi_data.curation.consolidate_metadata_files`.
+    Wraps :func:`delphi_data.curation.consolidate_metadata_files`.  The JSONL
+    files must be in ``behavior/metadata/`` for the metadata generator to find
+    them when building ``instrument.json`` and ``acquisition.json``.
 
     Parameters
     ----------
     data_root : Path
-        Run-level session directory.
+        Run-level session directory (the earliest run dir after consolidation).
 
     Returns
     -------
     list of str
-        Absolute paths of files that were moved.
+        Absolute paths of the files that were moved.
     """
-    log.info("Moving Delphi metadata files to behavior/metadata/ ...")
+    log.info("Moving Delphi metadata JSONL files to behavior/metadata/ ...")
     moved = consolidate_metadata_files(data_root)
     if moved:
         log.info("Moved %d metadata file(s).", len(moved))
     else:
-        log.info("No metadata files needed moving.")
+        log.debug("No metadata files needed moving.")
     return moved
