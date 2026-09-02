@@ -280,20 +280,141 @@ def _pause_status_line(pause_file) -> str:
     return _green("▶  Submissions ACTIVE")
 
 
-def _main_menu(sessions: list[tuple], pause_file) -> None:
-    """Render the dataset list and handle selection.
+# ---------------------------------------------------------------------------
+# Auto-refresh helpers
+# ---------------------------------------------------------------------------
 
-    *sessions* is a list of ``(subject_id, session_ts, run_dir, sidecar)``
-    tuples sorted by subject_id then session_ts.
-    *pause_file* is a :class:`~pathlib.Path` to the conductor pause sentinel.
-    The PID file is expected at ``pause_file.parent / "conductor.pid"``.
+_DEFAULT_REFRESH_S: float = 30.0
+
+
+def _clear_screen() -> None:
+    """Clear the terminal screen when stdout is a TTY."""
+    if not _TTY:
+        return
+    if sys.platform == "win32":
+        os.system("cls")
+    else:
+        os.system("clear")
+
+
+def _wait_for_input(prompt: str, timeout_s: float) -> str | None:
+    """Display *prompt* and return the user's input, or ``None`` on timeout.
+
+    Uses non-blocking I/O so the screen can auto-refresh even while waiting:
+
+    * **Windows** — polls :mod:`msvcrt` every 50 ms.
+    * **Unix** — uses :func:`select.select` with *timeout_s* as the deadline.
+
+    Pressing **Ctrl+C** raises :exc:`KeyboardInterrupt` on both platforms.
     """
+    import time
+
+    print(prompt, end="", flush=True)
+
+    if sys.platform == "win32":
+        import msvcrt
+
+        buf = ""
+        deadline = time.monotonic() + timeout_s
+        while time.monotonic() < deadline:
+            if msvcrt.kbhit():
+                ch = msvcrt.getwch()
+                if ch in ("\r", "\n"):
+                    print()
+                    return buf.strip().lower()
+                elif ch == "\x08":  # backspace
+                    if buf:
+                        buf = buf[:-1]
+                        print("\b \b", end="", flush=True)
+                elif ch == "\x03":  # Ctrl+C
+                    print()
+                    raise KeyboardInterrupt
+                elif ch in ("\x00", "\xe0"):  # special-key prefix — discard next byte
+                    msvcrt.getwch()
+                else:
+                    buf += ch
+                    print(ch, end="", flush=True)
+            time.sleep(0.05)
+        print()
+        return None  # timeout
+
+    else:
+        import select
+
+        ready, _, _ = select.select([sys.stdin], [], [], timeout_s)
+        if ready:
+            return sys.stdin.readline().strip().lower()
+        print()
+        return None  # timeout
+
+
+def _load_sessions(state_file_path: Path) -> list[tuple]:
+    """Read *state_file_path* and return a sorted list of session tuples.
+
+    Each tuple is ``(subject_id, session_ts, run_dir_str, sidecar_dict_or_None)``.
+    """
+    state_data = _load_state_file(state_file_path)
+    sessions: list[tuple] = []
+    if state_data:
+        for _key, session_dict in state_data.items():
+            subject_id = session_dict.get("subject_id", "unknown")
+            session_ts = session_dict.get("session_datetime", "unknown")
+            run_dir_raw = session_dict.get("run_dir") or _key
+            run_dir = Path(run_dir_raw) if run_dir_raw else None
+            sidecar = _load_sidecar(run_dir) if run_dir else None
+            sessions.append((subject_id, session_ts, str(run_dir_raw), sidecar))
+        sessions.sort(key=lambda t: (t[0], t[1]))
+    return sessions
+
+
+# ---------------------------------------------------------------------------
+# Top-level dataset selector
+# ---------------------------------------------------------------------------
+
+def _main_menu(
+    state_file_path: Path,
+    pause_file: Path,
+    refresh_s: float = _DEFAULT_REFRESH_S,
+) -> None:
+    """Auto-refreshing dataset list and action menu.
+
+    Reloads the conductor state file and all upload sidecars on every cycle
+    (either after *refresh_s* seconds of inactivity, or immediately after the
+    user completes an action).  The screen is cleared before each redraw when
+    stdout is a TTY.
+
+    Parameters
+    ----------
+    state_file_path:
+        Path to ``conductor_state.json``.
+    pause_file:
+        Path to the upload-pause sentinel file.  The PID file is expected at
+        ``pause_file.parent / "conductor.pid"``.
+    refresh_s:
+        Auto-refresh interval in seconds (default 30).
+    """
+    import datetime
+
     pid_file = pause_file.parent / "conductor.pid"
+
     while True:
+        # ── Reload fresh data ─────────────────────────────────────────────────
+        sessions = _load_sessions(state_file_path)
+        currently_paused = is_paused(pause_file)
+        conductor_running = pid_file.exists()
+        updated_at = datetime.datetime.now().strftime("%H:%M:%S")
+
+        # ── Render ───────────────────────────────────────────────────────────
+        _clear_screen()
         print()
         print(_bold("╔══════════════════════════════════════════════════╗"))
         print(_bold("║   Experiment Conductor — Upload Status Viewer    ║"))
         print(_bold("╚══════════════════════════════════════════════════╝"))
+        print(
+            f"  {_dim(f'Last updated: {updated_at}  ·  '
+                      f'Auto-refresh: {int(refresh_s)}s  ·  '
+                      f'State: {state_file_path}')}"
+        )
         print()
         print(f"  {_pause_status_line(pause_file)}")
         print()
@@ -302,7 +423,6 @@ def _main_menu(sessions: list[tuple], pause_file) -> None:
             print(f"  {_yellow('No sessions found in state file.')}")
             print("  Has the conductor run with CONDUCTOR_STATE_FILE set?")
             print()
-
         else:
             for i, (subject_id, session_ts, run_dir, sidecar) in enumerate(sessions, 1):
                 summary = _summarize_sidecar(sidecar)
@@ -312,13 +432,11 @@ def _main_menu(sessions: list[tuple], pause_file) -> None:
                 print()
 
         # ── Actions ──────────────────────────────────────────────────────────
-        currently_paused = is_paused(pause_file)
         if currently_paused:
             print(f"  {_cyan('r')}. Resume upload submissions  (removes pause)")
         else:
             print(f"  {_cyan('p')}. Pause upload submissions")
 
-        conductor_running = pid_file.exists()
         if conductor_running:
             print(f"  {_cyan('k')}. Force quit conductor  {_dim(f'(PID file: {pid_file})')}")
         if sessions:
@@ -326,7 +444,15 @@ def _main_menu(sessions: list[tuple], pause_file) -> None:
         print(f"  {_cyan('q')}. Quit")
         print()
 
-        choice = input("  Select: ").strip().lower()
+        # ── Wait for input (with auto-refresh timeout) ────────────────────────
+        choice = _wait_for_input(
+            f"  Select [{_dim(f'or wait {int(refresh_s)}s to refresh')}]: ",
+            refresh_s,
+        )
+
+        if choice is None:
+            # Timeout — loop back to reload and redraw
+            continue
 
         if choice == "q":
             return
@@ -390,10 +516,7 @@ def _main_menu(sessions: list[tuple], pause_file) -> None:
             parts = []
             if sessions:
                 parts.append(f"1–{len(sessions)}")
-            if currently_paused:
-                parts.append("r")
-            else:
-                parts.append("p")
+            parts.append("r" if currently_paused else "p")
             if conductor_running:
                 parts.append("k")
             parts.append("q")
@@ -406,6 +529,7 @@ def _main_menu(sessions: list[tuple], pause_file) -> None:
 
         subject_id, session_ts, run_dir, sidecar = sessions[idx]
         _dataset_menu(subject_id, session_ts, run_dir, sidecar)
+        # Immediately redraw after returning from the sub-menu
 
 
 # ---------------------------------------------------------------------------
@@ -423,7 +547,8 @@ def main() -> None:
         description=(
             "Interactive upload-status viewer for the experiment conductor.  "
             "Reads the conductor state file to enumerate sessions and displays "
-            "per-chunk upload history from each session's .upload_history.json sidecar."
+            "per-chunk upload history from each session's .upload_history.json sidecar.  "
+            "The display auto-refreshes every REFRESH seconds."
         ),
     )
     parser.add_argument(
@@ -445,6 +570,14 @@ def main() -> None:
             f"Default: {PAUSE_FILENAME} (next to the state file when possible)."
         ),
     )
+    parser.add_argument(
+        "--refresh", default=None, type=float, metavar="SECONDS",
+        help=(
+            f"Auto-refresh interval in seconds (default: {int(_DEFAULT_REFRESH_S)}).  "
+            "The display reloads all state and sidecar files at this cadence.  "
+            "Overrides CONDUCTOR_STATUS_REFRESH from the env file."
+        ),
+    )
     args = parser.parse_args()
 
     load_dotenv(args.env_file, override=False)
@@ -462,25 +595,23 @@ def main() -> None:
         or str(state_file_path.parent / PAUSE_FILENAME)
     )
 
-    print(f"\n  Reading state from : {state_file_path}")
-    print(f"  Pause file         : {pause_file_path}")
-    state_data = _load_state_file(state_file_path)
+    # Resolve refresh interval: CLI > env > default
+    _env_refresh = os.getenv("CONDUCTOR_STATUS_REFRESH")
+    try:
+        refresh_s = float(args.refresh if args.refresh is not None else (_env_refresh or _DEFAULT_REFRESH_S))
+    except ValueError:
+        print(f"  Warning: CONDUCTOR_STATUS_REFRESH='{_env_refresh}' is not a number — using default {int(_DEFAULT_REFRESH_S)}s.")
+        refresh_s = _DEFAULT_REFRESH_S
 
-    sessions: list[tuple] = []
-    if state_data:
-        for _key, session_dict in state_data.items():
-            subject_id = session_dict.get("subject_id", "unknown")
-            session_ts = session_dict.get("session_datetime", "unknown")
-            run_dir_raw = session_dict.get("run_dir") or _key
-            run_dir = Path(run_dir_raw) if run_dir_raw else None
-            sidecar = _load_sidecar(run_dir) if run_dir else None
-            sessions.append((subject_id, session_ts, str(run_dir_raw), sidecar))
-        sessions.sort(key=lambda t: (t[0], t[1]))
-    else:
-        print(
-            f"\n  {_yellow('No sessions found in state file:')} {state_file_path}\n"
-            "  Pause / resume controls are still available below.\n"
-            "  Start the conductor with CONDUCTOR_STATE_FILE configured to see sessions."
-        )
+    try:
+        _main_menu(state_file_path, pause_file_path, refresh_s=refresh_s)
+    except KeyboardInterrupt:
+        print("\n  Exiting conductor-status.")
+        sys.exit(0)
+
+
+
+if __name__ == "__main__":
+    main()
 
     _main_menu(sessions, pause_file_path)
