@@ -41,6 +41,7 @@ docs = ["mkdocs>=1.6", "mkdocs-material>=9.5", "mkdocstrings[python]>=0.25"]
 
 [project.scripts]
 conductor = "experiment_conductor.cli:main"
+conductor-status = "experiment_conductor.upload_status_cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["experiment_conductor"]

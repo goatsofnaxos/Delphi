@@ -150,6 +150,8 @@ class ConductorConfig:
 
     # ── Watch paths ───────────────────────────────────────────────────────────
     watch_paths: List[Path]
+    subject_ids: List[str]
+    """Allowlist of subject IDs to process. Empty = allow every subject found."""
 
     # ── Session identity ──────────────────────────────────────────────────────
     experiment_type: str
@@ -186,9 +188,15 @@ class ConductorConfig:
     project_name: str
     upload_batch_size: int
     num_last_chunks_to_ignore: int
+    upload_max_retries: int
+    """Maximum upload submission attempts per chunk before it is skipped (default 3)."""
     dry_run: bool
     delete_after_upload: bool
     keep_local_patterns: List[str]
+
+    # ── Concurrency ───────────────────────────────────────────────────────────
+    max_workers: int
+    """Maximum number of sessions processed in parallel (default 8)."""
 
     # ── Polling / error handling ───────────────────────────────────────────────
     poll_interval_s: float
@@ -199,12 +207,22 @@ class ConductorConfig:
     # ── State persistence ─────────────────────────────────────────────────────
     state_file: Optional[Path]
 
+    # ── Pause control ─────────────────────────────────────────────────────────
+    pause_file: Path
+    """Sentinel file whose *existence* pauses upload submissions.
+    Created/removed by ``conductor-status``; checked on every upload cycle."""
+
     # ── Misc ──────────────────────────────────────────────────────────────────
     chunk_camera_folder: str
 
     # ── Logging ───────────────────────────────────────────────────────────────
     verbosity: int = 0
     """0 = INFO (default), 1 = VERBOSE (-v), 2 = DEBUG (-vv)."""
+
+    # ── Runtime reloading ─────────────────────────────────────────────────────
+    env_file_path: str = ".env"
+    """Path to the ``.env`` file.  Stored so the session manager can re-read
+    ``CONDUCTOR_SUBJECT_IDS`` on each poll cycle without a restart."""
 
 
 # ── Builder ───────────────────────────────────────────────────────────────────
@@ -230,6 +248,14 @@ def _parse_cli() -> argparse.Namespace:
         ),
     )
     p.add_argument(
+        "--subject-ids", default=None, metavar="ID[,ID…]",
+        help=(
+            "Comma-separated list of subject IDs to process.  Only "
+            "directories whose name matches one of these IDs are scanned. "
+            "Overrides CONDUCTOR_SUBJECT_IDS.  Leave empty to allow all subjects."
+        ),
+    )
+    p.add_argument(
         "--add-session", action="append", dest="extra_sessions",
         metavar="PATH",
         help=(
@@ -251,11 +277,26 @@ def _parse_cli() -> argparse.Namespace:
     p.add_argument(
         "--pipeline-cadence-minutes", default=None, type=int, metavar="N",
     )
+    p.add_argument(
+        "--max-workers", default=None, type=int, metavar="N",
+        help=(
+            "Maximum number of sessions to process in parallel.  "
+            "Overrides CONDUCTOR_MAX_WORKERS (default 8)."
+        ),
+    )
     p.add_argument("--s3-bucket", default=None)
     p.add_argument("--contact-email", default=None)
     p.add_argument("--project-name", default=None)
     p.add_argument(
         "--upload-batch-size", default=None, type=int, metavar="N",
+    )
+    p.add_argument(
+        "--upload-max-retries", default=None, type=int, metavar="N",
+        help=(
+            "Maximum number of submission attempts per chunk before it is "
+            "permanently skipped.  Overrides CONDUCTOR_UPLOAD_MAX_RETRIES "
+            "(default 3)."
+        ),
     )
     p.add_argument(
         "--dry-run", action="store_true", default=None,
@@ -275,6 +316,15 @@ def _parse_cli() -> argparse.Namespace:
     p.add_argument(
         "--state-file", default=None, type=Path, metavar="PATH",
         help="Persist session states to this JSON file across restarts.",
+    )
+    p.add_argument(
+        "--pause-file", default=None, type=Path, metavar="PATH",
+        help=(
+            "Path to the upload-pause sentinel file.  When this file exists "
+            "the conductor skips upload submissions on every cycle.  "
+            "Create/remove it with ``conductor-status``.  "
+            "Overrides CONDUCTOR_PAUSE_FILE (default: conductor_pause.lock)."
+        ),
     )
     return p.parse_args()
 
@@ -317,6 +367,17 @@ def build_config() -> ConductorConfig:
     state_raw = _g("CONDUCTOR_STATE_FILE", args.state_file)
     state_file = Path(state_raw) if state_raw else None
 
+    # ── Pause file ─────────────────────────────────────────────────────────────
+    from .pause_control import PAUSE_FILENAME
+    pause_raw = _g("CONDUCTOR_PAUSE_FILE", args.pause_file)
+    if pause_raw:
+        pause_file = Path(pause_raw)
+    elif state_file is not None:
+        # Default: sit next to the state file so they share the same directory
+        pause_file = state_file.parent / PAUSE_FILENAME
+    else:
+        pause_file = Path(PAUSE_FILENAME)
+
     # ── Noise floor max channels (0 means None) ────────────────────────────────
     nf_max_raw = _g("CONDUCTOR_NOISE_FLOOR_MAX_CHANNELS", None, "0")
     noise_floor_max_channels: Optional[int] = None
@@ -327,8 +388,11 @@ def build_config() -> ConductorConfig:
     except (TypeError, ValueError):
         pass
 
+    subject_ids = _list(_g("CONDUCTOR_SUBJECT_IDS", args.subject_ids, ""))
+
     return ConductorConfig(
         watch_paths=watch_paths,
+        subject_ids=subject_ids,
         experiment_type=_g("CONDUCTOR_EXPERIMENT_TYPE", args.experiment_type, "delphi"),
         acquisition_type=_g("CONDUCTOR_ACQUISITION_TYPE", None, "ChronicRecording"),
         protocol_id=_g("CONDUCTOR_PROTOCOL_ID", args.protocol_id, ""),
@@ -361,6 +425,9 @@ def build_config() -> ConductorConfig:
         num_last_chunks_to_ignore=_int(
             _g("CONDUCTOR_NUM_LAST_CHUNKS_TO_IGNORE", None, "2"), 2
         ),
+        upload_max_retries=_int(
+            _g("CONDUCTOR_UPLOAD_MAX_RETRIES", args.upload_max_retries), 3
+        ),
         dry_run=_bool(_g("CONDUCTOR_DRY_RUN", "true" if args.dry_run else None, "false")),
         delete_after_upload=_bool(_g("CONDUCTOR_DELETE_AFTER_UPLOAD", None, "false")),
         keep_local_patterns=_list(
@@ -371,6 +438,7 @@ def build_config() -> ConductorConfig:
                 "behavior/results/**,behavior/metadata/**",
             )
         ),
+        max_workers=_int(_g("CONDUCTOR_MAX_WORKERS", args.max_workers), 8),
         poll_interval_s=_float(_g("CONDUCTOR_POLL_INTERVAL_S", None, "60.0"), 60.0),
         min_session_age_minutes=_float(
             _g("CONDUCTOR_MIN_SESSION_AGE_MINUTES", None, "5.0"), 5.0
@@ -382,6 +450,7 @@ def build_config() -> ConductorConfig:
             _g("CONDUCTOR_ERROR_BACKOFF_MINUTES", None, "30.0"), 30.0
         ),
         state_file=state_file,
+        pause_file=pause_file,
         chunk_camera_folder=_g(
             "CONDUCTOR_CHUNK_CAMERA_FOLDER", None, "behavior-videos/TopCamera"
         ),
@@ -391,4 +460,5 @@ def build_config() -> ConductorConfig:
             if args.verbosity > 0
             else _int(os.getenv("CONDUCTOR_VERBOSITY"), 0)
         ),
+        env_file_path=args.env_file,
     )

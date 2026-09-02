@@ -21,12 +21,31 @@ import fnmatch
 import logging
 import re
 import threading
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from time import sleep
 from typing import List, Optional, Set
 
 log = logging.getLogger(__name__)
+
+
+@dataclass
+class UploadCycleResult:
+    """Result returned by :func:`run_upload_cycle`.
+
+    Attributes
+    ----------
+    success:
+        *True* when the upload job ran without a hard error.
+    submitted_chunks:
+        Chunk timestamp strings that were submitted to the transfer service
+        in this cycle (empty when the job was skipped or no new chunks exist).
+    """
+
+    success: bool
+    submitted_chunks: list[str] = field(default_factory=list)
+
 
 # ── Module-level state ────────────────────────────────────────────────────────
 
@@ -111,8 +130,24 @@ class _StoppableSubmitUploadJob:
         self._inner = SubmitUploadJob(job_settings=job_settings)
         self._stop = stop_event
 
-    def run_job(self) -> None:
-        """Run the upload job with duplicate-filtering and stop support."""
+    def run_job(
+        self,
+        skip_chunks: Optional[Set[str]] = None,
+    ) -> list[str]:
+        """Run the upload job with duplicate-filtering and stop support.
+
+        Parameters
+        ----------
+        skip_chunks:
+            Additional chunk timestamps to exclude (e.g. already-confirmed or
+            sidecar-skipped chunks from a previous run).  Combined with the
+            in-process ``_SUBMITTED_CHUNKS`` set and S3-confirmed cloud chunks.
+
+        Returns
+        -------
+        list of str
+            Chunk timestamps submitted in this call (may be empty).
+        """
         from itertools import batched
 
         settings = self._inner.job_settings
@@ -134,17 +169,21 @@ class _StoppableSubmitUploadJob:
         with _SUBMITTED_LOCK:
             submitted_snap = set(_SUBMITTED_CHUNKS)
 
+        extra_skip = set(skip_chunks) if skip_chunks else set()
+
         log.info(
-            "Chunks — local: %d  S3 confirmed: %d  in-flight (this session): %d",
+            "Chunks — local: %d  S3 confirmed: %d  in-flight (this session): %d"
+            "  sidecar-skip: %d",
             len(local_chunks),
             len(cloud_chunks),
             len(submitted_snap),
+            len(extra_skip),
         )
 
-        already_handled = cloud_chunks | submitted_snap
+        already_handled = cloud_chunks | submitted_snap | extra_skip
         chunks_pending = sorted(set(local_chunks) - already_handled)
 
-        skipped_inflight = len(set(local_chunks) - cloud_chunks) - len(chunks_pending)
+        skipped_inflight = len(set(local_chunks) - cloud_chunks - extra_skip) - len(chunks_pending)
         if skipped_inflight > 0:
             log.info(
                 "Skipping %d in-flight chunk(s) already submitted this session.",
@@ -164,9 +203,11 @@ class _StoppableSubmitUploadJob:
         else:
             chunks_to_process = chunks_pending
 
+        newly_submitted: list[str] = []
+
         if not chunks_to_process:
             log.info("No new chunks to submit this cycle.")
-            return
+            return newly_submitted
 
         all_batches = list(batched(chunks_to_process, settings.batches_to_process_concurrently))
         total_batches = len(all_batches)
@@ -186,6 +227,7 @@ class _StoppableSubmitUploadJob:
 
             with _SUBMITTED_LOCK:
                 _SUBMITTED_CHUNKS.update(batch)
+            newly_submitted.extend(batch)
             log.info(
                 "Submitted batch %d/%d (%d chunk(s)).  "
                 "Total in-flight this session: %d.",
@@ -208,6 +250,7 @@ class _StoppableSubmitUploadJob:
                     elapsed += 1
 
         log.info("Upload job finished.")
+        return newly_submitted
 
 
 # ── Public API ────────────────────────────────────────────────────────────────
@@ -225,7 +268,8 @@ def run_upload_cycle(
     num_of_last_chunks_to_ignore: int = 2,
     dry_run: bool = False,
     is_start_job: bool = False,
-) -> bool:
+    skip_chunks: Optional[Set[str]] = None,
+) -> UploadCycleResult:
     """Submit one upload cycle (start or chunk job) to the transfer service.
 
     Parameters
@@ -254,11 +298,15 @@ def run_upload_cycle(
     is_start_job : bool
         If *True*, submit ``chronic_ephys_start``; otherwise
         ``chronic_ephys_chunk``.
+    skip_chunks : set of str, optional
+        Chunk timestamps to unconditionally skip (e.g. already-confirmed or
+        sidecar-skipped chunks supplied by :class:`~.upload_sidecar.UploadSidecar`).
 
     Returns
     -------
-    bool
-        *True* on success, *False* if an error or skip-condition was encountered.
+    UploadCycleResult
+        ``.success`` is *True* when the job ran without a hard error.
+        ``.submitted_chunks`` lists every chunk timestamp submitted in this cycle.
     """
     try:
         from aind_chronic_ephys_uploader.models import JobSettings
@@ -286,15 +334,89 @@ def run_upload_cycle(
             job_settings=settings,
             stop_event=UPLOAD_STOP_EVENT,
         )
-        job.run_job()
-        return True
+        submitted = job.run_job(skip_chunks=skip_chunks)
+        return UploadCycleResult(success=True, submitted_chunks=submitted)
 
     except (FileNotFoundError, FileExistsError) as exc:
         log.warning("Upload cycle skipped: %s", exc)
-        return False
+        return UploadCycleResult(success=False)
     except Exception as exc:
         log.error("Upload cycle failed: %s", exc, exc_info=True)
-        return False
+        return UploadCycleResult(success=False)
+
+
+def list_confirmed_s3_chunks(s3_bucket: str, s3_prefix: str) -> Set[str]:
+    """Return the set of chunk timestamps confirmed present in S3.
+
+    Public wrapper around :func:`_list_confirmed_s3_chunks`.
+
+    Parameters
+    ----------
+    s3_bucket : str
+        S3 bucket name.
+    s3_prefix : str
+        Object key prefix for this dataset (e.g. ``"ecephys_842456_2026-01-01_10-00-00"``).
+
+    Returns
+    -------
+    set of str
+        Chunk timestamp strings confirmed in S3.  Empty on any error.
+    """
+    return _list_confirmed_s3_chunks(s3_bucket, s3_prefix)
+
+
+def compute_s3_prefix(
+    source_directory: str,
+    subject_id: str,
+    acq_datetime: datetime,
+    s3_bucket: str,
+    modalities: Optional[List] = None,
+) -> Optional[str]:
+    """Compute the S3 key prefix for a dataset without submitting any jobs.
+
+    Uses :class:`~aind_chronic_ephys_uploader.models.JobSettings` to derive
+    the same prefix the uploader would use, so callers can query S3 with a
+    consistent prefix.
+
+    Parameters
+    ----------
+    source_directory : str
+        Local run-level data directory path.
+    subject_id : str
+        Numeric AIND subject identifier.
+    acq_datetime : datetime
+        Acquisition start datetime.
+    s3_bucket : str
+        S3 bucket name.
+    modalities : list, optional
+        Modality values.  Defaults to ``[ECEPHYS, BEHAVIOR, BEHAVIOR_VIDEOS]``.
+
+    Returns
+    -------
+    str or None
+        The S3 prefix string, or *None* if it could not be computed.
+    """
+    try:
+        from aind_chronic_ephys_uploader.models import JobSettings
+        from aind_data_schema_models.modalities import Modality
+
+        if modalities is None:
+            modalities = [Modality.ECEPHYS, Modality.BEHAVIOR, Modality.BEHAVIOR_VIDEOS]
+
+        settings = JobSettings(
+            source_directory=source_directory,
+            job_type="chronic_ephys_chunk",
+            acq_datetime=acq_datetime,
+            subject_id=subject_id,
+            project_name="",
+            contact_email="noreply@example.com",
+            modalities=modalities,
+            s3_bucket=s3_bucket,
+        )
+        return settings.s3_prefix
+    except Exception as exc:
+        log.error("Could not compute S3 prefix: %s", exc)
+        return None
 
 
 def delete_local_files_after_upload(

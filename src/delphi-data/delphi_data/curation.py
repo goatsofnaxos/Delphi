@@ -415,6 +415,12 @@ ONIX_SAMPLE_METADATA_GLOB = "OnixEphys_SampleMetadata_*.json"
 #: Key in each SampleMetadata JSON file that holds the sample index.
 _ONIX_SAMPLE_KEY = "start_sample"
 
+#: Sidecar file written inside ``OnixEphys/`` on the first normalisation pass.
+#: Persists the original hardware offset and the set of already-normalised
+#: filenames so that the conductor can resume correctly after a restart without
+#: re-reading stale values from chunk files that have already been modified.
+_ONIX_NORMALIZATION_SIDECAR = "_normalization_offset.json"
+
 
 def normalize_onix_sample_metadata(
     run_dir: "str | pathlib.Path",
@@ -429,18 +435,23 @@ def normalize_onix_sample_metadata(
     This non-zero offset breaks Zarr container indexing because the
     ``times_seg0/`` array chunks are named after the sample index.
 
-    This function reads the chronologically first
-    ``OnixEphys_SampleMetadata_*.json`` file under
-    ``<run_dir>/<ecephys_subdir>/OnixEphys/``, records its ``start_sample``
-    value as the offset, and subtracts that offset from **every JSON file's**
-    ``start_sample`` so that the first chunk becomes 0 and all subsequent
-    chunks are shifted consistently.  The files are modified **in place**.
+    This function subtracts the original hardware offset from every
+    ``OnixEphys_SampleMetadata_*.json`` file in
+    ``<run_dir>/<ecephys_subdir>/OnixEphys/`` so that the first chunk starts
+    at zero and all subsequent chunks are shifted consistently.
+
+    **Incremental / restart-safe operation**
+
+    On the first call the offset is read from the first (chronologically
+    earliest) JSON file.  The offset and the list of processed filenames are
+    written to a sidecar file ``_normalization_offset.json`` inside the
+    ``OnixEphys/`` directory.  Subsequent calls — including those after a
+    conductor restart — read the sidecar to recover the original offset and
+    skip files that were already normalised, only processing new chunk files
+    that have appeared since the last call.
 
     ``Value.Clock``, ``Value.HubClock``, and all ``OnixHarpSyncData`` CSV
     files are left completely untouched — those are absolute time references.
-
-    A call on an already-normalised session (first ``start_sample`` == 0) is a
-    safe no-op and returns ``False`` without modifying any file.
 
     Parameters
     ----------
@@ -453,14 +464,14 @@ def normalize_onix_sample_metadata(
     Returns
     -------
     bool
-        ``True`` when at least one JSON file was modified, ``False`` when the
-        directory or JSON files were not found or ``start_sample`` already
-        starts at zero.
+        ``True`` when at least one JSON file was modified in this call,
+        ``False`` when no new files needed normalisation.
 
     Raises
     ------
     RuntimeError
-        If the first JSON file does not contain the ``start_sample`` key.
+        If the first JSON file does not contain the ``start_sample`` key
+        (only raised on the very first call, before the sidecar exists).
 
     Examples
     --------
@@ -487,53 +498,102 @@ def normalize_onix_sample_metadata(
         )
         return False
 
-    # ── Determine offset from the first (chronologically earliest) file ─────
-    with open(json_files[0]) as f:
-        first_data = json.load(f)
+    sidecar_path = ephys_dir / _ONIX_NORMALIZATION_SIDECAR
 
-    if _ONIX_SAMPLE_KEY not in first_data:
-        raise RuntimeError(
-            f"Expected key '{_ONIX_SAMPLE_KEY}' not found in {json_files[0].name}. "
-            f"Available keys: {list(first_data.keys())}"
+    # ── Recover or establish the normalisation offset ────────────────────────
+    if sidecar_path.exists():
+        # Previous run already determined the offset — use it.
+        with open(sidecar_path) as f:
+            sidecar = json.load(f)
+        offset: int = int(sidecar["offset"])
+        already_normalised: set[str] = set(sidecar.get("normalized_files", []))
+        log.debug(
+            "normalize_onix_sample_metadata: loaded sidecar — offset=%d, "
+            "%d file(s) previously normalised",
+            offset,
+            len(already_normalised),
+        )
+    else:
+        # First call: derive offset from the first chunk file.
+        with open(json_files[0]) as f:
+            first_data = json.load(f)
+
+        if _ONIX_SAMPLE_KEY not in first_data:
+            raise RuntimeError(
+                f"Expected key '{_ONIX_SAMPLE_KEY}' not found in "
+                f"{json_files[0].name}. "
+                f"Available keys: {list(first_data.keys())}"
+            )
+
+        offset = int(first_data[_ONIX_SAMPLE_KEY])
+
+        if offset == 0:
+            log.info(
+                "normalize_onix_sample_metadata: start_sample already 0 — skipping."
+            )
+            return False
+
+        already_normalised = set()
+        log.info(
+            "normalize_onix_sample_metadata: first call — established offset %d "
+            "from %s",
+            offset,
+            json_files[0].name,
         )
 
-    offset: int = int(first_data[_ONIX_SAMPLE_KEY])
+    # ── Normalise only files not yet processed ───────────────────────────────
+    pending = [f for f in json_files if f.name not in already_normalised]
 
-    if offset == 0:
-        log.info(
-            "normalize_onix_sample_metadata: start_sample already 0 — skipping."
+    if not pending:
+        log.debug(
+            "normalize_onix_sample_metadata: all %d file(s) already normalised — "
+            "nothing to do.",
+            len(json_files),
         )
         return False
 
     log.info(
-        "normalize_onix_sample_metadata: subtracting offset %d from %d file(s) in %s",
+        "normalize_onix_sample_metadata: applying offset %d to %d new file(s) "
+        "(%d already done) in %s",
         offset,
-        len(json_files),
+        len(pending),
+        len(already_normalised),
         ephys_dir,
     )
 
-    # ── Apply offset to every JSON file ─────────────────────────────────────
-    for json_path in json_files:
+    newly_done: list[str] = []
+    for json_path in pending:
         with open(json_path) as f:
             data = json.load(f)
 
         if _ONIX_SAMPLE_KEY not in data:
             log.warning(
-                "normalize_onix_sample_metadata: '%s' missing in %s — skipping file.",
+                "normalize_onix_sample_metadata: '%s' missing in %s — skipping.",
                 _ONIX_SAMPLE_KEY,
                 json_path.name,
             )
             continue
 
-        data[_ONIX_SAMPLE_KEY] = int(data[_ONIX_SAMPLE_KEY]) - offset
+        original = int(data[_ONIX_SAMPLE_KEY])
+        data[_ONIX_SAMPLE_KEY] = original - offset
 
         with open(json_path, "w") as f:
             json.dump(data, f)
-        log.debug("  Normalized: %s", json_path.name)
+
+        log.debug(
+            "  Normalised: %s  (%d → %d)", json_path.name, original, original - offset
+        )
+        newly_done.append(json_path.name)
+
+    # ── Update sidecar with the full set of normalised filenames ─────────────
+    updated = sorted(already_normalised | set(newly_done))
+    with open(sidecar_path, "w") as f:
+        json.dump({"offset": offset, "normalized_files": updated}, f, indent=2)
 
     log.info(
-        "normalize_onix_sample_metadata: updated %d file(s) in %s",
-        len(json_files),
-        ephys_dir,
+        "normalize_onix_sample_metadata: normalised %d new file(s); "
+        "sidecar updated (%d total).",
+        len(newly_done),
+        len(updated),
     )
-    return True
+    return len(newly_done) > 0

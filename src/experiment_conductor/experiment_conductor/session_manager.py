@@ -41,6 +41,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from .config import ConductorConfig
+from .pause_control import is_paused, paused_since
 from .logging_config import VERBOSE
 from .metadata_bridge import check_metadata_present, generate_metadata, update_acquisition_end_time
 from .noise_floor import estimate_noise_floor
@@ -53,11 +54,14 @@ from .pipeline_bridge import (
 )
 from delphi_data.curation import normalize_onix_sample_metadata
 from .session import SessionPhase, SessionState
+from .upload_sidecar import UploadSidecar
 from .uploader_bridge import (
     UPLOAD_STOP_EVENT,
     delete_local_files_after_upload,
+    list_confirmed_s3_chunks,
     run_upload_cycle,
     stop_upload,
+    compute_s3_prefix,
 )
 from .watcher import discover_sessions
 
@@ -167,8 +171,29 @@ class SessionManager:
             self.cfg.poll_interval_s,
             self.cfg.pipeline_cadence_minutes,
         )
+        if self.cfg.subject_ids:
+            log.info(
+                "  Workers: %d (one per restricted subject ID; "
+                "updates automatically when CONDUCTOR_SUBJECT_IDS changes).",
+                len(self.cfg.subject_ids),
+            )
+        else:
+            log.info(
+                "  Workers: %d (unrestricted fallback — set CONDUCTOR_SUBJECT_IDS "
+                "to pin one worker per subject).",
+                self.cfg.max_workers,
+            )
         for p in self.cfg.watch_paths:
             log.info("  Watch path: %s", p)
+
+        if is_paused(self.cfg.pause_file):
+            since = paused_since(self.cfg.pause_file)
+            log.warning(
+                "⚠️  Upload submissions are currently PAUSED%s.  "
+                "Run `conductor-status` and choose Resume, or delete: %s",
+                f" (since {since})" if since else "",
+                self.cfg.pause_file,
+            )
 
         while not self._stop_event.is_set():
             try:
@@ -188,8 +213,46 @@ class SessionManager:
 
     # ── Discovery ─────────────────────────────────────────────────────────────
 
+    def _reload_subject_ids(self) -> None:
+        """Re-read ``CONDUCTOR_SUBJECT_IDS`` from the ``.env`` file.
+
+        Called at the start of every scan so that new subject IDs can be added
+        (or removed) by editing the ``.env`` file while the conductor is
+        running, without requiring a restart.  Changes are logged at INFO level.
+        Falls back to the in-memory value silently if the file cannot be read.
+        """
+        try:
+            from dotenv import dotenv_values
+            vals = dotenv_values(self.cfg.env_file_path)
+            raw = vals.get("CONDUCTOR_SUBJECT_IDS", "")
+            new_ids = [s.strip() for s in raw.split(",") if s.strip()]
+        except Exception:
+            return  # keep existing list on any read error
+
+        current = set(self.cfg.subject_ids)
+        incoming = set(new_ids)
+
+        added = incoming - current
+        removed = current - incoming
+
+        if added:
+            log.info(
+                "Subject ID allowlist updated — added: %s",
+                ", ".join(sorted(added)),
+            )
+        if removed:
+            log.info(
+                "Subject ID allowlist updated — removed: %s",
+                ", ".join(sorted(removed)),
+            )
+
+        if added or removed:
+            self.cfg.subject_ids = new_ids
+
     def _scan_and_register(self) -> None:
-        found = discover_sessions(self.cfg.watch_paths)
+        self._reload_subject_ids()
+        allowed = set(self.cfg.subject_ids) if self.cfg.subject_ids else None
+        found = discover_sessions(self.cfg.watch_paths, allowed_subjects=allowed)
         log.log(VERBOSE, "Scan complete — %d session(s) visible on watch paths.", len(found))
         for subject_id, session_root in found:
             self.add_session(subject_id, session_root)
@@ -227,9 +290,19 @@ class SessionManager:
         if not due:
             log.debug("No sessions due for processing.")
             return
-        log.info("Processing %d due session(s).", len(due))
-        # At most 4 sessions in parallel; each session's steps are sequential
-        with ThreadPoolExecutor(max_workers=4) as pool:
+
+        # Derive worker count from the subject-ID allowlist so each allowed
+        # animal gets its own thread.  Falls back to cfg.max_workers when no
+        # allowlist is configured (unrestricted mode).
+        n_subjects = len(self.cfg.subject_ids)
+        workers = n_subjects if n_subjects > 0 else self.cfg.max_workers
+        log.info(
+            "Processing %d due session(s) with %d worker(s)%s.",
+            len(due),
+            workers,
+            f" ({n_subjects} restricted subject(s))" if n_subjects > 0 else " (unrestricted)",
+        )
+        with ThreadPoolExecutor(max_workers=workers) as pool:
             futures = {pool.submit(self._process_one, s): s for s in due}
             for future in as_completed(futures):
                 state = futures[future]
@@ -505,6 +578,16 @@ class SessionManager:
             log.log(VERBOSE, "[%s] Upload disabled — skipping UPLOADING step.", state.subject_id)
             return
 
+        if is_paused(self.cfg.pause_file):
+            since = paused_since(self.cfg.pause_file)
+            log.info(
+                "[%s] Upload submissions PAUSED%s — skipping cycle.  "
+                "Run `conductor-status` and choose Resume to re-enable.",
+                state.subject_id,
+                f" since {since}" if since else "",
+            )
+            return
+
         with state.lock:
             metadata_ready = state.metadata_present or state.metadata_generated
             run_dir = state.run_dir or resolve_run_dir(state.data_root)
@@ -530,6 +613,37 @@ class SessionManager:
 
         is_start = not upload_started
         acq_dt = _parse_session_datetime(state.session_datetime)
+
+        # ── Load / create the per-session upload sidecar ──────────────────────
+        sidecar = UploadSidecar(
+            run_dir=run_dir,
+            subject_id=state.subject_id,
+            session_ts=state.session_datetime,
+            delete_enabled=self.cfg.delete_after_upload,
+        )
+
+        # ── State recovery from sidecar ───────────────────────────────────────
+        # The sidecar is authoritative for upload progress.  If conductor_state.json
+        # is absent or stale (e.g. after a crash or machine move), the sidecar
+        # tells us whether the start job was already submitted so we don't repeat it.
+        recovered = sidecar.recover_upload_state()
+        if recovered["upload_started"] and not upload_started:
+            log.info(
+                "[%s] Recovering upload_started=True from sidecar "
+                "(state file missing or stale).",
+                state.subject_id,
+            )
+            with state.lock:
+                state.upload_started = True
+            upload_started = True
+            is_start = False  # recalculate — start job was already done
+        if recovered["last_upload_run"] is not None:
+            with state.lock:
+                if state.last_upload_run is None:
+                    state.last_upload_run = recovered["last_upload_run"]
+
+        skip_chunks = sidecar.chunks_to_skip(self.cfg.upload_max_retries)
+
         log.info(
             "[%s] UPLOADING — submitting %s job …",
             state.subject_id,
@@ -538,17 +652,19 @@ class SessionManager:
         log.log(
             VERBOSE,
             "[%s] Upload config — bucket=%s  acq_dt=%s  batch_size=%d  "
-            "ignore_last=%d  dry_run=%s  source=%s",
+            "ignore_last=%d  dry_run=%s  max_retries=%d  sidecar_skip=%d  source=%s",
             state.subject_id,
             self.cfg.s3_bucket,
             acq_dt.isoformat(),
             self.cfg.upload_batch_size,
             self.cfg.num_last_chunks_to_ignore,
             self.cfg.dry_run,
+            self.cfg.upload_max_retries,
+            len(skip_chunks),
             run_dir,
         )
 
-        ok = run_upload_cycle(
+        result = run_upload_cycle(
             source_directory=str(run_dir),
             subject_id=state.subject_id,
             acq_datetime=acq_dt,
@@ -559,23 +675,52 @@ class SessionManager:
             dry_run=self.cfg.dry_run,
             num_of_last_chunks_to_ignore=self.cfg.num_last_chunks_to_ignore,
             is_start_job=is_start,
+            skip_chunks=skip_chunks,
         )
+
+        # Record submission in the sidecar
+        for chunk_ts in result.submitted_chunks:
+            sidecar.mark_submitted(chunk_ts, self.cfg.upload_max_retries)
+
+        # Compute the S3 prefix once — used for both confirmation and deletion
+        s3_prefix: str | None = compute_s3_prefix(
+            source_directory=str(run_dir),
+            subject_id=state.subject_id,
+            acq_datetime=acq_dt,
+            s3_bucket=self.cfg.s3_bucket,
+        )
+
+        # Confirm any previously-submitted chunks that are now visible in S3
+        pending_in_sidecar = sidecar.submitted_chunk_timestamps()
+        if pending_in_sidecar and s3_prefix:
+            confirmed_in_s3 = list_confirmed_s3_chunks(self.cfg.s3_bucket, s3_prefix)
+            for chunk_ts in pending_in_sidecar & confirmed_in_s3:
+                sidecar.mark_confirmed(chunk_ts)
+                log.log(
+                    VERBOSE,
+                    "[%s] Chunk %s confirmed in S3.",
+                    state.subject_id,
+                    chunk_ts,
+                )
+
         with state.lock:
-            if ok:
+            if result.success:
                 state.upload_started = True
                 state.last_upload_run = datetime.now()
 
-        if ok:
+        if result.success:
             log.info(
-                "[%s] Upload cycle completed successfully (%s).",
+                "[%s] Upload cycle completed successfully (%s).  "
+                "Submitted %d chunk(s) this cycle.",
                 state.subject_id,
                 "start job" if is_start else "chunk job",
+                len(result.submitted_chunks),
             )
         else:
             log.warning("[%s] Upload cycle skipped or failed.", state.subject_id)
 
         # Optionally delete large local files after confirmed S3 upload
-        if ok and self.cfg.delete_after_upload and upload_started:
+        if result.success and self.cfg.delete_after_upload and upload_started:
             log.log(
                 VERBOSE,
                 "[%s] DELETE_AFTER_UPLOAD — querying S3 then removing confirmed local files …",
@@ -588,6 +733,18 @@ class SessionManager:
                 subject_id=state.subject_id,
                 acq_datetime=acq_dt,
             )
+            # Mark deleted chunks in the sidecar (all confirmed-in-S3 chunks
+            # that have delete_state pending are candidates; deletion is
+            # handled by delete_local_files_after_upload which operates at
+            # the file level — we mark the sidecar at chunk granularity here)
+            if s3_prefix is not None:
+                confirmed_for_deletion = list_confirmed_s3_chunks(
+                    self.cfg.s3_bucket, s3_prefix
+                )
+                for chunk_ts in confirmed_for_deletion:
+                    # Only transition pending→success; already-deleted chunks
+                    # have delete_state "success" and mark_deleted is a no-op.
+                    sidecar.mark_deleted(chunk_ts)
 
     # ── State persistence ─────────────────────────────────────────────────────
 

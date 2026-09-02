@@ -67,7 +67,10 @@ def is_session_dir(path: Path) -> bool:
         return False
 
 
-def discover_sessions(watch_paths: list[Path]) -> list[tuple[str, Path]]:
+def discover_sessions(
+    watch_paths: list[Path],
+    allowed_subjects: set[str] | None = None,
+) -> list[tuple[str, Path]]:
     """Scan *watch_paths* and return all discovered session directories.
 
     Each element of *watch_paths* is scanned one level deep for
@@ -80,6 +83,10 @@ def discover_sessions(watch_paths: list[Path]) -> list[tuple[str, Path]]:
     ----------
     watch_paths : list of Path
         Root directories to scan.
+    allowed_subjects : set of str, optional
+        When non-empty, only subject-ID directories whose name appears in
+        this set are descended into.  An empty set or ``None`` allows every
+        subject directory (no filter applied).
 
     Returns
     -------
@@ -89,6 +96,7 @@ def discover_sessions(watch_paths: list[Path]) -> list[tuple[str, Path]]:
         session directory.
     """
     results: list[tuple[str, Path]] = []
+    _filter = allowed_subjects or set()
 
     for watch_path in watch_paths:
         if not watch_path.exists():
@@ -108,6 +116,11 @@ def discover_sessions(watch_paths: list[Path]) -> list[tuple[str, Path]]:
             if not subject_dir.is_dir():
                 continue
             subject_id = subject_dir.name
+
+            if _filter and subject_id not in _filter:
+                log.debug("Subject %s not in allowlist — skipping.", subject_id)
+                continue
+
             try:
                 candidates = sorted(subject_dir.iterdir())
             except PermissionError as exc:

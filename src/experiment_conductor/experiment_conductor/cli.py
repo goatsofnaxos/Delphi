@@ -52,6 +52,10 @@ def main() -> None:
     log.info("  Watch paths       : %d configured", len(cfg.watch_paths))
     for p in cfg.watch_paths:
         log.info("    %s", p)
+    if cfg.subject_ids:
+        log.info("  Subject ID filter : %s", ", ".join(cfg.subject_ids))
+    else:
+        log.info("  Subject ID filter : (all subjects)")
     log.info("  Poll interval     : %.0f s", cfg.poll_interval_s)
     log.info("  Min session age   : %.1f min", cfg.min_session_age_minutes)
     log.info("  Processing cadence: %d min", cfg.pipeline_cadence_minutes)
