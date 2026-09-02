@@ -100,6 +100,9 @@ nav:
       - metadata_bridge: experiment-conductor/api/metadata_bridge.md
       - noise_floor: experiment-conductor/api/noise_floor.md
       - uploader_bridge: experiment-conductor/api/uploader_bridge.md
+      - upload_sidecar: experiment-conductor/api/upload_sidecar.md
+      - upload_status_cli: experiment-conductor/api/upload_status_cli.md
+      - pause_control: experiment-conductor/api/pause_control.md
 
 # ---------------------------------------------------------------------------
 # Plugins

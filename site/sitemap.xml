@@ -113,6 +113,10 @@
          <lastmod>2026-09-02</lastmod>
     </url>
     <url>
+         <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/pause_control/</loc>
+         <lastmod>2026-09-02</lastmod>
+    </url>
+    <url>
          <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/pipeline_bridge/</loc>
          <lastmod>2026-09-02</lastmod>
     </url>
@@ -126,6 +130,14 @@
     </url>
     <url>
          <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/state/</loc>
+         <lastmod>2026-09-02</lastmod>
+    </url>
+    <url>
+         <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/upload_sidecar/</loc>
+         <lastmod>2026-09-02</lastmod>
+    </url>
+    <url>
+         <loc>https://goatsofnaxos.github.io/Delphi/experiment-conductor/api/upload_status_cli/</loc>
          <lastmod>2026-09-02</lastmod>
     </url>
     <url>

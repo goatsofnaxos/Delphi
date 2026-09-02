@@ -11,3 +11,6 @@
 | [metadata_bridge](metadata_bridge.md) | AIND metadata check and generation |
 | [noise_floor](noise_floor.md) | Ephys noise-floor estimation from raw binary data |
 | [uploader_bridge](uploader_bridge.md) | S3 upload job submission with duplicate-submission protection |
+| [upload_sidecar](upload_sidecar.md) | Per-session upload history sidecar and state recovery |
+| [upload_status_cli](upload_status_cli.md) | Interactive upload-status viewer (`conductor-status` command) |
+| [pause_control](pause_control.md) | Upload pause / resume via sentinel lock file |
