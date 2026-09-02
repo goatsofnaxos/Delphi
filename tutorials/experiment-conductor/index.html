@@ -26,7 +26,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -34,7 +34,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -3400,7 +3400,7 @@ Bonsai and does <strong>not</strong> need to run on the acquisition computer.</p
 </table>
 <p>Install all Delphi packages from the repo root:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>uv<span class="w"> </span>sync
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;src/experiment_conductor&quot;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">"src/experiment_conductor"</span>
 </span></code></pre></div>
 <p>Verify the install:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>conductor<span class="w"> </span>--help
@@ -3471,7 +3471,7 @@ order you'll typically fill them in.</p>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>CONDUCTOR_EXPERIMENT_TYPE=delphi
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a># Acquisition type used in acquisition.json
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a># (typically &quot;ChronicRecording&quot; for Delphi/Pirouette)
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a># (typically "ChronicRecording" for Delphi/Pirouette)
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>CONDUCTOR_ACQUISITION_TYPE=ChronicRecording
 </span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
 </span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a># AIND protocol ID
@@ -3570,7 +3570,7 @@ to a minimal stub and logs a warning.</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a># How often to scan for new sessions (seconds)
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>CONDUCTOR_POLL_INTERVAL_S=60.0
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a># Don&#39;t process a session until it&#39;s this old (minutes)
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a># Don't process a session until it's this old (minutes)
 </span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a># Gives the acquisition computer time to finish writing before the first cycle.
 </span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>CONDUCTOR_MIN_SESSION_AGE_MINUTES=5.0
 </span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
@@ -3606,7 +3606,7 @@ to a minimal stub and logs a warning.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>conductor<span class="w"> </span>--dry-run<span class="w">               </span><span class="c1"># test run: all steps except real upload POSTs</span>
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>conductor<span class="w"> </span>--log-level<span class="w"> </span>DEBUG<span class="w">       </span><span class="c1"># verbose output (shows every directory scan)</span>
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>conductor<span class="w"> </span>--state-file<span class="w"> </span>/path/to/state.json<span class="w">   </span><span class="c1"># override CONDUCTOR_STATE_FILE</span>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>conductor<span class="w"> </span>--watch-paths<span class="w"> </span><span class="s2">&quot;D:\data&quot;</span><span class="w"> </span><span class="c1"># override CONDUCTOR_WATCH_PATHS from CLI</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>conductor<span class="w"> </span>--watch-paths<span class="w"> </span><span class="s2">"D:\data"</span><span class="w"> </span><span class="c1"># override CONDUCTOR_WATCH_PATHS from CLI</span>
 </span></code></pre></div>
 <hr />
 <h2 id="4-what-happens-step-by-step">4. What happens — step by step<a class="headerlink" href="#4-what-happens-step-by-step" title="Permanent link">&para;</a></h2>
@@ -3658,7 +3658,7 @@ remaining timestamp-named sub-directory) and uses it for all subsequent steps.</
 </span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>2026-03-20T21:05:04  INFO  …metadata_bridge  Generating subject.json ...
 </span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>2026-03-20T21:05:05  INFO  …metadata_bridge  subject.json generated.
 </span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>2026-03-20T21:05:05  INFO  …metadata_bridge  Generating instrument.json ...
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>2026-03-20T21:05:06  INFO  …metadata_bridge  Odor channels: [0, 1, 2, 4]  names: [&#39;blank&#39;, &#39;isoamyl acetate&#39;, &#39;methyl valerate&#39;, &#39;ethyl butyrate&#39;]
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>2026-03-20T21:05:06  INFO  …metadata_bridge  Odor channels: [0, 1, 2, 4]  names: ['blank', 'isoamyl acetate', 'methyl valerate', 'ethyl butyrate']
 </span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>2026-03-20T21:05:06  INFO  …metadata_bridge  instrument.json generated.
 </span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>2026-03-20T21:05:06  INFO  …metadata_bridge  Generating acquisition.json ...
 </span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>2026-03-20T21:05:07  INFO  …metadata_bridge  acquisition.json generated.
@@ -3702,7 +3702,7 @@ needed:</p>
 </span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
 </span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>
 </span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="n">update_acquisition_end_time</span><span class="p">(</span>
-</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>    <span class="n">Path</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">allen\aind\stage\chronic\842456\2026-03-20T20-23-05\2026-03-20T20-23-37\metadata&quot;</span><span class="p">),</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>    <span class="n">Path</span><span class="p">(</span><span class="sa">r</span><span class="s2">"</span><span class="se">\\</span><span class="s2">allen\aind\stage\chronic\842456\2026-03-20T20-23-05\2026-03-20T20-23-37\metadata"</span><span class="p">),</span>
 </span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>    <span class="n">datetime</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span>
 </span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="p">)</span>
 </span></code></pre></div>
@@ -3752,7 +3752,7 @@ intervention.</p>
 <h3 id="manual-register-a-specific-path">Manual — register a specific path<a class="headerlink" href="#manual-register-a-specific-path" title="Permanent link">&para;</a></h3>
 <p>To register a session that is not under any watch path, or to register it
 immediately rather than waiting for the next poll:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>conductor<span class="w"> </span>--add-session<span class="w"> </span><span class="s2">&quot;\\allen\aind\stage\chronic\842456\2026-04-15T09-30-00&quot;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>conductor<span class="w"> </span>--add-session<span class="w"> </span><span class="s2">"\\allen\aind\stage\chronic\842456\2026-04-15T09-30-00"</span>
 </span></code></pre></div>
 <p>The subject ID is inferred from the parent directory name.  Alternatively,
 add a new watch path to <code>.env</code> and restart:</p>
@@ -3785,14 +3785,14 @@ indicate poor grounding, excessive motion, or probe damage.</p>
 </ol>
 <h3 id="output-file">Output file<a class="headerlink" href="#output-file" title="Permanent link">&para;</a></h3>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="p">{</span>
-</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="w">  </span><span class="nt">&quot;channel_rms_uv&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">8.1</span><span class="p">,</span><span class="w"> </span><span class="mf">7.9</span><span class="p">,</span><span class="w"> </span><span class="mf">9.3</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">],</span><span class="w">   </span><span class="c1">// one value per channel</span>
-</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">  </span><span class="nt">&quot;median_rms_uv&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">8.43</span><span class="p">,</span>
-</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">  </span><span class="nt">&quot;n_samples&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">300000</span><span class="p">,</span>
-</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">  </span><span class="nt">&quot;n_channels&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">384</span><span class="p">,</span>
-</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="w">  </span><span class="nt">&quot;sample_rate_hz&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">30000.0</span><span class="p">,</span>
-</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="w">  </span><span class="nt">&quot;uv_per_bit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.195</span><span class="p">,</span>
-</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="w">  </span><span class="nt">&quot;source_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...\\ecephys\\continuous.dat&quot;</span><span class="p">,</span>
-</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-03-20T21:05:47+00:00&quot;</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="w">  </span><span class="nt">"channel_rms_uv"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">8.1</span><span class="p">,</span><span class="w"> </span><span class="mf">7.9</span><span class="p">,</span><span class="w"> </span><span class="mf">9.3</span><span class="p">,</span><span class="w"> </span><span class="err">...</span><span class="p">],</span><span class="w">   </span><span class="c1">// one value per channel</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">  </span><span class="nt">"median_rms_uv"</span><span class="p">:</span><span class="w"> </span><span class="mf">8.43</span><span class="p">,</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">  </span><span class="nt">"n_samples"</span><span class="p">:</span><span class="w"> </span><span class="mi">300000</span><span class="p">,</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">  </span><span class="nt">"n_channels"</span><span class="p">:</span><span class="w"> </span><span class="mi">384</span><span class="p">,</span>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="w">  </span><span class="nt">"sample_rate_hz"</span><span class="p">:</span><span class="w"> </span><span class="mf">30000.0</span><span class="p">,</span>
+</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="w">  </span><span class="nt">"uv_per_bit"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.195</span><span class="p">,</span>
+</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="w">  </span><span class="nt">"source_file"</span><span class="p">:</span><span class="w"> </span><span class="s2">"...\\ecephys\\continuous.dat"</span><span class="p">,</span>
+</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="w">  </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-03-20T21:05:47+00:00"</span>
 </span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="neuropixels-20-custom-gain">Neuropixels 2.0 / custom gain<a class="headerlink" href="#neuropixels-20-custom-gain" title="Permanent link">&para;</a></h3>
@@ -3803,11 +3803,11 @@ default AP gain (500).  For <strong>Neuropixels 2.0</strong>, the conversion is
 </span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>
 </span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="n">result</span> <span class="o">=</span> <span class="n">estimate_noise_floor</span><span class="p">(</span>
-</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>    <span class="n">Path</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">allen\aind\stage\chronic\842456\2026-03-20T20-23-05\2026-03-20T20-23-37&quot;</span><span class="p">),</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>    <span class="n">Path</span><span class="p">(</span><span class="sa">r</span><span class="s2">"</span><span class="se">\\</span><span class="s2">allen\aind\stage\chronic\842456\2026-03-20T20-23-05\2026-03-20T20-23-37"</span><span class="p">),</span>
 </span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>    <span class="n">n_seconds</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
 </span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>    <span class="n">uv_per_bit</span><span class="o">=</span><span class="mf">0.0125</span><span class="p">,</span>   <span class="c1"># NP2.0</span>
 </span><span id="__span-26-8"><a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="p">)</span>
-</span><span id="__span-26-9"><a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Median RMS: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;median_rms_uv&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> µV&quot;</span><span class="p">)</span>
+</span><span id="__span-26-9"><a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Median RMS: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s1">'median_rms_uv'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> µV"</span><span class="p">)</span>
 </span></code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">One estimate per session</p>
@@ -3827,19 +3827,19 @@ can be updated in <code>noise_floor.py:estimate_noise_floor()</code>.</p>
 <p>If <code>CONDUCTOR_STATE_FILE</code> is set, the conductor writes a JSON file containing
 the current state of every known session after each poll:</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="p">{</span>
-</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="w">  </span><span class="nt">&quot;\\\\allen\\aind\\stage\\chronic\\842456\\2026-03-20T20-23-05&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">    </span><span class="nt">&quot;data_root&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;\\\\allen\\aind\\stage\\chronic\\842456\\2026-03-20T20-23-05&quot;</span><span class="p">,</span>
-</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">    </span><span class="nt">&quot;subject_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;842456&quot;</span><span class="p">,</span>
-</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">    </span><span class="nt">&quot;session_datetime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-03-20T20-23-05&quot;</span><span class="p">,</span>
-</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">    </span><span class="nt">&quot;run_dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...\\2026-03-20T20-23-37&quot;</span><span class="p">,</span>
-</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="w">    </span><span class="nt">&quot;phase&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UPLOADING&quot;</span><span class="p">,</span>
-</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="w">    </span><span class="nt">&quot;consolidation_done&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="w">    </span><span class="nt">&quot;metadata_present&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="w">    </span><span class="nt">&quot;metadata_generated&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="w">    </span><span class="nt">&quot;dataset_built&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="w">    </span><span class="nt">&quot;noise_floor_estimated&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-</span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a><span class="w">    </span><span class="nt">&quot;upload_started&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="w">    </span><span class="nt">&quot;last_processed&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-03-20T22:05:03&quot;</span><span class="p">,</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="w">  </span><span class="nt">"\\\\allen\\aind\\stage\\chronic\\842456\\2026-03-20T20-23-05"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">    </span><span class="nt">"data_root"</span><span class="p">:</span><span class="w"> </span><span class="s2">"\\\\allen\\aind\\stage\\chronic\\842456\\2026-03-20T20-23-05"</span><span class="p">,</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">    </span><span class="nt">"subject_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"842456"</span><span class="p">,</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">    </span><span class="nt">"session_datetime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-03-20T20-23-05"</span><span class="p">,</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">    </span><span class="nt">"run_dir"</span><span class="p">:</span><span class="w"> </span><span class="s2">"...\\2026-03-20T20-23-37"</span><span class="p">,</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="w">    </span><span class="nt">"phase"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UPLOADING"</span><span class="p">,</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="w">    </span><span class="nt">"consolidation_done"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="w">    </span><span class="nt">"metadata_present"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="w">    </span><span class="nt">"metadata_generated"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="w">    </span><span class="nt">"dataset_built"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="w">    </span><span class="nt">"noise_floor_estimated"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+</span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a><span class="w">    </span><span class="nt">"upload_started"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="w">    </span><span class="nt">"last_processed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-03-20T22:05:03"</span><span class="p">,</span>
 </span><span id="__span-27-15"><a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="w">    </span><span class="err">...</span>
 </span><span id="__span-27-16"><a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a><span class="w">  </span><span class="p">}</span>
 </span><span id="__span-27-17"><a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a><span class="p">}</span>
@@ -3860,17 +3860,17 @@ the current state of every known session after each poll:</p>
 <p>On the next poll the session will be re-discovered and processed from scratch.</p>
 <p>To re-run only a specific step:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;conductor_state.json&quot;</span>
-</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="n">key</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">allen\aind\stage\chronic\842456\2026-03-20T20-23-05&quot;</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="n">path</span> <span class="o">=</span> <span class="s2">"conductor_state.json"</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="n">key</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"</span><span class="se">\\</span><span class="s2">allen\aind\stage\chronic\842456\2026-03-20T20-23-05"</span>
 </span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>
 </span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
 </span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>    <span class="n">state</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 </span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a>
 </span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="c1"># Force metadata to regenerate on the next cycle</span>
-</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="n">state</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;metadata_present&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="n">state</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;metadata_generated&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="n">state</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">"metadata_present"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="n">state</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">"metadata_generated"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 </span><span id="__span-28-11"><a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a>
-</span><span id="__span-28-12"><a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="__span-28-12"><a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
 </span><span id="__span-28-13"><a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a>    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </span></code></pre></div>
 <hr />
@@ -3883,14 +3883,14 @@ Each session logs with its subject ID as a prefix, making it easy to follow:</p>
 </span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>2026-03-20T22:00:05  INFO  …  [111111] Generating AIND metadata.
 </span></code></pre></div>
 <p>To see the status of all sessions at any time, read the state file:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>python<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39;</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>python<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
 </span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="s">import json</span>
 </span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="s">from pathlib import Path</span>
 </span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>
-</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="s">state = json.loads(Path(&quot;conductor_state.json&quot;).read_text())</span>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="s">state = json.loads(Path("conductor_state.json").read_text())</span>
 </span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="s">for key, s in state.items():</span>
-</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="s">    print(f&quot;{s[&#39;subject_id&#39;]}  {s[&#39;session_datetime&#39;]}  phase={s[&#39;phase&#39;]}&quot;</span>
-</span><span id="__span-30-8"><a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a><span class="s">          f&quot;  errors={s[&#39;consecutive_errors&#39;]}&quot;)</span>
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="s">    print(f"{s['subject_id']}  {s['session_datetime']}  phase={s['phase']}"</span>
+</span><span id="__span-30-8"><a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a><span class="s">          f"  errors={s['consecutive_errors']}")</span>
 </span><span id="__span-30-9"><a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a><span class="s">EOF</span>
 </span></code></pre></div>
 <hr />
@@ -3902,9 +3902,9 @@ Each session logs with its subject ID as a prefix, making it easy to follow:</p>
 </span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>CONDUCTOR_ENABLE_UPLOAD=false      # skip S3 upload
 </span></code></pre></div>
 <p>Or skip individual sub-steps of the pipeline:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>CONDUCTOR_PIPELINE_SKIP_BUILD=true      # don&#39;t run build-dataset
-</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>CONDUCTOR_PIPELINE_SKIP_CLIPS=true      # don&#39;t extract poke clips (default)
-</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>CONDUCTOR_PIPELINE_SKIP_SNAPSHOT=true   # don&#39;t generate figures
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>CONDUCTOR_PIPELINE_SKIP_BUILD=true      # don't run build-dataset
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>CONDUCTOR_PIPELINE_SKIP_CLIPS=true      # don't extract poke clips (default)
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>CONDUCTOR_PIPELINE_SKIP_SNAPSHOT=true   # don't generate figures
 </span></code></pre></div>
 <hr />
 <h2 id="10-complete-env-example">10. Complete <code>.env</code> example<a class="headerlink" href="#10-complete-env-example" title="Permanent link">&para;</a></h2>
@@ -4085,7 +4085,7 @@ Each session logs with its subject ID as a prefix, making it easy to follow:</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
