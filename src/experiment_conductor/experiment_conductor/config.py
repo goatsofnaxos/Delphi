@@ -202,6 +202,10 @@ class ConductorConfig:
     # ── Misc ──────────────────────────────────────────────────────────────────
     chunk_camera_folder: str
 
+    # ── Logging ───────────────────────────────────────────────────────────────
+    verbosity: int = 0
+    """0 = INFO (default), 1 = VERBOSE (-v), 2 = DEBUG (-vv)."""
+
 
 # ── Builder ───────────────────────────────────────────────────────────────────
 
@@ -258,8 +262,15 @@ def _parse_cli() -> argparse.Namespace:
         help="Print upload requests without submitting them.",
     )
     p.add_argument(
-        "--log-level", default="INFO",
-        choices=["DEBUG", "INFO", "WARNING", "ERROR"],
+        "-v", "--verbose",
+        action="count",
+        default=0,
+        dest="verbosity",
+        help=(
+            "Increase output verbosity.  Repeat for more detail: "
+            "-v = VERBOSE (step details, counts, offsets), "
+            "-vv = DEBUG (per-file ops, subprocess args, raw values)."
+        ),
     )
     p.add_argument(
         "--state-file", default=None, type=Path, metavar="PATH",
@@ -374,4 +385,5 @@ def build_config() -> ConductorConfig:
         chunk_camera_folder=_g(
             "CONDUCTOR_CHUNK_CAMERA_FOLDER", None, "behavior-videos/TopCamera"
         ),
+        verbosity=args.verbosity,
     )

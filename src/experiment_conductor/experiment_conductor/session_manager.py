@@ -41,6 +41,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from .config import ConductorConfig
+from .logging_config import VERBOSE
 from .metadata_bridge import check_metadata_present, generate_metadata, update_acquisition_end_time
 from .noise_floor import estimate_noise_floor
 from .pipeline_bridge import (
@@ -50,6 +51,7 @@ from .pipeline_bridge import (
     run_consolidation,
     run_pipeline,
 )
+from delphi_data.curation import normalize_onix_sample_metadata
 from .session import SessionPhase, SessionState
 from .uploader_bridge import (
     UPLOAD_STOP_EVENT,
@@ -131,7 +133,16 @@ class SessionManager:
             )
             self._sessions[key] = state
         log.info(
-            "Registered session: subject=%s  ts=%s", subject_id, data_root.name
+            "NEW SESSION — subject=%s  ts=%s  path=%s",
+            subject_id,
+            data_root.name,
+            data_root,
+        )
+        log.log(
+            VERBOSE,
+            "Session registered at %s  (min age %.1f min before first processing)",
+            datetime.now().strftime("%H:%M:%S"),
+            self.cfg.min_session_age_minutes,
         )
         return True
 
@@ -179,6 +190,7 @@ class SessionManager:
 
     def _scan_and_register(self) -> None:
         found = discover_sessions(self.cfg.watch_paths)
+        log.log(VERBOSE, "Scan complete — %d session(s) visible on watch paths.", len(found))
         for subject_id, session_root in found:
             self.add_session(subject_id, session_root)
 
@@ -274,18 +286,58 @@ class SessionManager:
         with state.lock:
             state.phase = SessionPhase.CONSOLIDATING
 
+        log.log(
+            VERBOSE,
+            "[%s] CONSOLIDATING — session root: %s  (previously consolidated: %s)",
+            state.subject_id,
+            state.data_root,
+            already_done,
+        )
+
         # Always consolidate — new Bonsai restarts may have created extra run dirs
-        log.info("[%s] Consolidating run directories.", state.subject_id)
+        log.info("[%s] Consolidating run directories …", state.subject_id)
         ok = run_consolidation(state.data_root)
 
         # Resolve the canonical run dir after consolidation
         run_dir = resolve_run_dir(state.data_root)
+
+        log.log(
+            VERBOSE,
+            "[%s] Run dir resolved to: %s  (consolidation ok=%s)",
+            state.subject_id,
+            run_dir,
+            ok,
+        )
 
         if ok and not already_done:
             move_delphi_metadata(run_dir)
         elif ok:
             # Re-check in case new metadata files appeared
             move_delphi_metadata(run_dir)
+
+        # Normalise ONIX SampleMetadata for all session types (including
+        # pirouette-only, where the pipeline step is skipped).  Safe no-op
+        # when already normalised or when the OnixEphys/ directory is absent.
+        if ok and run_dir is not None:
+            log.log(
+                VERBOSE,
+                "[%s] Normalising ONIX SampleMetadata (ecephys/OnixEphys/) …",
+                state.subject_id,
+            )
+            try:
+                changed = normalize_onix_sample_metadata(run_dir)
+                log.log(
+                    VERBOSE,
+                    "[%s] ONIX SampleMetadata: %s.",
+                    state.subject_id,
+                    "offset applied" if changed else "already at 0 / directory absent",
+                )
+            except Exception:
+                log.warning(
+                    "[%s] normalize_onix_sample_metadata raised an error (continuing).",
+                    state.subject_id,
+                    exc_info=True,
+                )
 
         with state.lock:
             state.consolidation_done = ok
@@ -300,12 +352,19 @@ class SessionManager:
         with state.lock:
             state.phase = SessionPhase.METADATA_CHECK
 
+        log.log(
+            VERBOSE,
+            "[%s] METADATA_CHECK — checking %s/metadata/ for required JSON files.",
+            state.subject_id,
+            run_dir,
+        )
+
         present = check_metadata_present(run_dir)
         with state.lock:
             state.metadata_present = present
 
         if present:
-            log.debug("[%s] Metadata already present.", state.subject_id)
+            log.log(VERBOSE, "[%s] All required metadata JSON files present — skipping generation.", state.subject_id)
             return
 
         if not self.cfg.enable_metadata:
@@ -314,7 +373,16 @@ class SessionManager:
 
         with state.lock:
             state.phase = SessionPhase.METADATA_GENERATING
-        log.info("[%s] Generating AIND metadata.", state.subject_id)
+        log.info("[%s] Generating AIND metadata …", state.subject_id)
+        log.log(
+            VERBOSE,
+            "[%s] METADATA_GENERATING — type=%s  instrument=%s  room=%s  experimenters=%s",
+            state.subject_id,
+            self.cfg.experiment_type,
+            self.cfg.instrument_id,
+            self.cfg.experiment_room,
+            self.cfg.experimenters,
+        )
         ok = generate_metadata(
             experiment_type=self.cfg.experiment_type,
             subject_id=state.subject_id,
@@ -332,6 +400,9 @@ class SessionManager:
         if ok:
             # Stamp acquisition end time with "now" as a placeholder
             update_acquisition_end_time(run_dir / "metadata", datetime.now(timezone.utc))
+            log.info("[%s] AIND metadata generated successfully.", state.subject_id)
+        else:
+            log.warning("[%s] Metadata generation completed with errors.", state.subject_id)
         with state.lock:
             state.metadata_generated = ok
             if ok:
@@ -340,6 +411,7 @@ class SessionManager:
     def _step_pipeline(self, state: SessionState) -> None:
         """Build/append the delphi-data behaviour dataset if applicable."""
         if not self.cfg.enable_pipeline:
+            log.log(VERBOSE, "[%s] Pipeline disabled — skipping BUILDING step.", state.subject_id)
             return
 
         with state.lock:
@@ -348,15 +420,33 @@ class SessionManager:
 
         # Only run if there is actual Delphi controller data
         if not has_delphi_controller_file(run_dir):
-            log.debug(
-                "[%s] No DelphiController file found; skipping pipeline.",
+            log.log(
+                VERBOSE,
+                "[%s] No behavior/DelphiController/ directory found — "
+                "skipping pipeline (pirouette-only session).",
                 state.subject_id,
             )
             return
 
         with state.lock:
             state.phase = SessionPhase.BUILDING
-        log.info("[%s] Running delphi-data pipeline.", state.subject_id)
+        log.info(
+            "[%s] BUILDING delphi-data dataset%s …",
+            state.subject_id,
+            " (append mode)" if already_built else " (first run)",
+        )
+        log.log(
+            VERBOSE,
+            "[%s] Pipeline config — experiment=%s  firmware=%s  "
+            "skip_build=%s  skip_clips=%s  skip_snapshot=%s  append=%s",
+            state.subject_id,
+            self.cfg.delphi_experiment,
+            self.cfg.delphi_firmware,
+            self.cfg.pipeline_skip_build,
+            self.cfg.pipeline_skip_clips,
+            self.cfg.pipeline_skip_snapshot,
+            already_built,
+        )
 
         ok = run_pipeline(
             data_root=run_dir,
@@ -368,6 +458,10 @@ class SessionManager:
             skip_snapshot=self.cfg.pipeline_skip_snapshot,
             append=already_built,
         )
+        if ok:
+            log.info("[%s] delphi-data pipeline completed successfully.", state.subject_id)
+        else:
+            log.warning("[%s] delphi-data pipeline reported errors.", state.subject_id)
         with state.lock:
             if ok:
                 state.dataset_built = True
@@ -375,15 +469,24 @@ class SessionManager:
     def _step_noise_floor(self, state: SessionState) -> None:
         """Estimate the ephys noise floor (once per session)."""
         if not self.cfg.enable_noise_floor:
+            log.log(VERBOSE, "[%s] Noise-floor estimation disabled — skipping.", state.subject_id)
             return
 
         with state.lock:
             if state.noise_floor_estimated:
+                log.log(VERBOSE, "[%s] Noise floor already estimated — skipping.", state.subject_id)
                 return
             run_dir = state.run_dir or resolve_run_dir(state.data_root)
             state.phase = SessionPhase.NOISE_FLOOR
 
-        log.info("[%s] Estimating noise floor.", state.subject_id)
+        log.info("[%s] Estimating ephys noise floor …", state.subject_id)
+        log.log(
+            VERBOSE,
+            "[%s] Noise floor config — n_seconds=%.1f  max_channels=%s",
+            state.subject_id,
+            self.cfg.noise_floor_n_seconds,
+            self.cfg.noise_floor_max_channels or "all",
+        )
         result = estimate_noise_floor(
             run_dir,
             n_seconds=self.cfg.noise_floor_n_seconds,
@@ -392,10 +495,14 @@ class SessionManager:
         with state.lock:
             if result is not None:
                 state.noise_floor_estimated = True
+                log.info("[%s] Noise floor estimation complete.", state.subject_id)
+            else:
+                log.warning("[%s] Noise floor estimation returned no result.", state.subject_id)
 
     def _step_upload(self, state: SessionState) -> None:
         """Submit new chunk upload jobs to the AIND transfer service."""
         if not self.cfg.enable_upload:
+            log.log(VERBOSE, "[%s] Upload disabled — skipping UPLOADING step.", state.subject_id)
             return
 
         with state.lock:
@@ -404,7 +511,7 @@ class SessionManager:
             upload_started = state.upload_started
 
         if not metadata_ready:
-            log.info("[%s] Skipping upload: metadata not yet ready.", state.subject_id)
+            log.info("[%s] Skipping upload — metadata not yet ready.", state.subject_id)
             return
 
         # Gate the start job on >=3 available chunks
@@ -421,8 +528,25 @@ class SessionManager:
         with state.lock:
             state.phase = SessionPhase.UPLOADING
 
-        log.info("[%s] Running upload cycle (is_start=%s).", state.subject_id, not upload_started)
+        is_start = not upload_started
         acq_dt = _parse_session_datetime(state.session_datetime)
+        log.info(
+            "[%s] UPLOADING — submitting %s job …",
+            state.subject_id,
+            "chronic_ephys_start" if is_start else "chronic_ephys_chunk",
+        )
+        log.log(
+            VERBOSE,
+            "[%s] Upload config — bucket=%s  acq_dt=%s  batch_size=%d  "
+            "ignore_last=%d  dry_run=%s  source=%s",
+            state.subject_id,
+            self.cfg.s3_bucket,
+            acq_dt.isoformat(),
+            self.cfg.upload_batch_size,
+            self.cfg.num_last_chunks_to_ignore,
+            self.cfg.dry_run,
+            run_dir,
+        )
 
         ok = run_upload_cycle(
             source_directory=str(run_dir),
@@ -434,15 +558,29 @@ class SessionManager:
             batch_size=self.cfg.upload_batch_size,
             dry_run=self.cfg.dry_run,
             num_of_last_chunks_to_ignore=self.cfg.num_last_chunks_to_ignore,
-            is_start_job=not upload_started,
+            is_start_job=is_start,
         )
         with state.lock:
             if ok:
                 state.upload_started = True
                 state.last_upload_run = datetime.now()
 
+        if ok:
+            log.info(
+                "[%s] Upload cycle completed successfully (%s).",
+                state.subject_id,
+                "start job" if is_start else "chunk job",
+            )
+        else:
+            log.warning("[%s] Upload cycle skipped or failed.", state.subject_id)
+
         # Optionally delete large local files after confirmed S3 upload
         if ok and self.cfg.delete_after_upload and upload_started:
+            log.log(
+                VERBOSE,
+                "[%s] DELETE_AFTER_UPLOAD — querying S3 then removing confirmed local files …",
+                state.subject_id,
+            )
             delete_local_files_after_upload(
                 data_root=run_dir,
                 keep_patterns=self.cfg.keep_local_patterns,
