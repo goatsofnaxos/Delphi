@@ -19,5 +19,3 @@ Firmware register set definitions and resolution logic.
 ::: delphi_data.config.FIRMWARE_CONFIG
 
 ::: delphi_data.config.VIDEO_CONFIG
-
-::: delphi_data.config.DEFAULT_TIMING_REGISTERS
