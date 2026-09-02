@@ -385,5 +385,10 @@ def build_config() -> ConductorConfig:
         chunk_camera_folder=_g(
             "CONDUCTOR_CHUNK_CAMERA_FOLDER", None, "behavior-videos/TopCamera"
         ),
-        verbosity=args.verbosity,
+        # CLI -v count wins; fall back to CONDUCTOR_VERBOSITY env var (default 0)
+        verbosity=(
+            args.verbosity
+            if args.verbosity > 0
+            else _int(os.getenv("CONDUCTOR_VERBOSITY"), 0)
+        ),
     )
