@@ -2025,6 +2025,61 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#subject-id-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subject ID filtering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upload-history-sidecar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upload history sidecar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pause-resume-uploads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pause / resume uploads
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upload-job-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upload job types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#onix-samplemetadata-normalisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ONIX SampleMetadata normalisation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#data-root-resolution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2442,6 +2497,90 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/upload_sidecar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    upload_sidecar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/upload_status_cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    upload_status_cli
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/pause_control/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pause_control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2512,6 +2651,61 @@
     <span class="md-ellipsis">
       
         Supported experiment types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subject-id-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subject ID filtering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upload-history-sidecar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upload history sidecar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pause-resume-uploads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pause / resume uploads
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upload-job-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upload job types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#onix-samplemetadata-normalisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ONIX SampleMetadata normalisation
       
     </span>
   </a>
@@ -2625,17 +2819,21 @@ computer and does <strong>not</strong> control Bonsai.</p>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>            └── &lt;run_ts&gt;/       ← second run dir if Bonsai restarted
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>conductor (local PC / VM)
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>├── watcher.py        scan watch paths for new sessions
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>├── session_manager.py orchestrate cadence cycles (up to 4 sessions in parallel)
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   ├── pipeline_bridge.py  → delphi-data consolidate / pipeline
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│   ├── metadata_bridge.py  → metadata_generator (4 AIND JSON files)
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│   ├── noise_floor.py      → RMS noise floor from raw ephys data
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│   └── uploader_bridge.py  → aind-chronic-ephys-uploader → S3
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>├── session.py        per-session state machine
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>└── config.py         .env + CLI configuration
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>├── watcher.py          scan watch paths for new sessions
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>├── session_manager.py  orchestrate cadence cycles (one worker per subject ID)
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   ├── pipeline_bridge.py   → delphi-data consolidate / pipeline
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│   ├── metadata_bridge.py   → metadata_generator (4 AIND JSON files)
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│   ├── noise_floor.py       → RMS noise floor from raw ephys data
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│   ├── uploader_bridge.py   → aind-chronic-ephys-uploader → S3
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│   └── upload_sidecar.py    → per-session chunk history &amp; state recovery
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>├── pause_control.py    upload pause / resume via sentinel lock file
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>├── upload_status_cli.py  conductor-status interactive viewer
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>├── session.py          per-session state machine
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>└── config.py           .env + CLI configuration
 </span></code></pre></div>
 <h2 id="session-lifecycle">Session lifecycle<a class="headerlink" href="#session-lifecycle" title="Permanent link">&para;</a></h2>
-<p>Each discovered session passes through the following phases on every cadence cycle:</p>
+<p>Each discovered session passes through the following phases on every cadence
+cycle:</p>
 <table>
 <thead>
 <tr>
@@ -2650,7 +2848,7 @@ computer and does <strong>not</strong> control Bonsai.</p>
 </tr>
 <tr>
 <td><code>CONSOLIDATING</code></td>
-<td>Merge Bonsai restart run dirs into the earliest; move JSONL metadata files to <code>behavior/metadata/</code></td>
+<td>Merge Bonsai restart run dirs into the earliest; move JSONL metadata to <code>behavior/metadata/</code>; normalise ONIX SampleMetadata</td>
 </tr>
 <tr>
 <td><code>METADATA_CHECK</code></td>
@@ -2715,10 +2913,90 @@ cadence cycle (new data may have arrived).</p>
 </tr>
 </tbody>
 </table>
+<h2 id="subject-id-filtering">Subject ID filtering<a class="headerlink" href="#subject-id-filtering" title="Permanent link">&para;</a></h2>
+<p>Set <code>CONDUCTOR_SUBJECT_IDS</code> to restrict which subject directories the
+conductor scans:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nv">CONDUCTOR_SUBJECT_IDS</span><span class="o">=</span><span class="m">842456</span>,842457,842458
+</span></code></pre></div>
+<ul>
+<li>Only directories whose name exactly matches one of the listed IDs are
+  processed.</li>
+<li>The list is <strong>hot-reloaded</strong> from <code>.env</code> on every poll cycle — add or
+  remove animals while the conductor is running without restarting it.</li>
+<li>The thread-pool size is automatically set to <code>len(subject_ids)</code> so each
+  animal gets its own worker.  When no restriction is configured the fallback
+  is <code>CONDUCTOR_MAX_WORKERS</code> (default 8).</li>
+</ul>
+<h2 id="upload-history-sidecar">Upload history sidecar<a class="headerlink" href="#upload-history-sidecar" title="Permanent link">&para;</a></h2>
+<p>Every dataset gets a <code>.upload_history.json</code> sidecar in its run directory
+tracking the full lifecycle of every chunk:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;subject_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;842456&quot;</span><span class="p">,</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">&quot;session_ts&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-09-01T10-00-00&quot;</span><span class="p">,</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">&quot;chunks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">&quot;2026-09-01T10-05-00&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">      </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span><span class="p">,</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">      </span><span class="nt">&quot;retries&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">      </span><span class="nt">&quot;confirmed_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-09-01T11-00-00+00:00&quot;</span><span class="p">,</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">      </span><span class="nt">&quot;delete_state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;disabled&quot;</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The sidecar also acts as a <strong>state recovery object</strong>: if <code>conductor_state.json</code>
+is absent after a restart the conductor reads <code>upload_started</code> and
+<code>last_upload_run</code> from the sidecar so it never re-submits a start job on an
+already-started dataset.</p>
+<p>Chunks that exceed <code>CONDUCTOR_UPLOAD_MAX_RETRIES</code> (default 3) are marked
+<code>skipped</code> and permanently excluded from future submission attempts.</p>
+<h2 id="pause-resume-uploads">Pause / resume uploads<a class="headerlink" href="#pause-resume-uploads" title="Permanent link">&para;</a></h2>
+<p>Pause all upload submissions interactively through <code>conductor-status</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>conductor-status
+</span></code></pre></div>
+<p>Press <strong><code>p</code></strong> to pause, <strong><code>r</code></strong> to resume.  The running conductor checks for
+the pause sentinel file at the start of every upload cycle and skips
+submissions while it exists.  A warning is printed at conductor startup if a
+stale pause file is detected.</p>
+<p>See <a href="api/pause_control/">pause_control</a> for the underlying mechanism.</p>
+<h2 id="upload-job-types">Upload job types<a class="headerlink" href="#upload-job-types" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Cycle</th>
+<th><code>job_type</code></th>
+<th>Chunks submitted</th>
+<th>Gate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>First</td>
+<td><code>chronic_ephys_start</code></td>
+<td>Exactly 1 (oldest pending)</td>
+<td>≥ 3 local chunks must exist</td>
+</tr>
+<tr>
+<td>All subsequent</td>
+<td><code>chronic_ephys_chunk</code></td>
+<td>All pending (up to <code>batch_size</code> per POST)</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<h2 id="onix-samplemetadata-normalisation">ONIX SampleMetadata normalisation<a class="headerlink" href="#onix-samplemetadata-normalisation" title="Permanent link">&para;</a></h2>
+<p>During the CONSOLIDATING phase the conductor normalises
+<code>ecephys/OnixEphys/OnixEphys_SampleMetadata_*.json</code> files so that
+<code>start_sample</code> values are relative to the session start rather than
+device-boot time.  A <code>_normalization_offset.json</code> sidecar persists the
+original offset across restarts so that:</p>
+<ul>
+<li>New chunks arriving after a conductor restart are normalised correctly.</li>
+<li>Already-normalised files are never double-processed.</li>
+</ul>
 <h2 id="data-root-resolution">Data root resolution<a class="headerlink" href="#data-root-resolution" title="Permanent link">&para;</a></h2>
-<p>The conductor discovers sessions by scanning each watch path for the pattern::</p>
-<div class="language-text highlight"><pre><span></span><code>&lt;watch_path&gt;/&lt;subject_id&gt;/&lt;YYYY-MM-DDTHH-MM-SS&gt;/
-</code></pre></div>
+<p>The conductor discovers sessions by scanning each watch path for the pattern:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>&lt;watch_path&gt;/&lt;subject_id&gt;/&lt;YYYY-MM-DDTHH-MM-SS&gt;/
+</span></code></pre></div>
 <p>where <code>&lt;YYYY-MM-DDTHH-MM-SS&gt;</code> is a Bonsai session timestamp directory
 containing at least one run sub-directory.  After consolidation the earliest
 run sub-directory becomes the <strong>run dir</strong> — this is where all subsequent
@@ -2776,6 +3054,16 @@ optionally overridden by CLI flags.</p>
 </thead>
 <tbody>
 <tr>
+<td><code>CONDUCTOR_SUBJECT_IDS</code></td>
+<td><em>(all)</em></td>
+<td>Comma-separated subject ID allowlist; hot-reloaded</td>
+</tr>
+<tr>
+<td><code>CONDUCTOR_MAX_WORKERS</code></td>
+<td><code>8</code></td>
+<td>Fallback worker count when no subject IDs are configured</td>
+</tr>
+<tr>
 <td><code>CONDUCTOR_EXPERIMENT_TYPE</code></td>
 <td><code>delphi</code></td>
 <td>Experiment type</td>
@@ -2784,6 +3072,11 @@ optionally overridden by CLI flags.</p>
 <td><code>CONDUCTOR_PIPELINE_CADENCE_MINUTES</code></td>
 <td><code>60</code></td>
 <td>Processing interval per session</td>
+</tr>
+<tr>
+<td><code>CONDUCTOR_UPLOAD_MAX_RETRIES</code></td>
+<td><code>3</code></td>
+<td>Max submission attempts per chunk before skipping</td>
 </tr>
 <tr>
 <td><code>CONDUCTOR_ENABLE_NOISE_FLOOR</code></td>
@@ -2796,9 +3089,14 @@ optionally overridden by CLI flags.</p>
 <td>No real upload requests</td>
 </tr>
 <tr>
+<td><code>CONDUCTOR_DELETE_AFTER_UPLOAD</code></td>
+<td><code>false</code></td>
+<td>Remove large local files after S3 confirmation</td>
+</tr>
+<tr>
 <td><code>CONDUCTOR_STATE_FILE</code></td>
 <td>—</td>
-<td>JSON file for state persistence</td>
+<td>JSON file for state persistence across restarts</td>
 </tr>
 <tr>
 <td><code>CONDUCTOR_POLL_INTERVAL_S</code></td>
@@ -2812,28 +3110,36 @@ optionally overridden by CLI flags.</p>
 </tr>
 </tbody>
 </table>
-<p>See <code>.env.example</code> for the full reference.</p>
+<p>See <code>.env.example</code> in the package source for the full reference.</p>
 <h2 id="upload-safety">Upload safety<a class="headerlink" href="#upload-safety" title="Permanent link">&para;</a></h2>
-<p>Two guarantees prevent data loss:</p>
+<p>Three guarantees prevent data loss or duplicate work:</p>
 <ol>
 <li>
-<p><strong>No duplicate submissions</strong> — <code>_SUBMITTED_CHUNKS</code> (module-level, thread-safe)
-   tracks every chunk submitted in the current process.  In-flight chunks are
-   never re-submitted across cadence cycles.</p>
+<p><strong>No duplicate submissions</strong> — <code>_SUBMITTED_CHUNKS</code> (module-level,
+   thread-safe <code>set</code>) tracks every chunk submitted in the current process.
+   In-flight chunks are never re-submitted across cadence cycles.</p>
+</li>
+<li>
+<p><strong>Sidecar-skip integration</strong> — chunks already confirmed in S3 or exceeding
+   the retry limit are excluded from every upload cycle via the
+   <code>.upload_history.json</code> sidecar.</p>
 </li>
 <li>
 <p><strong>Confirmed-before-delete</strong> — <code>delete_local_files_after_upload</code> queries S3
-   directly before removing any file.  Only chunks confirmed present in the
-   bucket are eligible for local deletion.</p>
+   directly before removing any local file.  Only chunks confirmed present in
+   the bucket are eligible for deletion.</p>
 </li>
 </ol>
 <h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1"># Edit .env — set CONDUCTOR_WATCH_PATHS, protocol/instrument/room IDs, etc.</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>conductor<span class="w">                              </span><span class="c1"># start watching</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>conductor<span class="w"> </span>--add-session<span class="w"> </span>/path/to/session<span class="w">   </span><span class="c1"># register a specific session</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>conductor<span class="w"> </span>--dry-run<span class="w">                    </span><span class="c1"># test mode — no real uploads</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># Edit .env — set CONDUCTOR_WATCH_PATHS, protocol/instrument/room IDs, etc.</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>conductor<span class="w">                                  </span><span class="c1"># start watching</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>conductor<span class="w"> </span>--add-session<span class="w"> </span>/path/to/session<span class="w">   </span><span class="c1"># register a specific session</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>conductor<span class="w"> </span>--dry-run<span class="w">                        </span><span class="c1"># test mode — no real uploads</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>conductor<span class="w"> </span>--subject-ids<span class="w"> </span><span class="m">842456</span>,842457<span class="w">      </span><span class="c1"># restrict to specific animals</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>conductor-status<span class="w">                           </span><span class="c1"># view upload progress; pause/resume</span>
 </span></code></pre></div>
 
 
