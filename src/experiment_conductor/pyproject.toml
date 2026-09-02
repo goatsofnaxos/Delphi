@@ -7,7 +7,7 @@ name = "experiment-conductor"
 version = "0.2.0"
 description = "Network-drive watcher that orchestrates multi-session metadata generation, delphi-data processing, and S3 upload"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = { text = "MIT" }
 authors = [{ name = "Brandon Pratt", email = "brandon.pratt@alleninstitute.org" }]
 
@@ -16,7 +16,6 @@ keywords = ["Delphi", "orchestration", "neuroscience", "AIND", "ephys"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "License :: OSI Approved :: MIT License",
 ]
