@@ -216,12 +216,17 @@ class SessionManager:
 
         try:
             while not self._stop_event.is_set():
+                log.debug("Poll cycle starting.")
                 try:
                     self._scan_and_register()
                     self._process_due_sessions()
                     self._save_state()
                 except Exception:
                     log.exception("Unexpected error in main loop.")
+                log.debug(
+                    "Poll cycle complete.  Next poll in %.0f s.",
+                    self.cfg.poll_interval_s,
+                )
                 self._stop_event.wait(self.cfg.poll_interval_s)
         except KeyboardInterrupt:
             log.info(

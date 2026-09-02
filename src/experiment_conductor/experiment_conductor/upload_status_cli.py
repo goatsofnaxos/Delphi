@@ -297,26 +297,54 @@ def _clear_screen() -> None:
         os.system("clear")
 
 
-def _wait_for_input(prompt: str, timeout_s: float) -> str | None:
-    """Display *prompt* and return the user's input, or ``None`` on timeout.
+_PROMPT_BASE = "  Select"
 
-    Uses non-blocking I/O so the screen can auto-refresh even while waiting:
 
-    * **Windows** — polls :mod:`msvcrt` every 50 ms.
-    * **Unix** — uses :func:`select.select` with *timeout_s* as the deadline.
+def _wait_for_input(timeout_s: float) -> str | None:
+    """Wait up to *timeout_s* seconds for a single-line selection, or return ``None``.
+
+    Displays a live countdown that rewrites itself in place each second so the
+    user can see exactly when the next auto-refresh will fire.  The format is::
+
+        Select (refresh in 28s): <typed>
+
+    Uses non-blocking I/O:
+
+    * **Windows** — polls :mod:`msvcrt` every 50 ms and redraws the prompt line
+      with ``\\r`` once per second.
+    * **Unix** — loops :func:`select.select` with a 1-second ceiling so the
+      countdown updates at the same cadence.
 
     Pressing **Ctrl+C** raises :exc:`KeyboardInterrupt` on both platforms.
     """
     import time
 
-    print(prompt, end="", flush=True)
+    def _prompt(secs_left: int) -> str:
+        return f"\r{_PROMPT_BASE} (refresh in {secs_left:2d}s): "
 
     if sys.platform == "win32":
         import msvcrt
 
         buf = ""
         deadline = time.monotonic() + timeout_s
-        while time.monotonic() < deadline:
+        last_secs = -1
+
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                # Erase the prompt line and signal timeout
+                print(f"\r{' ' * 60}\r", end="", flush=True)
+                return None
+
+            secs_left = max(1, int(remaining) + 1)
+            if secs_left != last_secs:
+                last_secs = secs_left
+                # Overwrite the line: prompt + current buffer
+                line = _prompt(secs_left) + buf
+                print(f"{line}{' ' * 4}", end="", flush=True)  # trailing spaces erase old chars
+                # Reposition cursor at end of buffer (after the trailing spaces)
+                print(f"\r{line}", end="", flush=True)
+
             if msvcrt.kbhit():
                 ch = msvcrt.getwch()
                 if ch in ("\r", "\n"):
@@ -325,7 +353,7 @@ def _wait_for_input(prompt: str, timeout_s: float) -> str | None:
                 elif ch == "\x08":  # backspace
                     if buf:
                         buf = buf[:-1]
-                        print("\b \b", end="", flush=True)
+                        last_secs = -1  # force prompt redraw
                 elif ch == "\x03":  # Ctrl+C
                     print()
                     raise KeyboardInterrupt
@@ -333,19 +361,36 @@ def _wait_for_input(prompt: str, timeout_s: float) -> str | None:
                     msvcrt.getwch()
                 else:
                     buf += ch
-                    print(ch, end="", flush=True)
+                    last_secs = -1  # force prompt redraw
+
             time.sleep(0.05)
-        print()
-        return None  # timeout
 
     else:
-        import select
+        import select as _select
 
-        ready, _, _ = select.select([sys.stdin], [], [], timeout_s)
-        if ready:
-            return sys.stdin.readline().strip().lower()
-        print()
-        return None  # timeout
+        buf = ""
+        deadline = time.monotonic() + timeout_s
+        last_secs = -1
+
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                print(f"\r{' ' * 60}\r", end="", flush=True)
+                return None
+
+            secs_left = max(1, int(remaining) + 1)
+            if secs_left != last_secs:
+                last_secs = secs_left
+                print(_prompt(secs_left), end="", flush=True)
+
+            # Wait up to 1 s so we can update the countdown each second
+            ready, _, _ = _select.select([sys.stdin], [], [], min(1.0, remaining))
+            if ready:
+                line = sys.stdin.readline()
+                print()
+                return line.strip().lower()
+
+        return None  # unreachable but satisfies type checkers
 
 
 def _load_sessions(state_file_path: Path) -> list[tuple]:
@@ -444,11 +489,8 @@ def _main_menu(
         print(f"  {_cyan('q')}. Quit")
         print()
 
-        # ── Wait for input (with auto-refresh timeout) ────────────────────────
-        choice = _wait_for_input(
-            f"  Select [{_dim(f'or wait {int(refresh_s)}s to refresh')}]: ",
-            refresh_s,
-        )
+        # ── Wait for input (with auto-refresh countdown) ─────────────────────
+        choice = _wait_for_input(refresh_s)
 
         if choice is None:
             # Timeout — loop back to reload and redraw
