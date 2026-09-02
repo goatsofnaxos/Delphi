@@ -16,7 +16,7 @@ from packaging.version import parse as parse_version
 from swc.aeon.io import api as aeon_api
 from swc.aeon.io import reader
 
-from delphi_data.config import DEFAULT_TIMING_REGISTERS, get_all_registers
+from delphi_data.config import get_all_registers
 
 # ---------------------------------------------------------------------------
 # Module-level Harp readers for commonly accessed registers
@@ -153,11 +153,13 @@ def load_data(root_path, readers, start_cutoff=None, end_cutoff=None) -> dict:
 def extract_constant_registers(
     data: Dict[str, pd.DataFrame],
 ) -> Dict[str, float]:
-    """Extract scalar timing registers and fill missing ones with package defaults.
+    """Extract scalar timing registers that were actually recorded in this session.
 
     Any register whose name ends in ``US`` is converted from microseconds to
-    seconds.  Missing timing registers are backfilled from
-    :data:`DEFAULT_TIMING_REGISTERS`.
+    seconds.  Registers that were not written to the device during the session
+    (empty stream) are omitted from the result entirely — no default values are
+    substituted.  This keeps the dataframe honest: a missing column means the
+    value was not recorded, not that a synthetic default was used.
 
     Parameters
     ----------
@@ -168,14 +170,12 @@ def extract_constant_registers(
     Returns
     -------
     dict
-        Mapping of register name → scalar value in seconds.
+        Mapping of register name → scalar value in seconds, for every
+        single-row register that was present in the session data.
     """
 
     constant_registers: Dict[str, float] = {}
 
-    # -----------------------------
-    # EXTRACT EXISTING VALUES
-    # -----------------------------
     for name, df in data.items():
         if df.empty or df.shape[1] == 0:
             continue
@@ -188,13 +188,6 @@ def extract_constant_registers(
                 val *= 1e-6
 
             constant_registers[name] = val
-
-    # -----------------------------
-    # APPLY DEFAULTS FOR TIMING REGS
-    # -----------------------------
-    for name, default_val in DEFAULT_TIMING_REGISTERS.items():
-        if name not in constant_registers:
-            constant_registers[name] = default_val
 
     return constant_registers
 

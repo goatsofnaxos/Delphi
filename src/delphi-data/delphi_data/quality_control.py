@@ -13,6 +13,8 @@ The QC figures saved by :func:`run_qc_plots` are:
 - ``qc_session_summary.png`` — single-panel text dashboard of key session counts
 - ``qc_camera_frame_rate.png`` — per-camera inter-frame interval histogram and
   instantaneous FPS time series, with configured target FPS as reference
+- ``qc_odor_transitions.png`` — annotated heatmap of odor-to-odor transition
+  frequencies across all registered pokes
 
 Typical usage::
 
@@ -872,6 +874,148 @@ def plot_camera_frame_rate_qc(
 
 
 # ---------------------------------------------------------------------------
+# Odor transition QC
+# ---------------------------------------------------------------------------
+
+
+def compute_odor_transition_matrix(
+    df: pd.DataFrame,
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """Compute odor-to-odor transition counts and frequencies from registered pokes.
+
+    A transition is defined as the pair ``(odor_name at poke N, odor_name at poke N+1)``
+    across consecutive *registered* pokes.  Self-transitions (same odor repeated)
+    are included in both the count and frequency matrices.
+
+    Parameters
+    ----------
+    df:
+        Per-poke event DataFrame as loaded from ``delphi_dataset.csv``.
+        Must contain ``odor_name`` and ``poke_registered`` columns.
+
+    Returns
+    -------
+    counts : pd.DataFrame
+        Square integer matrix of raw transition counts.  Rows are the
+        "from" odor, columns are the "to" odor.  Empty when fewer than
+        two registered pokes with a known odor name are present.
+    freq : pd.DataFrame
+        Square float matrix of transition frequencies (fraction of all
+        transitions, sums to 1 across the whole matrix).  Same shape and
+        index/columns as *counts*.
+    """
+    if "odor_name" not in df.columns or "poke_registered" not in df.columns:
+        return pd.DataFrame(), pd.DataFrame()
+
+    # Keep only registered pokes with a resolved odor name
+    reg_odors = (
+        df.loc[df["poke_registered"] == True, "odor_name"]
+        .dropna()
+        .reset_index(drop=True)
+    )
+    if len(reg_odors) < 2:
+        return pd.DataFrame(), pd.DataFrame()
+
+    # All unique odors, sorted for stable axis ordering
+    odors = sorted(reg_odors.unique().tolist())
+    counts = pd.DataFrame(0, index=odors, columns=odors, dtype=int)
+
+    # Tally consecutive (from, to) pairs
+    from_odors = reg_odors.iloc[:-1].values
+    to_odors = reg_odors.iloc[1:].values
+    for from_o, to_o in zip(from_odors, to_odors):
+        counts.loc[from_o, to_o] += 1
+
+    total = int(counts.values.sum())
+    freq: pd.DataFrame = counts / total if total > 0 else counts.astype(float)
+
+    return counts, freq
+
+
+def plot_odor_transition_matrix(
+    freq_matrix: pd.DataFrame,
+    counts_matrix: pd.DataFrame,
+) -> plt.Figure:
+    """Plot an annotated heatmap of odor-to-odor transition frequencies.
+
+    Each cell shows the transition *frequency* (fraction of all transitions,
+    0–1) with the raw count in parentheses.  Rows are "from" odors; columns
+    are "to" odors.
+
+    Parameters
+    ----------
+    freq_matrix:
+        Square DataFrame of transition frequencies as returned by
+        :func:`compute_odor_transition_matrix`.
+    counts_matrix:
+        Square DataFrame of raw transition counts (same shape).
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+    """
+    if freq_matrix.empty:
+        fig, ax = plt.subplots(figsize=(5, 3))
+        ax.text(
+            0.5, 0.5, "No odor transition data",
+            ha="center", va="center", transform=ax.transAxes, fontsize=10,
+        )
+        ax.axis("off")
+        return fig
+
+    n = len(freq_matrix)
+    cell_size = max(1.6, 6.0 / max(n, 1))  # shrink gracefully for many odors
+    figsize = (n * cell_size + 2.5, n * cell_size + 1.5)
+    fig, ax = plt.subplots(figsize=figsize)
+
+    data = freq_matrix.values.astype(float)
+    vmax = data.max() if data.max() > 0 else 1.0
+
+    im = ax.imshow(data, vmin=0, vmax=vmax, cmap="Blues", aspect="auto")
+
+    ax.set_xticks(range(n))
+    ax.set_yticks(range(n))
+    ax.set_xticklabels(freq_matrix.columns, rotation=45, ha="right", fontsize=9)
+    ax.set_yticklabels(freq_matrix.index, fontsize=9)
+
+    # Annotate every cell with frequency and count
+    threshold = vmax * 0.55  # switch to white text above this intensity
+    for i in range(n):
+        for j in range(n):
+            freq_val = float(freq_matrix.iloc[i, j])
+            count_val = int(counts_matrix.iloc[i, j])
+            if count_val == 0:
+                continue
+            text_color = "white" if freq_val > threshold else "black"
+            ax.text(
+                j, i,
+                f"{freq_val:.3f}\n({count_val:,})",
+                ha="center", va="center",
+                color=text_color,
+                fontsize=max(6, min(9, int(40 / max(n, 4)))),
+            )
+
+    cbar = plt.colorbar(im, ax=ax)
+    cbar.set_label("Transition frequency", fontsize=9)
+    ax.set_xlabel("To odor", fontsize=10)
+    ax.set_ylabel("From odor", fontsize=10)
+    ax.set_title("Odor Transition Frequency Matrix", fontsize=11)
+
+    total_transitions = int(counts_matrix.values.sum())
+    n_odors = len(freq_matrix)
+    ax.text(
+        0.01, -0.18,
+        f"n = {total_transitions:,} transitions  |  {n_odors} odor(s)",
+        transform=ax.transAxes,
+        fontsize=8,
+        color="dimgray",
+    )
+
+    fig.tight_layout()
+    return fig
+
+
+# ---------------------------------------------------------------------------
 # Top-level pipeline
 # ---------------------------------------------------------------------------
 
@@ -903,6 +1047,7 @@ def run_qc_plots(
     - ``qc_poke_timing.png``
     - ``qc_valve_state_frequencies.png``
     - ``qc_valve_state_durations.png``
+    - ``qc_odor_transitions.png`` *(when* ``odor_name`` *column is present)*
     - ``qc_camera_frame_rate.png`` *(when* ``session_dir`` *is provided and
       cameras are found)*
 
@@ -965,7 +1110,18 @@ def run_qc_plots(
     else:
         print("    Skipped valve plots (no transition data parsed).")
 
-    # 5 — Camera frame-rate QC
+    # 5 — Odor transition heatmap
+    if "odor_name" in df.columns:
+        counts_mat, freq_mat = compute_odor_transition_matrix(df)
+        if not freq_mat.empty:
+            fig = plot_odor_transition_matrix(freq_mat, counts_mat)
+            _save(fig, "qc_odor_transitions.png", "Odor Transition Frequencies")
+        else:
+            print("    Skipped odor transition plot (fewer than 2 registered pokes with known odor).")
+    else:
+        print("    Skipped odor transition plot (no odor_name column).")
+
+    # 6 — Camera frame-rate QC
     if data_root is not None:
         data_root = pathlib.Path(data_root)
         behavior_dir = data_root / "behavior"

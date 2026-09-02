@@ -60,20 +60,6 @@ VIDEO_CONFIG = {
 # -----------------------------
 # FIRMWARE REGISTER RESOLUTION
 # -----------------------------
-DEFAULT_TIMING_REGISTERS = {
-    "VacuumCloseTimeUS": 0.02,
-    "MinOdorDeliveryTimeUS": 0.01,
-    "MaxOdorDeliveryTimeUS": 10.0,
-    "OdorTransitionTimeUS": 0.03,
-    "VacuumSetupTimeUS": 0.02,
-    "FinalValveEnergizedTimeUS": 0.11,
-    "MinimumPokeTimeUS": 0.01,
-}
-
-
-# -----------------------------
-# FIRMWARE REGISTER RESOLUTION
-# -----------------------------
 def resolve_firmware_registers(firmware: str, config: dict) -> list:
     """Resolve the full register list for a firmware version, following parent inheritance.
 
