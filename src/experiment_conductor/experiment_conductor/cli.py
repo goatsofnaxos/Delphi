@@ -22,6 +22,54 @@ import sys
 from pathlib import Path
 
 
+def _spawn_status_window(cfg) -> None:
+    """Launch ``conductor-status`` in a new terminal window.
+
+    Uses ``cmd /k`` on Windows so the window stays open after the menu exits,
+    letting the operator review the final state before closing.  Falls back to
+    an ``xterm`` launch on other platforms.
+
+    Both ``--state-file`` and ``--pause-file`` are forwarded so the status
+    viewer always uses the same paths as the running conductor.
+    """
+    import logging
+    import shutil
+    import subprocess
+
+    log = logging.getLogger(__name__)
+
+    # Build the command — prefer the installed entry-point script, fall back
+    # to running the module directly with the same Python interpreter.
+    status_exe = shutil.which("conductor-status")
+    if status_exe:
+        cmd_parts = [status_exe]
+    else:
+        cmd_parts = [sys.executable, "-m", "experiment_conductor.upload_status_cli"]
+
+    if cfg.state_file:
+        cmd_parts += ["--state-file", str(cfg.state_file)]
+    cmd_parts += ["--pause-file", str(cfg.pause_file)]
+
+    try:
+        if sys.platform == "win32":
+            # /k keeps the window open after the menu exits so the operator can
+            # read the final state; /c would close it immediately.
+            subprocess.Popen(
+                ["cmd", "/k"] + cmd_parts,
+                creationflags=subprocess.CREATE_NEW_CONSOLE,
+            )
+        else:
+            subprocess.Popen(["xterm", "-title", "conductor-status", "-e"] + cmd_parts)
+
+        log.info("conductor-status launched in a new window.")
+    except Exception as exc:
+        log.warning(
+            "Could not spawn conductor-status window: %s  "
+            "Run `conductor-status` manually in a separate terminal.",
+            exc,
+        )
+
+
 def main() -> None:
     """Start the experiment conductor.
 
@@ -116,6 +164,9 @@ def main() -> None:
             "Set CONDUCTOR_WATCH_PATHS in .env or pass --add-session PATH."
         )
         sys.exit(1)
+
+    if cfg.launch_status:
+        _spawn_status_window(cfg)
 
     manager.run()
 

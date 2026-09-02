@@ -219,6 +219,10 @@ class ConductorConfig:
     verbosity: int = 0
     """0 = INFO (default), 1 = VERBOSE (-v), 2 = DEBUG (-vv)."""
 
+    # ── Status window ─────────────────────────────────────────────────────────
+    launch_status: bool = False
+    """When *True*, spawn ``conductor-status`` in a new terminal window on startup."""
+
     # ── Runtime reloading ─────────────────────────────────────────────────────
     env_file_path: str = ".env"
     """Path to the ``.env`` file.  Stored so the session manager can re-read
@@ -316,6 +320,17 @@ def _parse_cli() -> argparse.Namespace:
     p.add_argument(
         "--state-file", default=None, type=Path, metavar="PATH",
         help="Persist session states to this JSON file across restarts.",
+    )
+    p.add_argument(
+        "--with-status",
+        action="store_true",
+        default=False,
+        dest="launch_status",
+        help=(
+            "Spawn the conductor-status interactive menu in a new terminal "
+            "window automatically when the conductor starts.  "
+            "Equivalent to setting CONDUCTOR_LAUNCH_STATUS=true."
+        ),
     )
     p.add_argument(
         "--pause-file", default=None, type=Path, metavar="PATH",
@@ -460,5 +475,6 @@ def build_config() -> ConductorConfig:
             if args.verbosity > 0
             else _int(os.getenv("CONDUCTOR_VERBOSITY"), 0)
         ),
+        launch_status=_bool(_g("CONDUCTOR_LAUNCH_STATUS", "true" if args.launch_status else None, "false")),
         env_file_path=args.env_file,
     )
