@@ -53,3 +53,11 @@ target-version = "py311"
 [tool.mypy]
 python_version = "3.11"
 ignore_missing_imports = true
+
+# ---------------------------------------------------------------------------
+# uv: local-path overrides for packages not published to PyPI
+# ---------------------------------------------------------------------------
+[tool.uv.sources]
+delphi-data = { path = "../delphi-data", editable = true }
+metadata-generator = { path = "../metadata_generator", editable = true }
+aind-chronic-ephys-uploader = { path = "../../../aind-chronic-ephys-uploader", editable = true }

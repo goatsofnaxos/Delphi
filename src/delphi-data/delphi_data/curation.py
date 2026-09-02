@@ -1,10 +1,14 @@
 import hashlib
+import logging
 import os
 import pathlib
 import shutil
 from datetime import datetime
+from typing import Optional
 
 from tqdm import tqdm
+
+log = logging.getLogger(__name__)
 
 
 def is_timestamp_dir(name: str) -> bool:
@@ -396,3 +400,140 @@ def consolidate_metadata_files(data_root: str | pathlib.Path) -> list:
             pass
 
     return moved
+
+
+# ---------------------------------------------------------------------------
+# ONIX SampleMetadata normalisation
+# ---------------------------------------------------------------------------
+
+#: Sub-directory name that holds the ONIX ephys data and SampleMetadata JSON files.
+ONIX_EPHYS_DIRNAME = "OnixEphys"
+
+#: Glob pattern that matches the SampleMetadata JSON files inside *ONIX_EPHYS_DIRNAME*.
+ONIX_SAMPLE_METADATA_GLOB = "OnixEphys_SampleMetadata_*.json"
+
+#: Key in each SampleMetadata JSON file that holds the sample index.
+_ONIX_SAMPLE_KEY = "start_sample"
+
+
+def normalize_onix_sample_metadata(
+    run_dir: "str | pathlib.Path",
+    ecephys_subdir: str = "ecephys",
+) -> bool:
+    """Normalise ONIX SampleMetadata ``start_sample`` indices to begin at zero.
+
+    The ONIX device accumulates a sample counter from the moment it is powered
+    on.  Because recording typically begins during rig setup — before the
+    experiment proper — the first ``OnixEphys_SampleMetadata_*.json`` file
+    will have a large non-zero ``start_sample`` value (e.g. ``47,356,860``).
+    This non-zero offset breaks Zarr container indexing because the
+    ``times_seg0/`` array chunks are named after the sample index.
+
+    This function reads the chronologically first
+    ``OnixEphys_SampleMetadata_*.json`` file under
+    ``<run_dir>/<ecephys_subdir>/OnixEphys/``, records its ``start_sample``
+    value as the offset, and subtracts that offset from **every JSON file's**
+    ``start_sample`` so that the first chunk becomes 0 and all subsequent
+    chunks are shifted consistently.  The files are modified **in place**.
+
+    ``Value.Clock``, ``Value.HubClock``, and all ``OnixHarpSyncData`` CSV
+    files are left completely untouched — those are absolute time references.
+
+    A call on an already-normalised session (first ``start_sample`` == 0) is a
+    safe no-op and returns ``False`` without modifying any file.
+
+    Parameters
+    ----------
+    run_dir:
+        Run-level directory that contains ``<ecephys_subdir>/OnixEphys/``.
+    ecephys_subdir:
+        Name of the ecephys sub-directory to search under *run_dir*.
+        Default is ``"ecephys"``.
+
+    Returns
+    -------
+    bool
+        ``True`` when at least one JSON file was modified, ``False`` when the
+        directory or JSON files were not found or ``start_sample`` already
+        starts at zero.
+
+    Raises
+    ------
+    RuntimeError
+        If the first JSON file does not contain the ``start_sample`` key.
+
+    Examples
+    --------
+    >>> from delphi_data.curation import normalize_onix_sample_metadata
+    >>> normalize_onix_sample_metadata("/data/842456/2026-08-24T20-30-12/2026-08-24T20-30-12")
+    True
+    """
+    import json
+
+    run_dir = pathlib.Path(run_dir)
+    ephys_dir = run_dir / ecephys_subdir / ONIX_EPHYS_DIRNAME
+
+    if not ephys_dir.is_dir():
+        log.debug(
+            "normalize_onix_sample_metadata: directory not found — %s", ephys_dir
+        )
+        return False
+
+    json_files = sorted(ephys_dir.glob(ONIX_SAMPLE_METADATA_GLOB))
+    if not json_files:
+        log.debug(
+            "normalize_onix_sample_metadata: no SampleMetadata JSON files found in %s",
+            ephys_dir,
+        )
+        return False
+
+    # ── Determine offset from the first (chronologically earliest) file ─────
+    with open(json_files[0]) as f:
+        first_data = json.load(f)
+
+    if _ONIX_SAMPLE_KEY not in first_data:
+        raise RuntimeError(
+            f"Expected key '{_ONIX_SAMPLE_KEY}' not found in {json_files[0].name}. "
+            f"Available keys: {list(first_data.keys())}"
+        )
+
+    offset: int = int(first_data[_ONIX_SAMPLE_KEY])
+
+    if offset == 0:
+        log.info(
+            "normalize_onix_sample_metadata: start_sample already 0 — skipping."
+        )
+        return False
+
+    log.info(
+        "normalize_onix_sample_metadata: subtracting offset %d from %d file(s) in %s",
+        offset,
+        len(json_files),
+        ephys_dir,
+    )
+
+    # ── Apply offset to every JSON file ─────────────────────────────────────
+    for json_path in json_files:
+        with open(json_path) as f:
+            data = json.load(f)
+
+        if _ONIX_SAMPLE_KEY not in data:
+            log.warning(
+                "normalize_onix_sample_metadata: '%s' missing in %s — skipping file.",
+                _ONIX_SAMPLE_KEY,
+                json_path.name,
+            )
+            continue
+
+        data[_ONIX_SAMPLE_KEY] = int(data[_ONIX_SAMPLE_KEY]) - offset
+
+        with open(json_path, "w") as f:
+            json.dump(data, f)
+        log.debug("  Normalized: %s", json_path.name)
+
+    log.info(
+        "normalize_onix_sample_metadata: updated %d file(s) in %s",
+        len(json_files),
+        ephys_dir,
+    )
+    return True

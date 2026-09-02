@@ -38,6 +38,7 @@ from delphi_data.curation import (
     consolidate_metadata_files,
     consolidate_session_runs,
     find_earliest_run,
+    normalize_onix_sample_metadata,
 )
 from delphi_data.ingestion import ingest
 from delphi_data.settings import _Settings
@@ -97,6 +98,9 @@ def consolidate_session(
         print(f"  Moved {len(moved)} metadata file(s) to behavior/metadata/")
     else:
         print("  No metadata files to move.")
+
+    print("Normalizing ONIX SampleMetadata clocks …")
+    normalize_onix_sample_metadata(data_root)
 
     return data_root
 
