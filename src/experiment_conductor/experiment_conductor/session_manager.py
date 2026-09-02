@@ -34,6 +34,7 @@ import json
 import logging
 import re
 import signal
+import sys
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -157,12 +158,20 @@ class SessionManager:
             return list(self._sessions.values())
 
     def run(self) -> None:
-        """Main polling loop — runs until SIGINT/SIGTERM or :meth:`stop`.
+        """Main polling loop — runs until Ctrl-C, SIGTERM, or :meth:`stop`.
 
-        Installs signal handlers for graceful shutdown.
+        SIGINT (Ctrl-C) is intentionally **not** overridden so that Python
+        raises ``KeyboardInterrupt`` naturally — this guarantees the process
+        exits immediately on Windows and Unix alike.  SIGTERM is handled
+        gracefully on platforms that support it (not Windows).
         """
-        signal.signal(signal.SIGINT, self._handle_signal)
-        signal.signal(signal.SIGTERM, self._handle_signal)
+        # SIGTERM: graceful shutdown on Unix.  Windows doesn't support it so
+        # we skip registration there to avoid a silent no-op or OSError.
+        if sys.platform != "win32":
+            try:
+                signal.signal(signal.SIGTERM, self._handle_signal)
+            except (OSError, ValueError):
+                pass
 
         log.info(
             "Session manager started. "
@@ -195,14 +204,18 @@ class SessionManager:
                 self.cfg.pause_file,
             )
 
-        while not self._stop_event.is_set():
-            try:
-                self._scan_and_register()
-                self._process_due_sessions()
-                self._save_state()
-            except Exception:
-                log.exception("Unexpected error in main loop.")
-            self._stop_event.wait(self.cfg.poll_interval_s)
+        try:
+            while not self._stop_event.is_set():
+                try:
+                    self._scan_and_register()
+                    self._process_due_sessions()
+                    self._save_state()
+                except Exception:
+                    log.exception("Unexpected error in main loop.")
+                self._stop_event.wait(self.cfg.poll_interval_s)
+        except KeyboardInterrupt:
+            log.info("Keyboard interrupt received — stopping conductor ...")
+            self.stop()
 
         log.info("Session manager stopped.")
 
