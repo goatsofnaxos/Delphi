@@ -225,6 +225,52 @@ def _dataset_menu(
 # Top-level dataset selector
 # ---------------------------------------------------------------------------
 
+def _force_quit_conductor(pid_file: Path) -> None:
+    """Read *pid_file* and send a forceful kill signal to the conductor process.
+
+    On Windows this calls ``taskkill /F /PID <pid>``.
+    On other platforms it sends ``SIGKILL`` via :func:`os.kill`.
+
+    Prints a status message and returns — callers should loop back to the menu.
+    """
+    import signal
+    import subprocess
+
+    if not pid_file.exists():
+        print(
+            f"\n  {_yellow('PID file not found:')} {pid_file}\n"
+            "  The conductor may not be running, or it was started without a PID file.\n"
+        )
+        return
+
+    try:
+        pid_text = pid_file.read_text(encoding="utf-8").strip()
+        pid = int(pid_text)
+    except (OSError, ValueError) as exc:
+        print(f"\n  {_red(f'Could not read PID file ({pid_file}): {exc}')}\n")
+        return
+
+    print(f"\n  Force-quitting conductor (PID {pid}) …")
+    try:
+        if sys.platform == "win32":
+            result = subprocess.run(
+                ["taskkill", "/F", "/PID", str(pid)],
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode == 0:
+                print(f"  {_green(f'✔  Process {pid} terminated.')}\n")
+            else:
+                # taskkill prints its own error to stdout
+                msg = (result.stdout or result.stderr or "unknown error").strip()
+                print(f"  {_red(f'taskkill failed: {msg}')}\n")
+        else:
+            os.kill(pid, signal.SIGKILL)
+            print(f"  {_green(f'✔  SIGKILL sent to process {pid}.')}\n")
+    except (ProcessLookupError, PermissionError) as exc:
+        print(f"  {_red(f'Could not kill process {pid}: {exc}')}\n")
+
+
 def _pause_status_line(pause_file) -> str:
     """Return a coloured one-line status string for the pause sentinel."""
     if is_paused(pause_file):
@@ -240,7 +286,9 @@ def _main_menu(sessions: list[tuple], pause_file) -> None:
     *sessions* is a list of ``(subject_id, session_ts, run_dir, sidecar)``
     tuples sorted by subject_id then session_ts.
     *pause_file* is a :class:`~pathlib.Path` to the conductor pause sentinel.
+    The PID file is expected at ``pause_file.parent / "conductor.pid"``.
     """
+    pid_file = pause_file.parent / "conductor.pid"
     while True:
         print()
         print(_bold("╔══════════════════════════════════════════════════╗"))
@@ -270,6 +318,9 @@ def _main_menu(sessions: list[tuple], pause_file) -> None:
         else:
             print(f"  {_cyan('p')}. Pause upload submissions")
 
+        conductor_running = pid_file.exists()
+        if conductor_running:
+            print(f"  {_cyan('k')}. Force quit conductor  {_dim(f'(PID file: {pid_file})')}")
         if sessions:
             print(f"  {_cyan('1')}–{_cyan(str(len(sessions)))}. View dataset details")
         print(f"  {_cyan('q')}. Quit")
@@ -310,6 +361,24 @@ def _main_menu(sessions: list[tuple], pause_file) -> None:
                     print(f"  {_red(f'Could not remove pause file: {exc}')}")
             continue
 
+        # ── Force quit ────────────────────────────────────────────────────────
+        if choice == "k":
+            if not conductor_running:
+                print(
+                    f"\n  {_yellow('No PID file found at')} {pid_file}\n"
+                    "  The conductor does not appear to be running.\n"
+                )
+            else:
+                confirm = input(
+                    f"  {_red('Force-quit the conductor immediately?')}  "
+                    "All in-flight uploads will be abandoned.  [y/N] "
+                ).strip().lower()
+                if confirm == "y":
+                    _force_quit_conductor(pid_file)
+                else:
+                    print("  Cancelled.\n")
+            continue
+
         # ── Dataset selection ─────────────────────────────────────────────────
         if not sessions:
             print(f"  {_red('No sessions to select.')}")
@@ -318,8 +387,17 @@ def _main_menu(sessions: list[tuple], pause_file) -> None:
         try:
             idx = int(choice) - 1
         except ValueError:
-            opts = f"1–{len(sessions)}, p, r, q" if not currently_paused else f"1–{len(sessions)}, r, q"
-            print(f"  {_red('Invalid.')}  Enter {opts}.")
+            parts = []
+            if sessions:
+                parts.append(f"1–{len(sessions)}")
+            if currently_paused:
+                parts.append("r")
+            else:
+                parts.append("p")
+            if conductor_running:
+                parts.append("k")
+            parts.append("q")
+            print(f"  {_red('Invalid.')}  Enter {', '.join(parts)}.")
             continue
 
         if not (0 <= idx < len(sessions)):

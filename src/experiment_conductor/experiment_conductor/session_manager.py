@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import re
 import signal
 import sys
@@ -204,6 +205,15 @@ class SessionManager:
                 self.cfg.pause_file,
             )
 
+        # Write PID file so conductor-status can force-kill this process.
+        pid_file = self.cfg.pause_file.parent / "conductor.pid"
+        try:
+            pid_file.write_text(str(os.getpid()), encoding="utf-8")
+            log.log(VERBOSE, "PID %d written to %s", os.getpid(), pid_file)
+        except OSError as exc:
+            log.warning("Could not write PID file %s: %s", pid_file, exc)
+            pid_file = None  # type: ignore[assignment]
+
         try:
             while not self._stop_event.is_set():
                 try:
@@ -214,8 +224,24 @@ class SessionManager:
                     log.exception("Unexpected error in main loop.")
                 self._stop_event.wait(self.cfg.poll_interval_s)
         except KeyboardInterrupt:
-            log.info("Keyboard interrupt received — stopping conductor ...")
+            log.info(
+                "Keyboard interrupt — stopping gracefully "
+                "(press Ctrl+C again to force quit) ..."
+            )
             self.stop()
+            try:
+                self._stop_event.wait(5.0)
+            except KeyboardInterrupt:
+                log.warning("Force quit.")
+                if pid_file and pid_file.exists():
+                    pid_file.unlink(missing_ok=True)
+                os._exit(1)
+        finally:
+            if pid_file and pid_file.exists():
+                try:
+                    pid_file.unlink(missing_ok=True)
+                except OSError:
+                    pass
 
         log.info("Session manager stopped.")
 
@@ -315,8 +341,13 @@ class SessionManager:
             workers,
             f" ({n_subjects} restricted subject(s))" if n_subjects > 0 else " (unrestricted)",
         )
-        with ThreadPoolExecutor(max_workers=workers) as pool:
-            futures = {pool.submit(self._process_one, s): s for s in due}
+        # Use explicit shutdown(wait=False) so that a KeyboardInterrupt or
+        # force-kill does not block waiting for network-I/O-bound workers.
+        # Workers that are already running will finish in the background;
+        # any pending (not-yet-started) futures are cancelled immediately.
+        pool = ThreadPoolExecutor(max_workers=workers)
+        futures = {pool.submit(self._process_one, s): s for s in due}
+        try:
             for future in as_completed(futures):
                 state = futures[future]
                 try:
@@ -325,6 +356,8 @@ class SessionManager:
                     log.exception(
                         "Unexpected error processing session %s.", state.data_root
                     )
+        finally:
+            pool.shutdown(wait=False, cancel_futures=True)
 
     # ── Per-session processing ────────────────────────────────────────────────
 

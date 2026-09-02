@@ -33,6 +33,7 @@ def _spawn_status_window(cfg) -> None:
     viewer always uses the same paths as the running conductor.
     """
     import logging
+    import os
     import shutil
     import subprocess
 
@@ -50,16 +51,25 @@ def _spawn_status_window(cfg) -> None:
         cmd_parts += ["--state-file", str(cfg.state_file)]
     cmd_parts += ["--pause-file", str(cfg.pause_file)]
 
+    # Capture cwd so the new window starts in the same directory — this ensures
+    # the status viewer finds relative state/pause files without an absolute path.
+    cwd = os.getcwd()
+
     try:
         if sys.platform == "win32":
-            # /k keeps the window open after the menu exits so the operator can
-            # read the final state; /c would close it immediately.
+            # cmd /k requires its command argument as a single contiguous string.
+            # subprocess.list2cmdline produces correct Windows quoting.
+            cmd_str = subprocess.list2cmdline(cmd_parts)
             subprocess.Popen(
-                ["cmd", "/k"] + cmd_parts,
+                ["cmd", "/k", cmd_str],
                 creationflags=subprocess.CREATE_NEW_CONSOLE,
+                cwd=cwd,
             )
         else:
-            subprocess.Popen(["xterm", "-title", "conductor-status", "-e"] + cmd_parts)
+            subprocess.Popen(
+                ["xterm", "-title", "conductor-status", "-e"] + cmd_parts,
+                cwd=cwd,
+            )
 
         log.info("conductor-status launched in a new window.")
     except Exception as exc:
