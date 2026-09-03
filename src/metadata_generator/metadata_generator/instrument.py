@@ -471,51 +471,52 @@ def create_instrument_metadata(
         else:
             delphi_computer = Computer(name=rig_json["rig_name"])  # Same as pirouette computer
 
-        """Delphi Controller"""
-        # channels
-        odor_channels = [
-            OlfactometerChannel(
-                channel_index=idx,
-                channel_type=OlfactometerChannelType.ODOR,
-                flow_unit="mL/min",
+        if delphi_hardware:
+            """Delphi Controller"""
+            # channels
+            odor_channels = [
+                OlfactometerChannel(
+                    channel_index=idx,
+                    channel_type=OlfactometerChannelType.ODOR,
+                    flow_unit="mL/min",
+                )
+                for name, idx in sorted(delphi_rules.items(), key=lambda x: x[1])
+            ]
+
+            # delphi controller device
+            harp_delphi_controller = Olfactometer(
+                manufacturer=Organization.AIND,
+                name="Delphi Controller",
+                harp_device_type=HarpDeviceType.OLFACTOMETER,
+                core_version="1.0",
+                channels=odor_channels,
+                is_clock_generator=False,
+                notes="whoami=1409 and flow rate is actually set to 75 mL/min",
             )
-            for name, idx in sorted(delphi_rules.items(), key=lambda x: x[1])
-        ]
+            components.append(harp_delphi_controller)
 
-        # delphi controller device
-        harp_delphi_controller = Olfactometer(
-            manufacturer=Organization.AIND,
-            name="Delphi Controller",
-            harp_device_type=HarpDeviceType.OLFACTOMETER,
-            core_version="1.0",
-            channels=odor_channels,
-            is_clock_generator=False,
-            notes="whoami=1409 and flow rate is actually set to 75 mL/min",
-        )
-        components.append(harp_delphi_controller)
-
-        connections.append(
-            Connection(
-                source_device="Delphi Controller",
-                target_device=delphi_computer.name,
+            connections.append(
+                Connection(
+                    source_device="Delphi Controller",
+                    target_device=delphi_computer.name,
+                )
             )
-        )
 
-        """Poke Port"""
-        poke_port = Device(
-            name="Poke Port",
-            manufacturer=Organization.AIND,
-            notes="https://github.com/AllenNeuralDynamics/harp.peripheral.poke-port",
-        )
-        components.append(poke_port)
-
-        connections.append(
-            Connection(
-                source_device="Poke Port",
-                target_device="Delphi Controller",
-                target_port=f"POKE0_Pin {delphi_hardware[0]['value']['delphiController']['pokePin']}",
+            """Poke Port"""
+            poke_port = Device(
+                name="Poke Port",
+                manufacturer=Organization.AIND,
+                notes="https://github.com/AllenNeuralDynamics/harp.peripheral.poke-port",
             )
-        )
+            components.append(poke_port)
+
+            connections.append(
+                Connection(
+                    source_device="Poke Port",
+                    target_device="Delphi Controller",
+                    target_port=f"POKE0_Pin {delphi_hardware[0]['value']['delphiController']['pokePin']}",
+                )
+            )
 
         # Pirouette doesn't use cameras from delphi workflow, but delphi only does
         if "pirouette" not in current_experiment:

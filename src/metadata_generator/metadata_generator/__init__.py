@@ -2,12 +2,17 @@
 
 Compatibility shim
 ------------------
-Intermediate releases of ``aind_data_schema`` typed ``Detector.manufacturer``
-as ``Organization.DETECTOR_MANUFACTURERS``.  Current ``aind_data_schema_models``
-no longer defines that attribute — only ``Organization.ONE_OF`` exists.  Patching
-the alias here, before any ``aind_data_schema`` module is imported, prevents an
-``AttributeError`` at class-definition time regardless of which combination of
-package versions is installed.
+Intermediate releases of ``aind_data_schema`` typed device ``manufacturer``
+fields as ``Organization.<DeviceType>_MANUFACTURERS`` (e.g.
+``Organization.DETECTOR_MANUFACTURERS``, ``Organization.FILTER_MANUFACTURERS``).
+Current ``aind_data_schema_models`` no longer defines any of those attributes —
+only ``Organization.ONE_OF`` exists.
+
+Rather than enumerating every attribute name, we rebuild the ``Organization``
+class with a custom metaclass whose ``__getattr__`` catches any missing
+``*_MANUFACTURERS`` lookup and returns ``ONE_OF``.  This runs at package-import
+time, before any ``aind_data_schema`` module is imported, so the Pydantic
+class-body annotations that trigger the attribute access always see a value.
 """
 
 import logging as _logging
@@ -16,27 +21,42 @@ _log = _logging.getLogger(__name__)
 
 
 def _patch_organization_compat() -> None:
-    """Alias ``Organization.DETECTOR_MANUFACTURERS`` → ``Organization.ONE_OF`` if missing."""
+    """Replace Organization's metaclass so *_MANUFACTURERS misses return ONE_OF."""
     try:
-        from aind_data_schema_models.organizations import Organization  # type: ignore[import]
+        import aind_data_schema_models.organizations as _org_mod
+        _Org = _org_mod.Organization
     except ImportError:
         return
 
-    if hasattr(Organization, "DETECTOR_MANUFACTURERS"):
-        return  # already defined — nothing to do
+    # Already on a version that defines the attributes — nothing to do.
+    if hasattr(_Org, "DETECTOR_MANUFACTURERS"):
+        return
 
-    if hasattr(Organization, "ONE_OF"):
-        Organization.DETECTOR_MANUFACTURERS = Organization.ONE_OF  # type: ignore[attr-defined]
-        _log.debug(
-            "aind-data-schema-models compat: aliased "
-            "Organization.DETECTOR_MANUFACTURERS → Organization.ONE_OF"
-        )
-    else:
+    if not hasattr(_Org, "ONE_OF"):
         _log.warning(
-            "aind-data-schema-models compat: neither DETECTOR_MANUFACTURERS nor ONE_OF "
-            "found on Organization — metadata generation may fail. "
+            "aind-data-schema-models compat: Organization has neither "
+            "DETECTOR_MANUFACTURERS nor ONE_OF — cannot patch. "
             "Upgrade aind-data-schema and aind-data-schema-models."
         )
+        return
+
+    # Create a metaclass that returns ONE_OF for any missing *_MANUFACTURERS name.
+    class _OrgMeta(type):
+        def __getattr__(cls, name: str):
+            if name.endswith("_MANUFACTURERS"):
+                return cls.ONE_OF
+            raise AttributeError(
+                f"type object {cls.__name__!r} has no attribute {name!r}"
+            )
+
+    # Rebuild Organization with the new metaclass, preserving every attribute.
+    _patched = _OrgMeta("Organization", (object,), dict(vars(_Org)))
+    _org_mod.Organization = _patched
+
+    _log.debug(
+        "aind-data-schema-models compat: rebuilt Organization with _OrgMeta — "
+        "all *_MANUFACTURERS lookups now fall back to ONE_OF"
+    )
 
 
 _patch_organization_compat()

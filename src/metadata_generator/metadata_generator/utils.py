@@ -27,6 +27,7 @@ def get_delphi_odor_channel_indices(instrument):
     """
 
     odor_channel_indices = []
+    found_delphi_olfactometer = False
 
     for component in instrument.components:
         if not isinstance(component, Olfactometer):
@@ -36,6 +37,7 @@ def get_delphi_odor_channel_indices(instrument):
         if "delphi" not in component.name.lower():
             continue
 
+        found_delphi_olfactometer = True
         for channel in component.channels:
             channel_type = channel.channel_type
 
@@ -43,9 +45,14 @@ def get_delphi_odor_channel_indices(instrument):
             if channel_type == "Odor" or str(channel_type).lower() == "odor":
                 odor_channel_indices.append(channel.channel_index)
 
+    # No Delphi Olfactometer in the instrument at all — valid for pirouette-only
+    # sessions on a delphi_pirouette rig where no Delphi hardware was connected.
+    if not found_delphi_olfactometer:
+        return []
+
     if not odor_channel_indices:
         raise ValueError(
-            "Delphi Olfactometer was found, but it has no ODOR channels. "
+            "Delphi Olfactometer was found but has no ODOR channels. "
             "Check instrument construction."
         )
 
