@@ -10,7 +10,7 @@ class DelphiController(BaseModel):
     vacuum_close_time_us: int = Field(default=20000, ge=0)
     final_valve_energized_time_us: int = Field(default=110000, ge=0)
     max_odor_delivery_time_us: int = Field(default=10000000, ge=0)
-    min_poke_time_us: int = Field(default=10000, ge=0)
+    min_poke_time_us: int = Field(default=10000, ge=10)
     min_odor_delivery_time_us: int = Field(default=10000, ge=0)
     odor_transition_time_us: int = Field(default=30000, ge=0)
     vacuum_setup_time_us: int = Field(default=20000, ge=0)
