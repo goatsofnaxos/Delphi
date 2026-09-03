@@ -21,59 +21,6 @@ from typing import Optional
 
 log = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------------
-# Compatibility shim for aind-data-schema-models < 5.7.3
-# ---------------------------------------------------------------------------
-# ``aind_data_schema`` ≥ 2.x evaluates ``Organization.DETECTOR_MANUFACTURERS``
-# as a class-body type annotation on the ``Detector`` model at *import time*.
-# Older releases of ``aind_data_schema_models`` don't define that attribute, so
-# importing anything from ``aind_data_schema`` raises:
-#
-#   AttributeError: type object 'Organization' has no attribute 'DETECTOR_MANUFACTURERS'
-#
-# We patch the attribute onto the class here, before any ``aind_data_schema``
-# module is imported, so both old and new library versions work.
-# The canonical member list matches aind-data-schema-models 5.7.3.
-_DETECTOR_ORG_ATTRS: tuple[str, ...] = (
-    "AILIPU", "ALLIED", "BASLER", "DODOTRONIC", "EDMUND_OPTICS",
-    "HAMAMATSU", "SPINNAKER", "FLIR", "OXFORD_INSTRUMENTS",
-    "TELEDYNE_VISION_SOLUTIONS", "THE_IMAGING_SOURCE", "THORLABS",
-    "UNKNOWN", "VIEWORKS", "OTHER",
-)
-
-
-def _ensure_detector_manufacturers_compat() -> None:
-    """Patch ``Organization.DETECTOR_MANUFACTURERS`` if missing (pre-5.7.3 installs)."""
-    try:
-        from aind_data_schema_models.organizations import Organization  # type: ignore[import]
-    except ImportError:
-        return
-
-    if hasattr(Organization, "DETECTOR_MANUFACTURERS"):
-        return  # >=5.7.3 already defines it — nothing to do
-
-    members = [getattr(Organization, a) for a in _DETECTOR_ORG_ATTRS if hasattr(Organization, a)]
-    if not members:
-        log.warning(
-            "aind-data-schema-models compat: no detector org members found — cannot patch "
-            "Organization.DETECTOR_MANUFACTURERS. Upgrade to aind-data-schema-models>=5.7.3."
-        )
-        return
-
-    try:
-        from aind_data_schema_models.utils import one_of_instance  # type: ignore[import]
-        Organization.DETECTOR_MANUFACTURERS = one_of_instance(members)
-    except (ImportError, Exception):
-        # Fallback: plain Union — Pydantic can validate instances without a discriminator
-        import typing
-        Organization.DETECTOR_MANUFACTURERS = typing.Union[tuple(type(m) for m in members)]  # type: ignore[assignment,misc]
-
-    log.debug(
-        "aind-data-schema-models compat: patched Organization.DETECTOR_MANUFACTURERS "
-        "with %d member types.", len(members)
-    )
-
-
 _REQUIRED_FILES = (
     "subject.json",
     "instrument.json",
@@ -159,9 +106,6 @@ def generate_metadata(
     bool
         *True* if all four files were generated without errors.
     """
-    # Patch Organization.DETECTOR_MANUFACTURERS before any aind_data_schema import
-    _ensure_detector_manufacturers_compat()
-
     from metadata_generator.subject import write_subject_metadata
     from metadata_generator.instrument import create_instrument_metadata
     from metadata_generator.procedures import create_procedures_metadata, parse_surgery_notes
