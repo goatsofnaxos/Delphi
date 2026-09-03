@@ -23,7 +23,6 @@ classifiers = [
 dependencies = [
   # Sibling packages (installed editable)
   "delphi-data",
-  "metadata-generator",
   "aind-chronic-ephys-uploader",
   # Numerics (noise floor estimation)
   "numpy>=1.26",
@@ -31,8 +30,6 @@ dependencies = [
   "python-dotenv>=1.0",
   # AWS (confirmed-before-delete S3 queries)
   "boto3>=1.34",
-  # AIND schema (acquisition end-time update)
-  "aind-data-schema>=2.8.0",
 ]
 
 [project.optional-dependencies]
@@ -59,5 +56,4 @@ ignore_missing_imports = true
 # ---------------------------------------------------------------------------
 [tool.uv.sources]
 delphi-data = { path = "../delphi-data", editable = true }
-metadata-generator = { path = "../metadata_generator", editable = true }
 aind-chronic-ephys-uploader = { path = "../../../aind-chronic-ephys-uploader", editable = true }

@@ -1,20 +1,25 @@
 """Bridge to the metadata-generator package.
 
-Mirrors the logic of ``metadata_generator``'s individual builder modules but
-driven by the conductor's own configuration rather than a separate CLI.  Each
-JSON file is generated in an independent try/except block so a failure in one
-step does not prevent the others from being written.
+Runs ``generate_all_metadata.py`` in the metadata-generator's own isolated
+venv so that its ``aind-data-schema`` dependency (which caps pydantic at
+<2.12) never conflicts with the conductor's ``delphi-data``/``swc-aeon``
+dependency chain (which requires pydantic >=2.12).
 
-Metadata location
------------------
-All four AIND JSON files are written to ``<run_dir>/metadata/``.  The
-conductor always passes the run-level directory (the earliest run sub-directory
-after consolidation) rather than the session root.
+Setup (one-time, on every machine):
+    cd src/metadata_generator
+    uv sync
+
+The bridge locates the venv automatically relative to this file's position
+in the repository (``../metadata_generator/.venv``).  Override with the
+``CONDUCTOR_METADATA_PYTHON`` environment variable if the layout differs.
 """
 from __future__ import annotations
 
 import json
 import logging
+import os
+import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -28,24 +33,53 @@ _REQUIRED_FILES = (
     "procedures.json",
 )
 
+# ── Path resolution ───────────────────────────────────────────────────────────
+# This file: src/experiment_conductor/experiment_conductor/metadata_bridge.py
+#   parents[0] → src/experiment_conductor/experiment_conductor/
+#   parents[1] → src/experiment_conductor/
+#   parents[2] → src/
+_SRC_DIR = Path(__file__).parents[2]
+_MG_DIR = _SRC_DIR / "metadata_generator"
+_MG_SCRIPT = _MG_DIR / "scripts" / "generate_all_metadata.py"
+
+
+def _metadata_python() -> Path:
+    """Return the Python executable for the metadata-generator venv.
+
+    Checks ``CONDUCTOR_METADATA_PYTHON`` first, then falls back to the
+    conventional ``src/metadata_generator/.venv`` location.
+
+    Raises
+    ------
+    FileNotFoundError
+        If neither source yields a usable executable.
+    """
+    override = os.getenv("CONDUCTOR_METADATA_PYTHON")
+    if override:
+        p = Path(override)
+        if p.exists():
+            return p
+        raise FileNotFoundError(
+            f"CONDUCTOR_METADATA_PYTHON points to a non-existent path: {p}"
+        )
+
+    _bin = "Scripts/python.exe" if sys.platform == "win32" else "bin/python"
+    candidate = _MG_DIR / ".venv" / _bin
+    if candidate.exists():
+        return candidate
+
+    raise FileNotFoundError(
+        f"metadata_generator venv Python not found at {candidate}.\n"
+        "Run once to create it:\n"
+        f"    cd {_MG_DIR}\n"
+        "    uv sync"
+    )
+
+
+# ── Public API ────────────────────────────────────────────────────────────────
 
 def check_metadata_present(run_dir: Path) -> bool:
-    """Return *True* if all four AIND metadata JSON files exist.
-
-    Checks the ``metadata/`` sub-directory of *run_dir*.  This is the
-    canonical location where :func:`generate_metadata` writes its output.
-
-    Parameters
-    ----------
-    run_dir : Path
-        Run-level session directory (the earliest run sub-directory after
-        consolidation).
-
-    Returns
-    -------
-    bool
-        *True* only if every required file is present.
-    """
+    """Return *True* if all four AIND metadata JSON files exist."""
     metadata_dir = run_dir / "metadata"
     return all((metadata_dir / f).exists() for f in _REQUIRED_FILES)
 
@@ -65,221 +99,83 @@ def generate_metadata(
     surgery_notes_base: Optional[Path],
     metadata_output_path: Path,
 ) -> bool:
-    """Generate AIND-compliant metadata files to ``metadata_output_path``.
+    """Generate AIND metadata by running generate_all_metadata.py in a subprocess.
 
-    Calls :mod:`metadata_generator` functions to produce ``subject.json``,
-    ``instrument.json``, ``acquisition.json``, and ``procedures.json``.
-    Each file is wrapped in its own try/except; a failure in one does not
-    prevent the others from being written.
-
-    Parameters
-    ----------
-    experiment_type : str
-        One of ``"delphi"``, ``"pirouette"``, ``"delphi_pirouette"``.
-    subject_id : str
-        Numeric AIND subject identifier.
-    protocol_id : str
-        AIND protocol ID string.
-    instrument_id : str
-        Rig/instrument identifier.
-    experiment_room : str
-        Physical room identifier.
-    acquisition_type : str
-        Acquisition type string (e.g. ``"ChronicRecording"``).
-    delphi_computer_id : str
-        Hostname of the Delphi acquisition computer.
-    surgeons : list of str
-        Surgeon names.
-    experimenters : list of str
-        Experimenter names.
-    data_root : Path
-        Run-level session directory.  Passed to instrument/acquisition builders
-        to locate JSONL metadata files in ``behavior/metadata/``.
-    surgery_notes_base : Path, optional
-        Base directory for surgery notes.  Subject subfolder appended
-        automatically: ``surgery_notes_base / subject_id / …``.
-    metadata_output_path : Path
-        Directory where JSON files will be written (``run_dir / "metadata"``).
+    Uses the metadata-generator's own isolated venv so that its
+    ``aind-data-schema`` dependency never conflicts with the conductor's
+    environment.  All parameters are forwarded as environment variables
+    matching what ``metadata_generator.config.build_config()`` reads.
 
     Returns
     -------
     bool
-        *True* if all four files were generated without errors.
+        *True* if the subprocess exited with code 0.
     """
-    from metadata_generator.subject import write_subject_metadata
-    from metadata_generator.instrument import create_instrument_metadata
-    from metadata_generator.procedures import create_procedures_metadata, parse_surgery_notes
-    from metadata_generator.acquisition import create_acquisition_metadata
-    from metadata_generator.utils import (
-        extract_camera_and_ephys_assemblies,
-        get_delphi_odor_channel_indices,
-        get_delphi_odor_names,
-        get_platform_surface_from_instrument,
-        get_probe_config_from_acquisition,
+    try:
+        python = _metadata_python()
+    except FileNotFoundError as exc:
+        log.error("Cannot locate metadata-generator Python: %s", exc)
+        return False
+
+    if not _MG_SCRIPT.exists():
+        log.error("generate_all_metadata.py not found at %s", _MG_SCRIPT)
+        return False
+
+    # Build the environment passed to the subprocess.
+    # Inherit the current process environment (e.g. network credentials,
+    # PATH) then overlay only the metadata-specific vars.
+    env = os.environ.copy()
+    env.update({
+        "SUBJECT_ID": str(subject_id),
+        "PROTOCOL_ID": str(protocol_id),
+        "CURRENT_EXPERIMENT": str(experiment_type),
+        "DATASET_ROOT": str(data_root),
+        "METADATA_OUTPUT_PATH": str(metadata_output_path),
+        "INSTRUMENT_ID": str(instrument_id),
+        "EXPERIMENT_ROOM": str(experiment_room),
+        "ACQUISITION_TYPE": str(acquisition_type),
+        "DELPHI_COMPUTER_ID": str(delphi_computer_id),
+        "EXPERIMENTERS": ",".join(experimenters),
+        "SURGEONS": ",".join(surgeons),
+        "GENERATE_SUBJECT": "true",
+        "GENERATE_INSTRUMENT": "true",
+        "GENERATE_PROCEDURES": "true",
+        "GENERATE_ACQUISITION": "true",
+    })
+
+    # SURGERY_NOTES_PATH: the script appends /<subject_id>/<subject_id>_...docx
+    if surgery_notes_base:
+        env["SURGERY_NOTES_PATH"] = str(surgery_notes_base)
+
+    log.info(
+        "Running metadata generation subprocess — experiment=%s  subject=%s",
+        experiment_type,
+        subject_id,
     )
-    from aind_data_schema.core.instrument import Instrument
-    from aind_data_schema.core.acquisition import Acquisition
-    from aind_data_schema.core.procedures import Procedures
+    log.debug("Metadata Python: %s", python)
+    log.debug("Metadata script: %s", _MG_SCRIPT)
 
-    metadata_output_path.mkdir(parents=True, exist_ok=True)
-    behavior_metadata_path = data_root / "behavior" / "metadata"
-    any_error = False
+    result = subprocess.run(
+        [str(python), str(_MG_SCRIPT)],
+        env=env,
+        capture_output=False,  # stream stdout/stderr to conductor log
+    )
 
-    # ── Resolve surgery notes path and probe ID ───────────────────────────────
-    surgery_notes_path: Optional[Path] = None
-    if surgery_notes_base and subject_id:
-        surgery_notes_path = (
-            surgery_notes_base / subject_id
-            / f"{subject_id}_craniotomy-implantation.docx"
-        )
-
-    probe_id = "Probe B"
-    if surgery_notes_path and surgery_notes_path.exists():
-        try:
-            _, _, _, probe_sn = parse_surgery_notes(surgery_notes_path)
-            if probe_sn:
-                probe_id = probe_sn
-                log.info("Probe ID from surgery notes: %s", probe_id)
-        except Exception as exc:
-            log.warning("Could not extract probe ID from surgery notes: %s", exc)
+    if result.returncode == 0:
+        log.info("Metadata generation completed successfully.")
+        return True
     else:
-        log.warning(
-            "Surgery notes not found at expected path — using default probe_id '%s'.",
-            probe_id,
+        log.error(
+            "Metadata generation subprocess exited with code %d.", result.returncode
         )
-
-    probe_serial_number = probe_id
-
-    # ── subject.json ──────────────────────────────────────────────────────────
-    log.info("Generating subject.json ...")
-    try:
-        write_subject_metadata(
-            subject_id=subject_id,
-            output_directory=metadata_output_path,
-            allow_fallback=True,
-        )
-        log.info("subject.json generated.")
-    except Exception as exc:
-        log.error("Error generating subject.json: %s", exc, exc_info=True)
-        any_error = True
-
-    # ── instrument.json ───────────────────────────────────────────────────────
-    log.info("Generating instrument.json ...")
-    cam_assemblies = None
-    ephys_assembly = None
-    platform_surface = None
-    odor_names = None
-    odor_channels = None
-    try:
-        instrument = create_instrument_metadata(
-            current_experiment=experiment_type,
-            experiment_room=experiment_room,
-            instrument_id=instrument_id,
-            dataset_root=data_root,
-            metadata_path=behavior_metadata_path,
-            probe_id=probe_id,
-            probe_serial_number=probe_serial_number,
-            delphi_computer_id=delphi_computer_id,
-        )
-        Instrument.model_validate_json(instrument.model_dump_json()).write_standard_file(
-            output_directory=metadata_output_path
-        )
-        log.info("instrument.json generated.")
-
-        cam_assemblies, ephys_assembly = extract_camera_and_ephys_assemblies(instrument)
-        platform_surface = get_platform_surface_from_instrument(instrument)
-        if "delphi" in experiment_type:
-            odor_names = get_delphi_odor_names(behavior_metadata_path)
-            odor_channels = get_delphi_odor_channel_indices(instrument)
-            log.info("Odor channels: %s  names: %s", odor_channels, odor_names)
-    except Exception as exc:
-        log.error("Error generating instrument.json: %s", exc, exc_info=True)
-        any_error = True
-
-    # ── acquisition.json ──────────────────────────────────────────────────────
-    log.info("Generating acquisition.json ...")
-    probe_config = None
-    try:
-        acquisition = create_acquisition_metadata(
-            current_experiment=experiment_type,
-            acquisition_type=acquisition_type,
-            instrument_id=instrument_id,
-            protocol_id=protocol_id,
-            subject=subject_id,
-            experimenters=experimenters,
-            dataset_root=data_root,
-            metadata_path=behavior_metadata_path,
-            ephys_assembly=ephys_assembly,
-            probe_id=probe_id,
-            cam_assemblies=cam_assemblies,
-            platform_surface=platform_surface,
-            odor_names=odor_names if "delphi" in experiment_type else None,
-            odor_channels=odor_channels if "delphi" in experiment_type else None,
-        )
-        Acquisition.model_validate_json(acquisition.model_dump_json()).write_standard_file(
-            output_directory=metadata_output_path
-        )
-        log.info("acquisition.json generated.")
-        probe_config = get_probe_config_from_acquisition(acquisition)
-    except Exception as exc:
-        log.error("Error generating acquisition.json: %s", exc, exc_info=True)
-        any_error = True
-
-    # ── procedures.json ───────────────────────────────────────────────────────
-    log.info("Generating procedures.json ...")
-    try:
-        if surgery_notes_path and surgery_notes_path.exists() and probe_config is not None:
-            probe_device = ephys_assembly.probes[0] if ephys_assembly else None
-            procedures = create_procedures_metadata(
-                current_experiment=experiment_type,
-                subject_id=subject_id,
-                protocol_id=protocol_id,
-                surgeons=surgeons,
-                surgery_notes_path=surgery_notes_path,
-                probe_device=probe_device,
-                probe_config=probe_config,
-            )
-        else:
-            log.warning(
-                "Surgery notes missing or acquisition failed — "
-                "writing minimal procedures.json."
-            )
-            procedures = Procedures(subject_id=subject_id)
-        Procedures.model_validate_json(procedures.model_dump_json()).write_standard_file(
-            output_directory=metadata_output_path
-        )
-        log.info("procedures.json generated.")
-    except Exception as exc:
-        log.error("Error generating procedures.json: %s", exc, exc_info=True)
-        any_error = True
-
-    if any_error:
-        log.warning("Metadata generation completed with errors — see log above.")
-    else:
-        log.info("All AIND metadata written to %s.", metadata_output_path)
-    return not any_error
+        return False
 
 
 def update_acquisition_end_time(
     metadata_output_path: Path,
     end_time: datetime,
 ) -> bool:
-    """Patch ``acquisition_end_time`` in an existing ``acquisition.json``.
-
-    Reads the file, updates the field, and writes it back in-place.
-
-    Parameters
-    ----------
-    metadata_output_path : Path
-        Directory containing ``acquisition.json``.
-    end_time : datetime
-        New UTC end time to write.
-
-    Returns
-    -------
-    bool
-        *True* on success.
-    """
+    """Patch ``acquisition_end_time`` in an existing ``acquisition.json``."""
     acq_path = metadata_output_path / "acquisition.json"
     if not acq_path.exists():
         log.error("acquisition.json not found at %s.", acq_path)
@@ -300,18 +196,7 @@ def update_acquisition_end_time(
 
 
 def verify_probe_json(data_root: Path) -> bool:
-    """Check that ``probe.json`` exists in ``data_root/ecephys/``.
-
-    Parameters
-    ----------
-    data_root : Path
-        Run-level session directory.
-
-    Returns
-    -------
-    bool
-        *True* if the file exists.
-    """
+    """Check that ``probe.json`` exists in ``data_root/ecephys/``."""
     probe_path = data_root / "ecephys" / "probe.json"
     if probe_path.exists():
         log.info("probe.json found at %s.", probe_path)
