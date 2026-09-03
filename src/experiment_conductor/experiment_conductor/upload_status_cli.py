@@ -174,6 +174,8 @@ def _dataset_menu(
     session_ts: str,
     run_dir: str,
     sidecar: Optional[dict],
+    phase: str = "unknown",
+    error_message: Optional[str] = None,
 ) -> None:
     chunks: dict = sidecar.get("chunks", {}) if sidecar else {}
     delete_enabled: bool = sidecar.get("delete_enabled", False) if sidecar else False
@@ -184,6 +186,9 @@ def _dataset_menu(
         print(f"  {'─'*60}")
         print(f"  Dataset : {label}")
         print(f"  Run dir : {_dim(run_dir)}")
+        print(f"  Phase   : {_red('ERROR') if phase == 'error' else phase}")
+        if error_message:
+            print(f"  Error   : {_red(error_message)}")
         print(f"  Delete  : {'enabled' if delete_enabled else 'disabled'}")
         print(f"  {'─'*60}")
         print()
@@ -396,7 +401,8 @@ def _wait_for_input(timeout_s: float) -> str | None:
 def _load_sessions(state_file_path: Path) -> list[tuple]:
     """Read *state_file_path* and return a sorted list of session tuples.
 
-    Each tuple is ``(subject_id, session_ts, run_dir_str, sidecar_dict_or_None)``.
+    Each tuple is
+    ``(subject_id, session_ts, run_dir_str, sidecar_dict_or_None, phase_str, error_message_or_None)``.
     """
     state_data = _load_state_file(state_file_path)
     sessions: list[tuple] = []
@@ -407,7 +413,9 @@ def _load_sessions(state_file_path: Path) -> list[tuple]:
             run_dir_raw = session_dict.get("run_dir") or _key
             run_dir = Path(run_dir_raw) if run_dir_raw else None
             sidecar = _load_sidecar(run_dir) if run_dir else None
-            sessions.append((subject_id, session_ts, str(run_dir_raw), sidecar))
+            phase = session_dict.get("phase", "unknown")
+            error_message = session_dict.get("error_message")
+            sessions.append((subject_id, session_ts, str(run_dir_raw), sidecar, phase, error_message))
         sessions.sort(key=lambda t: (t[0], t[1]))
     return sessions
 
@@ -469,11 +477,23 @@ def _main_menu(
             print("  Has the conductor run with CONDUCTOR_STATE_FILE set?")
             print()
         else:
-            for i, (subject_id, session_ts, run_dir, sidecar) in enumerate(sessions, 1):
+            for i, (subject_id, session_ts, run_dir, sidecar, phase, error_message) in enumerate(sessions, 1):
+                # Phase badge
+                if phase == "error":
+                    phase_badge = _red("⚠ ERROR")
+                elif phase in ("idle", "discovered"):
+                    phase_badge = _dim(phase)
+                else:
+                    phase_badge = _yellow(phase)
+
                 summary = _summarize_sidecar(sidecar)
-                print(f"  {_bold(str(i))}. {_bold(subject_id)}  {session_ts}")
+                print(f"  {_bold(str(i))}. {_bold(subject_id)}  {session_ts}  {phase_badge}")
                 print(f"     {_dim(str(run_dir))}")
                 print(f"     {summary}")
+                if error_message:
+                    # Truncate very long messages to keep the list readable
+                    msg = error_message if len(error_message) <= 120 else error_message[:117] + "…"
+                    print(f"     {_red('✖ ' + msg)}")
                 print()
 
         # ── Actions ──────────────────────────────────────────────────────────
@@ -569,8 +589,8 @@ def _main_menu(
             print(f"  {_red('Out of range.')}  Enter 1–{len(sessions)}.")
             continue
 
-        subject_id, session_ts, run_dir, sidecar = sessions[idx]
-        _dataset_menu(subject_id, session_ts, run_dir, sidecar)
+        subject_id, session_ts, run_dir, sidecar, phase, error_message = sessions[idx]
+        _dataset_menu(subject_id, session_ts, run_dir, sidecar, phase, error_message)
         # Immediately redraw after returning from the sub-menu
 
 

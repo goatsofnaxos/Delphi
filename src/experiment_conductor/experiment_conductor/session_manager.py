@@ -389,6 +389,7 @@ class SessionManager:
                         state.data_root,
                         self.cfg.max_consecutive_errors,
                     )
+                    log.exception("Final error traceback:")
                 else:
                     log.warning(
                         "Session %s error %d/%d: %s",
@@ -397,6 +398,7 @@ class SessionManager:
                         self.cfg.max_consecutive_errors,
                         exc,
                     )
+                    log.debug("Error traceback:", exc_info=True)
         else:
             with state.lock:
                 state.consecutive_errors = 0
@@ -494,6 +496,18 @@ class SessionManager:
         if not self.cfg.enable_metadata:
             log.info("[%s] Metadata missing but generation disabled.", state.subject_id)
             return
+
+        # ── Preflight: probe.json required for any experiment type with ecephys ─
+        _ECEPHYS_TYPES = {"pirouette", "delphi_pirouette"}
+        if self.cfg.experiment_type in _ECEPHYS_TYPES:
+            probe_json = run_dir / "ecephys" / "probe.json"
+            if not probe_json.exists():
+                raise FileNotFoundError(
+                    f"probe.json not found at {probe_json}. "
+                    "This file is required for instrument metadata generation. "
+                    "Copy the probe configuration JSON for this session into the ecephys/ directory."
+                )
+            log.log(VERBOSE, "[%s] probe.json present: %s", state.subject_id, probe_json)
 
         with state.lock:
             state.phase = SessionPhase.METADATA_GENERATING
