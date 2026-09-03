@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=hardware-schema.json
 subject_id: '801055'
-session_time: '2024-06-01T12:00:00Z'
-logging_root_path: D:/data
+session_time: '2024-06-01_12-00-00'
+logging_root_path: C:/Users/svc_aind_chronic/Documents/data/test_data/local
 robocopy_script_path: C:/Users/svc_aind_chronic/Documents/code/Delphi/src/python/robocopy.py
 remote_transfer_root_path: //allen/aind/stage/chronic/data
 
@@ -15,14 +15,14 @@ delphi_controller:
   vacuum_setup_time_us: 20000
   vacuum_close_time_us: 20000
   odor_dwell_time_us: 0
-  com_port: COM7
+  com_port: COM8
 
 camera_settings:
   camera_name: OverheadCamera
-  frame_rate: 100
+  frame_rate: 60
   exposure: 2500
   duty_cycle: 0.5
-  serial_number: '23354675'
+  serial_number: '26294532'
   ffmpeg_input: -colorspace bt709 -color_primaries bt709 -color_range full -color_trc linear
   ffmpeg_output: -vf "scale=out_color_matrix=bt709:out_range=full,format=bgr24,scale=out_range=full" -c:v libx264 -pix_fmt yuv420p -color_range full -colorspace bt709 -color_trc linear -tune film -preset fast -crf 21 -b:v 0M -metadata author="Allen Institute for Neural Dynamics" -maxrate 700M -bufsize 350M
 
