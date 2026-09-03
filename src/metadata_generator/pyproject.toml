@@ -33,7 +33,7 @@ classifiers = [
 dependencies = [
   # Core schema packages
   "python-dotenv>=1.0",
-  "aind-data-schema>=2.0.0",
+  "aind-data-schema>=2.8.0",
   "aind-data-schema-models>=5.7.3",
 
   # DOCX parsing

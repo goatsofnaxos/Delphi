@@ -40,10 +40,17 @@ def _patch_organization_compat() -> None:
         )
         return
 
-    # Create a metaclass that returns ONE_OF for any missing *_MANUFACTURERS name.
+    # Create a metaclass that returns ONE_OF for any missing SCREAMING_SNAKE_CASE
+    # attribute.  The intermediate aind-data-schema version annotated many fields
+    # with Organization-level type aliases (DETECTOR_MANUFACTURERS, FILTER_MANUFACTURERS,
+    # SUBJECT_SOURCES, …).  None of those exist in current aind-data-schema-models;
+    # every one of them should resolve to Organization.ONE_OF.
+    import re as _re
+    _CAPS_RE = _re.compile(r"^[A-Z][A-Z0-9_]+$")
+
     class _OrgMeta(type):
         def __getattr__(cls, name: str):
-            if name.endswith("_MANUFACTURERS"):
+            if _CAPS_RE.match(name):
                 return cls.ONE_OF
             raise AttributeError(
                 f"type object {cls.__name__!r} has no attribute {name!r}"
