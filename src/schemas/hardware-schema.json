@@ -17,8 +17,8 @@
           "type": "integer"
         },
         "duty_cycle": {
-          "maximum": 1,
-          "minimum": 0,
+          "maximum": 1.0,
+          "minimum": 0.0,
           "title": "Duty Cycle",
           "type": "number"
         },
@@ -75,7 +75,7 @@
         },
         "min_poke_time_us": {
           "default": 10000,
-          "minimum": 0,
+          "minimum": 10,
           "title": "Min Poke Time Us",
           "type": "integer"
         },
