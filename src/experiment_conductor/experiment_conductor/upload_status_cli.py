@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 from pathlib import Path
 from typing import Optional
@@ -84,10 +85,43 @@ def _load_state_file(path: Path) -> dict:
         return {}
 
 
+_TS_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}$")
+
+
+def _find_sidecar_path(directory: Path) -> Optional[Path]:
+    """Return the path to ``.upload_history.json``, searching subdirs if needed.
+
+    Checks *directory* directly first, then looks for the sidecar inside the
+    earliest timestamp-named sub-directory (the consolidated run dir).  This
+    handles the case where ``run_dir`` in the state file is ``None`` and the
+    session root is used as a fallback.
+    """
+    # 1. Direct hit (run_dir is the actual run sub-directory)
+    candidate = directory / SIDECAR_FILENAME
+    if candidate.exists():
+        return candidate
+
+    # 2. Look inside timestamp-named children (session root was passed)
+    try:
+        ts_subdirs = sorted(
+            d for d in directory.iterdir()
+            if d.is_dir() and _TS_RE.fullmatch(d.name)
+        )
+    except OSError:
+        return None
+
+    for sub in ts_subdirs:
+        candidate = sub / SIDECAR_FILENAME
+        if candidate.exists():
+            return candidate
+
+    return None
+
+
 def _load_sidecar(run_dir: Path) -> Optional[dict]:
-    """Load the upload sidecar for *run_dir*, or None if not found."""
-    p = run_dir / SIDECAR_FILENAME
-    if not p.exists():
+    """Load the upload sidecar for *run_dir* (or its earliest run sub-dir)."""
+    p = _find_sidecar_path(run_dir)
+    if p is None:
         return None
     try:
         return json.loads(p.read_text(encoding="utf-8"))
@@ -182,11 +216,13 @@ def _reset_upload_state(
     to the dataset menu so the user can see the result.
     """
     run_dir = Path(run_dir_str)
-    sidecar_path = run_dir / SIDECAR_FILENAME
     conductor_running = pid_file.exists()
 
-    # ── 1. Delete the sidecar ─────────────────────────────────────────────────
-    if sidecar_path.exists():
+    # ── 1. Locate and delete the sidecar ─────────────────────────────────────
+    # The sidecar lives in the earliest run sub-directory, which may differ
+    # from run_dir when the state file stores the session root as a fallback.
+    sidecar_path = _find_sidecar_path(run_dir)
+    if sidecar_path is not None:
         try:
             sidecar_path.unlink()
             print(f"\n  {_green('✔  Sidecar deleted:')} {_dim(str(sidecar_path))}")
@@ -194,7 +230,7 @@ def _reset_upload_state(
             print(f"\n  {_red(f'✖  Could not delete sidecar: {exc}')}\n")
             return
     else:
-        print(f"\n  {_yellow('Sidecar not found')} (already clean): {_dim(str(sidecar_path))}")
+        print(f"\n  {_yellow('Sidecar not found')} (already clean) under: {_dim(run_dir_str)}")
 
     # ── 2. Patch the state file (only safe when conductor is stopped) ─────────
     session_key = run_dir_str  # key used in conductor_state.json
@@ -215,15 +251,23 @@ def _reset_upload_state(
             return
 
         # Try exact key first; fall back to a partial-path match in case the
-        # drive letter or slash style differs between Windows and the state file.
+        # drive letter or slash style differs, OR because the state file is
+        # keyed by data_root while session_key may be the run sub-directory
+        # (a path that starts with data_root + a timestamp suffix).
         target_key = None
         if session_key in state_data:
             target_key = session_key
         else:
             for k in state_data:
-                k_norm = k.replace("\\", "/").lower()
-                s_norm = session_key.replace("\\", "/").lower()
-                if k_norm == s_norm or k_norm.endswith(s_norm) or s_norm.endswith(k_norm):
+                k_norm = k.replace("\\", "/").rstrip("/").lower()
+                s_norm = session_key.replace("\\", "/").rstrip("/").lower()
+                if (
+                    k_norm == s_norm
+                    or s_norm.startswith(k_norm + "/")   # run_dir starts with data_root
+                    or k_norm.startswith(s_norm + "/")   # data_root starts with run_dir (unusual)
+                    or k_norm.endswith(s_norm)
+                    or s_norm.endswith(k_norm)
+                ):
                     target_key = k
                     break
 
