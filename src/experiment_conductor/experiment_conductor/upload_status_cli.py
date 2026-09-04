@@ -148,6 +148,71 @@ def _summarize_sidecar(sidecar: Optional[dict]) -> str:
     return f"{n} chunk(s): " + ", ".join(parts)
 
 
+def _fetch_transfer_jobs(subject_id: str, session_ts: str, run_dir: str) -> list[dict]:
+    """Query the transfer service for *session*'s jobs; returns [] on any error."""
+    from datetime import datetime, timezone
+
+    try:
+        from .uploader_bridge import compute_s3_prefix, query_chronic_ephys_job_statuses
+
+        s3_bucket = os.getenv("CONDUCTOR_S3_BUCKET", "aind-open-data")
+        transfer_endpoint = os.getenv(
+            "TRANSFER_SERVICE_ENDPOINT",
+            "http://aind-data-transfer-service/api/v2/submit_jobs",
+        )
+        acq_dt = datetime.strptime(session_ts, "%Y-%m-%dT%H-%M-%S").replace(
+            tzinfo=timezone.utc
+        )
+        s3_prefix = compute_s3_prefix(
+            source_directory=run_dir,
+            subject_id=subject_id,
+            acq_datetime=acq_dt,
+            s3_bucket=s3_bucket,
+        )
+        if s3_prefix is None:
+            return []
+        return query_chronic_ephys_job_statuses(s3_prefix, transfer_endpoint)
+    except Exception:
+        return []
+
+
+def _compact_transfer_summary(jobs: list[dict]) -> str:
+    """Return a compact one-line transfer-service status for the dataset list."""
+    if not jobs:
+        return _dim("transfer: no recent jobs")
+
+    _ts_color: dict = {
+        "success": _green,
+        "failed":  _red,
+        "running": _yellow,
+        "queued":  _yellow,
+    }
+
+    start_jobs = [j for j in jobs if j.get("job_type") == "chronic_ephys_start"]
+    chunk_jobs = [j for j in jobs if j.get("job_type") == "chronic_ephys_chunk"]
+
+    parts: list[str] = []
+
+    if start_jobs:
+        state = start_jobs[0].get("job_state", "?")
+        cf = _ts_color.get(state, lambda x: x)
+        parts.append(f"start: {cf(state)}")
+
+    if chunk_jobs:
+        by_state: dict[str, int] = {}
+        for j in chunk_jobs:
+            s = j.get("job_state", "?")
+            by_state[s] = by_state.get(s, 0) + 1
+        chunk_parts: list[str] = []
+        for state in ("running", "queued", "success", "failed"):
+            if state in by_state:
+                cf = _ts_color.get(state, lambda x: x)
+                chunk_parts.append(f"{by_state[state]} {cf(state)}")
+        parts.append(f"chunks: {', '.join(chunk_parts)}")
+
+    return "transfer: " + "  ·  ".join(parts) if parts else _dim("transfer: no jobs")
+
+
 # ---------------------------------------------------------------------------
 # Chunk table renderer
 # ---------------------------------------------------------------------------
@@ -702,6 +767,11 @@ def _main_menu(
     while True:
         # ── Reload fresh data ─────────────────────────────────────────────────
         sessions = _load_sessions(state_file_path)
+        # Best-effort transfer-service query for each session (errors → [])
+        transfer_jobs: list[list[dict]] = [
+            _fetch_transfer_jobs(sid, sts, rd)
+            for sid, sts, rd, *_ in sessions
+        ]
         currently_paused = is_paused(pause_file)
         conductor_running = pid_file.exists()
         updated_at = datetime.datetime.now().strftime("%H:%M:%S")
@@ -735,10 +805,12 @@ def _main_menu(
                 else:
                     phase_badge = _yellow(phase)
 
-                summary = _summarize_sidecar(sidecar)
+                sidecar_summary = _summarize_sidecar(sidecar)
+                ts_summary = _compact_transfer_summary(transfer_jobs[i - 1])
                 print(f"  {_bold(str(i))}. {_bold(subject_id)}  {session_ts}  {phase_badge}")
                 print(f"     {_dim(str(run_dir))}")
-                print(f"     {summary}")
+                print(f"     {sidecar_summary}")
+                print(f"     {ts_summary}")
                 if error_message:
                     # Truncate very long messages to keep the list readable
                     msg = error_message if len(error_message) <= 120 else error_message[:117] + "…"
