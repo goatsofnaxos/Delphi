@@ -70,6 +70,28 @@ def stop_upload() -> None:
     log.info("Upload stop signalled.")
 
 
+def _to_linux_path(path: str) -> str:
+    """Convert a Windows UNC path to the POSIX double-slash form that the
+    AIND data-transfer service (Linux) expects.
+
+    The transfer workers mount the Allen share as ``//allen/aind/...``
+    (CIFS double-slash notation).  When the conductor runs on Windows,
+    ``source_directory`` is ``\\\\allen\\aind\\...``; passing that form to
+    the transfer service causes a ``FileNotFoundError`` in its path-validation
+    step.  This function is applied inside the conductor bridge so no changes
+    to the upstream ``aind-chronic-ephys-uploader`` package are required.
+
+    Conversion rules
+    ----------------
+    * Windows UNC  ``\\\\server\\share\\...`` → ``//server/share/...``
+    * Already-POSIX ``/…`` or ``//…``         → returned as-is
+    * Plain Windows ``C:\\foo\\bar``           → ``C:/foo/bar``
+    """
+    if path.startswith("\\\\"):
+        return "//" + path[2:].replace("\\", "/")
+    return path.replace("\\", "/")
+
+
 # ── S3 helpers ────────────────────────────────────────────────────────────────
 
 def _list_confirmed_s3_chunks(s3_bucket: str, s3_prefix: str) -> Set[str]:
@@ -120,7 +142,10 @@ class _StoppableSubmitUploadJob:
     """Thin wrapper around :class:`SubmitUploadJob` with stop-signal support.
 
     Filters out chunks that are already confirmed in S3 or already submitted
-    in this session before posting any batch.
+    in this session before posting any batch.  Also patches the inner job's
+    ``_submit_request`` to raise on HTTP errors and log the response body so
+    failures are immediately visible in the conductor log — without modifying
+    the upstream ``aind-chronic-ephys-uploader`` package.
 
     Parameters
     ----------
@@ -135,6 +160,51 @@ class _StoppableSubmitUploadJob:
 
         self._inner = SubmitUploadJob(job_settings=job_settings)
         self._stop = stop_event
+        # Monkey-patch _submit_request on the instance so the upstream class is
+        # unchanged but the conductor gets raise_for_status + ERROR-level logging.
+        self._inner._submit_request = self._checked_submit_request
+
+    def _checked_submit_request(self, upload_jobs) -> None:
+        """Drop-in replacement for ``SubmitUploadJob._submit_request`` that
+        raises on non-2xx responses and logs the full response body at ERROR.
+
+        This is a shim so changes to the upstream package are not required.
+        """
+        import requests as _requests
+        from urllib3.util.retry import Retry
+        from requests.adapters import HTTPAdapter
+        from aind_data_transfer_service.models.core import SubmitJobRequestV2
+
+        settings = self._inner.job_settings
+        log.info("Submitting %d job(s) to transfer service.", len(upload_jobs))
+        retry_strategy = Retry(
+            total=3,
+            backoff_factor=300,
+            status_forcelist=[500],
+            allowed_methods=["POST"],
+        )
+        submit_request = SubmitJobRequestV2(
+            upload_jobs=upload_jobs, user_email=settings.contact_email
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        endpoint = settings.transfer_service_endpoint.unicode_string()
+        request_content = submit_request.model_dump(mode="json", exclude_none=True)
+
+        if not settings.dry_run:
+            with _requests.Session() as session:
+                session.mount("http://", adapter)
+                response = session.post(url=endpoint, json=request_content)
+            log.debug("Transfer service response: %d", response.status_code)
+            if not response.ok:
+                log.error(
+                    "Transfer service returned HTTP %d for %d job(s).\n%s",
+                    response.status_code,
+                    len(upload_jobs),
+                    response.text[:4000],
+                )
+                response.raise_for_status()
+        else:
+            log.info("DRY RUN: would have sent %s", request_content)
 
     def run_job(
         self,
@@ -321,9 +391,16 @@ def run_upload_cycle(
         if modalities is None:
             modalities = [Modality.ECEPHYS, Modality.BEHAVIOR, Modality.BEHAVIOR_VIDEOS]
 
+        # Convert Windows UNC paths (\\server\share\...) to the POSIX double-
+        # slash form (//server/share/...) that the Linux transfer workers expect.
+        # Applied here so the upstream aind-chronic-ephys-uploader is unmodified.
+        linux_source = _to_linux_path(source_directory)
+        if linux_source != source_directory:
+            log.debug("Source path converted for transfer service: %s", linux_source)
+
         job_type = "chronic_ephys_start" if is_start_job else "chronic_ephys_chunk"
         settings = JobSettings(
-            source_directory=source_directory,
+            source_directory=linux_source,
             job_type=job_type,
             acq_datetime=acq_datetime,
             subject_id=subject_id,
