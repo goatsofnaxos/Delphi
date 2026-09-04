@@ -769,6 +769,16 @@ class SessionManager:
             run_dir,
         )
 
+        # Record each batch in the sidecar immediately after it is accepted by
+        # the transfer service — before the inter-batch sleep begins.  This
+        # keeps conductor-status accurate even while the conductor is mid-job
+        # waiting between batches (the default inter-batch wait is 16200 s).
+        _max_retries = self.cfg.upload_max_retries
+
+        def _on_batch(chunks: list[str]) -> None:
+            for ts in chunks:
+                sidecar.mark_submitted(ts, _max_retries)
+
         result = run_upload_cycle(
             source_directory=str(run_dir),
             subject_id=state.subject_id,
@@ -781,11 +791,8 @@ class SessionManager:
             num_of_last_chunks_to_ignore=self.cfg.num_last_chunks_to_ignore,
             is_start_job=is_start,
             skip_chunks=skip_chunks,
+            on_batch_submitted=_on_batch,
         )
-
-        # Record submission in the sidecar
-        for chunk_ts in result.submitted_chunks:
-            sidecar.mark_submitted(chunk_ts, self.cfg.upload_max_retries)
 
         # Compute the S3 prefix once — used for both confirmation and deletion
         s3_prefix: str | None = compute_s3_prefix(

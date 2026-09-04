@@ -25,7 +25,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from time import sleep
-from typing import List, Optional, Set
+from typing import Callable, List, Optional, Set
 
 log = logging.getLogger(__name__)
 
@@ -203,6 +203,7 @@ class _StoppableSubmitUploadJob:
     def run_job(
         self,
         skip_chunks: Optional[Set[str]] = None,
+        on_batch_submitted: Optional[Callable[[list[str]], None]] = None,
     ) -> list[str]:
         """Run the upload job with duplicate-filtering and stop support.
 
@@ -212,6 +213,12 @@ class _StoppableSubmitUploadJob:
             Additional chunk timestamps to exclude (e.g. already-confirmed or
             sidecar-skipped chunks from a previous run).  Combined with the
             in-process ``_SUBMITTED_CHUNKS`` set and S3-confirmed cloud chunks.
+        on_batch_submitted:
+            Optional callback invoked immediately after each batch is accepted
+            by the transfer service, before the inter-batch sleep begins.
+            Receives the list of chunk timestamps in that batch.  Use this to
+            update persistent state (e.g. the upload sidecar) after each batch
+            rather than waiting for all batches to complete.
 
         Returns
         -------
@@ -306,6 +313,18 @@ class _StoppableSubmitUploadJob:
                 len(batch),
                 len(_SUBMITTED_CHUNKS),
             )
+
+            # Notify the caller immediately so it can persist state (e.g. update
+            # the upload sidecar) before the inter-batch sleep begins.
+            if on_batch_submitted is not None:
+                try:
+                    on_batch_submitted(list(batch))
+                except Exception:
+                    log.warning(
+                        "on_batch_submitted callback raised an exception "
+                        "(batch %d/%d); continuing.", idx + 1, total_batches,
+                        exc_info=True,
+                    )
 
             if idx < total_batches - 1 and not settings.dry_run:
                 wait_secs = settings.time_to_wait_between_batches
@@ -480,6 +499,7 @@ def run_upload_cycle(
     dry_run: bool = False,
     is_start_job: bool = False,
     skip_chunks: Optional[Set[str]] = None,
+    on_batch_submitted: Optional[Callable[[list[str]], None]] = None,
 ) -> UploadCycleResult:
     """Submit one upload cycle (start or chunk job) to the transfer service.
 
@@ -512,6 +532,11 @@ def run_upload_cycle(
     skip_chunks : set of str, optional
         Chunk timestamps to unconditionally skip (e.g. already-confirmed or
         sidecar-skipped chunks supplied by :class:`~.upload_sidecar.UploadSidecar`).
+    on_batch_submitted : callable, optional
+        Invoked immediately after each batch is accepted by the transfer
+        service, before the inter-batch sleep.  Receives the list of chunk
+        timestamps in that batch.  Use this to persist state after each batch
+        rather than waiting for all batches to complete.
 
     Returns
     -------
@@ -553,7 +578,10 @@ def run_upload_cycle(
             job_settings=settings,
             stop_event=UPLOAD_STOP_EVENT,
         )
-        submitted = job.run_job(skip_chunks=skip_chunks)
+        submitted = job.run_job(
+            skip_chunks=skip_chunks,
+            on_batch_submitted=on_batch_submitted,
+        )
         return UploadCycleResult(success=True, submitted_chunks=submitted)
 
     except FileNotFoundError as exc:
