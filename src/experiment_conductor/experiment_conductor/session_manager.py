@@ -72,6 +72,15 @@ log = logging.getLogger(__name__)
 _CHUNK_COUNT_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}$")
 
 
+class FatalSessionError(Exception):
+    """An unrecoverable error that immediately marks the session ERROR.
+
+    Raise instead of a plain exception when the condition requires manual
+    intervention and retrying would be pointless (e.g. a required file is
+    permanently absent).
+    """
+
+
 def _count_local_chunks(run_dir: Path, folder: str) -> int:
     """Count timestamp-named directories in the camera-video folder."""
     target = run_dir / folder
@@ -377,6 +386,18 @@ class SessionManager:
             self._step_pipeline(state)
             self._step_noise_floor(state)
             self._step_upload(state)
+        except FatalSessionError as exc:
+            # Unrecoverable — skip the retry ladder and mark ERROR immediately.
+            with state.lock:
+                state.error_message = str(exc)
+                state.consecutive_errors = self.cfg.max_consecutive_errors
+                state.phase = SessionPhase.ERROR
+            log.error(
+                "Session %s — fatal error, marking ERROR immediately. "
+                "Manual intervention required: %s",
+                state.data_root,
+                exc,
+            )
         except Exception as exc:
             with state.lock:
                 state.error_message = str(exc)
@@ -502,10 +523,9 @@ class SessionManager:
         if self.cfg.experiment_type in _ECEPHYS_TYPES:
             probe_json = run_dir / "ecephys" / "probe.json"
             if not probe_json.exists():
-                raise FileNotFoundError(
+                raise FatalSessionError(
                     f"probe.json not found at {probe_json}. "
-                    "This file is required for instrument metadata generation. "
-                    "Copy the probe configuration JSON for this session into the ecephys/ directory."
+                    "Copy the probe configuration JSON into ecephys/ and reset the session."
                 )
             log.log(VERBOSE, "[%s] probe.json present: %s", state.subject_id, probe_json)
 
