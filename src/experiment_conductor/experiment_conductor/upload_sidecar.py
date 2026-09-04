@@ -249,6 +249,30 @@ class UploadSidecar:
             rec.errors.append(message)
             self._save()
 
+    def reset_submitted_chunks(self) -> int:
+        """Reset all chunks in ``submitted`` state back to ``pending``.
+
+        Called when a previously-submitted start job is found to have never
+        landed in DocDB (meaning it failed on the transfer service side).
+        Resetting allows the uploader to include those chunks in the next
+        start-job submission attempt.
+
+        Returns
+        -------
+        int
+            Number of chunks reset.
+        """
+        with self._lock:
+            count = 0
+            for rec in self._chunks.values():
+                if rec.state == "submitted":
+                    rec.state = "pending"
+                    rec.submitted_at = None
+                    count += 1
+            if count:
+                self._save()
+        return count
+
     # ── Queries ──────────────────────────────────────────────────────────────
 
     def chunks_to_skip(self, max_retries: int) -> Set[str]:

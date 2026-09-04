@@ -169,6 +169,92 @@ def _print_chunk_table(chunks: dict) -> None:
 # Dataset sub-menu
 # ---------------------------------------------------------------------------
 
+def _reset_upload_state(
+    run_dir_str: str,
+    subject_id: str,
+    session_ts: str,
+    state_file_path: Path,
+    pid_file: Path,
+) -> None:
+    """Delete the sidecar and (when the conductor is stopped) patch state JSON.
+
+    Prints a status message and returns.  Does NOT exit — the caller loops back
+    to the dataset menu so the user can see the result.
+    """
+    run_dir = Path(run_dir_str)
+    sidecar_path = run_dir / SIDECAR_FILENAME
+    conductor_running = pid_file.exists()
+
+    # ── 1. Delete the sidecar ─────────────────────────────────────────────────
+    if sidecar_path.exists():
+        try:
+            sidecar_path.unlink()
+            print(f"\n  {_green('✔  Sidecar deleted:')} {_dim(str(sidecar_path))}")
+        except OSError as exc:
+            print(f"\n  {_red(f'✖  Could not delete sidecar: {exc}')}\n")
+            return
+    else:
+        print(f"\n  {_yellow('Sidecar not found')} (already clean): {_dim(str(sidecar_path))}")
+
+    # ── 2. Patch the state file (only safe when conductor is stopped) ─────────
+    session_key = run_dir_str  # key used in conductor_state.json
+    if conductor_running:
+        print(
+            f"\n  {_yellow('⚠  Conductor is running.')}  The sidecar has been cleared.\n"
+            "  The conductor will detect that the start job is not in DocDB and\n"
+            "  automatically re-submit the start job on the next 1–2 cadence cycles.\n"
+            "  No further action needed.\n"
+        )
+    else:
+        # Conductor is stopped — safe to patch the state file directly.
+        try:
+            state_data = json.loads(state_file_path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            print(f"\n  {_yellow(f'Could not read state file ({exc}) — skipping state patch.')}")
+            print("  Restart the conductor; upload will reset on its first cycle.\n")
+            return
+
+        # Try exact key first; fall back to a partial-path match in case the
+        # drive letter or slash style differs between Windows and the state file.
+        target_key = None
+        if session_key in state_data:
+            target_key = session_key
+        else:
+            for k in state_data:
+                k_norm = k.replace("\\", "/").lower()
+                s_norm = session_key.replace("\\", "/").lower()
+                if k_norm == s_norm or k_norm.endswith(s_norm) or s_norm.endswith(k_norm):
+                    target_key = k
+                    break
+
+        if target_key is None:
+            print(
+                f"\n  {_yellow('Session key not found in state file.')}  "
+                "Restart the conductor; upload will reset on its first cycle.\n"
+            )
+            return
+
+        state_data[target_key]["upload_started"] = False
+        state_data[target_key]["last_upload_run"] = None
+        # Clear the in-memory phase back to idle so the conductor picks it up
+        if state_data[target_key].get("phase") == "error":
+            state_data[target_key]["phase"] = "idle"
+            state_data[target_key]["consecutive_errors"] = 0
+            state_data[target_key]["error_message"] = None
+
+        try:
+            state_file_path.write_text(
+                json.dumps(state_data, indent=2), encoding="utf-8"
+            )
+            print(
+                f"\n  {_green('✔  State file patched:')} upload_started → false\n"
+                "  Restart the conductor; it will re-submit the start job on its\n"
+                "  first cycle.\n"
+            )
+        except OSError as exc:
+            print(f"\n  {_red(f'✖  Could not write state file: {exc}')}\n")
+
+
 def _dataset_menu(
     subject_id: str,
     session_ts: str,
@@ -176,6 +262,8 @@ def _dataset_menu(
     sidecar: Optional[dict],
     phase: str = "unknown",
     error_message: Optional[str] = None,
+    state_file_path: Optional[Path] = None,
+    pid_file: Optional[Path] = None,
 ) -> None:
     chunks: dict = sidecar.get("chunks", {}) if sidecar else {}
     delete_enabled: bool = sidecar.get("delete_enabled", False) if sidecar else False
@@ -195,6 +283,7 @@ def _dataset_menu(
         print(f"  {_cyan('1')}. Full chunk history")
         print(f"  {_cyan('2')}. In-progress chunks  (submitted / pending)")
         print(f"  {_cyan('3')}. Failed / skipped chunks")
+        print(f"  {_cyan('4')}. Reset upload state  {_red('(clears sidecar / restarts from start job)')}")
         print(f"  {_cyan('b')}. Back to dataset list")
         print(f"  {_cyan('q')}. Quit")
         print()
@@ -222,8 +311,31 @@ def _dataset_menu(
             }
             print(f"\n  {_bold('Failed / skipped chunks:')}")
             _print_chunk_table(failed)
+        elif choice == "4":
+            print()
+            print(f"  {_red(_bold('Reset upload state'))}")
+            print(f"  This will delete the sidecar (.upload_history.json) for:")
+            print(f"    {_dim(run_dir)}")
+            print(f"  The conductor will re-submit the start job from scratch.")
+            print()
+            confirm = input(
+                f"  {_yellow('Are you sure?')}  [y/N] "
+            ).strip().lower()
+            if confirm == "y":
+                _reset_upload_state(
+                    run_dir_str=run_dir,
+                    subject_id=subject_id,
+                    session_ts=session_ts,
+                    state_file_path=state_file_path or Path("conductor_state.json"),
+                    pid_file=pid_file or Path("conductor.pid"),
+                )
+                # Re-load sidecar so the view reflects the cleared state
+                chunks = {}
+                sidecar = None
+            else:
+                print("  Cancelled.\n")
         else:
-            print(f"  {_red('Invalid.')}  Enter 1, 2, 3, b, or q.")
+            print(f"  {_red('Invalid.')}  Enter 1, 2, 3, 4, b, or q.")
 
 
 # ---------------------------------------------------------------------------
@@ -590,7 +702,11 @@ def _main_menu(
             continue
 
         subject_id, session_ts, run_dir, sidecar, phase, error_message = sessions[idx]
-        _dataset_menu(subject_id, session_ts, run_dir, sidecar, phase, error_message)
+        _dataset_menu(
+            subject_id, session_ts, run_dir, sidecar, phase, error_message,
+            state_file_path=state_file_path,
+            pid_file=pid_file,
+        )
         # Immediately redraw after returning from the sub-menu
 
 
@@ -675,5 +791,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-    _main_menu(sessions, pause_file_path)
