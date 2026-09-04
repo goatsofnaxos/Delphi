@@ -41,16 +41,10 @@ class UploadCycleResult:
     submitted_chunks:
         Chunk timestamp strings that were submitted to the transfer service
         in this cycle (empty when the job was skipped or no new chunks exist).
-    start_job_not_in_docdb:
-        *True* when a ``chronic_ephys_chunk`` job was skipped because the
-        matching DocDB record (created by the start job) does not exist yet.
-        The caller should reset ``upload_started`` so the next cycle
-        re-submits the start job.
     """
 
     success: bool
     submitted_chunks: list[str] = field(default_factory=list)
-    start_job_not_in_docdb: bool = False
 
 
 # ── Module-level state ────────────────────────────────────────────────────────
@@ -420,16 +414,13 @@ def run_upload_cycle(
         submitted = job.run_job(skip_chunks=skip_chunks)
         return UploadCycleResult(success=True, submitted_chunks=submitted)
 
-    except FileNotFoundError as exc:
-        # "not found in DocDB yet" — chunk job blocked because the start job
-        # record was never registered.  Signal the caller so it can reset
-        # upload_started and re-submit the start job next cycle.
-        msg = str(exc)
-        not_in_docdb = "not found in DocDB yet" in msg
-        log.warning("Upload cycle skipped: %s", exc)
-        return UploadCycleResult(success=False, start_job_not_in_docdb=not_in_docdb)
-    except FileExistsError as exc:
-        log.warning("Upload cycle skipped: %s", exc)
+    except (FileNotFoundError, FileExistsError) as exc:
+        # FileNotFoundError: "not found in DocDB yet" — start job is still
+        #   processing on the transfer service; wait for the next cycle.
+        # FileExistsError:   "already exists" — DocDB already has the record;
+        #   the start job succeeded, proceed with chunk jobs.
+        # In both cases the right action is to wait — never auto-reset state.
+        log.info("Upload cycle waiting: %s", exc)
         return UploadCycleResult(success=False)
     except Exception as exc:
         log.error("Upload cycle failed: %s", exc, exc_info=True)

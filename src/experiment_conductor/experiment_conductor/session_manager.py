@@ -821,22 +821,6 @@ class SessionManager:
                 "start job" if is_start else "chunk job",
                 len(result.submitted_chunks),
             )
-        elif result.start_job_not_in_docdb:
-            # The chunk job was blocked because the start-job DocDB record
-            # doesn't exist.  This means a previously-submitted start job never
-            # completed (e.g. it failed on the transfer service side).  Reset
-            # upload_started and clear any "submitted" sidecar entries so the
-            # next cycle re-submits the start job with a clean slate.
-            with state.lock:
-                state.upload_started = False
-            reset_count = sidecar.reset_submitted_chunks()
-            log.warning(
-                "[%s] Chunk job blocked — start job not yet in DocDB.  "
-                "Reset upload_started and cleared %d submitted sidecar record(s); "
-                "next cycle will re-submit the start job.",
-                state.subject_id,
-                reset_count,
-            )
         else:
             log.warning("[%s] Upload cycle skipped or failed.", state.subject_id)
 
