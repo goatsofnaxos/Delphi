@@ -178,6 +178,10 @@ namespace HardwareSchema
     public partial class DelphiController
     {
     
+        private int _pokePin;
+    
+        private int _vacuumCloseTimeUs;
+    
         private int _finalValveEnergizedTimeUs;
     
         private int _maxOdorDeliveryTimeUs;
@@ -188,30 +192,63 @@ namespace HardwareSchema
     
         private int _odorTransitionTimeUs;
     
-        private int _pokePin;
-    
         private int _vacuumSetupTimeUs;
     
-        private int _vacuumCloseTimeUs;
+        private int _odorDwellTimeUs;
     
         private string _comPort;
     
         public DelphiController()
         {
             _pokePin = 22;
+            _vacuumCloseTimeUs = 20000;
+            _finalValveEnergizedTimeUs = 110000;
+            _maxOdorDeliveryTimeUs = 10000000;
+            _minPokeTimeUs = 10000;
+            _minOdorDeliveryTimeUs = 10000;
+            _odorTransitionTimeUs = 30000;
+            _vacuumSetupTimeUs = 20000;
+            _odorDwellTimeUs = 0;
         }
     
         protected DelphiController(DelphiController other)
         {
+            _pokePin = other._pokePin;
+            _vacuumCloseTimeUs = other._vacuumCloseTimeUs;
             _finalValveEnergizedTimeUs = other._finalValveEnergizedTimeUs;
             _maxOdorDeliveryTimeUs = other._maxOdorDeliveryTimeUs;
             _minPokeTimeUs = other._minPokeTimeUs;
             _minOdorDeliveryTimeUs = other._minOdorDeliveryTimeUs;
             _odorTransitionTimeUs = other._odorTransitionTimeUs;
-            _pokePin = other._pokePin;
             _vacuumSetupTimeUs = other._vacuumSetupTimeUs;
-            _vacuumCloseTimeUs = other._vacuumCloseTimeUs;
+            _odorDwellTimeUs = other._odorDwellTimeUs;
             _comPort = other._comPort;
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="poke_pin")]
+        public int PokePin
+        {
+            get
+            {
+                return _pokePin;
+            }
+            set
+            {
+                _pokePin = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="vacuum_close_time_us")]
+        public int VacuumCloseTimeUs
+        {
+            get
+            {
+                return _vacuumCloseTimeUs;
+            }
+            set
+            {
+                _vacuumCloseTimeUs = value;
+            }
         }
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="final_valve_energized_time_us")]
@@ -279,19 +316,6 @@ namespace HardwareSchema
             }
         }
     
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="poke_pin")]
-        public int PokePin
-        {
-            get
-            {
-                return _pokePin;
-            }
-            set
-            {
-                _pokePin = value;
-            }
-        }
-    
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="vacuum_setup_time_us")]
         public int VacuumSetupTimeUs
         {
@@ -305,16 +329,16 @@ namespace HardwareSchema
             }
         }
     
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="vacuum_close_time_us")]
-        public int VacuumCloseTimeUs
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="odor_dwell_time_us")]
+        public int OdorDwellTimeUs
         {
             get
             {
-                return _vacuumCloseTimeUs;
+                return _odorDwellTimeUs;
             }
             set
             {
-                _vacuumCloseTimeUs = value;
+                _odorDwellTimeUs = value;
             }
         }
     
@@ -343,15 +367,111 @@ namespace HardwareSchema
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
+            stringBuilder.Append("PokePin = " + _pokePin + ", ");
+            stringBuilder.Append("VacuumCloseTimeUs = " + _vacuumCloseTimeUs + ", ");
             stringBuilder.Append("FinalValveEnergizedTimeUs = " + _finalValveEnergizedTimeUs + ", ");
             stringBuilder.Append("MaxOdorDeliveryTimeUs = " + _maxOdorDeliveryTimeUs + ", ");
             stringBuilder.Append("MinPokeTimeUs = " + _minPokeTimeUs + ", ");
             stringBuilder.Append("MinOdorDeliveryTimeUs = " + _minOdorDeliveryTimeUs + ", ");
             stringBuilder.Append("OdorTransitionTimeUs = " + _odorTransitionTimeUs + ", ");
-            stringBuilder.Append("PokePin = " + _pokePin + ", ");
             stringBuilder.Append("VacuumSetupTimeUs = " + _vacuumSetupTimeUs + ", ");
-            stringBuilder.Append("VacuumCloseTimeUs = " + _vacuumCloseTimeUs + ", ");
+            stringBuilder.Append("OdorDwellTimeUs = " + _odorDwellTimeUs + ", ");
             stringBuilder.Append("ComPort = " + _comPort);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.6.1.0 (YamlDotNet v16.0.0.0)")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class FirmwareVersion
+    {
+    
+        private int _expectedMajor;
+    
+        private int _expectedMinor;
+    
+        private int _expectedPatch;
+    
+        public FirmwareVersion()
+        {
+        }
+    
+        protected FirmwareVersion(FirmwareVersion other)
+        {
+            _expectedMajor = other._expectedMajor;
+            _expectedMinor = other._expectedMinor;
+            _expectedPatch = other._expectedPatch;
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="expected_major")]
+        public int ExpectedMajor
+        {
+            get
+            {
+                return _expectedMajor;
+            }
+            set
+            {
+                _expectedMajor = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="expected_minor")]
+        public int ExpectedMinor
+        {
+            get
+            {
+                return _expectedMinor;
+            }
+            set
+            {
+                _expectedMinor = value;
+            }
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="expected_patch")]
+        public int ExpectedPatch
+        {
+            get
+            {
+                return _expectedPatch;
+            }
+            set
+            {
+                _expectedPatch = value;
+            }
+        }
+    
+        public System.IObservable<FirmwareVersion> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new FirmwareVersion(this)));
+        }
+    
+        public System.IObservable<FirmwareVersion> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new FirmwareVersion(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("ExpectedMajor = " + _expectedMajor + ", ");
+            stringBuilder.Append("ExpectedMinor = " + _expectedMinor + ", ");
+            stringBuilder.Append("ExpectedPatch = " + _expectedPatch);
             return true;
         }
     
@@ -390,10 +510,13 @@ namespace HardwareSchema
     
         private CameraSettings _cameraSettings;
     
+        private FirmwareVersion _firmwareVersion;
+    
         public HardwareSchema()
         {
             _delphiController = new DelphiController();
             _cameraSettings = new CameraSettings();
+            _firmwareVersion = new FirmwareVersion();
         }
     
         protected HardwareSchema(HardwareSchema other)
@@ -405,6 +528,7 @@ namespace HardwareSchema
             _robocopyScriptPath = other._robocopyScriptPath;
             _delphiController = other._delphiController;
             _cameraSettings = other._cameraSettings;
+            _firmwareVersion = other._firmwareVersion;
         }
     
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="subject_id")]
@@ -500,6 +624,20 @@ namespace HardwareSchema
             }
         }
     
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="firmware_version")]
+        public FirmwareVersion FirmwareVersion
+        {
+            get
+            {
+                return _firmwareVersion;
+            }
+            set
+            {
+                _firmwareVersion = value;
+            }
+        }
+    
         public System.IObservable<HardwareSchema> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new HardwareSchema(this)));
@@ -518,7 +656,8 @@ namespace HardwareSchema
             stringBuilder.Append("RemoteTransferRootPath = " + _remoteTransferRootPath + ", ");
             stringBuilder.Append("RobocopyScriptPath = " + _robocopyScriptPath + ", ");
             stringBuilder.Append("DelphiController = " + _delphiController + ", ");
-            stringBuilder.Append("CameraSettings = " + _cameraSettings);
+            stringBuilder.Append("CameraSettings = " + _cameraSettings + ", ");
+            stringBuilder.Append("FirmwareVersion = " + _firmwareVersion);
             return true;
         }
     
@@ -567,6 +706,11 @@ namespace HardwareSchema
             return Process<DelphiController>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<FirmwareVersion> source)
+        {
+            return Process<FirmwareVersion>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<HardwareSchema> source)
         {
             return Process<HardwareSchema>(source);
@@ -583,6 +727,7 @@ namespace HardwareSchema
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DelphiController>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<FirmwareVersion>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HardwareSchema>))]
     public partial class DeserializeFromYaml : Bonsai.Expressions.SingleArgumentExpressionBuilder
     {

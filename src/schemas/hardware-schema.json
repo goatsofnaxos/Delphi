@@ -49,45 +49,58 @@
     },
     "DelphiController": {
       "properties": {
-        "final_valve_energized_time_us": {
-          "minimum": 0,
-          "title": "Final Valve Energized Time Us",
-          "type": "integer"
-        },
-        "max_odor_delivery_time_us": {
-          "minimum": 0,
-          "title": "Max Odor Delivery Time Us",
-          "type": "integer"
-        },
-        "min_poke_time_us": {
-          "minimum": 0,
-          "title": "Min Poke Time Us",
-          "type": "integer"
-        },
-        "min_odor_delivery_time_us": {
-          "minimum": 0,
-          "title": "Min Odor Delivery Time Us",
-          "type": "integer"
-        },
-        "odor_transition_time_us": {
-          "minimum": 0,
-          "title": "Odor Transition Time Us",
-          "type": "integer"
-        },
         "poke_pin": {
           "default": 22,
           "minimum": 0,
           "title": "Poke Pin",
           "type": "integer"
         },
+        "vacuum_close_time_us": {
+          "default": 20000,
+          "minimum": 0,
+          "title": "Vacuum Close Time Us",
+          "type": "integer"
+        },
+        "final_valve_energized_time_us": {
+          "default": 110000,
+          "minimum": 0,
+          "title": "Final Valve Energized Time Us",
+          "type": "integer"
+        },
+        "max_odor_delivery_time_us": {
+          "default": 10000000,
+          "minimum": 0,
+          "title": "Max Odor Delivery Time Us",
+          "type": "integer"
+        },
+        "min_poke_time_us": {
+          "default": 10000,
+          "minimum": 10,
+          "title": "Min Poke Time Us",
+          "type": "integer"
+        },
+        "min_odor_delivery_time_us": {
+          "default": 10000,
+          "minimum": 0,
+          "title": "Min Odor Delivery Time Us",
+          "type": "integer"
+        },
+        "odor_transition_time_us": {
+          "default": 30000,
+          "minimum": 0,
+          "title": "Odor Transition Time Us",
+          "type": "integer"
+        },
         "vacuum_setup_time_us": {
+          "default": 20000,
           "minimum": 0,
           "title": "Vacuum Setup Time Us",
           "type": "integer"
         },
-        "vacuum_close_time_us": {
+        "odor_dwell_time_us": {
+          "default": 0,
           "minimum": 0,
-          "title": "Vacuum Close Time Us",
+          "title": "Odor Dwell Time Us",
           "type": "integer"
         },
         "com_port": {
@@ -96,16 +109,35 @@
         }
       },
       "required": [
-        "final_valve_energized_time_us",
-        "max_odor_delivery_time_us",
-        "min_poke_time_us",
-        "min_odor_delivery_time_us",
-        "odor_transition_time_us",
-        "vacuum_setup_time_us",
-        "vacuum_close_time_us",
         "com_port"
       ],
       "title": "DelphiController",
+      "type": "object"
+    },
+    "FirmwareVersion": {
+      "properties": {
+        "expected_major": {
+          "minimum": 0,
+          "title": "Expected Major",
+          "type": "integer"
+        },
+        "expected_minor": {
+          "minimum": 0,
+          "title": "Expected Minor",
+          "type": "integer"
+        },
+        "expected_patch": {
+          "minimum": 0,
+          "title": "Expected Patch",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "expected_major",
+        "expected_minor",
+        "expected_patch"
+      ],
+      "title": "FirmwareVersion",
       "type": "object"
     }
   },
@@ -135,6 +167,9 @@
     },
     "camera_settings": {
       "$ref": "#/$defs/CameraSettings"
+    },
+    "firmware_version": {
+      "$ref": "#/$defs/FirmwareVersion"
     }
   },
   "required": [
@@ -144,7 +179,8 @@
     "remote_transfer_root_path",
     "robocopy_script_path",
     "delphi_controller",
-    "camera_settings"
+    "camera_settings",
+    "firmware_version"
   ],
   "title": "HardwareSchema",
   "type": "object"
