@@ -416,12 +416,11 @@ def _dataset_menu(
             print(f"  Error   : {_red(error_message)}")
         print(f"  Delete  : {'enabled' if delete_enabled else 'disabled'}")
         print(f"  {'─'*60}")
-        print()
+        _show_transfer_job_status(subject_id, session_ts, run_dir)
         print(f"  {_cyan('1')}. Full chunk history")
         print(f"  {_cyan('2')}. In-progress chunks  (submitted / pending)")
         print(f"  {_cyan('3')}. Failed / skipped chunks")
         print(f"  {_cyan('4')}. Reset upload state  {_red('(clears sidecar / restarts from start job)')}")
-        print(f"  {_cyan('5')}. Check transfer service job status")
         print(f"  {_cyan('b')}. Back to dataset list")
         print(f"  {_cyan('q')}. Quit")
         print()
@@ -472,10 +471,8 @@ def _dataset_menu(
                 sidecar = None
             else:
                 print("  Cancelled.\n")
-        elif choice == "5":
-            _show_transfer_job_status(subject_id, session_ts, run_dir)
         else:
-            print(f"  {_red('Invalid.')}  Enter 1, 2, 3, 4, 5, b, or q.")
+            print(f"  {_red('Invalid.')}  Enter 1, 2, 3, 4, b, or q.")
 
 
 # ---------------------------------------------------------------------------
