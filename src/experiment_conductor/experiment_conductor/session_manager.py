@@ -82,10 +82,30 @@ class FatalSessionError(Exception):
 
 
 def _count_local_chunks(run_dir: Path, folder: str) -> int:
-    """Count timestamp-named directories in the camera-video folder."""
+    """Count hourly video chunks in the camera folder.
+
+    Supports two layouts:
+
+    * **Flat files** (current): ``<Camera>_YYYY-MM-DDTHH-MM-SS.mp4`` files
+      directly inside ``folder``.  Each distinct timestamp suffix = one chunk.
+    * **Subdirectory** (legacy): timestamp-named directories inside ``folder``.
+    """
     target = run_dir / folder
     if not target.exists():
         return 0
+
+    # Flat-file layout: count distinct timestamps from *.mp4 files.
+    # Pattern: anything ending in _YYYY-MM-DDTHH-MM-SS.mp4
+    _SUFFIX_RE = re.compile(r"_(\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2})\.mp4$")
+    timestamps = {
+        m.group(1)
+        for f in target.iterdir()
+        if f.is_file() and (m := _SUFFIX_RE.search(f.name))
+    }
+    if timestamps:
+        return len(timestamps)
+
+    # Subdirectory layout (fallback).
     return sum(
         1 for d in target.iterdir()
         if d.is_dir() and _CHUNK_COUNT_RE.fullmatch(d.name)
