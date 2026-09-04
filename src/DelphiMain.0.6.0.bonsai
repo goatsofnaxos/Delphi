@@ -14,6 +14,8 @@
                  xmlns:p6="clr-namespace:AllenNeuralDynamics.Core;assembly=AllenNeuralDynamics.Core"
                  xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
                  xmlns:spk="clr-namespace:Bonsai.Spinnaker;assembly=Bonsai.Spinnaker"
+                 xmlns:aeon="clr-namespace:Aeon.Acquisition;assembly=Aeon.Acquisition"
+                 xmlns:dsp="clr-namespace:Bonsai.Dsp;assembly=Bonsai.Dsp"
                  xmlns:wie="clr-namespace:Bonsai.Windows.Input;assembly=Bonsai.Windows.Input"
                  xmlns:viz="clr-namespace:Bonsai.Design.Visualizers;assembly=Bonsai.Design.Visualizers"
                  xmlns="https://bonsai-rx.org/2018/workflow">
@@ -808,33 +810,6 @@
             <Expression xsi:type="MulticastSubject">
               <Name>DelphiCommands</Name>
             </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>DelphiEvents</Name>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="rx:Take">
-                <rx:Count>1</rx:Count>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="rx:Delay">
-                <rx:DueTime>PT5S</rx:DueTime>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="harp:CreateMessage">
-              <harp:MessageType>Write</harp:MessageType>
-              <harp:Payload xsi:type="harp:CreateOperationControlPayload">
-                <harp:OperationMode>Active</harp:OperationMode>
-                <harp:DumpRegisters>true</harp:DumpRegisters>
-                <harp:MuteReplies>false</harp:MuteReplies>
-                <harp:VisualIndicators>On</harp:VisualIndicators>
-                <harp:OperationLed>On</harp:OperationLed>
-                <harp:Heartbeat>Enabled</harp:Heartbeat>
-              </harp:Payload>
-            </Expression>
-            <Expression xsi:type="MulticastSubject">
-              <Name>DelphiCommands</Name>
-            </Expression>
             <Expression xsi:type="ExternalizedMapping">
               <Property Name="Name" DisplayName="QueueOdor" />
             </Expression>
@@ -1066,27 +1041,23 @@
             <Edge From="27" To="28" Label="Source1" />
             <Edge From="29" To="30" Label="Source1" />
             <Edge From="30" To="31" Label="Source1" />
-            <Edge From="31" To="32" Label="Source1" />
+            <Edge From="30" To="32" Label="Source1" />
+            <Edge From="31" To="33" Label="Source1" />
             <Edge From="32" To="33" Label="Source1" />
-            <Edge From="34" To="35" Label="Source1" />
+            <Edge From="32" To="33" Label="Source2" />
+            <Edge From="33" To="34" Label="Source1" />
             <Edge From="35" To="36" Label="Source1" />
-            <Edge From="35" To="37" Label="Source1" />
-            <Edge From="36" To="38" Label="Source1" />
+            <Edge From="36" To="37" Label="Source1" />
             <Edge From="37" To="38" Label="Source1" />
-            <Edge From="37" To="38" Label="Source2" />
             <Edge From="38" To="39" Label="Source1" />
-            <Edge From="40" To="41" Label="Source1" />
+            <Edge From="39" To="40" Label="Source1" />
             <Edge From="41" To="42" Label="Source1" />
             <Edge From="42" To="43" Label="Source1" />
             <Edge From="43" To="44" Label="Source1" />
-            <Edge From="44" To="45" Label="Source1" />
+            <Edge From="45" To="46" Label="Source1" />
             <Edge From="46" To="47" Label="Source1" />
             <Edge From="47" To="48" Label="Source1" />
             <Edge From="48" To="49" Label="Source1" />
-            <Edge From="50" To="51" Label="Source1" />
-            <Edge From="51" To="52" Label="Source1" />
-            <Edge From="52" To="53" Label="Source1" />
-            <Edge From="53" To="54" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -1881,10 +1852,194 @@
                         <Expression xsi:type="SubscribeSubject">
                           <Name>DelphiEvents</Name>
                         </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:LogHarpDemux.bonsai">
-                          <LogName>DelphiController</LogName>
-                          <Heartbeats>DelphiEvents</Heartbeats>
-                          <ClosingDuration xsi:nil="true" />
+                        <Expression xsi:type="GroupWorkflow">
+                          <Name>LogHarpDemux</Name>
+                          <Description>Chunks and logs a timestamped harp data stream into the base data log, splitting each independent register into a separate file.</Description>
+                          <Workflow>
+                            <Nodes>
+                              <Expression xsi:type="WorkflowInput">
+                                <Name>Source1</Name>
+                              </Expression>
+                              <Expression xsi:type="rx:GroupBy">
+                                <rx:KeySelector>Address</rx:KeySelector>
+                                <rx:ElementSelector />
+                              </Expression>
+                              <Expression xsi:type="ExternalizedMapping">
+                                <Property Name="LogName" />
+                                <Property Name="Heartbeats" />
+                                <Property Name="ClosingDuration" />
+                              </Expression>
+                              <Expression xsi:type="rx:SelectMany">
+                                <Name>LogRegisters</Name>
+                                <Workflow>
+                                  <Nodes>
+                                    <Expression xsi:type="WorkflowInput">
+                                      <Name>Source1</Name>
+                                    </Expression>
+                                    <Expression xsi:type="rx:AsyncSubject">
+                                      <Name>Register</Name>
+                                    </Expression>
+                                    <Expression xsi:type="ExternalizedMapping">
+                                      <Property Name="Value" DisplayName="LogName" />
+                                    </Expression>
+                                    <Expression xsi:type="Combinator">
+                                      <Combinator xsi:type="StringProperty">
+                                        <Value>DelphiController</Value>
+                                      </Combinator>
+                                    </Expression>
+                                    <Expression xsi:type="Combinator">
+                                      <Combinator xsi:type="rx:Take">
+                                        <rx:Count>1</rx:Count>
+                                      </Combinator>
+                                    </Expression>
+                                    <Expression xsi:type="SubscribeSubject">
+                                      <Name>Register</Name>
+                                    </Expression>
+                                    <Expression xsi:type="MemberSelector">
+                                      <Selector>Key</Selector>
+                                    </Expression>
+                                    <Expression xsi:type="Combinator">
+                                      <Combinator xsi:type="rx:Zip" />
+                                    </Expression>
+                                    <Expression xsi:type="Format">
+                                      <Format>{0}_{1}</Format>
+                                      <Selector>Item1,Item2</Selector>
+                                    </Expression>
+                                    <Expression xsi:type="rx:AsyncSubject">
+                                      <Name>LogName</Name>
+                                    </Expression>
+                                    <Expression xsi:type="SubscribeSubject">
+                                      <Name>Register</Name>
+                                    </Expression>
+                                    <Expression xsi:type="Combinator">
+                                      <Combinator xsi:type="rx:Merge" />
+                                    </Expression>
+                                    <Expression xsi:type="ExternalizedMapping">
+                                      <Property Name="Name" DisplayName="Heartbeats" Description="The source of heartbeat signals used as a timing signal for closing groups." Category="GroupClosing" />
+                                    </Expression>
+                                    <Expression xsi:type="SubscribeSubject">
+                                      <Name>DelphiEvents</Name>
+                                    </Expression>
+                                    <Expression xsi:type="SubscribeSubject">
+                                      <Name>ChunkSize</Name>
+                                    </Expression>
+                                    <Expression xsi:type="PropertyMapping">
+                                      <PropertyMappings>
+                                        <Property Name="ChunkSize" />
+                                      </PropertyMappings>
+                                    </Expression>
+                                    <Expression xsi:type="ExternalizedMapping">
+                                      <Property Name="ClosingDuration" Category="GroupClosing" />
+                                    </Expression>
+                                    <Expression xsi:type="Combinator">
+                                      <Combinator xsi:type="aeon:GroupByTime">
+                                        <aeon:ChunkSize>1</aeon:ChunkSize>
+                                        <aeon:ClosingDuration>PT2S</aeon:ClosingDuration>
+                                      </Combinator>
+                                    </Expression>
+                                    <Expression xsi:type="rx:CreateObservable">
+                                      <Name>LogHarp</Name>
+                                      <Workflow>
+                                        <Nodes>
+                                          <Expression xsi:type="WorkflowInput">
+                                            <Name>Source1</Name>
+                                          </Expression>
+                                          <Expression xsi:type="rx:AsyncSubject">
+                                            <Name>Data</Name>
+                                          </Expression>
+                                          <Expression xsi:type="SubscribeSubject">
+                                            <Name>Data</Name>
+                                          </Expression>
+                                          <Expression xsi:type="Combinator">
+                                            <Combinator xsi:type="rx:Merge" />
+                                          </Expression>
+                                          <Expression xsi:type="MemberSelector">
+                                            <Selector>MessageBytes</Selector>
+                                          </Expression>
+                                          <Expression xsi:type="SubscribeSubject">
+                                            <Name>Data</Name>
+                                          </Expression>
+                                          <Expression xsi:type="MemberSelector">
+                                            <Selector>Key</Selector>
+                                          </Expression>
+                                          <Expression xsi:type="SubscribeSubject">
+                                            <Name>LogName</Name>
+                                          </Expression>
+                                          <Expression xsi:type="PropertyMapping">
+                                            <PropertyMappings>
+                                              <Property Name="Name" />
+                                            </PropertyMappings>
+                                          </Expression>
+                                          <Expression xsi:type="IncludeWorkflow" Path="Aeon.Acquisition:FormatFileName.bonsai">
+                                            <Name>DelphiController_8</Name>
+                                            <Extension>bin</Extension>
+                                          </Expression>
+                                          <Expression xsi:type="PropertyMapping">
+                                            <PropertyMappings>
+                                              <Property Name="Path" />
+                                            </PropertyMappings>
+                                          </Expression>
+                                          <Expression xsi:type="Combinator">
+                                            <Combinator xsi:type="dsp:MatrixWriter">
+                                              <dsp:Path>C:/Users/svc_aind_chronic/Documents/data/test_data/local/801055/2024-06-01_12-00-00\2026-09-04T20-05-53\behavior\DelphiController\DelphiController_8_2026-09-04T23-00-00.bin</dsp:Path>
+                                              <dsp:Suffix>None</dsp:Suffix>
+                                              <dsp:Overwrite>false</dsp:Overwrite>
+                                              <dsp:Layout>ColumnMajor</dsp:Layout>
+                                            </Combinator>
+                                          </Expression>
+                                          <Expression xsi:type="WorkflowOutput" />
+                                        </Nodes>
+                                        <Edges>
+                                          <Edge From="0" To="1" Label="Source1" />
+                                          <Edge From="2" To="3" Label="Source1" />
+                                          <Edge From="3" To="4" Label="Source1" />
+                                          <Edge From="4" To="11" Label="Source1" />
+                                          <Edge From="5" To="6" Label="Source1" />
+                                          <Edge From="6" To="9" Label="Source1" />
+                                          <Edge From="7" To="8" Label="Source1" />
+                                          <Edge From="8" To="9" Label="Source2" />
+                                          <Edge From="9" To="10" Label="Source1" />
+                                          <Edge From="10" To="11" Label="Source2" />
+                                          <Edge From="11" To="12" Label="Source1" />
+                                        </Edges>
+                                      </Workflow>
+                                    </Expression>
+                                    <Expression xsi:type="Combinator">
+                                      <Combinator xsi:type="rx:Switch" />
+                                    </Expression>
+                                    <Expression xsi:type="WorkflowOutput" />
+                                  </Nodes>
+                                  <Edges>
+                                    <Edge From="0" To="1" Label="Source1" />
+                                    <Edge From="2" To="3" Label="Source1" />
+                                    <Edge From="3" To="4" Label="Source1" />
+                                    <Edge From="4" To="7" Label="Source1" />
+                                    <Edge From="5" To="6" Label="Source1" />
+                                    <Edge From="6" To="7" Label="Source2" />
+                                    <Edge From="7" To="8" Label="Source1" />
+                                    <Edge From="8" To="9" Label="Source1" />
+                                    <Edge From="10" To="11" Label="Source1" />
+                                    <Edge From="11" To="17" Label="Source1" />
+                                    <Edge From="12" To="13" Label="Source1" />
+                                    <Edge From="13" To="17" Label="Source2" />
+                                    <Edge From="14" To="15" Label="Source1" />
+                                    <Edge From="15" To="17" Label="Source3" />
+                                    <Edge From="16" To="17" Label="Source4" />
+                                    <Edge From="17" To="18" Label="Source1" />
+                                    <Edge From="18" To="19" Label="Source1" />
+                                    <Edge From="19" To="20" Label="Source1" />
+                                  </Edges>
+                                </Workflow>
+                              </Expression>
+                              <Expression xsi:type="WorkflowOutput" />
+                            </Nodes>
+                            <Edges>
+                              <Edge From="0" To="1" Label="Source1" />
+                              <Edge From="1" To="3" Label="Source1" />
+                              <Edge From="2" To="3" Label="Source2" />
+                              <Edge From="3" To="4" Label="Source1" />
+                            </Edges>
+                          </Workflow>
                         </Expression>
                         <Expression xsi:type="GroupWorkflow">
                           <Name>DelphiControllerPath</Name>
@@ -2273,10 +2428,37 @@ groupMasks:
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="io:WriteAllText">
-                            <io:Path>C:/Users/svc_aind_chronic/Documents/data/test_data/local/801055/2024-06-01_12-00-00\2026-09-03T15-58-56\behavior\DelphiController\device.yml</io:Path>
+                            <io:Path>C:/Users/svc_aind_chronic/Documents/data/test_data/local/801055/2024-06-01_12-00-00\2026-09-04T20-05-53\behavior\DelphiController\device.yml</io:Path>
                             <io:Overwrite>false</io:Overwrite>
                             <io:Append>false</io:Append>
                           </Combinator>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>DelphiEvents</Name>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Take">
+                            <rx:Count>1</rx:Count>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Delay">
+                            <rx:DueTime>PT10S</rx:DueTime>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="harp:CreateMessage">
+                          <harp:MessageType>Write</harp:MessageType>
+                          <harp:Payload xsi:type="harp:CreateOperationControlPayload">
+                            <harp:OperationMode>Active</harp:OperationMode>
+                            <harp:DumpRegisters>true</harp:DumpRegisters>
+                            <harp:MuteReplies>false</harp:MuteReplies>
+                            <harp:VisualIndicators>On</harp:VisualIndicators>
+                            <harp:OperationLed>On</harp:OperationLed>
+                            <harp:Heartbeat>Enabled</harp:Heartbeat>
+                          </harp:Payload>
+                        </Expression>
+                        <Expression xsi:type="MulticastSubject">
+                          <Name>DelphiCommands</Name>
                         </Expression>
                       </Nodes>
                       <Edges>
@@ -2284,6 +2466,10 @@ groupMasks:
                         <Edge From="2" To="3" Label="Source1" />
                         <Edge From="3" To="5" Label="Source1" />
                         <Edge From="4" To="5" Label="Source2" />
+                        <Edge From="6" To="7" Label="Source1" />
+                        <Edge From="7" To="8" Label="Source1" />
+                        <Edge From="8" To="9" Label="Source1" />
+                        <Edge From="9" To="10" Label="Source1" />
                       </Edges>
                     </Workflow>
                   </Expression>
@@ -2296,8 +2482,8 @@ groupMasks:
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Timer">
-                <rx:DueTime>PT10S</rx:DueTime>
-                <rx:Period>PT1H</rx:Period>
+                <rx:DueTime>PT1H5M</rx:DueTime>
+                <rx:Period>PT1M</rx:Period>
               </Combinator>
             </Expression>
             <Expression xsi:type="Unit" />
@@ -2363,7 +2549,7 @@ groupMasks:
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="io:StartProcess">
                       <io:FileName>..\.venv\Scripts\python.exe</io:FileName>
-                      <io:Arguments>C:/Users/svc_aind_chronic/Documents/code/Delphi/src/python/robocopy.py D:/data/22222222/2026-03-17T21-26-19 //allen/aind/stage/chronic/22222222/2026-03-17T21-26-19</io:Arguments>
+                      <io:Arguments>C:/Users/svc_aind_chronic/Documents/code/Delphi/src/python/robocopy.py C:/Users/svc_aind_chronic/Documents/data/test_data/local/801055/2024-06-01_12-00-00 //allen/aind/stage/chronic/data/801055/2024-06-01_12-00-00</io:Arguments>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
