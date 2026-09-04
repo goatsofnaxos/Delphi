@@ -323,6 +323,147 @@ class _StoppableSubmitUploadJob:
         return newly_submitted
 
 
+# ── Transfer-service status helpers ──────────────────────────────────────────
+
+def _query_job_status_for_prefix(
+    transfer_service_url: str,
+    s3_prefix: str,
+    job_type: str = "chronic_ephys_start",
+) -> Optional[str]:
+    """Query ``/api/v1/get_job_status_list`` for the most recent Airflow run
+    matching *s3_prefix* and *job_type*.
+
+    Parameters
+    ----------
+    transfer_service_url : str
+        Full URL of the submit endpoint (e.g.
+        ``http://aind-data-transfer-service/api/v2/submit_jobs``).  The path
+        is replaced with ``/api/v1/get_job_status_list`` internally.
+    s3_prefix : str
+        The S3 prefix string for this dataset (the ``name`` field in the
+        service's job list response, e.g.
+        ``"ecephys_842456_2026-01-01_10-00-00"``).
+    job_type : str
+        Job type to filter on.  Default ``"chronic_ephys_start"``.
+
+    Returns
+    -------
+    str or None
+        Airflow state string (``"running"``, ``"queued"``, ``"success"``,
+        ``"failed"``) for the most recent matching job, or *None* if the
+        job cannot be found or the query fails.
+    """
+    import requests as _req
+    from urllib.parse import urlparse, urlunparse
+
+    try:
+        parsed = urlparse(transfer_service_url)
+        status_url = urlunparse(
+            parsed._replace(path="/api/v1/get_job_status_list", query="", fragment="")
+        )
+        resp = _req.get(status_url, timeout=15)
+        if not resp.ok:
+            log.debug("Job-status query returned HTTP %d.", resp.status_code)
+            return None
+        job_list = resp.json().get("data", {}).get("job_status_list", [])
+        matching = [
+            j for j in job_list
+            if j.get("name") == s3_prefix and j.get("job_type") == job_type
+        ]
+        if not matching:
+            return None
+        # Most recent first by submit_time
+        matching.sort(key=lambda j: j.get("submit_time") or "", reverse=True)
+        return matching[0].get("job_state")
+    except Exception as exc:
+        log.debug("Could not query transfer service job status: %s", exc)
+        return None
+
+
+def query_transfer_job_status(
+    s3_prefix: str,
+    transfer_service_url: Optional[str] = None,
+    job_type: str = "chronic_ephys_start",
+) -> Optional[str]:
+    """Public wrapper: return the Airflow state for the most recent job.
+
+    If *transfer_service_url* is not supplied, the default from
+    :class:`~aind_chronic_ephys_uploader.models.JobSettings` is used
+    (``http://aind-data-transfer-service/api/v2/submit_jobs``).
+
+    Parameters
+    ----------
+    s3_prefix : str
+        The S3 prefix for this dataset.
+    transfer_service_url : str, optional
+        Submit-endpoint URL; path is replaced with the status endpoint.
+    job_type : str
+        Job type to filter on (default ``"chronic_ephys_start"``).
+
+    Returns
+    -------
+    str or None
+        Airflow state string or *None*.
+    """
+    if transfer_service_url is None:
+        transfer_service_url = (
+            "http://aind-data-transfer-service/api/v2/submit_jobs"
+        )
+    return _query_job_status_for_prefix(transfer_service_url, s3_prefix, job_type)
+
+
+def query_chronic_ephys_job_statuses(
+    s3_prefix: str,
+    transfer_service_url: Optional[str] = None,
+) -> list[dict]:
+    """Return all recent Airflow job records for a chronic-ephys dataset.
+
+    Queries ``/api/v1/get_job_status_list`` and returns every entry whose
+    ``name`` field matches *s3_prefix* — the identifier used by
+    ``chronic_ephys_start`` and ``chronic_ephys_chunk`` jobs.  Sorted newest
+    first.
+
+    Parameters
+    ----------
+    s3_prefix : str
+        The S3 prefix for this dataset (e.g.
+        ``"ecephys_842456_2026-01-01_10-00-00"``).  This is the ``name``
+        field the transfer service stores in each job's Airflow conf.
+    transfer_service_url : str, optional
+        Submit-endpoint URL; path is replaced with the status endpoint.
+
+    Returns
+    -------
+    list of dict
+        Each dict has keys ``job_type``, ``job_state``, ``job_id``,
+        ``submit_time``, ``start_time``, ``end_time`` (may be None).
+        Empty list on error or no matches.
+    """
+    import requests as _req
+    from urllib.parse import urlparse, urlunparse
+
+    if transfer_service_url is None:
+        transfer_service_url = (
+            "http://aind-data-transfer-service/api/v2/submit_jobs"
+        )
+    try:
+        parsed = urlparse(transfer_service_url)
+        status_url = urlunparse(
+            parsed._replace(path="/api/v1/get_job_status_list", query="", fragment="")
+        )
+        resp = _req.get(status_url, timeout=15)
+        if not resp.ok:
+            log.debug("Job-status query returned HTTP %d.", resp.status_code)
+            return []
+        job_list = resp.json().get("data", {}).get("job_status_list", [])
+        matching = [j for j in job_list if j.get("name") == s3_prefix]
+        matching.sort(key=lambda j: j.get("submit_time") or "", reverse=True)
+        return matching
+    except Exception as exc:
+        log.debug("Could not query transfer service job list: %s", exc)
+        return []
+
+
 # ── Public API ────────────────────────────────────────────────────────────────
 
 def run_upload_cycle(
@@ -378,6 +519,7 @@ def run_upload_cycle(
         ``.success`` is *True* when the job ran without a hard error.
         ``.submitted_chunks`` lists every chunk timestamp submitted in this cycle.
     """
+    settings = None  # sentinel — used in except block for status query
     try:
         from aind_chronic_ephys_uploader.models import JobSettings
         from aind_data_schema_models.modalities import Modality
@@ -414,14 +556,48 @@ def run_upload_cycle(
         submitted = job.run_job(skip_chunks=skip_chunks)
         return UploadCycleResult(success=True, submitted_chunks=submitted)
 
-    except (FileNotFoundError, FileExistsError) as exc:
-        # FileNotFoundError: "not found in DocDB yet" — start job is still
-        #   processing on the transfer service; wait for the next cycle.
-        # FileExistsError:   "already exists" — DocDB already has the record;
-        #   the start job succeeded, proceed with chunk jobs.
-        # In both cases the right action is to wait — never auto-reset state.
+    except FileNotFoundError as exc:
+        # "not found in DocDB yet" — start job is still processing (or failed).
+        # Query the transfer service so the log shows the actual Airflow state.
+        if settings is not None:
+            try:
+                ts_url = settings.transfer_service_endpoint.unicode_string()
+                job_state = _query_job_status_for_prefix(ts_url, settings.s3_prefix)
+            except Exception:
+                job_state = None
+        else:
+            job_state = None
+
+        if job_state in ("running", "queued"):
+            log.info(
+                "Upload cycle waiting — start job is %s on transfer service "
+                "(DocDB record not yet written).",
+                job_state,
+            )
+        elif job_state == "success":
+            log.warning(
+                "Upload cycle waiting — start job reported %s on transfer "
+                "service but record not yet in DocDB.  Will retry.",
+                job_state,
+            )
+        elif job_state == "failed":
+            log.error(
+                "Start job FAILED on the transfer service (s3_prefix=%s).  "
+                "Use `conductor-status` → Reset upload state to retry.  "
+                "Original error: %s",
+                settings.s3_prefix if settings else "unknown",
+                exc,
+            )
+        else:
+            # job_state is None — not found in history (still queuing, or too old)
+            log.info("Upload cycle waiting: %s", exc)
+        return UploadCycleResult(success=False)
+
+    except FileExistsError as exc:
+        # "already exists" — DocDB already has the record; chunk jobs should work.
         log.info("Upload cycle waiting: %s", exc)
         return UploadCycleResult(success=False)
+
     except Exception as exc:
         log.error("Upload cycle failed: %s", exc, exc_info=True)
         return UploadCycleResult(success=False)

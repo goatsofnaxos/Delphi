@@ -299,6 +299,99 @@ def _reset_upload_state(
             print(f"\n  {_red(f'✖  Could not write state file: {exc}')}\n")
 
 
+def _show_transfer_job_status(
+    subject_id: str, session_ts: str, run_dir: str
+) -> None:
+    """Query the transfer service and print recent job statuses for this dataset."""
+    from datetime import datetime, timezone
+
+    print(f"\n  {_bold('Transfer service — recent jobs for this dataset:')}")
+    try:
+        from .uploader_bridge import compute_s3_prefix, query_chronic_ephys_job_statuses
+
+        s3_bucket = os.getenv("CONDUCTOR_S3_BUCKET", "aind-open-data")
+        transfer_endpoint = os.getenv(
+            "TRANSFER_SERVICE_ENDPOINT",
+            "http://aind-data-transfer-service/api/v2/submit_jobs",
+        )
+        acq_dt = datetime.strptime(session_ts, "%Y-%m-%dT%H-%M-%S").replace(
+            tzinfo=timezone.utc
+        )
+        s3_prefix = compute_s3_prefix(
+            source_directory=str(run_dir),
+            subject_id=subject_id,
+            acq_datetime=acq_dt,
+            s3_bucket=s3_bucket,
+        )
+        if s3_prefix is None:
+            print(
+                f"  {_yellow('Could not compute S3 prefix.')}  "
+                "Check CONDUCTOR_S3_BUCKET in your .env file.\n"
+            )
+            return
+
+        print(f"  S3 prefix : {_dim(s3_prefix)}")
+        print(f"  Endpoint  : {_dim(transfer_endpoint)}\n")
+
+        jobs = query_chronic_ephys_job_statuses(s3_prefix, transfer_endpoint)
+        if not jobs:
+            print(
+                f"  {_yellow('No jobs found in transfer service history.')}\n"
+                "  Jobs older than 2 weeks are not returned by the service.\n"
+            )
+            return
+
+        # ── Table ────────────────────────────────────────────────────────────
+        _CW_TYPE  = 24
+        _CW_STATE = 10
+        _CW_SUB   = 22
+        _CW_END   = 22
+        header = (
+            f"  {'Job type':<{_CW_TYPE}}"
+            f"  {'State':<{_CW_STATE}}"
+            f"  {'Submitted':<{_CW_SUB}}"
+            f"  {'Ended':<{_CW_END}}"
+        )
+        sep = "  " + "-" * (_CW_TYPE + _CW_STATE + _CW_SUB + _CW_END + 8)
+        print(_bold(header))
+        print(sep)
+
+        _state_color_ts = {
+            "success": _green,
+            "failed":  _red,
+            "running": _yellow,
+            "queued":  _yellow,
+        }
+
+        for j in jobs:
+            jtype  = (j.get("job_type") or "unknown")[:_CW_TYPE]
+            jstate = j.get("job_state") or "unknown"
+            color  = _state_color_ts.get(jstate, lambda x: x)
+            jsub   = (j.get("submit_time") or "—")[:_CW_SUB]
+            jend   = (j.get("end_time") or "—")[:_CW_END]
+            print(
+                f"  {jtype:<{_CW_TYPE}}"
+                f"  {color(jstate):<{_CW_STATE}}"
+                f"  {jsub:<{_CW_SUB}}"
+                f"  {jend:<{_CW_END}}"
+            )
+        print()
+
+        # ── Highlight failed start jobs ───────────────────────────────────────
+        failed_starts = [
+            j for j in jobs
+            if j.get("job_type") == "chronic_ephys_start"
+            and j.get("job_state") == "failed"
+        ]
+        if failed_starts:
+            print(
+                f"  {_red(_bold('⚠  Start job failed.'))}  "
+                "Use option 4 to reset upload state and retry.\n"
+            )
+    except Exception as exc:
+        print(f"  {_red(f'Error querying transfer service: {exc}')}\n")
+
+
 def _dataset_menu(
     subject_id: str,
     session_ts: str,
@@ -328,6 +421,7 @@ def _dataset_menu(
         print(f"  {_cyan('2')}. In-progress chunks  (submitted / pending)")
         print(f"  {_cyan('3')}. Failed / skipped chunks")
         print(f"  {_cyan('4')}. Reset upload state  {_red('(clears sidecar / restarts from start job)')}")
+        print(f"  {_cyan('5')}. Check transfer service job status")
         print(f"  {_cyan('b')}. Back to dataset list")
         print(f"  {_cyan('q')}. Quit")
         print()
@@ -378,8 +472,10 @@ def _dataset_menu(
                 sidecar = None
             else:
                 print("  Cancelled.\n")
+        elif choice == "5":
+            _show_transfer_job_status(subject_id, session_ts, run_dir)
         else:
-            print(f"  {_red('Invalid.')}  Enter 1, 2, 3, 4, b, or q.")
+            print(f"  {_red('Invalid.')}  Enter 1, 2, 3, 4, 5, b, or q.")
 
 
 # ---------------------------------------------------------------------------
