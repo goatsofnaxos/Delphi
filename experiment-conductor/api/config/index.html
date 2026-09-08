@@ -4144,7 +4144,22 @@ provided (at least one watch path is required).</p>
 <span class="normal"><a href="#__codelineno-0-477">477</a></span>
 <span class="normal"><a href="#__codelineno-0-478">478</a></span>
 <span class="normal"><a href="#__codelineno-0-479">479</a></span>
-<span class="normal"><a href="#__codelineno-0-480">480</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-347"><a id="__codelineno-0-347" name="__codelineno-0-347"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">ConductorConfig</span><span class="p">:</span>
+<span class="normal"><a href="#__codelineno-0-480">480</a></span>
+<span class="normal"><a href="#__codelineno-0-481">481</a></span>
+<span class="normal"><a href="#__codelineno-0-482">482</a></span>
+<span class="normal"><a href="#__codelineno-0-483">483</a></span>
+<span class="normal"><a href="#__codelineno-0-484">484</a></span>
+<span class="normal"><a href="#__codelineno-0-485">485</a></span>
+<span class="normal"><a href="#__codelineno-0-486">486</a></span>
+<span class="normal"><a href="#__codelineno-0-487">487</a></span>
+<span class="normal"><a href="#__codelineno-0-488">488</a></span>
+<span class="normal"><a href="#__codelineno-0-489">489</a></span>
+<span class="normal"><a href="#__codelineno-0-490">490</a></span>
+<span class="normal"><a href="#__codelineno-0-491">491</a></span>
+<span class="normal"><a href="#__codelineno-0-492">492</a></span>
+<span class="normal"><a href="#__codelineno-0-493">493</a></span>
+<span class="normal"><a href="#__codelineno-0-494">494</a></span>
+<span class="normal"><a href="#__codelineno-0-495">495</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-347"><a id="__codelineno-0-347" name="__codelineno-0-347"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">ConductorConfig</span><span class="p">:</span>
 </span><span id="__span-0-348"><a id="__codelineno-0-348" name="__codelineno-0-348"></a><span class="w">    </span><span class="sd">"""Load ``.env`` then overlay CLI arguments to produce a :class:`ConductorConfig`.</span>
 </span><span id="__span-0-349"><a id="__codelineno-0-349" name="__codelineno-0-349"></a>
 </span><span id="__span-0-350"><a id="__codelineno-0-350" name="__codelineno-0-350"></a><span class="sd">    Priority (highest to lowest): CLI flags &gt; environment variables &gt; ``.env``</span>
@@ -4249,35 +4264,50 @@ provided (at least one watch path is required).</p>
 </span><span id="__span-0-449"><a id="__codelineno-0-449" name="__codelineno-0-449"></a>            <span class="n">_g</span><span class="p">(</span>
 </span><span id="__span-0-450"><a id="__codelineno-0-450" name="__codelineno-0-450"></a>                <span class="s2">"CONDUCTOR_KEEP_LOCAL_PATTERNS"</span><span class="p">,</span>
 </span><span id="__span-0-451"><a id="__codelineno-0-451" name="__codelineno-0-451"></a>                <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-452"><a id="__codelineno-0-452" name="__codelineno-0-452"></a>                <span class="s2">"behavior/delphi_dataset.csv,behavior/DelphiController/**,"</span>
-</span><span id="__span-0-453"><a id="__codelineno-0-453" name="__codelineno-0-453"></a>                <span class="s2">"behavior/results/**,behavior/metadata/**"</span><span class="p">,</span>
-</span><span id="__span-0-454"><a id="__codelineno-0-454" name="__codelineno-0-454"></a>            <span class="p">)</span>
-</span><span id="__span-0-455"><a id="__codelineno-0-455" name="__codelineno-0-455"></a>        <span class="p">),</span>
-</span><span id="__span-0-456"><a id="__codelineno-0-456" name="__codelineno-0-456"></a>        <span class="n">max_workers</span><span class="o">=</span><span class="n">_int</span><span class="p">(</span><span class="n">_g</span><span class="p">(</span><span class="s2">"CONDUCTOR_MAX_WORKERS"</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">max_workers</span><span class="p">),</span> <span class="mi">8</span><span class="p">),</span>
-</span><span id="__span-0-457"><a id="__codelineno-0-457" name="__codelineno-0-457"></a>        <span class="n">poll_interval_s</span><span class="o">=</span><span class="n">_float</span><span class="p">(</span><span class="n">_g</span><span class="p">(</span><span class="s2">"CONDUCTOR_POLL_INTERVAL_S"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"60.0"</span><span class="p">),</span> <span class="mf">60.0</span><span class="p">),</span>
-</span><span id="__span-0-458"><a id="__codelineno-0-458" name="__codelineno-0-458"></a>        <span class="n">min_session_age_minutes</span><span class="o">=</span><span class="n">_float</span><span class="p">(</span>
-</span><span id="__span-0-459"><a id="__codelineno-0-459" name="__codelineno-0-459"></a>            <span class="n">_g</span><span class="p">(</span><span class="s2">"CONDUCTOR_MIN_SESSION_AGE_MINUTES"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"5.0"</span><span class="p">),</span> <span class="mf">5.0</span>
-</span><span id="__span-0-460"><a id="__codelineno-0-460" name="__codelineno-0-460"></a>        <span class="p">),</span>
-</span><span id="__span-0-461"><a id="__codelineno-0-461" name="__codelineno-0-461"></a>        <span class="n">max_consecutive_errors</span><span class="o">=</span><span class="n">_int</span><span class="p">(</span>
-</span><span id="__span-0-462"><a id="__codelineno-0-462" name="__codelineno-0-462"></a>            <span class="n">_g</span><span class="p">(</span><span class="s2">"CONDUCTOR_MAX_CONSECUTIVE_ERRORS"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"5"</span><span class="p">),</span> <span class="mi">5</span>
-</span><span id="__span-0-463"><a id="__codelineno-0-463" name="__codelineno-0-463"></a>        <span class="p">),</span>
-</span><span id="__span-0-464"><a id="__codelineno-0-464" name="__codelineno-0-464"></a>        <span class="n">error_backoff_minutes</span><span class="o">=</span><span class="n">_float</span><span class="p">(</span>
-</span><span id="__span-0-465"><a id="__codelineno-0-465" name="__codelineno-0-465"></a>            <span class="n">_g</span><span class="p">(</span><span class="s2">"CONDUCTOR_ERROR_BACKOFF_MINUTES"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"30.0"</span><span class="p">),</span> <span class="mf">30.0</span>
-</span><span id="__span-0-466"><a id="__codelineno-0-466" name="__codelineno-0-466"></a>        <span class="p">),</span>
-</span><span id="__span-0-467"><a id="__codelineno-0-467" name="__codelineno-0-467"></a>        <span class="n">state_file</span><span class="o">=</span><span class="n">state_file</span><span class="p">,</span>
-</span><span id="__span-0-468"><a id="__codelineno-0-468" name="__codelineno-0-468"></a>        <span class="n">pause_file</span><span class="o">=</span><span class="n">pause_file</span><span class="p">,</span>
-</span><span id="__span-0-469"><a id="__codelineno-0-469" name="__codelineno-0-469"></a>        <span class="n">chunk_camera_folder</span><span class="o">=</span><span class="n">_g</span><span class="p">(</span>
-</span><span id="__span-0-470"><a id="__codelineno-0-470" name="__codelineno-0-470"></a>            <span class="s2">"CONDUCTOR_CHUNK_CAMERA_FOLDER"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"behavior-videos/TopCamera"</span>
-</span><span id="__span-0-471"><a id="__codelineno-0-471" name="__codelineno-0-471"></a>        <span class="p">),</span>
-</span><span id="__span-0-472"><a id="__codelineno-0-472" name="__codelineno-0-472"></a>        <span class="c1"># CLI -v count wins; fall back to CONDUCTOR_VERBOSITY env var (default 0)</span>
-</span><span id="__span-0-473"><a id="__codelineno-0-473" name="__codelineno-0-473"></a>        <span class="n">verbosity</span><span class="o">=</span><span class="p">(</span>
-</span><span id="__span-0-474"><a id="__codelineno-0-474" name="__codelineno-0-474"></a>            <span class="n">args</span><span class="o">.</span><span class="n">verbosity</span>
-</span><span id="__span-0-475"><a id="__codelineno-0-475" name="__codelineno-0-475"></a>            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span>
-</span><span id="__span-0-476"><a id="__codelineno-0-476" name="__codelineno-0-476"></a>            <span class="k">else</span> <span class="n">_int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"CONDUCTOR_VERBOSITY"</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="__span-0-477"><a id="__codelineno-0-477" name="__codelineno-0-477"></a>        <span class="p">),</span>
-</span><span id="__span-0-478"><a id="__codelineno-0-478" name="__codelineno-0-478"></a>        <span class="n">launch_status</span><span class="o">=</span><span class="n">_bool</span><span class="p">(</span><span class="n">_g</span><span class="p">(</span><span class="s2">"CONDUCTOR_LAUNCH_STATUS"</span><span class="p">,</span> <span class="s2">"true"</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">launch_status</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"false"</span><span class="p">)),</span>
-</span><span id="__span-0-479"><a id="__codelineno-0-479" name="__codelineno-0-479"></a>        <span class="n">env_file_path</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">env_file</span><span class="p">,</span>
-</span><span id="__span-0-480"><a id="__codelineno-0-480" name="__codelineno-0-480"></a>    <span class="p">)</span>
+</span><span id="__span-0-452"><a id="__codelineno-0-452" name="__codelineno-0-452"></a>                <span class="c1"># Behavior analysis outputs and task metadata</span>
+</span><span id="__span-0-453"><a id="__codelineno-0-453" name="__codelineno-0-453"></a>                <span class="s2">"behavior/delphi_dataset.csv,"</span>
+</span><span id="__span-0-454"><a id="__codelineno-0-454" name="__codelineno-0-454"></a>                <span class="s2">"behavior/DelphiController/**,"</span>
+</span><span id="__span-0-455"><a id="__codelineno-0-455" name="__codelineno-0-455"></a>                <span class="s2">"behavior/results/**,"</span>
+</span><span id="__span-0-456"><a id="__codelineno-0-456" name="__codelineno-0-456"></a>                <span class="s2">"behavior/metadata/**,"</span>
+</span><span id="__span-0-457"><a id="__codelineno-0-457" name="__codelineno-0-457"></a>                <span class="c1"># Ecephys config/probe files (no chunk timestamp — never delete)</span>
+</span><span id="__span-0-458"><a id="__codelineno-0-458" name="__codelineno-0-458"></a>                <span class="s2">"ecephys/*.json,"</span>
+</span><span id="__span-0-459"><a id="__codelineno-0-459" name="__codelineno-0-459"></a>                <span class="s2">"ecephys/*.yaml,"</span>
+</span><span id="__span-0-460"><a id="__codelineno-0-460" name="__codelineno-0-460"></a>                <span class="s2">"ecephys/*.yml,"</span>
+</span><span id="__span-0-461"><a id="__codelineno-0-461" name="__codelineno-0-461"></a>                <span class="c1"># Any top-level config files in the run dir</span>
+</span><span id="__span-0-462"><a id="__codelineno-0-462" name="__codelineno-0-462"></a>                <span class="s2">"*.json,"</span>
+</span><span id="__span-0-463"><a id="__codelineno-0-463" name="__codelineno-0-463"></a>                <span class="s2">"*.yaml,"</span>
+</span><span id="__span-0-464"><a id="__codelineno-0-464" name="__codelineno-0-464"></a>                <span class="s2">"*.yml,"</span>
+</span><span id="__span-0-465"><a id="__codelineno-0-465" name="__codelineno-0-465"></a>                <span class="s2">"*.toml,"</span>
+</span><span id="__span-0-466"><a id="__codelineno-0-466" name="__codelineno-0-466"></a>                <span class="s2">"*.ini,"</span>
+</span><span id="__span-0-467"><a id="__codelineno-0-467" name="__codelineno-0-467"></a>                <span class="s2">"*.cfg,"</span>
+</span><span id="__span-0-468"><a id="__codelineno-0-468" name="__codelineno-0-468"></a>                <span class="s2">"*.txt"</span><span class="p">,</span>
+</span><span id="__span-0-469"><a id="__codelineno-0-469" name="__codelineno-0-469"></a>            <span class="p">)</span>
+</span><span id="__span-0-470"><a id="__codelineno-0-470" name="__codelineno-0-470"></a>        <span class="p">),</span>
+</span><span id="__span-0-471"><a id="__codelineno-0-471" name="__codelineno-0-471"></a>        <span class="n">max_workers</span><span class="o">=</span><span class="n">_int</span><span class="p">(</span><span class="n">_g</span><span class="p">(</span><span class="s2">"CONDUCTOR_MAX_WORKERS"</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">max_workers</span><span class="p">),</span> <span class="mi">8</span><span class="p">),</span>
+</span><span id="__span-0-472"><a id="__codelineno-0-472" name="__codelineno-0-472"></a>        <span class="n">poll_interval_s</span><span class="o">=</span><span class="n">_float</span><span class="p">(</span><span class="n">_g</span><span class="p">(</span><span class="s2">"CONDUCTOR_POLL_INTERVAL_S"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"60.0"</span><span class="p">),</span> <span class="mf">60.0</span><span class="p">),</span>
+</span><span id="__span-0-473"><a id="__codelineno-0-473" name="__codelineno-0-473"></a>        <span class="n">min_session_age_minutes</span><span class="o">=</span><span class="n">_float</span><span class="p">(</span>
+</span><span id="__span-0-474"><a id="__codelineno-0-474" name="__codelineno-0-474"></a>            <span class="n">_g</span><span class="p">(</span><span class="s2">"CONDUCTOR_MIN_SESSION_AGE_MINUTES"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"5.0"</span><span class="p">),</span> <span class="mf">5.0</span>
+</span><span id="__span-0-475"><a id="__codelineno-0-475" name="__codelineno-0-475"></a>        <span class="p">),</span>
+</span><span id="__span-0-476"><a id="__codelineno-0-476" name="__codelineno-0-476"></a>        <span class="n">max_consecutive_errors</span><span class="o">=</span><span class="n">_int</span><span class="p">(</span>
+</span><span id="__span-0-477"><a id="__codelineno-0-477" name="__codelineno-0-477"></a>            <span class="n">_g</span><span class="p">(</span><span class="s2">"CONDUCTOR_MAX_CONSECUTIVE_ERRORS"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"5"</span><span class="p">),</span> <span class="mi">5</span>
+</span><span id="__span-0-478"><a id="__codelineno-0-478" name="__codelineno-0-478"></a>        <span class="p">),</span>
+</span><span id="__span-0-479"><a id="__codelineno-0-479" name="__codelineno-0-479"></a>        <span class="n">error_backoff_minutes</span><span class="o">=</span><span class="n">_float</span><span class="p">(</span>
+</span><span id="__span-0-480"><a id="__codelineno-0-480" name="__codelineno-0-480"></a>            <span class="n">_g</span><span class="p">(</span><span class="s2">"CONDUCTOR_ERROR_BACKOFF_MINUTES"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"30.0"</span><span class="p">),</span> <span class="mf">30.0</span>
+</span><span id="__span-0-481"><a id="__codelineno-0-481" name="__codelineno-0-481"></a>        <span class="p">),</span>
+</span><span id="__span-0-482"><a id="__codelineno-0-482" name="__codelineno-0-482"></a>        <span class="n">state_file</span><span class="o">=</span><span class="n">state_file</span><span class="p">,</span>
+</span><span id="__span-0-483"><a id="__codelineno-0-483" name="__codelineno-0-483"></a>        <span class="n">pause_file</span><span class="o">=</span><span class="n">pause_file</span><span class="p">,</span>
+</span><span id="__span-0-484"><a id="__codelineno-0-484" name="__codelineno-0-484"></a>        <span class="n">chunk_camera_folder</span><span class="o">=</span><span class="n">_g</span><span class="p">(</span>
+</span><span id="__span-0-485"><a id="__codelineno-0-485" name="__codelineno-0-485"></a>            <span class="s2">"CONDUCTOR_CHUNK_CAMERA_FOLDER"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"behavior-videos/TopCamera"</span>
+</span><span id="__span-0-486"><a id="__codelineno-0-486" name="__codelineno-0-486"></a>        <span class="p">),</span>
+</span><span id="__span-0-487"><a id="__codelineno-0-487" name="__codelineno-0-487"></a>        <span class="c1"># CLI -v count wins; fall back to CONDUCTOR_VERBOSITY env var (default 0)</span>
+</span><span id="__span-0-488"><a id="__codelineno-0-488" name="__codelineno-0-488"></a>        <span class="n">verbosity</span><span class="o">=</span><span class="p">(</span>
+</span><span id="__span-0-489"><a id="__codelineno-0-489" name="__codelineno-0-489"></a>            <span class="n">args</span><span class="o">.</span><span class="n">verbosity</span>
+</span><span id="__span-0-490"><a id="__codelineno-0-490" name="__codelineno-0-490"></a>            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">verbosity</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</span><span id="__span-0-491"><a id="__codelineno-0-491" name="__codelineno-0-491"></a>            <span class="k">else</span> <span class="n">_int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"CONDUCTOR_VERBOSITY"</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-0-492"><a id="__codelineno-0-492" name="__codelineno-0-492"></a>        <span class="p">),</span>
+</span><span id="__span-0-493"><a id="__codelineno-0-493" name="__codelineno-0-493"></a>        <span class="n">launch_status</span><span class="o">=</span><span class="n">_bool</span><span class="p">(</span><span class="n">_g</span><span class="p">(</span><span class="s2">"CONDUCTOR_LAUNCH_STATUS"</span><span class="p">,</span> <span class="s2">"true"</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">launch_status</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"false"</span><span class="p">)),</span>
+</span><span id="__span-0-494"><a id="__codelineno-0-494" name="__codelineno-0-494"></a>        <span class="n">env_file_path</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">env_file</span><span class="p">,</span>
+</span><span id="__span-0-495"><a id="__codelineno-0-495" name="__codelineno-0-495"></a>    <span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>
