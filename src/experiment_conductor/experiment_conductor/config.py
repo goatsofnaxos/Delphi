@@ -449,8 +449,23 @@ def build_config() -> ConductorConfig:
             _g(
                 "CONDUCTOR_KEEP_LOCAL_PATTERNS",
                 None,
-                "behavior/delphi_dataset.csv,behavior/DelphiController/**,"
-                "behavior/results/**,behavior/metadata/**",
+                # Behavior analysis outputs and task metadata
+                "behavior/delphi_dataset.csv,"
+                "behavior/DelphiController/**,"
+                "behavior/results/**,"
+                "behavior/metadata/**,"
+                # Ecephys config/probe files (no chunk timestamp — never delete)
+                "ecephys/*.json,"
+                "ecephys/*.yaml,"
+                "ecephys/*.yml,"
+                # Any top-level config files in the run dir
+                "*.json,"
+                "*.yaml,"
+                "*.yml,"
+                "*.toml,"
+                "*.ini,"
+                "*.cfg,"
+                "*.txt",
             )
         ),
         max_workers=_int(_g("CONDUCTOR_MAX_WORKERS", args.max_workers), 8),

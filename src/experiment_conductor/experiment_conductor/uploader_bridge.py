@@ -88,25 +88,31 @@ def _to_linux_path(path: str) -> str:
 
 # ── S3 helpers ────────────────────────────────────────────────────────────────
 
-def _list_confirmed_s3_chunks(s3_bucket: str, s3_prefix: str) -> Set[str]:
-    """Return the set of chunk timestamp names confirmed present in S3.
+def _list_s3_objects(
+    s3_bucket: str, s3_prefix: str
+) -> tuple[Set[str], Set[str]]:
+    """List all objects under *s3_prefix* in one paging pass.
 
-    Uses unsigned (public-read) boto3 access.  Returns an empty set on any
-    error so that callers fail safe — files are kept locally rather than
-    deleted from unconfirmed data.
+    Uses unsigned (public-read) boto3 access.  Returns (set(), set()) on any
+    error so callers fail safe — files are kept locally rather than deleted.
 
     Parameters
     ----------
     s3_bucket : str
         S3 bucket name.
     s3_prefix : str
-        Object key prefix for this dataset.
+        Object key prefix for this dataset (no trailing slash).
 
     Returns
     -------
-    set of str
-        Chunk timestamp strings (e.g. ``"2026-01-01T10-00-00"``) that are
-        confirmed present in S3.
+    chunk_timestamps : set of str
+        ``YYYY-MM-DDTHH-MM-SS`` strings found anywhere in any key — used to
+        confirm that a chunk has at least one object in S3.
+    relative_keys : set of str
+        Every object key with *s3_prefix* + ``"/"`` stripped from the front —
+        i.e. paths relative to the dataset root, matching the local
+        ``fpath.relative_to(data_root).as_posix()`` form used in the deletion
+        loop.  Used for per-file existence checks before deletion.
     """
     try:
         import boto3
@@ -116,18 +122,40 @@ def _list_confirmed_s3_chunks(s3_bucket: str, s3_prefix: str) -> Set[str]:
         client = boto3.client("s3", config=Config(signature_version=UNSIGNED))
         paginator = client.get_paginator("list_objects_v2")
         chunks: Set[str] = set()
+        keys: Set[str] = set()
+        prefix_slash = s3_prefix.rstrip("/") + "/"
         for page in paginator.paginate(Bucket=s3_bucket, Prefix=s3_prefix):
             for obj in page.get("Contents", []):
-                m = _CHUNK_RE.search(obj["Key"])
+                full_key = obj["Key"]
+                rel_key = (
+                    full_key[len(prefix_slash):]
+                    if full_key.startswith(prefix_slash)
+                    else full_key
+                )
+                keys.add(rel_key)
+                m = _CHUNK_RE.search(full_key)
                 if m:
                     chunks.add(m.group(0))
         log.debug(
-            "Confirmed S3 chunks under '%s': %d found.", s3_prefix, len(chunks)
+            "S3 listing under '%s': %d object(s), %d chunk timestamp(s).",
+            s3_prefix,
+            len(keys),
+            len(chunks),
         )
-        return chunks
+        return chunks, keys
     except Exception as exc:
-        log.error("Could not list S3 chunks (treating as empty): %s", exc)
-        return set()
+        log.error("Could not list S3 objects (treating as empty): %s", exc)
+        return set(), set()
+
+
+def _list_confirmed_s3_chunks(s3_bucket: str, s3_prefix: str) -> Set[str]:
+    """Return the set of chunk timestamps confirmed present in S3.
+
+    Thin wrapper around :func:`_list_s3_objects` that discards the per-file
+    key set, preserving the existing call sites in :mod:`session_manager`.
+    """
+    chunks, _ = _list_s3_objects(s3_bucket, s3_prefix)
+    return chunks
 
 
 # ── Upload job wrapper ────────────────────────────────────────────────────────
@@ -705,6 +733,95 @@ def compute_s3_prefix(
         return None
 
 
+def _upload_ancillary_files(
+    data_root: Path,
+    delete_dirs: List[Path],
+    keep_patterns: List[str],
+    s3_bucket: str,
+    s3_prefix: str,
+    already_in_s3: Set[str],
+) -> None:
+    """Upload non-chunked ancillary files to S3 using authenticated boto3.
+
+    Walks *delete_dirs* and uploads every file whose relative path contains no
+    chunk timestamp (``YYYY-MM-DDTHH-MM-SS``) and that is not already present
+    in S3 (as recorded in *already_in_s3*) and does not match a keep pattern.
+    Examples: ``ecephys/probe.json``, ``behavior/metadata/Rule_*``.
+
+    Requires standard AWS credentials (environment variables, instance profile,
+    or ``~/.aws/credentials``).  Failures are logged as warnings; the function
+    never raises so the caller's deletion pass always continues.
+
+    Parameters
+    ----------
+    data_root : Path
+        Run-level session directory (files are relative to this).
+    delete_dirs : list of Path
+        Directories to search (typically ``behavior-videos/`` and ``ecephys/``).
+    keep_patterns : list of str
+        Glob patterns — matched files are skipped (they stay local and are not
+        uploaded by this shim).
+    s3_bucket : str
+        Destination S3 bucket.
+    s3_prefix : str
+        Dataset prefix within the bucket (no trailing slash).
+    already_in_s3 : set of str
+        Relative keys already present in S3 (from :func:`_list_s3_objects`).
+        Files whose relative path is in this set are skipped.
+    """
+    try:
+        import boto3
+        client = boto3.client("s3")  # standard credential chain
+    except Exception as exc:
+        log.warning(
+            "Could not create authenticated S3 client for ancillary upload: %s", exc
+        )
+        return
+
+    uploaded = skipped_existing = 0
+    prefix_slash = s3_prefix.rstrip("/") + "/"
+
+    for delete_dir in delete_dirs:
+        if not delete_dir.exists():
+            continue
+        for fpath in sorted(delete_dir.rglob("*")):
+            if not fpath.is_file():
+                continue
+            rel = fpath.relative_to(data_root).as_posix()
+
+            # Skip files covered by keep patterns (they never need to be uploaded here)
+            if any(fnmatch.fnmatch(rel, pat) for pat in keep_patterns):
+                continue
+
+            # Only handle files that have no chunk timestamp in their path
+            if _CHUNK_RE.search(rel):
+                continue  # chunked file — handled by the transfer service
+
+            # Skip if already present in S3
+            if rel in already_in_s3:
+                skipped_existing += 1
+                continue
+
+            s3_key = prefix_slash + rel
+            try:
+                client.upload_file(str(fpath), s3_bucket, s3_key)
+                log.info(
+                    "Uploaded ancillary file: %s → s3://%s/%s", rel, s3_bucket, s3_key
+                )
+                uploaded += 1
+            except Exception as exc:
+                log.warning(
+                    "Could not upload ancillary file %s: %s", fpath, exc
+                )
+
+    if uploaded or skipped_existing:
+        log.info(
+            "Ancillary upload: %d uploaded, %d already in S3.",
+            uploaded,
+            skipped_existing,
+        )
+
+
 def delete_local_files_after_upload(
     data_root: Path,
     keep_patterns: List[str],
@@ -751,8 +868,8 @@ def delete_local_files_after_upload(
         log.error("Could not compute S3 prefix — aborting local deletion: %s", exc)
         return
 
-    log.info("Querying S3 for confirmed chunks before local deletion ...")
-    confirmed_chunks = _list_confirmed_s3_chunks(s3_bucket, s3_prefix)
+    log.info("Querying S3 for confirmed objects before local deletion ...")
+    confirmed_chunks, s3_keys = _list_s3_objects(s3_bucket, s3_prefix)
 
     if not confirmed_chunks:
         log.warning(
@@ -761,12 +878,25 @@ def delete_local_files_after_upload(
         return
 
     log.info(
-        "%d chunk(s) confirmed in S3; proceeding with local deletion.",
+        "%d chunk(s) confirmed in S3 (%d total object(s)); proceeding.",
         len(confirmed_chunks),
+        len(s3_keys),
     )
 
     delete_dirs = [data_root / "behavior-videos", data_root / "ecephys"]
-    kept = deleted = skipped_unconfirmed = 0
+
+    # Upload ancillary files (no chunk timestamp) before the deletion sweep so
+    # they reach S3 even if the transfer-service jobs don't include them.
+    _upload_ancillary_files(
+        data_root=data_root,
+        delete_dirs=delete_dirs,
+        keep_patterns=keep_patterns,
+        s3_bucket=s3_bucket,
+        s3_prefix=s3_prefix,
+        already_in_s3=s3_keys,
+    )
+
+    kept = deleted = skipped_unconfirmed = skipped_ancillary = 0
 
     for delete_dir in delete_dirs:
         if not delete_dir.exists():
@@ -777,16 +907,28 @@ def delete_local_files_after_upload(
 
             rel = fpath.relative_to(data_root).as_posix()
 
+            # 1. Keep-pattern allowlist — always wins.
             if any(fnmatch.fnmatch(rel, pat) for pat in keep_patterns):
                 log.debug("Keeping (keep pattern): %s", rel)
                 kept += 1
                 continue
 
-            m = _CHUNK_RE.search(rel)
-            if m and m.group(0) not in confirmed_chunks:
-                log.debug(
-                    "Keeping (chunk not yet in S3): %s [chunk=%s]", rel, m.group(0)
-                )
+            # 2. Non-chunked ancillary files (no timestamp in path) — keep locally.
+            #    These were uploaded above by _upload_ancillary_files; we never
+            #    delete them because they are not individually tracked by the
+            #    transfer service and may be shared across chunks.
+            if not _CHUNK_RE.search(rel):
+                log.debug("Keeping (ancillary — no chunk timestamp): %s", rel)
+                skipped_ancillary += 1
+                continue
+
+            # 3. Per-file S3 existence check.
+            #    A chunk timestamp appearing somewhere in S3 is not enough —
+            #    each individual file must be confirmed present before deletion.
+            #    This guards against partial transfers where some files within a
+            #    chunk uploaded successfully but others did not.
+            if rel not in s3_keys:
+                log.debug("Keeping (file not yet in S3): %s", rel)
                 skipped_unconfirmed += 1
                 continue
 
@@ -798,8 +940,10 @@ def delete_local_files_after_upload(
                 log.warning("Could not delete %s: %s", fpath, exc)
 
     log.info(
-        "Post-upload deletion: %d deleted, %d kept (pattern), %d kept (S3 unconfirmed).",
+        "Post-upload deletion: %d deleted, %d kept (pattern), "
+        "%d kept (file not in S3), %d kept (ancillary).",
         deleted,
         kept,
         skipped_unconfirmed,
+        skipped_ancillary,
     )
