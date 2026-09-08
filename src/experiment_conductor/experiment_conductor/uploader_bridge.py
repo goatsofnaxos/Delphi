@@ -735,18 +735,22 @@ def compute_s3_prefix(
 
 def _upload_ancillary_files(
     data_root: Path,
-    delete_dirs: List[Path],
-    keep_patterns: List[str],
+    upload_dirs: List[Path],
     s3_bucket: str,
     s3_prefix: str,
     already_in_s3: Set[str],
 ) -> None:
     """Upload non-chunked ancillary files to S3 using authenticated boto3.
 
-    Walks *delete_dirs* and uploads every file whose relative path contains no
+    Walks *upload_dirs* and uploads every file whose relative path contains no
     chunk timestamp (``YYYY-MM-DDTHH-MM-SS``) and that is not already present
-    in S3 (as recorded in *already_in_s3*) and does not match a keep pattern.
-    Examples: ``ecephys/probe.json``, ``behavior/metadata/Rule_*``.
+    in S3 (as recorded in *already_in_s3*).  Examples: ``ecephys/probe.json``,
+    ``behavior/metadata/Rule_*``.
+
+    Keep patterns do **not** affect this function — uploading to S3 and keeping
+    a file locally are orthogonal concerns.  A file that matches a keep pattern
+    (and therefore won't be deleted locally) should still be uploaded so the S3
+    copy is complete.
 
     Requires standard AWS credentials (environment variables, instance profile,
     or ``~/.aws/credentials``).  Failures are logged as warnings; the function
@@ -756,11 +760,11 @@ def _upload_ancillary_files(
     ----------
     data_root : Path
         Run-level session directory (files are relative to this).
-    delete_dirs : list of Path
-        Directories to search (typically ``behavior-videos/`` and ``ecephys/``).
-    keep_patterns : list of str
-        Glob patterns — matched files are skipped (they stay local and are not
-        uploaded by this shim).
+    upload_dirs : list of Path
+        Directories to search.  Typically ``behavior/``, ``behavior-videos/``,
+        and ``ecephys/`` — broader than the deletion directories so that
+        ancillary files in ``behavior/`` (rule files, metadata, etc.) are also
+        captured.
     s3_bucket : str
         Destination S3 bucket.
     s3_prefix : str
@@ -781,21 +785,18 @@ def _upload_ancillary_files(
     uploaded = skipped_existing = 0
     prefix_slash = s3_prefix.rstrip("/") + "/"
 
-    for delete_dir in delete_dirs:
-        if not delete_dir.exists():
+    for upload_dir in upload_dirs:
+        if not upload_dir.exists():
             continue
-        for fpath in sorted(delete_dir.rglob("*")):
+        for fpath in sorted(upload_dir.rglob("*")):
             if not fpath.is_file():
                 continue
             rel = fpath.relative_to(data_root).as_posix()
 
-            # Skip files covered by keep patterns (they never need to be uploaded here)
-            if any(fnmatch.fnmatch(rel, pat) for pat in keep_patterns):
-                continue
-
-            # Only handle files that have no chunk timestamp in their path
+            # Only handle files that have no chunk timestamp in their path;
+            # chunked files are the transfer service's responsibility.
             if _CHUNK_RE.search(rel):
-                continue  # chunked file — handled by the transfer service
+                continue
 
             # Skip if already present in S3
             if rel in already_in_s3:
@@ -883,14 +884,20 @@ def delete_local_files_after_upload(
         len(s3_keys),
     )
 
+    # delete_dirs: only the directories whose chunked files are candidates for
+    # local deletion after confirmed S3 upload.
     delete_dirs = [data_root / "behavior-videos", data_root / "ecephys"]
+
+    # upload_dirs: a superset that also includes behavior/ so that ancillary
+    # files there (rule files, task metadata, probe configs, etc.) are uploaded
+    # to S3 even though they are never candidates for local deletion.
+    upload_dirs = [data_root / "behavior", *delete_dirs]
 
     # Upload ancillary files (no chunk timestamp) before the deletion sweep so
     # they reach S3 even if the transfer-service jobs don't include them.
     _upload_ancillary_files(
         data_root=data_root,
-        delete_dirs=delete_dirs,
-        keep_patterns=keep_patterns,
+        upload_dirs=upload_dirs,
         s3_bucket=s3_bucket,
         s3_prefix=s3_prefix,
         already_in_s3=s3_keys,
