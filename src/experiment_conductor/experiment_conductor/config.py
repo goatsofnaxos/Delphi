@@ -458,6 +458,11 @@ def build_config() -> ConductorConfig:
                 "ecephys/*.json,"
                 "ecephys/*.yaml,"
                 "ecephys/*.yml,"
+                # Conductor sidecars — must never be deleted from the server.
+                # _normalization_offset.json lives in ecephys/OnixEphys/;
+                # .upload_history.json lives at the run-dir root (not walked).
+                "ecephys/**/_*,"
+                "**/.upload_history.json,"
                 # Any top-level config files in the run dir
                 "*.json,"
                 "*.yaml,"

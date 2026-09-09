@@ -57,6 +57,19 @@ _SUBMITTED_LOCK = threading.Lock()
 
 _CHUNK_RE = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}")
 
+# File extensions that the AIND transfer service compresses into a
+# session-level Zarr container on S3.  The local path never appears in S3
+# (the Zarr has a completely different name and directory), so per-file
+# confirmation cannot be used.  Instead, deletion is gated on the Zarr being
+# finalised — see _ZARR_COMPLETION_PREFIX / _ZARR_COMPLETION_MARKER below.
+_FORMAT_CONVERTED_EXTENSIONS: frozenset[str] = frozenset({".bin"})
+
+# The transfer service writes ecephys/ecephys_compressed/<name>.zarr/.zmetadata
+# as the final step of Zarr creation.  Its presence in S3 is the reliable
+# signal that ALL .bin chunks have been compressed and the Zarr is complete.
+_ZARR_COMPLETION_PREFIX = "ecephys/ecephys_compressed/"
+_ZARR_COMPLETION_MARKER = ".zmetadata"
+
 
 def stop_upload() -> None:
     """Signal the uploader to stop after the current batch completes."""
@@ -903,6 +916,23 @@ def delete_local_files_after_upload(
         already_in_s3=s3_keys,
     )
 
+    # Zarr completion check — the transfer service writes .zmetadata as the
+    # very last step.  Its presence means all .bin data is safely in S3.
+    zarr_complete = any(
+        k.startswith(_ZARR_COMPLETION_PREFIX) and k.endswith(_ZARR_COMPLETION_MARKER)
+        for k in s3_keys
+    )
+    if zarr_complete:
+        log.info(
+            "Zarr complete (.zmetadata found under '%s') — .bin files eligible for deletion.",
+            _ZARR_COMPLETION_PREFIX,
+        )
+    else:
+        log.info(
+            "Zarr not yet complete (no .zmetadata under '%s') — .bin files will be kept.",
+            _ZARR_COMPLETION_PREFIX,
+        )
+
     kept = deleted = skipped_unconfirmed = skipped_ancillary = 0
 
     for delete_dir in delete_dirs:
@@ -929,15 +959,30 @@ def delete_local_files_after_upload(
                 skipped_ancillary += 1
                 continue
 
-            # 3. Per-file S3 existence check.
-            #    A chunk timestamp appearing somewhere in S3 is not enough —
-            #    each individual file must be confirmed present before deletion.
-            #    This guards against partial transfers where some files within a
-            #    chunk uploaded successfully but others did not.
-            if rel not in s3_keys:
-                log.debug("Keeping (file not yet in S3): %s", rel)
-                skipped_unconfirmed += 1
-                continue
+            # 3. S3 confirmation — strategy depends on whether the transfer
+            #    service stores the file as-is or compresses it to Zarr.
+            #
+            #    .bin files (compressed → session-level Zarr on S3):
+            #      The local .bin path never appears in S3 (different directory,
+            #      different filename, different extension).  Deletion is gated
+            #      on the session-level Zarr being finalised: the transfer
+            #      service writes .zmetadata last, so its presence confirms that
+            #      ALL chunks have been compressed.  One flag covers all .bin
+            #      files in the session.
+            #
+            #    Files uploaded as-is (e.g. .mp4 behaviour videos):
+            #      Per-file confirmation — the exact relative path must be
+            #      present in S3, guarding against partial chunk transfers.
+            if fpath.suffix.lower() in _FORMAT_CONVERTED_EXTENSIONS:
+                if not zarr_complete:
+                    log.debug("Keeping .bin (zarr not yet complete): %s", rel)
+                    skipped_unconfirmed += 1
+                    continue
+            else:
+                if rel not in s3_keys:
+                    log.debug("Keeping (file not yet in S3): %s", rel)
+                    skipped_unconfirmed += 1
+                    continue
 
             try:
                 fpath.unlink()

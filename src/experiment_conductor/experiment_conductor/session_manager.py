@@ -747,6 +747,49 @@ class SessionManager:
                 if state.last_upload_run is None:
                     state.last_upload_run = recovered["last_upload_run"]
 
+        # ── Compute S3 prefix early (pre-flight confirmation, upload, deletion) ──
+        s3_prefix: str | None = compute_s3_prefix(
+            source_directory=str(run_dir),
+            subject_id=state.subject_id,
+            acq_datetime=acq_dt,
+            s3_bucket=self.cfg.s3_bucket,
+        )
+
+        # ── Pre-flight S3 confirmation ────────────────────────────────────────
+        # Confirm any previously-submitted chunks now visible in S3 BEFORE
+        # computing skip_chunks.  This serves two purposes:
+        #
+        #   1. The sidecar shows accurate state immediately rather than hours
+        #      later when run_upload_cycle finishes its last batch (the default
+        #      inter-batch wait is 16 200 s, so a 7-batch job takes many hours).
+        #
+        #   2. Chunks that were confirmed when delete_after_upload was disabled
+        #      carry delete_state="disabled".  mark_confirmed transitions them
+        #      to delete_state="pending" now that delete is enabled, so the
+        #      deletion sweep that follows this cycle handles them correctly.
+        pending_before = sidecar.submitted_chunk_timestamps()
+        if pending_before and s3_prefix:
+            confirmed_in_s3_pre = list_confirmed_s3_chunks(
+                self.cfg.s3_bucket, s3_prefix
+            )
+            n_confirmed_pre = 0
+            for chunk_ts in pending_before & confirmed_in_s3_pre:
+                sidecar.mark_confirmed(chunk_ts)
+                n_confirmed_pre += 1
+                log.log(
+                    VERBOSE,
+                    "[%s] Chunk %s confirmed in S3 (pre-flight).",
+                    state.subject_id,
+                    chunk_ts,
+                )
+            if n_confirmed_pre:
+                log.info(
+                    "[%s] Pre-flight: %d chunk(s) already confirmed in S3 — "
+                    "sidecar updated.",
+                    state.subject_id,
+                    n_confirmed_pre,
+                )
+
         skip_chunks = sidecar.chunks_to_skip(self.cfg.upload_max_retries)
 
         log.info(
@@ -794,23 +837,19 @@ class SessionManager:
             on_batch_submitted=_on_batch,
         )
 
-        # Compute the S3 prefix once — used for both confirmation and deletion
-        s3_prefix: str | None = compute_s3_prefix(
-            source_directory=str(run_dir),
-            subject_id=state.subject_id,
-            acq_datetime=acq_dt,
-            s3_bucket=self.cfg.s3_bucket,
-        )
-
-        # Confirm any previously-submitted chunks that are now visible in S3
-        pending_in_sidecar = sidecar.submitted_chunk_timestamps()
-        if pending_in_sidecar and s3_prefix:
-            confirmed_in_s3 = list_confirmed_s3_chunks(self.cfg.s3_bucket, s3_prefix)
-            for chunk_ts in pending_in_sidecar & confirmed_in_s3:
+        # Confirm any chunks submitted in this cycle that are now visible in S3
+        # (most take longer to process, but fast transfers may land before the
+        # cycle returns).
+        pending_after = sidecar.submitted_chunk_timestamps()
+        if pending_after and s3_prefix:
+            confirmed_in_s3_post = list_confirmed_s3_chunks(
+                self.cfg.s3_bucket, s3_prefix
+            )
+            for chunk_ts in pending_after & confirmed_in_s3_post:
                 sidecar.mark_confirmed(chunk_ts)
                 log.log(
                     VERBOSE,
-                    "[%s] Chunk %s confirmed in S3.",
+                    "[%s] Chunk %s confirmed in S3 (post-upload).",
                     state.subject_id,
                     chunk_ts,
                 )
