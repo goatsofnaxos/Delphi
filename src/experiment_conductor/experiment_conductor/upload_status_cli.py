@@ -457,6 +457,110 @@ def _show_transfer_job_status(
         print(f"  {_red(f'Error querying transfer service: {exc}')}\n")
 
 
+def _full_session_reset(
+    run_dir_str: str,
+    subject_id: str,
+    session_ts: str,
+    state_file_path: Path,
+    pid_file: Path,
+) -> None:
+    """Delete the sidecar and reset ALL session-state flags to their defaults.
+
+    Unlike :func:`_reset_upload_state` (which only clears upload progress),
+    this function zeroes every step-completion flag so the conductor re-runs
+    the full pipeline from scratch: consolidation → metadata → noise floor →
+    upload.
+
+    Safe only when the conductor is stopped.  If it is running, prints a
+    warning and does nothing — the in-memory ``SessionState`` cannot be
+    patched from outside the process.
+    """
+    conductor_running = pid_file.exists()
+    if conductor_running:
+        print(
+            f"\n  {_red('⚠  Conductor is running.')}\n"
+            "  A full reset requires the conductor to be stopped first.\n"
+            "  Stop the conductor (Ctrl-C or use the force-quit option), then\n"
+            "  run this action again.\n"
+        )
+        return
+
+    run_dir = Path(run_dir_str)
+
+    # ── 1. Delete the sidecar ─────────────────────────────────────────────────
+    sidecar_path = _find_sidecar_path(run_dir)
+    if sidecar_path is not None:
+        try:
+            sidecar_path.unlink()
+            print(f"\n  {_green('✔  Sidecar deleted:')} {_dim(str(sidecar_path))}")
+        except OSError as exc:
+            print(f"\n  {_red(f'✖  Could not delete sidecar: {exc}')}\n")
+            return
+    else:
+        print(f"  {_yellow('Sidecar not found')} (already clean).")
+
+    # ── 2. Patch ALL flags in the state file ──────────────────────────────────
+    try:
+        state_data = json.loads(state_file_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        print(f"\n  {_yellow(f'Could not read state file ({exc}).')}")
+        print("  Sidecar was deleted.  Restart the conductor to continue.\n")
+        return
+
+    # Locate the session key using the same flexible matching as _reset_upload_state
+    target_key = None
+    if run_dir_str in state_data:
+        target_key = run_dir_str
+    else:
+        for k in state_data:
+            k_norm = k.replace("\\", "/").rstrip("/").lower()
+            s_norm = run_dir_str.replace("\\", "/").rstrip("/").lower()
+            if (
+                k_norm == s_norm
+                or s_norm.startswith(k_norm + "/")
+                or k_norm.startswith(s_norm + "/")
+                or k_norm.endswith(s_norm)
+                or s_norm.endswith(k_norm)
+            ):
+                target_key = k
+                break
+
+    if target_key is None:
+        print(
+            f"\n  {_yellow('Session key not found in state file.')}\n"
+            "  Sidecar was deleted.  Restart the conductor to continue.\n"
+        )
+        return
+
+    # Zero all step-completion flags and clear error state.
+    # Keep data_root, subject_id, session_datetime, run_dir, and discovered_at
+    # so the conductor re-discovers the session path immediately.
+    entry = state_data[target_key]
+    entry["phase"] = "idle"
+    entry["consolidation_done"] = False
+    entry["metadata_present"] = False
+    entry["metadata_generated"] = False
+    entry["dataset_built"] = False
+    entry["noise_floor_estimated"] = False
+    entry["upload_started"] = False
+    entry["last_upload_run"] = None
+    entry["last_processed"] = None
+    entry["error_message"] = None
+    entry["consecutive_errors"] = 0
+
+    try:
+        state_file_path.write_text(
+            json.dumps(state_data, indent=2), encoding="utf-8"
+        )
+        print(
+            f"  {_green('✔  All session flags reset to defaults.')}\n"
+            "  Restart the conductor — it will re-run every pipeline step\n"
+            "  (consolidation, metadata, noise floor, upload) from scratch.\n"
+        )
+    except OSError as exc:
+        print(f"\n  {_red(f'✖  Could not write state file: {exc}')}\n")
+
+
 def _dataset_menu(
     subject_id: str,
     session_ts: str,
@@ -486,6 +590,7 @@ def _dataset_menu(
         print(f"  {_cyan('2')}. In-progress chunks  (submitted / pending)")
         print(f"  {_cyan('3')}. Failed / skipped chunks")
         print(f"  {_cyan('4')}. Reset upload state  {_red('(clears sidecar / restarts from start job)')}")
+        print(f"  {_cyan('5')}. Full session reset  {_red('(re-runs all pipeline steps from scratch)')}")
         print(f"  {_cyan('b')}. Back to dataset list")
         print(f"  {_cyan('q')}. Quit")
         print()
@@ -536,8 +641,32 @@ def _dataset_menu(
                 sidecar = None
             else:
                 print("  Cancelled.\n")
+        elif choice == "5":
+            print()
+            print(f"  {_red(_bold('Full session reset'))}")
+            print(f"  This resets ALL pipeline progress for:")
+            print(f"    {_dim(run_dir)}")
+            print(f"  The conductor will re-run consolidation, metadata, noise")
+            print(f"  floor estimation, and upload from scratch.")
+            print(f"  {_yellow('The conductor must be stopped before this can run.')}")
+            print()
+            confirm = input(
+                f"  {_yellow('Are you sure?')}  [y/N] "
+            ).strip().lower()
+            if confirm == "y":
+                _full_session_reset(
+                    run_dir_str=run_dir,
+                    subject_id=subject_id,
+                    session_ts=session_ts,
+                    state_file_path=state_file_path or Path("conductor_state.json"),
+                    pid_file=pid_file or Path("conductor.pid"),
+                )
+                chunks = {}
+                sidecar = None
+            else:
+                print("  Cancelled.\n")
         else:
-            print(f"  {_red('Invalid.')}  Enter 1, 2, 3, 4, b, or q.")
+            print(f"  {_red('Invalid.')}  Enter 1–5, b, or q.")
 
 
 # ---------------------------------------------------------------------------
