@@ -994,6 +994,78 @@ def _upload_ancillary_files(
         )
 
 
+def upload_ancillary_files(
+    data_root: Path,
+    s3_bucket: str,
+    subject_id: str,
+    acq_datetime: datetime,
+) -> None:
+    """Upload non-chunked ancillary files from the run directory to S3.
+
+    Walks ``behavior/``, ``behavior-videos/``, and ``ecephys/`` under
+    *data_root* and uploads every file whose relative path contains no chunk
+    timestamp (``YYYY-MM-DDTHH-MM-SS``) and that is not already present in
+    S3.  Examples: ``behavior/metadata/``, ``behavior/WhiteRabbit/device.yml``,
+    ``ecephys/probe_config.json``.
+
+    This is intentionally independent of deletion: it is safe to call at any
+    time (e.g. every cadence tick) regardless of whether
+    ``delete_after_upload`` is enabled.  The transfer service does not upload
+    these files; this shim fills that gap.
+
+    Requires authenticated boto3 credentials (standard credential chain).
+    Failures are logged as warnings and never raise.
+
+    Parameters
+    ----------
+    data_root : Path
+        Run-level session directory.
+    s3_bucket : str
+        S3 bucket name.
+    subject_id : str
+        Subject ID (used to compute the S3 prefix).
+    acq_datetime : datetime
+        Acquisition start datetime (used to compute the S3 prefix).
+    """
+    try:
+        from aind_chronic_ephys_uploader.models import JobSettings
+        from aind_data_schema_models.modalities import Modality
+
+        _settings = JobSettings(
+            source_directory=str(data_root),
+            job_type="chronic_ephys_chunk",
+            acq_datetime=acq_datetime,
+            subject_id=subject_id,
+            project_name="",
+            contact_email="noreply@example.com",
+            modalities=[Modality.ECEPHYS, Modality.BEHAVIOR, Modality.BEHAVIOR_VIDEOS],
+            s3_bucket=s3_bucket,
+        )
+        s3_prefix = _settings.s3_prefix
+    except Exception as exc:
+        log.error("Could not compute S3 prefix — skipping ancillary upload: %s", exc)
+        return
+
+    # Use the unsigned listing to discover what is already on S3.
+    # The upload itself (inside _upload_ancillary_files) uses the authenticated
+    # credential chain, which is required to write to the bucket.
+    _, already_in_s3 = _list_s3_objects(s3_bucket, s3_prefix)
+
+    upload_dirs = [
+        data_root / "behavior",
+        data_root / "behavior-videos",
+        data_root / "ecephys",
+    ]
+
+    _upload_ancillary_files(
+        data_root=data_root,
+        upload_dirs=upload_dirs,
+        s3_bucket=s3_bucket,
+        s3_prefix=s3_prefix,
+        already_in_s3=already_in_s3,
+    )
+
+
 def delete_local_files_after_upload(
     data_root: Path,
     keep_patterns: List[str],

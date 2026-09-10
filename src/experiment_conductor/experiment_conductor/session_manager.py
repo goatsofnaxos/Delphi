@@ -64,6 +64,7 @@ from .uploader_bridge import (
     run_upload_cycle,
     stop_upload,
     compute_s3_prefix,
+    upload_ancillary_files,
 )
 from .watcher import discover_sessions
 
@@ -870,6 +871,18 @@ class SessionManager:
                         state.subject_id,
                         new_run_dir,
                     )
+
+            # Upload non-chunked ancillary files (behavior/metadata/, device.yml,
+            # probe configs, etc.) that the transfer service never handles.
+            # Runs every tick regardless of delete_after_upload — these files are
+            # small and the upload is idempotent (already-present files are skipped).
+            if upload_started and s3_prefix:
+                upload_ancillary_files(
+                    data_root=run_dir,
+                    s3_bucket=self.cfg.s3_bucket,
+                    subject_id=state.subject_id,
+                    acq_datetime=acq_dt,
+                )
 
         result = run_upload_cycle(
             source_directory=str(run_dir),
