@@ -792,6 +792,35 @@ class SessionManager:
 
         skip_chunks = sidecar.chunks_to_skip(self.cfg.upload_max_retries)
 
+        # ── Deletion sweep (before upload cycle) ──────────────────────────────
+        # Run the per-file S3 deletion check at every cadence tick, not only
+        # after the multi-hour upload cycle completes.  delete_local_files_after_upload
+        # re-queries S3 fresh each call, so it is safe to run independently of
+        # whether a new upload cycle succeeds.  The guard is the same as before:
+        # upload must have started (at least one start-job submitted) and
+        # delete_after_upload must be enabled.
+        if self.cfg.delete_after_upload and upload_started and s3_prefix:
+            log.log(
+                VERBOSE,
+                "[%s] DELETE_AFTER_UPLOAD — querying S3 then removing confirmed local files …",
+                state.subject_id,
+            )
+            delete_local_files_after_upload(
+                data_root=run_dir,
+                keep_patterns=self.cfg.keep_local_patterns,
+                s3_bucket=self.cfg.s3_bucket,
+                subject_id=state.subject_id,
+                acq_datetime=acq_dt,
+            )
+            # Mark deleted chunks in the sidecar (per-file deletion is handled
+            # by delete_local_files_after_upload; here we update chunk-level
+            # delete_state from pending → success for any chunk now confirmed).
+            confirmed_for_deletion = list_confirmed_s3_chunks(
+                self.cfg.s3_bucket, s3_prefix
+            )
+            for chunk_ts in confirmed_for_deletion:
+                sidecar.mark_deleted(chunk_ts)
+
         log.info(
             "[%s] UPLOADING — submitting %s job …",
             state.subject_id,
@@ -869,33 +898,6 @@ class SessionManager:
             )
         else:
             log.warning("[%s] Upload cycle skipped or failed.", state.subject_id)
-
-        # Optionally delete large local files after confirmed S3 upload
-        if result.success and self.cfg.delete_after_upload and upload_started:
-            log.log(
-                VERBOSE,
-                "[%s] DELETE_AFTER_UPLOAD — querying S3 then removing confirmed local files …",
-                state.subject_id,
-            )
-            delete_local_files_after_upload(
-                data_root=run_dir,
-                keep_patterns=self.cfg.keep_local_patterns,
-                s3_bucket=self.cfg.s3_bucket,
-                subject_id=state.subject_id,
-                acq_datetime=acq_dt,
-            )
-            # Mark deleted chunks in the sidecar (all confirmed-in-S3 chunks
-            # that have delete_state pending are candidates; deletion is
-            # handled by delete_local_files_after_upload which operates at
-            # the file level — we mark the sidecar at chunk granularity here)
-            if s3_prefix is not None:
-                confirmed_for_deletion = list_confirmed_s3_chunks(
-                    self.cfg.s3_bucket, s3_prefix
-                )
-                for chunk_ts in confirmed_for_deletion:
-                    # Only transition pending→success; already-deleted chunks
-                    # have delete_state "success" and mark_deleted is a no-op.
-                    sidecar.mark_deleted(chunk_ts)
 
     # ── State persistence ─────────────────────────────────────────────────────
 
