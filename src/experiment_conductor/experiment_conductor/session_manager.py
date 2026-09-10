@@ -851,6 +851,26 @@ class SessionManager:
             for ts in chunks:
                 sidecar.mark_submitted(ts, _max_retries)
 
+        # Run consolidation on every cadence tick during the inter-batch sleep
+        # so that new Bonsai run directories are merged promptly rather than
+        # waiting for the multi-hour upload cycle to finish.  Phase is NOT
+        # changed here — the session remains UPLOADING while this runs.
+        def _on_cadence_tick() -> None:
+            ok = run_consolidation(state.data_root)
+            if ok:
+                new_run_dir = resolve_run_dir(state.data_root)
+                with state.lock:
+                    state.consolidation_done = ok
+                    if new_run_dir is not None:
+                        state.run_dir = new_run_dir
+                move_delphi_metadata(new_run_dir)
+                if new_run_dir != run_dir:
+                    log.info(
+                        "[%s] Cadence tick: new run dir detected — %s",
+                        state.subject_id,
+                        new_run_dir,
+                    )
+
         result = run_upload_cycle(
             source_directory=str(run_dir),
             subject_id=state.subject_id,
@@ -864,6 +884,8 @@ class SessionManager:
             is_start_job=is_start,
             skip_chunks=skip_chunks,
             on_batch_submitted=_on_batch,
+            on_cadence_tick=_on_cadence_tick,
+            cadence_secs=int(self.cfg.pipeline_cadence_minutes * 60),
         )
 
         # Confirm any chunks submitted in this cycle that are now visible in S3

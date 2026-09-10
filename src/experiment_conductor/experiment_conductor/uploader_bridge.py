@@ -57,18 +57,28 @@ _SUBMITTED_LOCK = threading.Lock()
 
 _CHUNK_RE = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}")
 
-# File extensions that the AIND transfer service compresses into a
-# session-level Zarr container on S3.  The local path never appears in S3
-# (the Zarr has a completely different name and directory), so per-file
-# confirmation cannot be used.  Instead, deletion is gated on the Zarr being
-# finalised — see _ZARR_COMPLETION_PREFIX / _ZARR_COMPLETION_MARKER below.
+# Extensions whose handling in the deletion loop requires special-casing
+# (see delete_local_files_after_upload for the per-type strategy).
+# AmplifierData .bin → zarr-based verification; Clock/HubClock .bin → per-file
+# key check.  Both are caught by this set so the loop can branch on filename.
 _FORMAT_CONVERTED_EXTENSIONS: frozenset[str] = frozenset({".bin"})
 
 # The transfer service writes ecephys/ecephys_compressed/<name>.zarr/.zmetadata
-# as the final step of Zarr creation.  Its presence in S3 is the reliable
-# signal that ALL .bin chunks have been compressed and the Zarr is complete.
+# as the final step of Zarr creation.  Its presence in S3 indicates the zarr
+# container exists, but does NOT guarantee every individual chunk is present.
 _ZARR_COMPLETION_PREFIX = "ecephys/ecephys_compressed/"
 _ZARR_COMPLETION_MARKER = ".zmetadata"
+
+# Filename stem that identifies ONIX AmplifierData .bin files.
+# Only AmplifierData is zarr-compressed by the transfer service — Clock and
+# HubClock .bin files are uploaded as-is to ecephys/OnixEphys/ and confirmed
+# via per-file key existence in S3.
+_AMPLIFIER_DATA_STEM = "AmplifierData"
+
+# Zarr array within the AmplifierData zarr that holds per-sample trace data.
+# Its shape[0] is the total number of samples in the zarr (cumulative across
+# all chunks uploaded so far).
+_ZARR_TRACES_ARRAY = "traces_seg0"
 
 
 def stop_upload() -> None:
@@ -171,6 +181,119 @@ def _list_confirmed_s3_chunks(s3_bucket: str, s3_prefix: str) -> Set[str]:
     return chunks
 
 
+def _fetch_zarr_sample_count(
+    s3_bucket: str,
+    s3_prefix: str,
+    s3_keys: Set[str],
+) -> Optional[int]:
+    """Return the total sample count stored in the AmplifierData zarr on S3.
+
+    Locates the ``.zmetadata`` object for the AmplifierData zarr from the
+    already-fetched *s3_keys* listing (no extra pagination call), then
+    downloads that single JSON to read ``traces_seg0/.zarray["shape"][0]``.
+    Uses unsigned (public-read) boto3 access; returns *None* on any error so
+    callers fail safe and keep the local ``.bin`` files.
+
+    Parameters
+    ----------
+    s3_bucket : str
+        S3 bucket name.
+    s3_prefix : str
+        Dataset prefix (no trailing slash) — the same prefix used by
+        :func:`_list_s3_objects`.
+    s3_keys : set of str
+        Relative object keys already returned by :func:`_list_s3_objects`.
+        The ``.zmetadata`` file is located by scanning this set rather than
+        making another list call.
+
+    Returns
+    -------
+    int or None
+        Total number of samples in ``traces_seg0`` (axis 0 of its shape), or
+        *None* if the ``.zmetadata`` key is not present in *s3_keys* or the
+        object cannot be read / parsed.
+    """
+    # Find the .zmetadata key for the AmplifierData zarr in the S3 listing.
+    zmetadata_rel = next(
+        (
+            k for k in s3_keys
+            if k.startswith(_ZARR_COMPLETION_PREFIX)
+            and _AMPLIFIER_DATA_STEM in k
+            and k.endswith(f"/{_ZARR_COMPLETION_MARKER}")
+        ),
+        None,
+    )
+    if zmetadata_rel is None:
+        log.debug(
+            "AmplifierData zarr .zmetadata not found in S3 listing"
+            " — zarr not yet finalised."
+        )
+        return None
+
+    full_key = s3_prefix.rstrip("/") + "/" + zmetadata_rel
+    try:
+        import boto3
+        import json as _json
+        from botocore import UNSIGNED
+        from botocore.client import Config
+
+        client = boto3.client("s3", config=Config(signature_version=UNSIGNED))
+        resp = client.get_object(Bucket=s3_bucket, Key=full_key)
+        zmetadata = _json.loads(resp["Body"].read())
+        zarray_key = f"{_ZARR_TRACES_ARRAY}/.zarray"
+        shape = zmetadata["metadata"][zarray_key]["shape"]
+        total_samples = int(shape[0])
+        log.debug(
+            "Zarr %s total samples (shape[0]): %d", _ZARR_TRACES_ARRAY, total_samples
+        )
+        return total_samples
+    except Exception as exc:
+        log.debug("Could not read zarr .zmetadata for sample count: %s", exc)
+        return None
+
+
+def _build_sample_metadata_index(data_root: Path) -> dict:
+    """Return a sorted mapping of chunk_timestamp → start_sample from local JSON files.
+
+    Reads every ``*SampleMetadata*.json`` file found under
+    ``data_root/ecephys/``, extracts the ``"start_sample"`` field, and
+    returns a plain ``dict`` sorted by timestamp string (lexicographic order
+    matches chronological order for the ``YYYY-MM-DDTHH-MM-SS`` format).
+
+    Parameters
+    ----------
+    data_root : Path
+        Run-level session directory.
+
+    Returns
+    -------
+    dict mapping str → int
+        ``{chunk_timestamp: start_sample}`` sorted by timestamp.  Empty if
+        no SampleMetadata files are found or none can be parsed.
+    """
+    import json as _json
+
+    raw: dict = {}
+    ecephys_dir = data_root / "ecephys"
+    if not ecephys_dir.exists():
+        return raw
+    for jpath in sorted(ecephys_dir.rglob("*SampleMetadata*.json")):
+        m = _CHUNK_RE.search(jpath.name)
+        if not m:
+            continue
+        ts = m.group(0)
+        try:
+            with open(jpath) as f:
+                data = _json.load(f)
+            start_sample = data.get("start_sample")
+            if start_sample is not None:
+                raw[ts] = int(start_sample)
+        except Exception as exc:
+            log.debug("Could not read SampleMetadata %s: %s", jpath, exc)
+    # Return sorted by timestamp (lexicographic == chronological for this format)
+    return dict(sorted(raw.items()))
+
+
 # ── Upload job wrapper ────────────────────────────────────────────────────────
 
 class _StoppableSubmitUploadJob:
@@ -245,6 +368,8 @@ class _StoppableSubmitUploadJob:
         self,
         skip_chunks: Optional[Set[str]] = None,
         on_batch_submitted: Optional[Callable[[list[str]], None]] = None,
+        on_cadence_tick: Optional[Callable[[], None]] = None,
+        cadence_secs: int = 300,
     ) -> list[str]:
         """Run the upload job with duplicate-filtering and stop support.
 
@@ -260,6 +385,15 @@ class _StoppableSubmitUploadJob:
             Receives the list of chunk timestamps in that batch.  Use this to
             update persistent state (e.g. the upload sidecar) after each batch
             rather than waiting for all batches to complete.
+        on_cadence_tick:
+            Optional callback invoked once every *cadence_secs* seconds during
+            the inter-batch sleep.  Use this to run work that must happen on a
+            short cadence (e.g. directory consolidation) even while the upload
+            cycle is waiting between batches.  Exceptions are caught and logged
+            as warnings so they never interrupt the sleep loop.
+        cadence_secs:
+            How often (in seconds) to fire *on_cadence_tick* during the
+            inter-batch sleep.  Default 300 (5 minutes).
 
         Returns
         -------
@@ -373,11 +507,24 @@ class _StoppableSubmitUploadJob:
                     "Waiting %d s before next batch ...", wait_secs
                 )
                 elapsed = 0
+                next_tick = cadence_secs  # first tick fires after one cadence interval
                 while elapsed < wait_secs:
                     if self._stop.is_set():
                         break
                     sleep(1)
                     elapsed += 1
+                    if on_cadence_tick is not None and elapsed >= next_tick:
+                        next_tick += cadence_secs
+                        try:
+                            on_cadence_tick()
+                        except Exception:
+                            log.warning(
+                                "on_cadence_tick callback raised an exception "
+                                "(batch %d/%d); continuing.",
+                                idx + 1,
+                                total_batches,
+                                exc_info=True,
+                            )
 
         log.info("Upload job finished.")
         return newly_submitted
@@ -541,6 +688,8 @@ def run_upload_cycle(
     is_start_job: bool = False,
     skip_chunks: Optional[Set[str]] = None,
     on_batch_submitted: Optional[Callable[[list[str]], None]] = None,
+    on_cadence_tick: Optional[Callable[[], None]] = None,
+    cadence_secs: int = 300,
 ) -> UploadCycleResult:
     """Submit one upload cycle (start or chunk job) to the transfer service.
 
@@ -578,6 +727,13 @@ def run_upload_cycle(
         service, before the inter-batch sleep.  Receives the list of chunk
         timestamps in that batch.  Use this to persist state after each batch
         rather than waiting for all batches to complete.
+    on_cadence_tick : callable, optional
+        Invoked once every *cadence_secs* seconds during the inter-batch sleep.
+        Use for work that must run on a short cadence (e.g. directory
+        consolidation) even while the upload cycle is waiting between batches.
+        Exceptions are caught and logged as warnings.
+    cadence_secs : int
+        Interval in seconds between *on_cadence_tick* calls.  Default 300.
 
     Returns
     -------
@@ -622,6 +778,8 @@ def run_upload_cycle(
         submitted = job.run_job(
             skip_chunks=skip_chunks,
             on_batch_submitted=on_batch_submitted,
+            on_cadence_tick=on_cadence_tick,
+            cadence_secs=cadence_secs,
         )
         return UploadCycleResult(success=True, submitted_chunks=submitted)
 
@@ -843,12 +1001,31 @@ def delete_local_files_after_upload(
     subject_id: str,
     acq_datetime: datetime,
 ) -> None:
-    """Delete large local files only after confirming their chunk is on S3.
+    """Delete large local files only after robust per-file S3 confirmation.
 
-    For every file under ``behavior-videos/`` and ``ecephys/``, the chunk
-    timestamp is extracted from its path.  The file is deleted only if its
-    chunk is confirmed present in S3 and it does not match any of
-    ``keep_patterns``.
+    Applies one of three confirmation strategies depending on file type:
+
+    **AmplifierData .bin** (zarr-compressed by the transfer service):
+        Multiple independent checks must all pass before deletion:
+
+        1. The AmplifierData zarr ``.zmetadata`` must exist on S3 (zarr
+           container is finalised).
+        2. The *next* chunk's ``start_sample`` (read from the local
+           ``SampleMetadata_T+1.json``) must be ``≤`` the zarr's total
+           sample count (``traces_seg0.shape[0]`` from ``.zmetadata``).
+           This proves every sample in chunk T has been written to the zarr.
+        3. Chunk T must not be the last chunk in the directory — there must
+           be a next SampleMetadata to reference.
+
+    **Clock / HubClock .bin** (uploaded as-is to ``ecephys/OnixEphys/``):
+        Per-file key existence — the exact relative path must be present
+        in the S3 object listing.
+
+    **All other files** (``.mp4``, etc.):
+        Per-file key existence (same as Clock/HubClock above).
+
+    Files matching any pattern in *keep_patterns* are always kept.  Non-
+    chunked ancillary files (no chunk timestamp in path) are never deleted.
 
     Parameters
     ----------
@@ -857,7 +1034,7 @@ def delete_local_files_after_upload(
     keep_patterns : list of str
         Glob patterns relative to *data_root* for files to always keep.
     s3_bucket : str
-        S3 bucket name (used to query confirmed chunks).
+        S3 bucket name.
     subject_id : str
         Subject ID (used to compute the S3 prefix).
     acq_datetime : datetime
@@ -916,22 +1093,35 @@ def delete_local_files_after_upload(
         already_in_s3=s3_keys,
     )
 
-    # Zarr completion check — the transfer service writes .zmetadata as the
-    # very last step.  Its presence means all .bin data is safely in S3.
-    zarr_complete = any(
-        k.startswith(_ZARR_COMPLETION_PREFIX) and k.endswith(_ZARR_COMPLETION_MARKER)
-        for k in s3_keys
+    # ── Pre-compute AmplifierData zarr verification data ──────────────────────
+    # Read the zarr .zmetadata from S3 once and build the local SampleMetadata
+    # index once — used for every AmplifierData .bin file in the loop below.
+    #
+    # zarr_samples: total samples in traces_seg0 (None → zarr not yet finalised).
+    # sample_meta_index: {chunk_timestamp: start_sample}, sorted chronologically.
+    #
+    # The verification formula:  chunk T is fully in the zarr iff
+    #   sample_meta_index[T+1] ≤ zarr_samples
+    # where T+1 is the next chronological chunk.  If T is the last chunk
+    # in the index (no T+1) we always keep — we can never confirm whether
+    # data is still being written to the zarr.
+    zarr_samples: Optional[int] = _fetch_zarr_sample_count(
+        s3_bucket, s3_prefix, s3_keys
     )
-    if zarr_complete:
-        log.info(
-            "Zarr complete (.zmetadata found under '%s') — .bin files eligible for deletion.",
-            _ZARR_COMPLETION_PREFIX,
+    sample_meta_index: dict = _build_sample_metadata_index(data_root)
+    if zarr_samples is not None:
+        log.debug(
+            "Zarr verification ready: %d total samples, %d SampleMetadata entries.",
+            zarr_samples,
+            len(sample_meta_index),
         )
     else:
-        log.info(
-            "Zarr not yet complete (no .zmetadata under '%s') — .bin files will be kept.",
-            _ZARR_COMPLETION_PREFIX,
+        log.debug(
+            "Zarr .zmetadata not yet on S3 — all AmplifierData .bin files will be kept."
         )
+
+    # Sorted timestamp list for fast next-chunk lookup
+    _sorted_meta_ts: list = sorted(sample_meta_index.keys())
 
     kept = deleted = skipped_unconfirmed = skipped_ancillary = 0
 
@@ -954,35 +1144,109 @@ def delete_local_files_after_upload(
             #    These were uploaded above by _upload_ancillary_files; we never
             #    delete them because they are not individually tracked by the
             #    transfer service and may be shared across chunks.
-            if not _CHUNK_RE.search(rel):
+            chunk_m = _CHUNK_RE.search(rel)
+            if not chunk_m:
                 log.debug("Keeping (ancillary — no chunk timestamp): %s", rel)
                 skipped_ancillary += 1
                 continue
+            chunk_ts = chunk_m.group(0)
 
-            # 3. S3 confirmation — strategy depends on whether the transfer
-            #    service stores the file as-is or compresses it to Zarr.
+            # 3. S3 confirmation — strategy depends on file type.
             #
-            #    .bin files (compressed → session-level Zarr on S3):
-            #      The local .bin path never appears in S3 (different directory,
-            #      different filename, different extension).  Deletion is gated
-            #      on the session-level Zarr being finalised: the transfer
-            #      service writes .zmetadata last, so its presence confirms that
-            #      ALL chunks have been compressed.  One flag covers all .bin
-            #      files in the session.
+            #    AmplifierData .bin (zarr-compressed on S3):
+            #      Multi-check verification using local SampleMetadata JSONs and
+            #      the zarr's traces_seg0 total sample count read from .zmetadata.
+            #      The file is safe to delete only when:
+            #        (a) zarr .zmetadata exists on S3 (zarr is finalised), AND
+            #        (b) the NEXT chunk's start_sample ≤ zarr_samples, proving
+            #            every sample in THIS chunk has been written to the zarr, AND
+            #        (c) there IS a next chunk (last chunk is always kept).
             #
-            #    Files uploaded as-is (e.g. .mp4 behaviour videos):
-            #      Per-file confirmation — the exact relative path must be
-            #      present in S3, guarding against partial chunk transfers.
+            #    Clock / HubClock .bin (uploaded as-is to ecephys/OnixEphys/):
+            #      Per-file key existence check — the exact relative path must
+            #      appear in the S3 listing.
+            #
+            #    All other files (.mp4, etc.):
+            #      Per-file key existence check (same as Clock/HubClock).
             if fpath.suffix.lower() in _FORMAT_CONVERTED_EXTENSIONS:
-                if not zarr_complete:
-                    log.debug("Keeping .bin (zarr not yet complete): %s", rel)
-                    skipped_unconfirmed += 1
-                    continue
+                if _AMPLIFIER_DATA_STEM in fpath.name:
+                    # ── AmplifierData zarr verification ────────────────────────
+                    # (a) zarr not yet finalised on S3
+                    if zarr_samples is None:
+                        log.debug(
+                            "Keeping AmplifierData .bin"
+                            " (zarr not yet finalised on S3): %s",
+                            rel,
+                        )
+                        kept += 1
+                        continue
+
+                    # (b) chunk timestamp must be in the SampleMetadata index
+                    try:
+                        ts_idx = _sorted_meta_ts.index(chunk_ts)
+                    except ValueError:
+                        log.warning(
+                            "Keeping AmplifierData .bin"
+                            " (chunk %s not in SampleMetadata index"
+                            " — cannot verify zarr coverage): %s",
+                            chunk_ts,
+                            rel,
+                        )
+                        kept += 1
+                        continue
+
+                    # (c) never delete the last chunk — no next SampleMetadata
+                    if ts_idx + 1 >= len(_sorted_meta_ts):
+                        log.debug(
+                            "Keeping AmplifierData .bin"
+                            " (last chunk in directory — no next SampleMetadata): %s",
+                            rel,
+                        )
+                        kept += 1
+                        continue
+
+                    # (d) next chunk's start_sample must be ≤ zarr total samples
+                    next_ts = _sorted_meta_ts[ts_idx + 1]
+                    start_sample_next = sample_meta_index[next_ts]
+                    if start_sample_next > zarr_samples:
+                        log.debug(
+                            "Keeping AmplifierData .bin"
+                            " (next chunk start_sample %d > zarr total %d"
+                            " — chunk not fully in zarr): %s",
+                            start_sample_next,
+                            zarr_samples,
+                            rel,
+                        )
+                        kept += 1
+                        continue
+
+                    log.debug(
+                        "AmplifierData .bin verified"
+                        " (next chunk start_sample %d ≤ zarr total %d"
+                        " → full chunk in zarr): %s",
+                        start_sample_next,
+                        zarr_samples,
+                        rel,
+                    )
+                    # Falls through to deletion below.
+
+                else:
+                    # ── Clock / HubClock .bin — per-file key check ──────────
+                    if rel not in s3_keys:
+                        log.debug(
+                            "Keeping .bin (file not yet in S3): %s", rel
+                        )
+                        skipped_unconfirmed += 1
+                        continue
+                    # Falls through to deletion below.
+
             else:
+                # ── All other files (.mp4, etc.) — per-file key check ───────
                 if rel not in s3_keys:
                     log.debug("Keeping (file not yet in S3): %s", rel)
                     skipped_unconfirmed += 1
                     continue
+                # Falls through to deletion below.
 
             try:
                 fpath.unlink()
