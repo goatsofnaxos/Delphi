@@ -867,6 +867,97 @@ def _load_sessions(state_file_path: Path) -> list[tuple]:
 # Top-level dataset selector
 # ---------------------------------------------------------------------------
 
+def _global_reset(
+    state_file_path: Path,
+    pid_file: Path,
+) -> None:
+    """Wipe ALL conductor state: every sidecar and the state file itself.
+
+    Finds every session in *state_file_path*, deletes its
+    ``.upload_history.json`` sidecar, then deletes the state file so the
+    conductor starts completely fresh on next launch.
+
+    Requires the conductor to be stopped — if the PID file exists the function
+    refuses and returns without changing anything.
+    """
+    if pid_file.exists():
+        print(
+            f"\n  {_red('⚠  Conductor is running.')}\n"
+            "  Stop the conductor first (use 'k' to force-quit, or Ctrl-C\n"
+            "  in the conductor window), then run the global reset.\n"
+        )
+        return
+
+    # Collect all run dirs from the state file so we can hunt for sidecars.
+    state_data = _load_state_file(state_file_path)
+    if not state_data and not state_file_path.exists():
+        print(f"\n  {_yellow('State file not found')} — nothing to reset.\n")
+        return
+
+    print()
+    print(f"  {_red(_bold('Global reset — this will permanently delete:'))}")
+    print(f"  • Every .upload_history.json sidecar across all sessions")
+    print(f"  • The conductor state file: {_dim(str(state_file_path))}")
+    print()
+    if state_data:
+        for _key, session_dict in sorted(state_data.items()):
+            sid   = session_dict.get("subject_id", "?")
+            sts   = session_dict.get("session_datetime", "?")
+            rd    = session_dict.get("run_dir") or _key
+            print(f"    {_bold(sid)}  {sts}  {_dim(str(rd))}")
+    print()
+    print(f"  {_yellow('Type RESET to confirm, or press Enter to cancel:')}", end="  ")
+    confirm = input().strip()
+    if confirm != "RESET":
+        print("  Cancelled.\n")
+        return
+
+    deleted_sidecars = 0
+    failed_sidecars  = 0
+
+    # Delete every sidecar found under any known run dir.
+    for _key, session_dict in state_data.items():
+        rd_raw  = session_dict.get("run_dir") or _key
+        rd_path = Path(rd_raw) if rd_raw else None
+        if rd_path is None:
+            continue
+        sidecar_path = _find_sidecar_path(rd_path)
+        if sidecar_path is None:
+            continue
+        try:
+            sidecar_path.unlink()
+            print(f"  {_green('✔  Sidecar deleted:')} {_dim(str(sidecar_path))}")
+            deleted_sidecars += 1
+        except OSError as exc:
+            print(f"  {_red(f'✖  Could not delete {sidecar_path}: {exc}')}")
+            failed_sidecars += 1
+
+    # Delete the state file itself.
+    if state_file_path.exists():
+        try:
+            state_file_path.unlink()
+            print(f"  {_green('✔  State file deleted:')} {_dim(str(state_file_path))}")
+        except OSError as exc:
+            print(f"  {_red(f'✖  Could not delete state file: {exc}')}")
+    else:
+        print(f"  {_yellow('State file already absent:')} {_dim(str(state_file_path))}")
+
+    print()
+    if failed_sidecars == 0:
+        print(
+            f"  {_green('Global reset complete.')}  "
+            f"{deleted_sidecars} sidecar(s) deleted.\n"
+            "  Restart the conductor — it will rediscover all sessions\n"
+            "  and re-run every pipeline step from scratch.\n"
+        )
+    else:
+        print(
+            f"  {_yellow('Partial reset.')}  {deleted_sidecars} sidecar(s) deleted, "
+            f"{failed_sidecars} could not be removed.\n"
+            "  Check the errors above before restarting the conductor.\n"
+        )
+
+
 def _main_menu(
     state_file_path: Path,
     pause_file: Path,
@@ -956,6 +1047,7 @@ def _main_menu(
             print(f"  {_cyan('k')}. Force quit conductor  {_dim(f'(PID file: {pid_file})')}")
         if sessions:
             print(f"  {_cyan('1')}–{_cyan(str(len(sessions)))}. View dataset details")
+        print(f"  {_cyan('x')}. Global reset  {_red('(wipe ALL sessions and conductor state)')}")
         print(f"  {_cyan('q')}. Quit")
         print()
 
@@ -1017,6 +1109,13 @@ def _main_menu(
                     print("  Cancelled.\n")
             continue
 
+        # ── Global reset ──────────────────────────────────────────────────────
+        if choice == "x":
+            _global_reset(state_file_path=state_file_path, pid_file=pid_file)
+            # Reload sessions after the state file may have been deleted
+            sessions = _load_sessions(state_file_path)
+            continue
+
         # ── Dataset selection ─────────────────────────────────────────────────
         if not sessions:
             print(f"  {_red('No sessions to select.')}")
@@ -1031,7 +1130,7 @@ def _main_menu(
             parts.append("r" if currently_paused else "p")
             if conductor_running:
                 parts.append("k")
-            parts.append("q")
+            parts.extend(["x", "q"])
             print(f"  {_red('Invalid.')}  Enter {', '.join(parts)}.")
             continue
 
