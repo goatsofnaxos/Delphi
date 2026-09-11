@@ -47,3 +47,9 @@ def setup_logging(verbosity: int, *, stream=None) -> None:
         stream=stream or sys.stdout,
         force=True,
     )
+    # Silence third-party HTTP/AWS SDK debug output.  Even at -vv these loggers
+    # emit raw XML bodies, full hook traces, and TLS handshake details that are
+    # never useful for conductor diagnostics and flood the terminal on every S3
+    # call.  Cap them at WARNING so genuine errors still surface.
+    for _noisy in ("boto3", "botocore", "urllib3", "s3transfer"):
+        logging.getLogger(_noisy).setLevel(logging.WARNING)

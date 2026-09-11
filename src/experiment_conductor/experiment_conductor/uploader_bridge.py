@@ -508,24 +508,29 @@ class _StoppableSubmitUploadJob:
 
         extra_skip = set(skip_chunks) if skip_chunks else set()
 
+        # extra_skip (from sidecar.chunks_to_skip) now includes submitted chunks
+        # that are still in-flight, so submitted_snap is redundant after a fresh
+        # start — but keep it for intra-session deduplication on multi-batch
+        # cycles where the sidecar write may lag behind _SUBMITTED_CHUNKS.
+        #
+        # sidecar_inflight: submitted chunks the SIDECAR knows about that are
+        # not yet in S3 and not already tracked by submitted_snap.  After a
+        # conductor restart this is non-empty while submitted_snap is zero,
+        # making it visible that the sidecar is protecting in-flight jobs.
+        sidecar_inflight = (extra_skip - cloud_chunks) - submitted_snap
+
         log.info(
-            "Chunks — local: %d  S3 confirmed: %d  in-flight (this session): %d"
-            "  sidecar-skip: %d",
+            "Chunks — local: %d  S3 confirmed: %d  in-flight (session): %d"
+            "  in-flight (sidecar): %d  sidecar-skip total: %d",
             len(local_chunks),
             len(cloud_chunks),
             len(submitted_snap),
+            len(sidecar_inflight),
             len(extra_skip),
         )
 
         already_handled = cloud_chunks | submitted_snap | extra_skip
         chunks_pending = sorted(set(local_chunks) - already_handled)
-
-        skipped_inflight = len(set(local_chunks) - cloud_chunks - extra_skip) - len(chunks_pending)
-        if skipped_inflight > 0:
-            log.info(
-                "Skipping %d in-flight chunk(s) already submitted this session.",
-                skipped_inflight,
-            )
 
         if job_type == "chronic_ephys_start":
             pending_total = sorted(set(local_chunks) - cloud_chunks)

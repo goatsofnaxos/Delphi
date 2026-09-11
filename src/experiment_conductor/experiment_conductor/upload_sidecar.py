@@ -275,19 +275,55 @@ class UploadSidecar:
 
     # ── Queries ──────────────────────────────────────────────────────────────
 
-    def chunks_to_skip(self, max_retries: int) -> Set[str]:
+    def chunks_to_skip(
+        self,
+        max_retries: int,
+        submitted_stale_hours: float = 24.0,
+    ) -> Set[str]:
         """Return the set of chunk timestamps the uploader must exclude.
 
-        Includes chunks that already succeeded in S3 and chunks whose retry
-        count equals or exceeds *max_retries*.
+        Includes:
+
+        * Chunks already confirmed in S3 (state ``"success"`` or ``"skipped"``).
+        * Chunks whose retry count has hit *max_retries*.
+        * Chunks in state ``"submitted"`` that were submitted within the last
+          *submitted_stale_hours* hours — these are still in-flight at the
+          transfer service and must not be re-submitted, even after a conductor
+          restart (the sidecar is the durable record of what is in-flight,
+          since the in-process ``_SUBMITTED_CHUNKS`` set is cleared on restart).
+
+        A submitted chunk older than *submitted_stale_hours* is **not** included
+        in the skip set — this lets the conductor re-submit if the transfer
+        service dropped the job without notifying us.  Default is 24 hours,
+        which is safely longer than any normal upload while still allowing
+        recovery from a silently-dropped job.
         """
+        now = datetime.now(timezone.utc)
+        stale_cutoff_secs = submitted_stale_hours * 3600.0
+
+        skip: Set[str] = set()
         with self._lock:
-            return {
-                ts
-                for ts, rec in self._chunks.items()
-                if rec.state in ("success", "skipped")
-                or rec.retries >= max_retries
-            }
+            for ts, rec in self._chunks.items():
+                if rec.state in ("success", "skipped"):
+                    skip.add(ts)
+                elif rec.retries >= max_retries:
+                    skip.add(ts)
+                elif rec.state == "submitted":
+                    # Keep as in-flight if the submission is recent enough.
+                    if rec.submitted_at:
+                        try:
+                            sub_dt = datetime.fromisoformat(rec.submitted_at)
+                            if sub_dt.tzinfo is None:
+                                sub_dt = sub_dt.replace(tzinfo=timezone.utc)
+                            age_secs = (now - sub_dt).total_seconds()
+                            if age_secs <= stale_cutoff_secs:
+                                skip.add(ts)
+                            # else: stale — fall through, not added to skip
+                        except Exception:
+                            skip.add(ts)  # unparseable → treat as in-flight
+                    else:
+                        skip.add(ts)  # no timestamp → treat as in-flight
+        return skip
 
     def submitted_chunk_timestamps(self) -> Set[str]:
         """Return chunk timestamps currently in the ``submitted`` state."""
