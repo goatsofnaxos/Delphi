@@ -114,7 +114,14 @@ def _to_linux_path(path: str) -> str:
 def _list_s3_objects(
     s3_bucket: str, s3_prefix: str
 ) -> tuple[Set[str], Set[str]]:
-    """List all objects under *s3_prefix* in one paging pass.
+    """List S3 objects needed for deletion verification and ancillary upload.
+
+    Uses targeted sub-prefix queries instead of a full listing over the whole
+    dataset prefix.  The ecephys/ecephys_compressed/ subtree is intentionally
+    excluded: zarr chunk files (``traces_seg0/N.0``) are never referenced
+    directly by the deletion or confirmation logic, and listing them would page
+    through thousands of objects per hour of data.  The zarr ``.zmetadata``
+    file is fetched independently by :func:`_fetch_zarr_sample_count`.
 
     Uses unsigned (public-read) boto3 access.  Returns (set(), set()) on any
     error so callers fail safe — files are kept locally rather than deleted.
@@ -129,14 +136,21 @@ def _list_s3_objects(
     Returns
     -------
     chunk_timestamps : set of str
-        ``YYYY-MM-DDTHH-MM-SS`` strings found anywhere in any key — used to
+        ``YYYY-MM-DDTHH-MM-SS`` strings found in listed keys — used to
         confirm that a chunk has at least one object in S3.
     relative_keys : set of str
-        Every object key with *s3_prefix* + ``"/"`` stripped from the front —
-        i.e. paths relative to the dataset root, matching the local
-        ``fpath.relative_to(data_root).as_posix()`` form used in the deletion
-        loop.  Used for per-file existence checks before deletion.
+        Object keys with *s3_prefix* + ``"/"`` stripped — paths relative to
+        the dataset root, matching ``fpath.relative_to(data_root).as_posix()``
+        in the deletion loop.  Used for per-file existence checks.
     """
+    # Targeted sub-prefixes — these cover all non-zarr files needed for:
+    #   • chunk-timestamp extraction (timestamps in OnixEphys file names)
+    #   • per-file S3 key check in the deletion loop (Clock/HubClock .bin,
+    #     behavior-video files)
+    #   • SampleMetadata S3 fallback (_build_sample_metadata_index)
+    #   • ancillary upload duplicate-check (behavior/, behavior-videos/)
+    _SUB_PREFIXES = ("ecephys/OnixEphys/", "behavior/", "behavior-videos/")
+
     try:
         import boto3
         from botocore import UNSIGNED
@@ -147,20 +161,24 @@ def _list_s3_objects(
         chunks: Set[str] = set()
         keys: Set[str] = set()
         prefix_slash = s3_prefix.rstrip("/") + "/"
-        for page in paginator.paginate(Bucket=s3_bucket, Prefix=s3_prefix):
-            for obj in page.get("Contents", []):
-                full_key = obj["Key"]
-                rel_key = (
-                    full_key[len(prefix_slash):]
-                    if full_key.startswith(prefix_slash)
-                    else full_key
-                )
-                keys.add(rel_key)
-                m = _CHUNK_RE.search(full_key)
-                if m:
-                    chunks.add(m.group(0))
+
+        for sub in _SUB_PREFIXES:
+            full_prefix = prefix_slash + sub
+            for page in paginator.paginate(Bucket=s3_bucket, Prefix=full_prefix):
+                for obj in page.get("Contents", []):
+                    full_key = obj["Key"]
+                    rel_key = (
+                        full_key[len(prefix_slash):]
+                        if full_key.startswith(prefix_slash)
+                        else full_key
+                    )
+                    keys.add(rel_key)
+                    m = _CHUNK_RE.search(full_key)
+                    if m:
+                        chunks.add(m.group(0))
+
         log.debug(
-            "S3 listing under '%s': %d object(s), %d chunk timestamp(s).",
+            "S3 targeted listing under '%s': %d object(s), %d chunk timestamp(s).",
             s3_prefix,
             len(keys),
             len(chunks),
@@ -184,13 +202,16 @@ def _list_confirmed_s3_chunks(s3_bucket: str, s3_prefix: str) -> Set[str]:
 def _fetch_zarr_sample_count(
     s3_bucket: str,
     s3_prefix: str,
-    s3_keys: Set[str],
+    s3_keys: Set[str],  # no longer used; kept for call-site compatibility
 ) -> Optional[int]:
     """Return the total sample count stored in the AmplifierData zarr on S3.
 
-    Locates the ``.zmetadata`` object for the AmplifierData zarr from the
-    already-fetched *s3_keys* listing (no extra pagination call), then
-    downloads that single JSON to read ``traces_seg0/.zarray["shape"][0]``.
+    Performs a single ``list_objects_v2`` with ``Delimiter="/"`` on the
+    ``ecephys/ecephys_compressed/`` prefix to discover the AmplifierData zarr
+    directory name without enumerating any chunk files.  Then fetches
+    ``.zmetadata`` directly with ``get_object`` and reads
+    ``traces_seg0/.zarray["shape"][0]``.
+
     Uses unsigned (public-read) boto3 access; returns *None* on any error so
     callers fail safe and keep the local ``.bin`` files.
 
@@ -199,38 +220,18 @@ def _fetch_zarr_sample_count(
     s3_bucket : str
         S3 bucket name.
     s3_prefix : str
-        Dataset prefix (no trailing slash) — the same prefix used by
-        :func:`_list_s3_objects`.
+        Dataset prefix (no trailing slash).
     s3_keys : set of str
-        Relative object keys already returned by :func:`_list_s3_objects`.
-        The ``.zmetadata`` file is located by scanning this set rather than
-        making another list call.
+        No longer used.  Retained for call-site compatibility so existing
+        callers do not need updating.
 
     Returns
     -------
     int or None
         Total number of samples in ``traces_seg0`` (axis 0 of its shape), or
-        *None* if the ``.zmetadata`` key is not present in *s3_keys* or the
-        object cannot be read / parsed.
+        *None* if the zarr directory or ``.zmetadata`` cannot be located or
+        parsed.
     """
-    # Find the .zmetadata key for the AmplifierData zarr in the S3 listing.
-    zmetadata_rel = next(
-        (
-            k for k in s3_keys
-            if k.startswith(_ZARR_COMPLETION_PREFIX)
-            and _AMPLIFIER_DATA_STEM in k
-            and k.endswith(f"/{_ZARR_COMPLETION_MARKER}")
-        ),
-        None,
-    )
-    if zmetadata_rel is None:
-        log.debug(
-            "AmplifierData zarr .zmetadata not found in S3 listing"
-            " — zarr not yet finalised."
-        )
-        return None
-
-    full_key = s3_prefix.rstrip("/") + "/" + zmetadata_rel
     try:
         import boto3
         import json as _json
@@ -238,8 +239,34 @@ def _fetch_zarr_sample_count(
         from botocore.client import Config
 
         client = boto3.client("s3", config=Config(signature_version=UNSIGNED))
-        resp = client.get_object(Bucket=s3_bucket, Key=full_key)
-        zmetadata = _json.loads(resp["Body"].read())
+        prefix_slash = s3_prefix.rstrip("/") + "/"
+        zarr_root = prefix_slash + _ZARR_COMPLETION_PREFIX
+
+        # List with Delimiter="/" so S3 returns zarr directory names as
+        # CommonPrefixes rather than enumerating individual chunk files.
+        resp = client.list_objects_v2(
+            Bucket=s3_bucket,
+            Prefix=zarr_root,
+            Delimiter="/",
+        )
+        zarr_dirs = [
+            cp["Prefix"]
+            for cp in resp.get("CommonPrefixes", [])
+            if _AMPLIFIER_DATA_STEM in cp["Prefix"]
+        ]
+        if not zarr_dirs:
+            log.debug(
+                "AmplifierData zarr directory not found under '%s'"
+                " — zarr not yet uploaded.",
+                zarr_root,
+            )
+            return None
+
+        # Fetch .zmetadata directly; one GET carries the full zarr metadata
+        # including traces_seg0/.zarray shape without touching any chunk files.
+        zmetadata_key = zarr_dirs[0] + _ZARR_COMPLETION_MARKER
+        resp2 = client.get_object(Bucket=s3_bucket, Key=zmetadata_key)
+        zmetadata = _json.loads(resp2["Body"].read())
         zarray_key = f"{_ZARR_TRACES_ARRAY}/.zarray"
         shape = zmetadata["metadata"][zarray_key]["shape"]
         total_samples = int(shape[0])
@@ -252,45 +279,103 @@ def _fetch_zarr_sample_count(
         return None
 
 
-def _build_sample_metadata_index(data_root: Path) -> dict:
-    """Return a sorted mapping of chunk_timestamp → start_sample from local JSON files.
+def _build_sample_metadata_index(
+    data_root: Path,
+    s3_bucket: str = "",
+    s3_prefix: str = "",
+    s3_keys: Optional[Set[str]] = None,
+) -> dict:
+    """Return a sorted mapping of chunk_timestamp → start_sample.
 
     Reads every ``*SampleMetadata*.json`` file found under
-    ``data_root/ecephys/``, extracts the ``"start_sample"`` field, and
-    returns a plain ``dict`` sorted by timestamp string (lexicographic order
-    matches chronological order for the ``YYYY-MM-DDTHH-MM-SS`` format).
+    ``data_root/ecephys/``.  When *s3_keys* is supplied and a timestamp's
+    SampleMetadata file is absent locally, the function falls back to
+    reading that file directly from S3 (unsigned public access).  The S3
+    fallback handles the case where a local SampleMetadata file was already
+    deleted by a previous deletion sweep before this fix was applied.
 
     Parameters
     ----------
     data_root : Path
         Run-level session directory.
+    s3_bucket : str
+        S3 bucket name.  Required for the S3 fallback; ignored when
+        *s3_keys* is ``None`` or empty.
+    s3_prefix : str
+        Dataset S3 prefix (no trailing slash).  Required for the S3 fallback.
+    s3_keys : set of str, optional
+        Relative object keys already returned by :func:`_list_s3_objects`.
+        When provided, the function supplements the local index with any
+        SampleMetadata keys present in S3 but missing locally.
 
     Returns
     -------
     dict mapping str → int
         ``{chunk_timestamp: start_sample}`` sorted by timestamp.  Empty if
-        no SampleMetadata files are found or none can be parsed.
+        no SampleMetadata files are found locally or on S3.
     """
     import json as _json
 
     raw: dict = {}
     ecephys_dir = data_root / "ecephys"
-    if not ecephys_dir.exists():
-        return raw
-    for jpath in sorted(ecephys_dir.rglob("*SampleMetadata*.json")):
-        m = _CHUNK_RE.search(jpath.name)
-        if not m:
-            continue
-        ts = m.group(0)
-        try:
-            with open(jpath) as f:
-                data = _json.load(f)
-            start_sample = data.get("start_sample")
-            if start_sample is not None:
-                raw[ts] = int(start_sample)
-        except Exception as exc:
-            log.debug("Could not read SampleMetadata %s: %s", jpath, exc)
-    # Return sorted by timestamp (lexicographic == chronological for this format)
+    if ecephys_dir.exists():
+        for jpath in sorted(ecephys_dir.rglob("*SampleMetadata*.json")):
+            m = _CHUNK_RE.search(jpath.name)
+            if not m:
+                continue
+            ts = m.group(0)
+            try:
+                with open(jpath) as f:
+                    data = _json.load(f)
+                start_sample = data.get("start_sample")
+                if start_sample is not None:
+                    raw[ts] = int(start_sample)
+            except Exception as exc:
+                log.debug("Could not read SampleMetadata %s: %s", jpath, exc)
+
+    # S3 fallback — supplement with any SampleMetadata files on S3 that are
+    # absent locally.  This recovers from the case where a prior deletion sweep
+    # deleted the local SampleMetadata files (they passed the per-file S3 key
+    # check) before the "never delete SampleMetadata" rule was in place.
+    if s3_keys and s3_bucket and s3_prefix:
+        sm_s3_keys = [
+            k for k in s3_keys
+            if "SampleMetadata" in k and k.endswith(".json")
+        ]
+        missing = [k for k in sm_s3_keys if _CHUNK_RE.search(k) and _CHUNK_RE.search(k).group(0) not in raw]
+        if missing:
+            try:
+                import boto3
+                from botocore import UNSIGNED
+                from botocore.client import Config
+
+                client = boto3.client("s3", config=Config(signature_version=UNSIGNED))
+                prefix_slash = s3_prefix.rstrip("/") + "/"
+                for rel_key in missing:
+                    m = _CHUNK_RE.search(rel_key)
+                    if not m:
+                        continue
+                    ts = m.group(0)
+                    try:
+                        resp = client.get_object(Bucket=s3_bucket, Key=prefix_slash + rel_key)
+                        data = _json.loads(resp["Body"].read())
+                        start_sample = data.get("start_sample")
+                        if start_sample is not None:
+                            raw[ts] = int(start_sample)
+                            log.debug(
+                                "SampleMetadata for %s read from S3 (not present locally).", ts
+                            )
+                    except Exception as exc:
+                        log.debug(
+                            "Could not fetch SampleMetadata from S3 for %s: %s", ts, exc
+                        )
+            except Exception as exc:
+                log.debug("S3 SampleMetadata fallback failed: %s", exc)
+
+    if not raw:
+        log.debug("No SampleMetadata entries found locally or on S3.")
+
+    # Lexicographic sort == chronological order for YYYY-MM-DDTHH-MM-SS format.
     return dict(sorted(raw.items()))
 
 
@@ -1180,7 +1265,12 @@ def delete_local_files_after_upload(
     zarr_samples: Optional[int] = _fetch_zarr_sample_count(
         s3_bucket, s3_prefix, s3_keys
     )
-    sample_meta_index: dict = _build_sample_metadata_index(data_root)
+    sample_meta_index: dict = _build_sample_metadata_index(
+        data_root,
+        s3_bucket=s3_bucket,
+        s3_prefix=s3_prefix,
+        s3_keys=s3_keys,
+    )
     if zarr_samples is not None:
         log.debug(
             "Zarr verification ready: %d total samples, %d SampleMetadata entries.",
@@ -1223,6 +1313,16 @@ def delete_local_files_after_upload(
                 continue
             chunk_ts = chunk_m.group(0)
 
+            # 2b. SampleMetadata JSON files — NEVER delete locally.
+            #     These files contain the start_sample field used by the
+            #     AmplifierData zarr verification below.  They are tiny
+            #     (~50 bytes) and deleting them breaks verification for
+            #     adjacent AmplifierData .bin files permanently.
+            if "SampleMetadata" in fpath.name and fpath.suffix.lower() == ".json":
+                log.debug("Keeping SampleMetadata (required for AmplifierData verification): %s", rel)
+                kept += 1
+                continue
+
             # 3. S3 confirmation — strategy depends on file type.
             #
             #    AmplifierData .bin (zarr-compressed on S3):
@@ -1245,9 +1345,9 @@ def delete_local_files_after_upload(
                     # ── AmplifierData zarr verification ────────────────────────
                     # (a) zarr not yet finalised on S3
                     if zarr_samples is None:
-                        log.debug(
+                        log.info(
                             "Keeping AmplifierData .bin"
-                            " (zarr not yet finalised on S3): %s",
+                            " (zarr .zmetadata not yet on S3): %s",
                             rel,
                         )
                         kept += 1
@@ -1259,8 +1359,8 @@ def delete_local_files_after_upload(
                     except ValueError:
                         log.warning(
                             "Keeping AmplifierData .bin"
-                            " (chunk %s not in SampleMetadata index"
-                            " — cannot verify zarr coverage): %s",
+                            " (chunk %s missing from SampleMetadata index —"
+                            " could not verify zarr coverage): %s",
                             chunk_ts,
                             rel,
                         )
@@ -1269,9 +1369,9 @@ def delete_local_files_after_upload(
 
                     # (c) never delete the last chunk — no next SampleMetadata
                     if ts_idx + 1 >= len(_sorted_meta_ts):
-                        log.debug(
+                        log.info(
                             "Keeping AmplifierData .bin"
-                            " (last chunk in directory — no next SampleMetadata): %s",
+                            " (last chunk in SampleMetadata index — no next entry to confirm zarr coverage): %s",
                             rel,
                         )
                         kept += 1
@@ -1281,10 +1381,10 @@ def delete_local_files_after_upload(
                     next_ts = _sorted_meta_ts[ts_idx + 1]
                     start_sample_next = sample_meta_index[next_ts]
                     if start_sample_next > zarr_samples:
-                        log.debug(
+                        log.info(
                             "Keeping AmplifierData .bin"
                             " (next chunk start_sample %d > zarr total %d"
-                            " — chunk not fully in zarr): %s",
+                            " — chunk not fully in zarr yet): %s",
                             start_sample_next,
                             zarr_samples,
                             rel,
@@ -1292,10 +1392,9 @@ def delete_local_files_after_upload(
                         kept += 1
                         continue
 
-                    log.debug(
-                        "AmplifierData .bin verified"
-                        " (next chunk start_sample %d ≤ zarr total %d"
-                        " → full chunk in zarr): %s",
+                    log.info(
+                        "AmplifierData .bin verified in zarr"
+                        " (next chunk start_sample %d ≤ zarr total %d): %s",
                         start_sample_next,
                         zarr_samples,
                         rel,

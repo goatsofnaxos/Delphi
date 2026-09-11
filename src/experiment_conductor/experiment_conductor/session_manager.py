@@ -884,6 +884,41 @@ class SessionManager:
                     acq_datetime=acq_dt,
                 )
 
+            # S3 confirmation — update sidecar for any submitted chunks now
+            # visible in S3.  Runs every tick so conductor-status stays accurate
+            # during the 4.5 h inter-batch wait instead of waiting until the
+            # full upload cycle completes.
+            if upload_started and s3_prefix:
+                confirmed_tick = list_confirmed_s3_chunks(self.cfg.s3_bucket, s3_prefix)
+                for chunk_ts in sidecar.submitted_chunk_timestamps() & confirmed_tick:
+                    sidecar.mark_confirmed(chunk_ts)
+                    log.log(
+                        VERBOSE,
+                        "[%s] Cadence tick: chunk %s confirmed in S3.",
+                        state.subject_id,
+                        chunk_ts,
+                    )
+
+            # Deletion sweep — runs every tick so large files are removed as
+            # soon as their chunk is confirmed, not hours later when the upload
+            # cycle finally completes.
+            if self.cfg.delete_after_upload and upload_started and s3_prefix:
+                log.log(
+                    VERBOSE,
+                    "[%s] Cadence tick: running deletion sweep …",
+                    state.subject_id,
+                )
+                delete_local_files_after_upload(
+                    data_root=run_dir,
+                    keep_patterns=self.cfg.keep_local_patterns,
+                    s3_bucket=self.cfg.s3_bucket,
+                    subject_id=state.subject_id,
+                    acq_datetime=acq_dt,
+                )
+                confirmed_del = list_confirmed_s3_chunks(self.cfg.s3_bucket, s3_prefix)
+                for chunk_ts in confirmed_del:
+                    sidecar.mark_deleted(chunk_ts)
+
         result = run_upload_cycle(
             source_directory=str(run_dir),
             subject_id=state.subject_id,
