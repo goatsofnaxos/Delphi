@@ -457,6 +457,65 @@ def _show_transfer_job_status(
         print(f"  {_red(f'Error querying transfer service: {exc}')}\n")
 
 
+def _reset_submitted_chunks(
+    run_dir_str: str,
+    pid_file: Path,
+) -> None:
+    """Reset every ``submitted`` chunk back to ``pending`` in the sidecar.
+
+    This is the lightest-weight way to force re-submission of chunks that are
+    stuck in the transfer service.  Unlike :func:`_reset_upload_state` it does
+    NOT delete the sidecar or touch the state file — confirmed chunks, retry
+    counts, and error history are all preserved.
+
+    Safe only when the conductor is stopped (otherwise the in-memory sidecar
+    in the conductor process would overwrite our changes on the next write).
+    """
+    conductor_running = pid_file.exists()
+    if conductor_running:
+        print(
+            f"\n  {_red('⚠  Conductor is running.')}\n"
+            "  Stop the conductor first, then run this action.\n"
+        )
+        return
+
+    run_dir = Path(run_dir_str)
+    sidecar_path = _find_sidecar_path(run_dir)
+    if sidecar_path is None:
+        print(f"\n  {_yellow('No sidecar found')} under {_dim(run_dir_str)} — nothing to reset.\n")
+        return
+
+    try:
+        data = json.loads(sidecar_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        print(f"\n  {_red(f'Could not read sidecar: {exc}')}\n")
+        return
+
+    chunks = data.get("chunks", {})
+    reset_count = 0
+    for chunk_data in chunks.values():
+        if chunk_data.get("state") == "submitted":
+            chunk_data["state"] = "pending"
+            chunk_data["submitted_at"] = None
+            reset_count += 1
+
+    if reset_count == 0:
+        print(f"\n  {_yellow('No submitted chunks found')} — nothing to reset.\n")
+        return
+
+    try:
+        sidecar_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    except Exception as exc:
+        print(f"\n  {_red(f'Could not write sidecar: {exc}')}\n")
+        return
+
+    print(
+        f"\n  {_green(f'✔  {reset_count} chunk(s) reset to pending.')}\n"
+        "  Restart the conductor — it will re-submit those chunks on the\n"
+        "  next upload cycle.\n"
+    )
+
+
 def _full_session_reset(
     run_dir_str: str,
     subject_id: str,
@@ -589,8 +648,9 @@ def _dataset_menu(
         print(f"  {_cyan('1')}. Full chunk history")
         print(f"  {_cyan('2')}. In-progress chunks  (submitted / pending)")
         print(f"  {_cyan('3')}. Failed / skipped chunks")
-        print(f"  {_cyan('4')}. Reset upload state  {_red('(clears sidecar / restarts from start job)')}")
-        print(f"  {_cyan('5')}. Full session reset  {_red('(re-runs all pipeline steps from scratch)')}")
+        print(f"  {_cyan('4')}. Re-queue stuck chunks  {_yellow('(submitted → pending, keeps history)')}")
+        print(f"  {_cyan('5')}. Reset upload state  {_red('(clears sidecar / restarts from start job)')}")
+        print(f"  {_cyan('6')}. Full session reset  {_red('(re-runs all pipeline steps from scratch)')}")
         print(f"  {_cyan('b')}. Back to dataset list")
         print(f"  {_cyan('q')}. Quit")
         print()
@@ -620,6 +680,26 @@ def _dataset_menu(
             _print_chunk_table(failed)
         elif choice == "4":
             print()
+            print(f"  {_yellow(_bold('Re-queue stuck in-flight chunks'))}")
+            print(f"  Resets every 'submitted' chunk back to 'pending' so the conductor")
+            print(f"  re-submits them on the next cycle.  Confirmed chunks and error")
+            print(f"  history are preserved.  The conductor must be stopped first.")
+            print()
+            confirm = input(
+                f"  {_yellow('Are you sure?')}  [y/N] "
+            ).strip().lower()
+            if confirm == "y":
+                _reset_submitted_chunks(
+                    run_dir_str=run_dir,
+                    pid_file=pid_file or Path("conductor.pid"),
+                )
+                # Reload sidecar so the view reflects the new state
+                sidecar = _load_sidecar(Path(run_dir))
+                chunks = sidecar.get("chunks", {}) if sidecar else {}
+            else:
+                print("  Cancelled.\n")
+        elif choice == "5":
+            print()
             print(f"  {_red(_bold('Reset upload state'))}")
             print(f"  This will delete the sidecar (.upload_history.json) for:")
             print(f"    {_dim(run_dir)}")
@@ -641,7 +721,7 @@ def _dataset_menu(
                 sidecar = None
             else:
                 print("  Cancelled.\n")
-        elif choice == "5":
+        elif choice == "6":
             print()
             print(f"  {_red(_bold('Full session reset'))}")
             print(f"  This resets ALL pipeline progress for:")
@@ -666,7 +746,7 @@ def _dataset_menu(
             else:
                 print("  Cancelled.\n")
         else:
-            print(f"  {_red('Invalid.')}  Enter 1–5, b, or q.")
+            print(f"  {_red('Invalid.')}  Enter 1–6, b, or q.")
 
 
 # ---------------------------------------------------------------------------

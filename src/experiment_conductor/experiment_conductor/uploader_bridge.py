@@ -1036,14 +1036,30 @@ def _upload_ancillary_files(
     """
     try:
         import boto3
+        import botocore.exceptions
         client = boto3.client("s3")  # standard credential chain
+        # Verify credentials are actually available before walking directories.
+        # boto3.client() succeeds even with no credentials; the error surfaces
+        # only on the first API call.  Check now so we emit one clear message
+        # instead of per-file NoCredentialsError warnings.
+        session = boto3.session.Session()
+        creds = session.get_credentials()
+        if creds is None:
+            log.warning(
+                "Ancillary upload skipped — no AWS credentials found on this machine.  "
+                "Configure credentials (AWS SSO, ~/.aws/credentials, or environment "
+                "variables) so the conductor can upload behavior/metadata/ and device "
+                "YAML files directly.  Chunked files are unaffected (they upload via "
+                "Code Ocean)."
+            )
+            return
     except Exception as exc:
         log.warning(
             "Could not create authenticated S3 client for ancillary upload: %s", exc
         )
         return
 
-    uploaded = skipped_existing = 0
+    uploaded = skipped_existing = errors = 0
     prefix_slash = s3_prefix.rstrip("/") + "/"
 
     for upload_dir in upload_dirs:
@@ -1071,16 +1087,25 @@ def _upload_ancillary_files(
                     "Uploaded ancillary file: %s → s3://%s/%s", rel, s3_bucket, s3_key
                 )
                 uploaded += 1
+            except botocore.exceptions.NoCredentialsError:
+                # Credentials disappeared mid-walk (e.g. STS token expired).
+                log.warning(
+                    "Ancillary upload aborted — AWS credentials expired mid-walk.  "
+                    "Re-run `aws sso login` (or equivalent) and restart the conductor."
+                )
+                return
             except Exception as exc:
                 log.warning(
                     "Could not upload ancillary file %s: %s", fpath, exc
                 )
+                errors += 1
 
     if uploaded or skipped_existing:
         log.info(
-            "Ancillary upload: %d uploaded, %d already in S3.",
+            "Ancillary upload: %d uploaded, %d already in S3, %d error(s).",
             uploaded,
             skipped_existing,
+            errors,
         )
 
 
