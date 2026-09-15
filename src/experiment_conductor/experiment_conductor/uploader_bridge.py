@@ -551,6 +551,34 @@ class _StoppableSubmitUploadJob:
             log.info("No new chunks to submit this cycle.")
             return newly_submitted
 
+        # Guard: do not submit chunk jobs while another chronic_ephys_chunk job
+        # is already running or queued on the transfer service.
+        #
+        # The conductor only knows about chunks it submitted itself (via the
+        # sidecar and _SUBMITTED_CHUNKS).  A job submitted externally — or a
+        # previous conductor batch that is still processing — appears as a
+        # running/queued job for the same s3_prefix but is invisible to the
+        # conductor's local state.  Submitting again would create a duplicate
+        # Airflow run that cancels the existing job.
+        #
+        # The check is skipped for chronic_ephys_start jobs: the start job is
+        # unique per dataset and its FileExistsError guard (above) already
+        # handles duplicates.
+        if job_type == "chronic_ephys_chunk":
+            ts_url = settings.transfer_service_endpoint.unicode_string()
+            active_state = _query_job_status_for_prefix(
+                ts_url, settings.s3_prefix, job_type="chronic_ephys_chunk"
+            )
+            if active_state in ("running", "queued"):
+                log.info(
+                    "Skipping chunk submission — a chronic_ephys_chunk job is "
+                    "currently %s on the transfer service for %s.  "
+                    "Will retry next cycle.",
+                    active_state,
+                    settings.s3_prefix,
+                )
+                return newly_submitted
+
         all_batches = list(batched(chunks_to_process, settings.batches_to_process_concurrently))
         total_batches = len(all_batches)
         log.info(
