@@ -51,10 +51,15 @@ from .pipeline_bridge import (
     has_delphi_controller_file,
     move_delphi_metadata,
     resolve_run_dir,
-    run_consolidation,
     run_pipeline,
 )
-from delphi_data.curation import collect_run_dirs, normalize_onix_sample_metadata
+from delphi_data.curation import (
+    collect_run_dirs,
+    consolidate_metadata_files,
+    consolidate_session_runs,
+    find_earliest_run,
+    normalize_onix_sample_metadata,
+)
 from .session import SessionPhase, SessionState
 from .upload_sidecar import UploadSidecar
 from .uploader_bridge import (
@@ -71,6 +76,38 @@ from .watcher import discover_sessions
 log = logging.getLogger(__name__)
 
 _CHUNK_COUNT_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}$")
+
+
+def _run_consolidation(data_root: Path, subject_id: str) -> bool:
+    """Consolidate run sub-directories in-process using delphi_data.curation.
+
+    Equivalent to ``build_dataset.py --consolidate-only`` but runs directly
+    in the conductor process without spawning a subprocess.  Returns *True*
+    when consolidation succeeded (including no-op when only one run dir exists).
+    """
+    try:
+        run_dirs = collect_run_dirs(str(data_root))
+        if len(run_dirs) > 1:
+            log.log(
+                VERBOSE,
+                "[%s] Merging %d run dirs into earliest: %s",
+                subject_id,
+                len(run_dirs),
+                data_root,
+            )
+            consolidate_session_runs(str(data_root))
+        run_dirs = collect_run_dirs(str(data_root))
+        earliest = Path(find_earliest_run(run_dirs)) if run_dirs else data_root
+        consolidate_metadata_files(earliest)
+        normalize_onix_sample_metadata(earliest)
+        return True
+    except Exception:
+        log.warning(
+            "[%s] Consolidation error.",
+            subject_id,
+            exc_info=True,
+        )
+        return False
 
 
 class FatalSessionError(Exception):
@@ -464,7 +501,7 @@ class SessionManager:
 
         # Always consolidate — new Bonsai restarts may have created extra run dirs
         log.info("[%s] Consolidating run directories …", state.subject_id)
-        ok = run_consolidation(state.data_root)
+        ok = _run_consolidation(state.data_root, state.subject_id)
 
         # Resolve the canonical run dir after consolidation
         run_dir = resolve_run_dir(state.data_root)
@@ -853,37 +890,34 @@ class SessionManager:
                 sidecar.mark_submitted(ts, _max_retries)
 
         # ── Background consolidation thread ───────────────────────────────────
-        # Runs consolidation on a fixed cadence that is independent of upload
-        # batch submission.  New Bonsai run directories (e.g. from a software
-        # restart mid-session) are detected and merged into the earliest run dir
-        # even when there are no inter-batch sleeps (zero pending chunks) or
-        # while the upload cycle is processing its last batch.  Files locked by
-        # Bonsai (actively being written) produce access-denied errors from the
-        # OS; those files are skipped and re-attempted on the next cadence tick.
+        # Runs consolidation on a fixed cadence independent of upload batch
+        # submission.  New Bonsai run directories (e.g. from a software restart
+        # mid-session) are detected and merged into the earliest run dir even
+        # when there are no inter-batch sleeps (zero pending chunks) or while
+        # the upload cycle is processing its last batch.
         _consolidation_stop = threading.Event()
-        _cadence_secs = int(self.cfg.pipeline_cadence_minutes * 60)
+        _pipeline_cadence_secs = int(self.cfg.pipeline_cadence_minutes * 60)
+        _consolidation_cadence_secs = int(self.cfg.consolidation_cadence_minutes * 60)
 
         def _consolidation_loop() -> None:
             """Merge new run dirs on a fixed cadence, independently of upload."""
-            while not _consolidation_stop.wait(_cadence_secs):
+            while not _consolidation_stop.wait(_consolidation_cadence_secs):
                 try:
-                    ok = run_consolidation(state.data_root)
+                    ok = _run_consolidation(state.data_root, state.subject_id)
                     if ok:
                         new_rd = resolve_run_dir(state.data_root)
                         with state.lock:
                             state.consolidation_done = ok
                             if new_rd is not None:
                                 state.run_dir = new_rd
-                        move_delphi_metadata(new_rd)
                         extra_dirs = [
                             d for d in collect_run_dirs(str(state.data_root))
                             if d != str(new_rd)
                         ]
                         if extra_dirs:
                             log.info(
-                                "[%s] Consolidation: %d unconsolidated run dir(s) "
-                                "still have locked files (Bonsai may still be "
-                                "writing): %s",
+                                "[%s] Consolidation: %d run dir(s) still pending "
+                                "(files may still be locked): %s",
                                 state.subject_id,
                                 len(extra_dirs),
                                 ", ".join(str(d) for d in extra_dirs),
@@ -976,7 +1010,7 @@ class SessionManager:
                 skip_chunks=skip_chunks,
                 on_batch_submitted=_on_batch,
                 on_cadence_tick=_on_cadence_tick,
-                cadence_secs=_cadence_secs,
+                cadence_secs=_pipeline_cadence_secs,
             )
         finally:
             # Stop the consolidation thread regardless of success or failure.

@@ -164,6 +164,11 @@ class ConductorConfig:
     experimenters: List[str]
     surgery_notes_base: Optional[Path]
 
+    # ── Consolidation ─────────────────────────────────────────────────────────
+    consolidation_cadence_minutes: int
+    """How often (in minutes) to run session consolidation, independent of the
+    upload/pipeline cadence.  Default 60."""
+
     # ── Pipeline ──────────────────────────────────────────────────────────────
     delphi_experiment: str
     delphi_firmware: str
@@ -419,6 +424,9 @@ def build_config() -> ConductorConfig:
         surgery_notes_base=surgery_notes_base,
         delphi_experiment=_g("CONDUCTOR_DELPHI_EXPERIMENT", args.delphi_experiment, "bonhoeffer"),
         delphi_firmware=_g("CONDUCTOR_DELPHI_FIRMWARE", args.delphi_firmware, "0.1.0"),
+        consolidation_cadence_minutes=_int(
+            _g("CONDUCTOR_CONSOLIDATION_CADENCE_MINUTES", None), 60
+        ),
         enable_pipeline=_bool(_g("CONDUCTOR_ENABLE_PIPELINE", None, "true")),
         pipeline_cadence_minutes=_int(
             _g("CONDUCTOR_PIPELINE_CADENCE_MINUTES", args.pipeline_cadence_minutes), 60
