@@ -54,7 +54,7 @@ from .pipeline_bridge import (
     run_consolidation,
     run_pipeline,
 )
-from delphi_data.curation import normalize_onix_sample_metadata
+from delphi_data.curation import collect_run_dirs, normalize_onix_sample_metadata
 from .session import SessionPhase, SessionState
 from .upload_sidecar import UploadSidecar
 from .uploader_bridge import (
@@ -852,26 +852,68 @@ class SessionManager:
             for ts in chunks:
                 sidecar.mark_submitted(ts, _max_retries)
 
-        # Run consolidation on every cadence tick during the inter-batch sleep
-        # so that new Bonsai run directories are merged promptly rather than
-        # waiting for the multi-hour upload cycle to finish.  Phase is NOT
-        # changed here — the session remains UPLOADING while this runs.
-        def _on_cadence_tick() -> None:
-            ok = run_consolidation(state.data_root)
-            if ok:
-                new_run_dir = resolve_run_dir(state.data_root)
-                with state.lock:
-                    state.consolidation_done = ok
-                    if new_run_dir is not None:
-                        state.run_dir = new_run_dir
-                move_delphi_metadata(new_run_dir)
-                if new_run_dir != run_dir:
-                    log.info(
-                        "[%s] Cadence tick: new run dir detected — %s",
+        # ── Background consolidation thread ───────────────────────────────────
+        # Runs consolidation on a fixed cadence that is independent of upload
+        # batch submission.  New Bonsai run directories (e.g. from a software
+        # restart mid-session) are detected and merged into the earliest run dir
+        # even when there are no inter-batch sleeps (zero pending chunks) or
+        # while the upload cycle is processing its last batch.  Files locked by
+        # Bonsai (actively being written) produce access-denied errors from the
+        # OS; those files are skipped and re-attempted on the next cadence tick.
+        _consolidation_stop = threading.Event()
+        _cadence_secs = int(self.cfg.pipeline_cadence_minutes * 60)
+
+        def _consolidation_loop() -> None:
+            """Merge new run dirs on a fixed cadence, independently of upload."""
+            while not _consolidation_stop.wait(_cadence_secs):
+                try:
+                    ok = run_consolidation(state.data_root)
+                    if ok:
+                        new_rd = resolve_run_dir(state.data_root)
+                        with state.lock:
+                            state.consolidation_done = ok
+                            if new_rd is not None:
+                                state.run_dir = new_rd
+                        move_delphi_metadata(new_rd)
+                        extra_dirs = [
+                            d for d in collect_run_dirs(str(state.data_root))
+                            if d != str(new_rd)
+                        ]
+                        if extra_dirs:
+                            log.info(
+                                "[%s] Consolidation: %d unconsolidated run dir(s) "
+                                "still have locked files (Bonsai may still be "
+                                "writing): %s",
+                                state.subject_id,
+                                len(extra_dirs),
+                                ", ".join(str(d) for d in extra_dirs),
+                            )
+                        elif new_rd != run_dir:
+                            log.info(
+                                "[%s] Consolidation: new run dir merged → %s",
+                                state.subject_id,
+                                new_rd,
+                            )
+                except Exception:
+                    log.warning(
+                        "[%s] Background consolidation error (will retry).",
                         state.subject_id,
-                        new_run_dir,
+                        exc_info=True,
                     )
 
+        _consolidation_thread = threading.Thread(
+            target=_consolidation_loop,
+            daemon=True,
+            name=f"consolidation-{state.subject_id}",
+        )
+        _consolidation_thread.start()
+
+        # ── Cadence tick — fast per-tick tasks only ───────────────────────────
+        # Consolidation is handled by _consolidation_loop above; the tick is
+        # limited to lightweight work: ancillary upload, S3 confirmation, and
+        # local deletion.  This keeps the tick fast so it never delays the
+        # inter-batch sleep significantly.
+        def _on_cadence_tick() -> None:
             # Upload non-chunked ancillary files (behavior/metadata/, device.yml,
             # probe configs, etc.) that the transfer service never handles.
             # Runs every tick regardless of delete_after_upload — these files are
@@ -919,22 +961,27 @@ class SessionManager:
                 for chunk_ts in confirmed_del:
                     sidecar.mark_deleted(chunk_ts)
 
-        result = run_upload_cycle(
-            source_directory=str(run_dir),
-            subject_id=state.subject_id,
-            acq_datetime=acq_dt,
-            project_name=self.cfg.project_name,
-            contact_email=self.cfg.contact_email,
-            s3_bucket=self.cfg.s3_bucket,
-            batch_size=self.cfg.upload_batch_size,
-            dry_run=self.cfg.dry_run,
-            num_of_last_chunks_to_ignore=self.cfg.num_last_chunks_to_ignore,
-            is_start_job=is_start,
-            skip_chunks=skip_chunks,
-            on_batch_submitted=_on_batch,
-            on_cadence_tick=_on_cadence_tick,
-            cadence_secs=int(self.cfg.pipeline_cadence_minutes * 60),
-        )
+        try:
+            result = run_upload_cycle(
+                source_directory=str(run_dir),
+                subject_id=state.subject_id,
+                acq_datetime=acq_dt,
+                project_name=self.cfg.project_name,
+                contact_email=self.cfg.contact_email,
+                s3_bucket=self.cfg.s3_bucket,
+                batch_size=self.cfg.upload_batch_size,
+                dry_run=self.cfg.dry_run,
+                num_of_last_chunks_to_ignore=self.cfg.num_last_chunks_to_ignore,
+                is_start_job=is_start,
+                skip_chunks=skip_chunks,
+                on_batch_submitted=_on_batch,
+                on_cadence_tick=_on_cadence_tick,
+                cadence_secs=_cadence_secs,
+            )
+        finally:
+            # Stop the consolidation thread regardless of success or failure.
+            _consolidation_stop.set()
+            _consolidation_thread.join(timeout=30)
 
         # Confirm any chunks submitted in this cycle that are now visible in S3
         # (most take longer to process, but fast transfers may land before the
