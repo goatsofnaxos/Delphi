@@ -190,10 +190,10 @@ class UploadSidecar:
             rec.retries += 1
             rec.submitted_at = _now_iso()
             rec.delete_state = "pending" if self.delete_enabled else "disabled"
-            if rec.retries > max_retries:
+            if rec.retries >= max_retries:
                 rec.state = "skipped"
                 log.warning(
-                    "Chunk %s exceeded max upload retries (%d) — marking skipped.",
+                    "Chunk %s reached max upload retries (%d) — marking skipped.",
                     chunk_ts,
                     max_retries,
                 )

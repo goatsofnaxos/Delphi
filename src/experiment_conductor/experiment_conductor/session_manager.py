@@ -76,6 +76,29 @@ from .watcher import discover_sessions
 log = logging.getLogger(__name__)
 
 _CHUNK_COUNT_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}$")
+_CONSOLIDATION_LOG = ".consolidation_log.jsonl"
+
+
+def _append_consolidation_log(
+    data_root: Path,
+    subject_id: str,
+    run_dirs_before: list,
+    run_dirs_after: list,
+    success: bool,
+) -> None:
+    entry = {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "subject_id": subject_id,
+        "run_dirs_before": [Path(d).name for d in run_dirs_before],
+        "run_dirs_after": [Path(d).name for d in run_dirs_after],
+        "merged": len(run_dirs_before) > len(run_dirs_after),
+        "success": success,
+    }
+    try:
+        with open(data_root / _CONSOLIDATION_LOG, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(entry) + "\n")
+    except OSError as exc:
+        log.warning("[%s] Could not write consolidation log: %s", subject_id, exc)
 
 
 def _run_consolidation(data_root: Path, subject_id: str) -> bool:
@@ -84,29 +107,31 @@ def _run_consolidation(data_root: Path, subject_id: str) -> bool:
     Equivalent to ``build_dataset.py --consolidate-only`` but runs directly
     in the conductor process without spawning a subprocess.  Returns *True*
     when consolidation succeeded (including no-op when only one run dir exists).
+    Appends one JSONL entry to ``.consolidation_log.jsonl`` in *data_root*
+    whenever run dirs are merged.
     """
+    run_dirs_before: list = []
     try:
-        run_dirs = collect_run_dirs(str(data_root))
-        if len(run_dirs) > 1:
-            log.log(
-                VERBOSE,
+        run_dirs_before = collect_run_dirs(str(data_root))
+        if len(run_dirs_before) > 1:
+            log.info(
                 "[%s] Merging %d run dirs into earliest: %s",
                 subject_id,
-                len(run_dirs),
+                len(run_dirs_before),
                 data_root,
             )
             consolidate_session_runs(str(data_root))
-        run_dirs = collect_run_dirs(str(data_root))
-        earliest = Path(find_earliest_run(run_dirs)) if run_dirs else data_root
+        run_dirs_after = collect_run_dirs(str(data_root))
+        earliest = Path(find_earliest_run(run_dirs_after)) if run_dirs_after else data_root
         consolidate_metadata_files(earliest)
         normalize_onix_sample_metadata(earliest)
+        if len(run_dirs_before) > 1:
+            _append_consolidation_log(data_root, subject_id, run_dirs_before, run_dirs_after, True)
         return True
     except Exception:
-        log.warning(
-            "[%s] Consolidation error.",
-            subject_id,
-            exc_info=True,
-        )
+        log.warning("[%s] Consolidation error.", subject_id, exc_info=True)
+        if run_dirs_before:
+            _append_consolidation_log(data_root, subject_id, run_dirs_before, [], False)
         return False
 
 
@@ -172,11 +197,6 @@ class SessionManager:
         self._sessions: dict[str, SessionState] = {}   # keyed by str(data_root)
         self._registry_lock = threading.Lock()
         self._stop_event = threading.Event()
-        # Per-session consolidation locks — serialise concurrent callers so
-        # _consolidation_worker and _step_consolidate never overlap on the same
-        # session directory.  Keyed by str(data_root).
-        self._consolidation_locks: dict[str, threading.Lock] = {}
-        self._consolidation_locks_lock = threading.Lock()
         self._load_state()
 
     # ── Public API ────────────────────────────────────────────────────────────
@@ -276,20 +296,6 @@ class SessionManager:
                 f" (since {since})" if since else "",
                 self.cfg.pause_file,
             )
-
-        # ── Background consolidation thread ───────────────────────────────────
-        # Runs immediately at startup, then every consolidation_cadence_minutes,
-        # independent of the pipeline cadence and the upload cycle.
-        _consolidation_bg = threading.Thread(
-            target=self._consolidation_worker,
-            daemon=True,
-            name="consolidation-manager",
-        )
-        _consolidation_bg.start()
-        log.info(
-            "Background consolidation thread started (cadence: %d min).",
-            self.cfg.consolidation_cadence_minutes,
-        )
 
         # Write PID file so conductor-status can force-kill this process.
         pid_file = self.cfg.pause_file.parent / "conductor.pid"
@@ -505,24 +511,18 @@ class SessionManager:
     def _step_consolidate(self, state: SessionState) -> None:
         """Merge run sub-directories and move Delphi JSONL metadata files."""
         with state.lock:
-            already_done = state.consolidation_done
-
-        with state.lock:
             state.phase = SessionPhase.CONSOLIDATING
 
         log.log(
             VERBOSE,
-            "[%s] CONSOLIDATING — session root: %s  (previously consolidated: %s)",
+            "[%s] CONSOLIDATING — session root: %s",
             state.subject_id,
             state.data_root,
-            already_done,
         )
 
-        # Always consolidate — new Bonsai restarts may have created extra run dirs
         log.info("[%s] Consolidating run directories …", state.subject_id)
-        ok = self._consolidate_session(state)
+        ok = _run_consolidation(state.data_root, state.subject_id)
 
-        # Resolve the canonical run dir after consolidation
         run_dir = resolve_run_dir(state.data_root)
 
         log.log(
@@ -533,39 +533,12 @@ class SessionManager:
             ok,
         )
 
-        if ok and not already_done:
+        if run_dir is not None:
             move_delphi_metadata(run_dir)
-        elif ok:
-            # Re-check in case new metadata files appeared
-            move_delphi_metadata(run_dir)
-
-        # Normalise ONIX SampleMetadata for all session types (including
-        # pirouette-only, where the pipeline step is skipped).  Safe no-op
-        # when already normalised or when the OnixEphys/ directory is absent.
-        if ok and run_dir is not None:
-            log.log(
-                VERBOSE,
-                "[%s] Normalising ONIX SampleMetadata (ecephys/OnixEphys/) …",
-                state.subject_id,
-            )
-            try:
-                changed = normalize_onix_sample_metadata(run_dir)
-                log.log(
-                    VERBOSE,
-                    "[%s] ONIX SampleMetadata: %s.",
-                    state.subject_id,
-                    "offset applied" if changed else "already at 0 / directory absent",
-                )
-            except Exception:
-                log.warning(
-                    "[%s] normalize_onix_sample_metadata raised an error (continuing).",
-                    state.subject_id,
-                    exc_info=True,
-                )
 
         with state.lock:
             state.consolidation_done = ok
-            if ok:
+            if run_dir is not None:
                 state.run_dir = run_dir
 
     def _step_metadata(self, state: SessionState) -> None:
@@ -910,8 +883,19 @@ class SessionManager:
 
         _pipeline_cadence_secs = int(self.cfg.pipeline_cadence_minutes * 60)
 
-        # ── Cadence tick — fast per-tick tasks only ───────────────────────────
+        # ── Cadence tick ──────────────────────────────────────────────────────
         def _on_cadence_tick() -> None:
+            # Merge any new Bonsai run dirs that appeared since the last tick.
+            # Runs in the same session worker thread as _step_consolidate, so
+            # there is no concurrent-access risk.
+            tick_ok = _run_consolidation(state.data_root, state.subject_id)
+            if tick_ok:
+                new_rd = resolve_run_dir(state.data_root)
+                with state.lock:
+                    state.consolidation_done = tick_ok
+                    if new_rd is not None:
+                        state.run_dir = new_rd
+
             # Upload non-chunked ancillary files (behavior/metadata/, device.yml,
             # probe configs, etc.) that the transfer service never handles.
             # Runs every tick regardless of delete_after_upload — these files are
@@ -1047,47 +1031,6 @@ class SessionManager:
             )
 
     # ── Signal handling ───────────────────────────────────────────────────────
-
-    def _consolidate_session(self, state: SessionState) -> bool:
-        """Run consolidation for *state*, serialised per session via a lock.
-
-        Prevents concurrent calls (e.g. from _consolidation_worker and
-        _step_consolidate) from racing over the same directory.
-        """
-        key = str(state.data_root)
-        with self._consolidation_locks_lock:
-            lock = self._consolidation_locks.setdefault(key, threading.Lock())
-        with lock:
-            return _run_consolidation(state.data_root, state.subject_id)
-
-    def _consolidation_worker(self) -> None:
-        """Background thread: consolidate all active sessions on a fixed cadence.
-
-        Runs immediately on startup (to catch any run dirs that appeared while the
-        conductor was down), then waits ``consolidation_cadence_minutes`` before
-        each subsequent pass.  Completely independent of the pipeline cadence.
-        """
-        while True:
-            with self._registry_lock:
-                sessions = list(self._sessions.values())
-            for state in sessions:
-                try:
-                    ok = self._consolidate_session(state)
-                    if ok:
-                        new_rd = resolve_run_dir(state.data_root)
-                        with state.lock:
-                            state.consolidation_done = ok
-                            if new_rd is not None:
-                                state.run_dir = new_rd
-                except Exception:
-                    log.warning(
-                        "[%s] Background consolidation error.",
-                        state.subject_id,
-                        exc_info=True,
-                    )
-            cadence_secs = self.cfg.consolidation_cadence_minutes * 60
-            if self._stop_event.wait(cadence_secs):
-                break  # stop() was called
 
     def _handle_signal(self, signum: int, frame) -> None:  # noqa: ANN001
         log.info("Received signal %d — shutting down gracefully ...", signum)
