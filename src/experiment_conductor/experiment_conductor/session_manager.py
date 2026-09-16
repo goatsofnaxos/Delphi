@@ -272,6 +272,20 @@ class SessionManager:
                 self.cfg.pause_file,
             )
 
+        # ── Background consolidation thread ───────────────────────────────────
+        # Runs immediately at startup, then every consolidation_cadence_minutes,
+        # independent of the pipeline cadence and the upload cycle.
+        _consolidation_bg = threading.Thread(
+            target=self._consolidation_worker,
+            daemon=True,
+            name="consolidation-manager",
+        )
+        _consolidation_bg.start()
+        log.info(
+            "Background consolidation thread started (cadence: %d min).",
+            self.cfg.consolidation_cadence_minutes,
+        )
+
         # Write PID file so conductor-status can force-kill this process.
         pid_file = self.cfg.pause_file.parent / "conductor.pid"
         try:
@@ -889,64 +903,9 @@ class SessionManager:
             for ts in chunks:
                 sidecar.mark_submitted(ts, _max_retries)
 
-        # ── Background consolidation thread ───────────────────────────────────
-        # Runs consolidation on a fixed cadence independent of upload batch
-        # submission.  New Bonsai run directories (e.g. from a software restart
-        # mid-session) are detected and merged into the earliest run dir even
-        # when there are no inter-batch sleeps (zero pending chunks) or while
-        # the upload cycle is processing its last batch.
-        _consolidation_stop = threading.Event()
         _pipeline_cadence_secs = int(self.cfg.pipeline_cadence_minutes * 60)
-        _consolidation_cadence_secs = int(self.cfg.consolidation_cadence_minutes * 60)
-
-        def _consolidation_loop() -> None:
-            """Merge new run dirs on a fixed cadence, independently of upload."""
-            while not _consolidation_stop.wait(_consolidation_cadence_secs):
-                try:
-                    ok = _run_consolidation(state.data_root, state.subject_id)
-                    if ok:
-                        new_rd = resolve_run_dir(state.data_root)
-                        with state.lock:
-                            state.consolidation_done = ok
-                            if new_rd is not None:
-                                state.run_dir = new_rd
-                        extra_dirs = [
-                            d for d in collect_run_dirs(str(state.data_root))
-                            if d != str(new_rd)
-                        ]
-                        if extra_dirs:
-                            log.info(
-                                "[%s] Consolidation: %d run dir(s) still pending "
-                                "(files may still be locked): %s",
-                                state.subject_id,
-                                len(extra_dirs),
-                                ", ".join(str(d) for d in extra_dirs),
-                            )
-                        elif new_rd != run_dir:
-                            log.info(
-                                "[%s] Consolidation: new run dir merged → %s",
-                                state.subject_id,
-                                new_rd,
-                            )
-                except Exception:
-                    log.warning(
-                        "[%s] Background consolidation error (will retry).",
-                        state.subject_id,
-                        exc_info=True,
-                    )
-
-        _consolidation_thread = threading.Thread(
-            target=_consolidation_loop,
-            daemon=True,
-            name=f"consolidation-{state.subject_id}",
-        )
-        _consolidation_thread.start()
 
         # ── Cadence tick — fast per-tick tasks only ───────────────────────────
-        # Consolidation is handled by _consolidation_loop above; the tick is
-        # limited to lightweight work: ancillary upload, S3 confirmation, and
-        # local deletion.  This keeps the tick fast so it never delays the
-        # inter-batch sleep significantly.
         def _on_cadence_tick() -> None:
             # Upload non-chunked ancillary files (behavior/metadata/, device.yml,
             # probe configs, etc.) that the transfer service never handles.
@@ -995,27 +954,22 @@ class SessionManager:
                 for chunk_ts in confirmed_del:
                     sidecar.mark_deleted(chunk_ts)
 
-        try:
-            result = run_upload_cycle(
-                source_directory=str(run_dir),
-                subject_id=state.subject_id,
-                acq_datetime=acq_dt,
-                project_name=self.cfg.project_name,
-                contact_email=self.cfg.contact_email,
-                s3_bucket=self.cfg.s3_bucket,
-                batch_size=self.cfg.upload_batch_size,
-                dry_run=self.cfg.dry_run,
-                num_of_last_chunks_to_ignore=self.cfg.num_last_chunks_to_ignore,
-                is_start_job=is_start,
-                skip_chunks=skip_chunks,
-                on_batch_submitted=_on_batch,
-                on_cadence_tick=_on_cadence_tick,
-                cadence_secs=_pipeline_cadence_secs,
-            )
-        finally:
-            # Stop the consolidation thread regardless of success or failure.
-            _consolidation_stop.set()
-            _consolidation_thread.join(timeout=30)
+        result = run_upload_cycle(
+            source_directory=str(run_dir),
+            subject_id=state.subject_id,
+            acq_datetime=acq_dt,
+            project_name=self.cfg.project_name,
+            contact_email=self.cfg.contact_email,
+            s3_bucket=self.cfg.s3_bucket,
+            batch_size=self.cfg.upload_batch_size,
+            dry_run=self.cfg.dry_run,
+            num_of_last_chunks_to_ignore=self.cfg.num_last_chunks_to_ignore,
+            is_start_job=is_start,
+            skip_chunks=skip_chunks,
+            on_batch_submitted=_on_batch,
+            on_cadence_tick=_on_cadence_tick,
+            cadence_secs=_pipeline_cadence_secs,
+        )
 
         # Confirm any chunks submitted in this cycle that are now visible in S3
         # (most take longer to process, but fast transfers may land before the
@@ -1088,6 +1042,35 @@ class SessionManager:
             )
 
     # ── Signal handling ───────────────────────────────────────────────────────
+
+    def _consolidation_worker(self) -> None:
+        """Background thread: consolidate all active sessions on a fixed cadence.
+
+        Runs immediately on startup (to catch any run dirs that appeared while the
+        conductor was down), then waits ``consolidation_cadence_minutes`` before
+        each subsequent pass.  Completely independent of the pipeline cadence.
+        """
+        while True:
+            with self._registry_lock:
+                sessions = list(self._sessions.values())
+            for state in sessions:
+                try:
+                    ok = _run_consolidation(state.data_root, state.subject_id)
+                    if ok:
+                        new_rd = resolve_run_dir(state.data_root)
+                        with state.lock:
+                            state.consolidation_done = ok
+                            if new_rd is not None:
+                                state.run_dir = new_rd
+                except Exception:
+                    log.warning(
+                        "[%s] Background consolidation error.",
+                        state.subject_id,
+                        exc_info=True,
+                    )
+            cadence_secs = self.cfg.consolidation_cadence_minutes * 60
+            if self._stop_event.wait(cadence_secs):
+                break  # stop() was called
 
     def _handle_signal(self, signum: int, frame) -> None:  # noqa: ANN001
         log.info("Received signal %d — shutting down gracefully ...", signum)
