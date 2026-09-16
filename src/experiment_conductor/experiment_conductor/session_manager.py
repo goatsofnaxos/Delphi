@@ -172,6 +172,11 @@ class SessionManager:
         self._sessions: dict[str, SessionState] = {}   # keyed by str(data_root)
         self._registry_lock = threading.Lock()
         self._stop_event = threading.Event()
+        # Per-session consolidation locks — serialise concurrent callers so
+        # _consolidation_worker and _step_consolidate never overlap on the same
+        # session directory.  Keyed by str(data_root).
+        self._consolidation_locks: dict[str, threading.Lock] = {}
+        self._consolidation_locks_lock = threading.Lock()
         self._load_state()
 
     # ── Public API ────────────────────────────────────────────────────────────
@@ -515,7 +520,7 @@ class SessionManager:
 
         # Always consolidate — new Bonsai restarts may have created extra run dirs
         log.info("[%s] Consolidating run directories …", state.subject_id)
-        ok = _run_consolidation(state.data_root, state.subject_id)
+        ok = self._consolidate_session(state)
 
         # Resolve the canonical run dir after consolidation
         run_dir = resolve_run_dir(state.data_root)
@@ -1043,6 +1048,18 @@ class SessionManager:
 
     # ── Signal handling ───────────────────────────────────────────────────────
 
+    def _consolidate_session(self, state: SessionState) -> bool:
+        """Run consolidation for *state*, serialised per session via a lock.
+
+        Prevents concurrent calls (e.g. from _consolidation_worker and
+        _step_consolidate) from racing over the same directory.
+        """
+        key = str(state.data_root)
+        with self._consolidation_locks_lock:
+            lock = self._consolidation_locks.setdefault(key, threading.Lock())
+        with lock:
+            return _run_consolidation(state.data_root, state.subject_id)
+
     def _consolidation_worker(self) -> None:
         """Background thread: consolidate all active sessions on a fixed cadence.
 
@@ -1055,7 +1072,7 @@ class SessionManager:
                 sessions = list(self._sessions.values())
             for state in sessions:
                 try:
-                    ok = _run_consolidation(state.data_root, state.subject_id)
+                    ok = self._consolidate_session(state)
                     if ok:
                         new_rd = resolve_run_dir(state.data_root)
                         with state.lock:
