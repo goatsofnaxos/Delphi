@@ -79,9 +79,11 @@ def fast_move_with_optional_checksum(src_file: str, dst_file: str) -> None:
     """Move a file efficiently, verifying integrity only on cross-filesystem moves.
 
     On a same-filesystem move an atomic ``os.replace`` is used (instant, no
-    hashing).  On a cross-filesystem move the file is copied via
-    ``shutil.move`` and SHA-256 digests are compared; a warning is printed on
-    mismatch.
+    hashing).  On a cross-filesystem move the file is first copied to
+    ``dst_file + ".tmp"`` and SHA-256 digests are compared before the temp
+    file is atomically renamed into place and the source is removed.  This
+    ensures that an interrupted copy (conductor restart, network blip) never
+    leaves a partial file at the real destination path.
 
     Parameters
     ----------
@@ -95,15 +97,28 @@ def fast_move_with_optional_checksum(src_file: str, dst_file: str) -> None:
         os.replace(src_file, dst_file)
         return
 
-    # Cross-filesystem: verify integrity
-    src_hash = compute_sha256(src_file)
-
-    shutil.move(src_file, dst_file)
-
-    dst_hash = compute_sha256(dst_file)
-
-    if src_hash != dst_hash:
-        print(f"\nWARNING: checksum mismatch: {dst_file}")
+    # Cross-filesystem: copy to a temp file first so an interrupted copy never
+    # leaves a partial file at the real destination.  Once the checksum is
+    # verified the temp file is atomically renamed into place, then the source
+    # is removed.
+    tmp_file = dst_file + ".tmp"
+    try:
+        src_hash = compute_sha256(src_file)
+        shutil.copy2(src_file, tmp_file)
+        dst_hash = compute_sha256(tmp_file)
+        if src_hash != dst_hash:
+            print(f"\nWARNING: checksum mismatch for {dst_file} — aborting move")
+            os.remove(tmp_file)
+            return
+        os.replace(tmp_file, dst_file)
+        os.remove(src_file)
+    except Exception:
+        # Clean up the temp file on any failure so the next attempt starts fresh.
+        try:
+            os.remove(tmp_file)
+        except OSError:
+            pass
+        raise
 
 
 def collect_run_dirs(session_root: str) -> list:
