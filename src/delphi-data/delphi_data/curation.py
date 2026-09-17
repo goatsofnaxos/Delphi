@@ -192,7 +192,10 @@ def move_contents_with_progress(src_dir: str, dst_dir: str) -> None:
 
     Uses :func:`fast_move_with_optional_checksum` for each file, so same-
     filesystem moves are instant while cross-filesystem moves are checksum-
-    verified.  Existing destination files are skipped.
+    verified.  Destination files that are already at least as large as the
+    source are skipped; partial destinations (smaller than source) are removed
+    and re-transferred so an interrupted cross-filesystem copy does not leave
+    stale incomplete files.
 
     Parameters
     ----------
@@ -222,8 +225,27 @@ def move_contents_with_progress(src_dir: str, dst_dir: str) -> None:
                 dst_file = os.path.join(target_root, file)
 
                 if os.path.exists(dst_file):
-                    pbar.update(1)
-                    continue
+                    try:
+                        dst_size = os.path.getsize(dst_file)
+                        src_size = os.path.getsize(src_file)
+                    except OSError:
+                        pbar.update(1)
+                        continue
+                    if dst_size >= src_size:
+                        pbar.update(1)
+                        continue
+                    # dst is smaller than src — interrupted cross-filesystem copy.
+                    # Remove the partial file so the move is retried.
+                    try:
+                        os.remove(dst_file)
+                        print(
+                            f"\nPartial destination removed ({dst_size} < {src_size} bytes): "
+                            f"{dst_file}"
+                        )
+                    except OSError as e:
+                        print(f"\nERROR removing partial destination {dst_file}: {e}")
+                        pbar.update(1)
+                        continue
 
                 try:
                     fast_move_with_optional_checksum(src_file, dst_file)
