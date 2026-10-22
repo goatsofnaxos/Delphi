@@ -74,8 +74,18 @@ def main():
     METADATA_PATH = DATASET_ROOT / "behavior" / "metadata"
     METADATA_OUTPUT_PATH = config.metadata_output_path
     SURGERY_NOTES_PATH = config.surgery_notes_path
-    _, _, _, PROBE_ID = parse_surgery_notes(SURGERY_NOTES_PATH)
-    PROBE_SERIAL_NUMBER = PROBE_ID
+    PROBE_ID = None
+    PROBE_SERIAL_NUMBER = None
+    if config.generate_procedures:
+        try:
+            _, _, _, PROBE_ID = parse_surgery_notes(SURGERY_NOTES_PATH)
+            PROBE_SERIAL_NUMBER = PROBE_ID
+        except FileNotFoundError:
+            print(
+                f"Warning: surgery notes not found at {SURGERY_NOTES_PATH}. "
+                "Skipping procedures generation."
+            )
+            config.generate_procedures = False
 
     # Instrument / acquisition
     INSTRUMENT_ID = config.instrument_id
