@@ -519,7 +519,7 @@ def create_instrument_metadata(
             )
 
         # Pirouette doesn't use cameras from delphi workflow, but delphi only does
-        if "pirouette" not in current_experiment:
+        if "pirouette" not in current_experiment and delphi_hardware:
             """Cameras"""
             # camera lens
             lens = Lens(
@@ -563,12 +563,13 @@ def create_instrument_metadata(
                     )
                 )
 
+                rel_pos = AnatomicalRelative.SUPERIOR if "Top" in camera["cameraName"] else AnatomicalRelative.LEFT
                 cam_assemblies.append(
                     CameraAssembly(
                         name=f"{camera['cameraName']}_assembly",
                         target=CameraTarget.BODY,
                         relative_position=[rel_pos],
-                        camera=camera["cameraName"],
+                        camera=cam,
                         lens=lens,
                     )
                 )
@@ -586,6 +587,8 @@ def create_instrument_metadata(
                 notes="https://www.allentowninc.com/rodent-housing/nexgen/",
             )
             components.append(delphi_cage)
+            for cam_assembly in cam_assemblies:
+                components.append(cam_assembly)
 
             # modalities
             modalities.append(Modality.BEHAVIOR)

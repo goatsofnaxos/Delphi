@@ -131,10 +131,9 @@ def extract_camera_and_ephys_assemblies(instrument):
 
     cam_assemblies = [c for c in instrument.components if isinstance(c, CameraAssembly)]
 
-    try:
-        ephys_assembly = next(c for c in instrument.components if isinstance(c, EphysAssembly))
-    except StopIteration:
-        raise ValueError("No EphysAssembly found in instrument components")
+    ephys_assembly = next(
+        (c for c in instrument.components if isinstance(c, EphysAssembly)), None
+    )
 
     return cam_assemblies, ephys_assembly
 

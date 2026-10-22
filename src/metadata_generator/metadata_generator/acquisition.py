@@ -348,7 +348,7 @@ def create_acquisition_metadata(
 
         # Olfactometer Config
         odor_channel_info = []
-        for i, odor in enumerate(odor_names):
+        for i, odor in enumerate(odor_names or []):
             odor_channel_info.append(
                 OlfactometerChannelInfo(
                     channel_index=odor_channels[i],
@@ -386,7 +386,7 @@ def create_acquisition_metadata(
     # -------------------------------------------------------------------------
     # Cameras (ALWAYS appended, no inference)
     # -------------------------------------------------------------------------
-    for cam_assembly in cam_assemblies:
+    for cam_assembly in (cam_assemblies or []):
         active_devices.append(cam_assembly.camera.name)
 
     # -------------------------------------------------------------------------
