@@ -3120,63 +3120,63 @@ independent :class:<code>SessionState</code> instance, progressing through the
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>src/experiment_conductor/experiment_conductor/session.py</code></summary>
-                <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-16">16</a></span>
-<span class="normal"><a href="#__codelineno-0-17">17</a></span>
-<span class="normal"><a href="#__codelineno-0-18">18</a></span>
-<span class="normal"><a href="#__codelineno-0-19">19</a></span>
-<span class="normal"><a href="#__codelineno-0-20">20</a></span>
-<span class="normal"><a href="#__codelineno-0-21">21</a></span>
-<span class="normal"><a href="#__codelineno-0-22">22</a></span>
-<span class="normal"><a href="#__codelineno-0-23">23</a></span>
-<span class="normal"><a href="#__codelineno-0-24">24</a></span>
-<span class="normal"><a href="#__codelineno-0-25">25</a></span>
-<span class="normal"><a href="#__codelineno-0-26">26</a></span>
-<span class="normal"><a href="#__codelineno-0-27">27</a></span>
-<span class="normal"><a href="#__codelineno-0-28">28</a></span>
-<span class="normal"><a href="#__codelineno-0-29">29</a></span>
-<span class="normal"><a href="#__codelineno-0-30">30</a></span>
-<span class="normal"><a href="#__codelineno-0-31">31</a></span>
-<span class="normal"><a href="#__codelineno-0-32">32</a></span>
-<span class="normal"><a href="#__codelineno-0-33">33</a></span>
-<span class="normal"><a href="#__codelineno-0-34">34</a></span>
-<span class="normal"><a href="#__codelineno-0-35">35</a></span>
-<span class="normal"><a href="#__codelineno-0-36">36</a></span>
-<span class="normal"><a href="#__codelineno-0-37">37</a></span>
-<span class="normal"><a href="#__codelineno-0-38">38</a></span>
-<span class="normal"><a href="#__codelineno-0-39">39</a></span>
-<span class="normal"><a href="#__codelineno-0-40">40</a></span>
-<span class="normal"><a href="#__codelineno-0-41">41</a></span>
-<span class="normal"><a href="#__codelineno-0-42">42</a></span>
-<span class="normal"><a href="#__codelineno-0-43">43</a></span>
-<span class="normal"><a href="#__codelineno-0-44">44</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="k">class</span><span class="w"> </span><span class="nc">SessionPhase</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">    </span><span class="sd">"""Lifecycle phase for a single acquisition session."""</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18"></a>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19"></a>    <span class="n">DISCOVERED</span> <span class="o">=</span> <span class="s2">"DISCOVERED"</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">    </span><span class="sd">"""Session directory found; no processing has started yet."""</span>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21"></a>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22"></a>    <span class="n">CONSOLIDATING</span> <span class="o">=</span> <span class="s2">"CONSOLIDATING"</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">    </span><span class="sd">"""Merging run sub-directories into the earliest run directory."""</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24"></a>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25"></a>    <span class="n">METADATA_CHECK</span> <span class="o">=</span> <span class="s2">"METADATA_CHECK"</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="w">    </span><span class="sd">"""Checking whether all four AIND metadata JSON files are present."""</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27"></a>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28"></a>    <span class="n">METADATA_GENERATING</span> <span class="o">=</span> <span class="s2">"METADATA_GENERATING"</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">    </span><span class="sd">"""Running ``metadata_generator`` to produce missing JSON files."""</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30"></a>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31"></a>    <span class="n">BUILDING</span> <span class="o">=</span> <span class="s2">"BUILDING"</span>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="w">    </span><span class="sd">"""Running the ``delphi-data`` pipeline (build-dataset and/or snapshot)."""</span>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33"></a>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34"></a>    <span class="n">NOISE_FLOOR</span> <span class="o">=</span> <span class="s2">"NOISE_FLOOR"</span>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="w">    </span><span class="sd">"""Estimating the ephys noise floor from raw binary data."""</span>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="n">UPLOADING</span> <span class="o">=</span> <span class="s2">"UPLOADING"</span>
-</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="w">    </span><span class="sd">"""Submitting chunk upload jobs to the AIND data-transfer service."""</span>
-</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39"></a>
-</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40"></a>    <span class="n">COMPLETE</span> <span class="o">=</span> <span class="s2">"COMPLETE"</span>
-</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="w">    </span><span class="sd">"""All local chunks confirmed in S3; no further processing needed."""</span>
-</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42"></a>
-</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43"></a>    <span class="n">ERROR</span> <span class="o">=</span> <span class="s2">"ERROR"</span>
-</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="w">    </span><span class="sd">"""Unrecoverable error; manual intervention required."""</span>
+                <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-27">27</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-29">29</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-30">30</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-31">31</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-32">32</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-34">34</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-35">35</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-38">38</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-39">39</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-40">40</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-41">41</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-42">42</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-43">43</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionPhase--source--__codelineno-0-44">44</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="experiment_conductor.session.SessionPhase--source--__span-0-16"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-16" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-16"></a><span class="k">class</span><span class="w"> </span><span class="nc">SessionPhase</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-17"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-17" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-17"></a><span class="w">    </span><span class="sd">"""Lifecycle phase for a single acquisition session."""</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-18"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-18" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-18"></a>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-19"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-19" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-19"></a>    <span class="n">DISCOVERED</span> <span class="o">=</span> <span class="s2">"DISCOVERED"</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-20"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-20" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-20"></a><span class="w">    </span><span class="sd">"""Session directory found; no processing has started yet."""</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-21"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-21" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-21"></a>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-22"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-22" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-22"></a>    <span class="n">CONSOLIDATING</span> <span class="o">=</span> <span class="s2">"CONSOLIDATING"</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-23"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-23" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-23"></a><span class="w">    </span><span class="sd">"""Merging run sub-directories into the earliest run directory."""</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-24"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-24" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-24"></a>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-25"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-25" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-25"></a>    <span class="n">METADATA_CHECK</span> <span class="o">=</span> <span class="s2">"METADATA_CHECK"</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-26"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-26" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-26"></a><span class="w">    </span><span class="sd">"""Checking whether all four AIND metadata JSON files are present."""</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-27"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-27" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-27"></a>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-28"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-28" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-28"></a>    <span class="n">METADATA_GENERATING</span> <span class="o">=</span> <span class="s2">"METADATA_GENERATING"</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-29"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-29" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-29"></a><span class="w">    </span><span class="sd">"""Running ``metadata_generator`` to produce missing JSON files."""</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-30"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-30" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-30"></a>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-31"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-31" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-31"></a>    <span class="n">BUILDING</span> <span class="o">=</span> <span class="s2">"BUILDING"</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-32"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-32" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-32"></a><span class="w">    </span><span class="sd">"""Running the ``delphi-data`` pipeline (build-dataset and/or snapshot)."""</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-33"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-33" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-33"></a>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-34"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-34" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-34"></a>    <span class="n">NOISE_FLOOR</span> <span class="o">=</span> <span class="s2">"NOISE_FLOOR"</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-35"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-35" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-35"></a><span class="w">    </span><span class="sd">"""Estimating the ephys noise floor from raw binary data."""</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-36"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-36" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-36"></a>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-37"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-37" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-37"></a>    <span class="n">UPLOADING</span> <span class="o">=</span> <span class="s2">"UPLOADING"</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-38"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-38" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-38"></a><span class="w">    </span><span class="sd">"""Submitting chunk upload jobs to the AIND data-transfer service."""</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-39"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-39" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-39"></a>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-40"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-40" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-40"></a>    <span class="n">COMPLETE</span> <span class="o">=</span> <span class="s2">"COMPLETE"</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-41"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-41" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-41"></a><span class="w">    </span><span class="sd">"""All local chunks confirmed in S3; no further processing needed."""</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-42"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-42" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-42"></a>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-43"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-43" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-43"></a>    <span class="n">ERROR</span> <span class="o">=</span> <span class="s2">"ERROR"</span>
+</span><span id="experiment_conductor.session.SessionPhase--source--__span-0-44"><a id="experiment_conductor.session.SessionPhase--source--__codelineno-0-44" name="experiment_conductor.session.SessionPhase--source--__codelineno-0-44"></a><span class="w">    </span><span class="sd">"""Unrecoverable error; manual intervention required."""</span>
 </span></code></pre></div></td></tr></table></div>
               </details>
 
@@ -3505,271 +3505,271 @@ sub-directories (e.g. <code>2026-03-20T20-23-37/</code>) before consolidation.</
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>src/experiment_conductor/experiment_conductor/session.py</code></summary>
-                <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-47"> 47</a></span>
-<span class="normal"><a href="#__codelineno-0-48"> 48</a></span>
-<span class="normal"><a href="#__codelineno-0-49"> 49</a></span>
-<span class="normal"><a href="#__codelineno-0-50"> 50</a></span>
-<span class="normal"><a href="#__codelineno-0-51"> 51</a></span>
-<span class="normal"><a href="#__codelineno-0-52"> 52</a></span>
-<span class="normal"><a href="#__codelineno-0-53"> 53</a></span>
-<span class="normal"><a href="#__codelineno-0-54"> 54</a></span>
-<span class="normal"><a href="#__codelineno-0-55"> 55</a></span>
-<span class="normal"><a href="#__codelineno-0-56"> 56</a></span>
-<span class="normal"><a href="#__codelineno-0-57"> 57</a></span>
-<span class="normal"><a href="#__codelineno-0-58"> 58</a></span>
-<span class="normal"><a href="#__codelineno-0-59"> 59</a></span>
-<span class="normal"><a href="#__codelineno-0-60"> 60</a></span>
-<span class="normal"><a href="#__codelineno-0-61"> 61</a></span>
-<span class="normal"><a href="#__codelineno-0-62"> 62</a></span>
-<span class="normal"><a href="#__codelineno-0-63"> 63</a></span>
-<span class="normal"><a href="#__codelineno-0-64"> 64</a></span>
-<span class="normal"><a href="#__codelineno-0-65"> 65</a></span>
-<span class="normal"><a href="#__codelineno-0-66"> 66</a></span>
-<span class="normal"><a href="#__codelineno-0-67"> 67</a></span>
-<span class="normal"><a href="#__codelineno-0-68"> 68</a></span>
-<span class="normal"><a href="#__codelineno-0-69"> 69</a></span>
-<span class="normal"><a href="#__codelineno-0-70"> 70</a></span>
-<span class="normal"><a href="#__codelineno-0-71"> 71</a></span>
-<span class="normal"><a href="#__codelineno-0-72"> 72</a></span>
-<span class="normal"><a href="#__codelineno-0-73"> 73</a></span>
-<span class="normal"><a href="#__codelineno-0-74"> 74</a></span>
-<span class="normal"><a href="#__codelineno-0-75"> 75</a></span>
-<span class="normal"><a href="#__codelineno-0-76"> 76</a></span>
-<span class="normal"><a href="#__codelineno-0-77"> 77</a></span>
-<span class="normal"><a href="#__codelineno-0-78"> 78</a></span>
-<span class="normal"><a href="#__codelineno-0-79"> 79</a></span>
-<span class="normal"><a href="#__codelineno-0-80"> 80</a></span>
-<span class="normal"><a href="#__codelineno-0-81"> 81</a></span>
-<span class="normal"><a href="#__codelineno-0-82"> 82</a></span>
-<span class="normal"><a href="#__codelineno-0-83"> 83</a></span>
-<span class="normal"><a href="#__codelineno-0-84"> 84</a></span>
-<span class="normal"><a href="#__codelineno-0-85"> 85</a></span>
-<span class="normal"><a href="#__codelineno-0-86"> 86</a></span>
-<span class="normal"><a href="#__codelineno-0-87"> 87</a></span>
-<span class="normal"><a href="#__codelineno-0-88"> 88</a></span>
-<span class="normal"><a href="#__codelineno-0-89"> 89</a></span>
-<span class="normal"><a href="#__codelineno-0-90"> 90</a></span>
-<span class="normal"><a href="#__codelineno-0-91"> 91</a></span>
-<span class="normal"><a href="#__codelineno-0-92"> 92</a></span>
-<span class="normal"><a href="#__codelineno-0-93"> 93</a></span>
-<span class="normal"><a href="#__codelineno-0-94"> 94</a></span>
-<span class="normal"><a href="#__codelineno-0-95"> 95</a></span>
-<span class="normal"><a href="#__codelineno-0-96"> 96</a></span>
-<span class="normal"><a href="#__codelineno-0-97"> 97</a></span>
-<span class="normal"><a href="#__codelineno-0-98"> 98</a></span>
-<span class="normal"><a href="#__codelineno-0-99"> 99</a></span>
-<span class="normal"><a href="#__codelineno-0-100">100</a></span>
-<span class="normal"><a href="#__codelineno-0-101">101</a></span>
-<span class="normal"><a href="#__codelineno-0-102">102</a></span>
-<span class="normal"><a href="#__codelineno-0-103">103</a></span>
-<span class="normal"><a href="#__codelineno-0-104">104</a></span>
-<span class="normal"><a href="#__codelineno-0-105">105</a></span>
-<span class="normal"><a href="#__codelineno-0-106">106</a></span>
-<span class="normal"><a href="#__codelineno-0-107">107</a></span>
-<span class="normal"><a href="#__codelineno-0-108">108</a></span>
-<span class="normal"><a href="#__codelineno-0-109">109</a></span>
-<span class="normal"><a href="#__codelineno-0-110">110</a></span>
-<span class="normal"><a href="#__codelineno-0-111">111</a></span>
-<span class="normal"><a href="#__codelineno-0-112">112</a></span>
-<span class="normal"><a href="#__codelineno-0-113">113</a></span>
-<span class="normal"><a href="#__codelineno-0-114">114</a></span>
-<span class="normal"><a href="#__codelineno-0-115">115</a></span>
-<span class="normal"><a href="#__codelineno-0-116">116</a></span>
-<span class="normal"><a href="#__codelineno-0-117">117</a></span>
-<span class="normal"><a href="#__codelineno-0-118">118</a></span>
-<span class="normal"><a href="#__codelineno-0-119">119</a></span>
-<span class="normal"><a href="#__codelineno-0-120">120</a></span>
-<span class="normal"><a href="#__codelineno-0-121">121</a></span>
-<span class="normal"><a href="#__codelineno-0-122">122</a></span>
-<span class="normal"><a href="#__codelineno-0-123">123</a></span>
-<span class="normal"><a href="#__codelineno-0-124">124</a></span>
-<span class="normal"><a href="#__codelineno-0-125">125</a></span>
-<span class="normal"><a href="#__codelineno-0-126">126</a></span>
-<span class="normal"><a href="#__codelineno-0-127">127</a></span>
-<span class="normal"><a href="#__codelineno-0-128">128</a></span>
-<span class="normal"><a href="#__codelineno-0-129">129</a></span>
-<span class="normal"><a href="#__codelineno-0-130">130</a></span>
-<span class="normal"><a href="#__codelineno-0-131">131</a></span>
-<span class="normal"><a href="#__codelineno-0-132">132</a></span>
-<span class="normal"><a href="#__codelineno-0-133">133</a></span>
-<span class="normal"><a href="#__codelineno-0-134">134</a></span>
-<span class="normal"><a href="#__codelineno-0-135">135</a></span>
-<span class="normal"><a href="#__codelineno-0-136">136</a></span>
-<span class="normal"><a href="#__codelineno-0-137">137</a></span>
-<span class="normal"><a href="#__codelineno-0-138">138</a></span>
-<span class="normal"><a href="#__codelineno-0-139">139</a></span>
-<span class="normal"><a href="#__codelineno-0-140">140</a></span>
-<span class="normal"><a href="#__codelineno-0-141">141</a></span>
-<span class="normal"><a href="#__codelineno-0-142">142</a></span>
-<span class="normal"><a href="#__codelineno-0-143">143</a></span>
-<span class="normal"><a href="#__codelineno-0-144">144</a></span>
-<span class="normal"><a href="#__codelineno-0-145">145</a></span>
-<span class="normal"><a href="#__codelineno-0-146">146</a></span>
-<span class="normal"><a href="#__codelineno-0-147">147</a></span>
-<span class="normal"><a href="#__codelineno-0-148">148</a></span>
-<span class="normal"><a href="#__codelineno-0-149">149</a></span>
-<span class="normal"><a href="#__codelineno-0-150">150</a></span>
-<span class="normal"><a href="#__codelineno-0-151">151</a></span>
-<span class="normal"><a href="#__codelineno-0-152">152</a></span>
-<span class="normal"><a href="#__codelineno-0-153">153</a></span>
-<span class="normal"><a href="#__codelineno-0-154">154</a></span>
-<span class="normal"><a href="#__codelineno-0-155">155</a></span>
-<span class="normal"><a href="#__codelineno-0-156">156</a></span>
-<span class="normal"><a href="#__codelineno-0-157">157</a></span>
-<span class="normal"><a href="#__codelineno-0-158">158</a></span>
-<span class="normal"><a href="#__codelineno-0-159">159</a></span>
-<span class="normal"><a href="#__codelineno-0-160">160</a></span>
-<span class="normal"><a href="#__codelineno-0-161">161</a></span>
-<span class="normal"><a href="#__codelineno-0-162">162</a></span>
-<span class="normal"><a href="#__codelineno-0-163">163</a></span>
-<span class="normal"><a href="#__codelineno-0-164">164</a></span>
-<span class="normal"><a href="#__codelineno-0-165">165</a></span>
-<span class="normal"><a href="#__codelineno-0-166">166</a></span>
-<span class="normal"><a href="#__codelineno-0-167">167</a></span>
-<span class="normal"><a href="#__codelineno-0-168">168</a></span>
-<span class="normal"><a href="#__codelineno-0-169">169</a></span>
-<span class="normal"><a href="#__codelineno-0-170">170</a></span>
-<span class="normal"><a href="#__codelineno-0-171">171</a></span>
-<span class="normal"><a href="#__codelineno-0-172">172</a></span>
-<span class="normal"><a href="#__codelineno-0-173">173</a></span>
-<span class="normal"><a href="#__codelineno-0-174">174</a></span>
-<span class="normal"><a href="#__codelineno-0-175">175</a></span>
-<span class="normal"><a href="#__codelineno-0-176">176</a></span>
-<span class="normal"><a href="#__codelineno-0-177">177</a></span>
-<span class="normal"><a href="#__codelineno-0-178">178</a></span>
-<span class="normal"><a href="#__codelineno-0-179">179</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="nd">@dataclass</span>
-</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="k">class</span><span class="w"> </span><span class="nc">SessionState</span><span class="p">:</span>
-</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="w">    </span><span class="sd">"""Mutable state for one acquisition session.</span>
-</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50"></a>
-</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="sd">    Thread-safety is provided by the embedded :attr:`lock`.  Any field that</span>
-</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="sd">    is mutated after initialisation must be accessed under ``state.lock``.</span>
-</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53"></a>
-</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">    Parameters</span>
-</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">    ----------</span>
-</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="sd">    data_root : Path</span>
-</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="sd">        Session root directory.  Contains one or more run-timestamp</span>
-</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="sd">        sub-directories (e.g. ``2026-03-20T20-23-37/``) before consolidation.</span>
-</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="sd">    subject_id : str</span>
-</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="sd">        Numeric AIND subject identifier (e.g. ``"842456"``).</span>
-</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61"></a><span class="sd">    session_datetime : str</span>
-</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="sd">        Session timestamp in ``YYYY-MM-DDTHH-MM-SS`` format; equals</span>
-</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="sd">        ``data_root.name``.</span>
-</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="sd">    """</span>
-</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65"></a>
-</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66"></a>    <span class="c1"># ── Identity ──────────────────────────────────────────────────────────────</span>
-</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67"></a>    <span class="n">data_root</span><span class="p">:</span> <span class="n">Path</span>
-</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="w">    </span><span class="sd">"""Session root directory (e.g. ``…/842456/2026-03-20T20-23-05``)."""</span>
-</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69"></a>
-</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70"></a>    <span class="n">subject_id</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71"></a><span class="w">    </span><span class="sd">"""Numeric AIND subject identifier."""</span>
-</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72"></a>
-</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73"></a>    <span class="n">session_datetime</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74"></a><span class="w">    </span><span class="sd">"""Session timestamp string matching ``YYYY-MM-DDTHH-MM-SS``."""</span>
-</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75"></a>
-</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76"></a>    <span class="c1"># ── Resolved paths ────────────────────────────────────────────────────────</span>
-</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77"></a>    <span class="n">run_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="w">    </span><span class="sd">"""Earliest run sub-directory; resolved after the first consolidation.</span>
-</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="sd">    All per-session steps (pipeline, metadata, upload) operate on this path."""</span>
-</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80"></a>
-</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81"></a>    <span class="c1"># ── Lifecycle ─────────────────────────────────────────────────────────────</span>
-</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82"></a>    <span class="n">phase</span><span class="p">:</span> <span class="n">SessionPhase</span> <span class="o">=</span> <span class="n">SessionPhase</span><span class="o">.</span><span class="n">DISCOVERED</span>
-</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83"></a>
-</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84"></a>    <span class="c1"># ── Step-completion flags ──────────────────────────────────────────────────</span>
-</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85"></a>    <span class="n">consolidation_done</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="w">    </span><span class="sd">"""True once run sub-directories have been merged into *run_dir*."""</span>
-</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87"></a>
-</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88"></a>    <span class="n">metadata_present</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="w">    </span><span class="sd">"""True if all four AIND JSON files were found on the last check."""</span>
-</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90"></a>
-</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91"></a>    <span class="n">metadata_generated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92"></a><span class="w">    </span><span class="sd">"""True once ``metadata_generator`` finished without errors."""</span>
-</span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93"></a>
-</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94"></a>    <span class="n">dataset_built</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95"></a><span class="w">    </span><span class="sd">"""True once ``delphi-data pipeline`` has run at least once."""</span>
-</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96"></a>
-</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97"></a>    <span class="n">noise_floor_estimated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98"></a><span class="w">    </span><span class="sd">"""True once a noise-floor estimate has been written to ``ecephys/``."""</span>
-</span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99"></a>
-</span><span id="__span-0-100"><a id="__codelineno-0-100" name="__codelineno-0-100"></a>    <span class="n">upload_started</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="__span-0-101"><a id="__codelineno-0-101" name="__codelineno-0-101"></a><span class="w">    </span><span class="sd">"""True once the initial ``chronic_ephys_start`` job has been posted."""</span>
-</span><span id="__span-0-102"><a id="__codelineno-0-102" name="__codelineno-0-102"></a>
-</span><span id="__span-0-103"><a id="__codelineno-0-103" name="__codelineno-0-103"></a>    <span class="c1"># ── Timing ────────────────────────────────────────────────────────────────</span>
-</span><span id="__span-0-104"><a id="__codelineno-0-104" name="__codelineno-0-104"></a>    <span class="n">discovered_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-0-105"><a id="__codelineno-0-105" name="__codelineno-0-105"></a>    <span class="n">last_processed</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-0-106"><a id="__codelineno-0-106" name="__codelineno-0-106"></a>    <span class="n">last_upload_run</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-0-107"><a id="__codelineno-0-107" name="__codelineno-0-107"></a>
-</span><span id="__span-0-108"><a id="__codelineno-0-108" name="__codelineno-0-108"></a>    <span class="c1"># ── Error tracking ────────────────────────────────────────────────────────</span>
-</span><span id="__span-0-109"><a id="__codelineno-0-109" name="__codelineno-0-109"></a>    <span class="n">error_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-0-110"><a id="__codelineno-0-110" name="__codelineno-0-110"></a>    <span class="n">consecutive_errors</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="__span-0-111"><a id="__codelineno-0-111" name="__codelineno-0-111"></a>
-</span><span id="__span-0-112"><a id="__codelineno-0-112" name="__codelineno-0-112"></a>    <span class="c1"># ── Threading ─────────────────────────────────────────────────────────────</span>
-</span><span id="__span-0-113"><a id="__codelineno-0-113" name="__codelineno-0-113"></a>    <span class="n">lock</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
-</span><span id="__span-0-114"><a id="__codelineno-0-114" name="__codelineno-0-114"></a>        <span class="n">default_factory</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compare</span><span class="o">=</span><span class="kc">False</span>
-</span><span id="__span-0-115"><a id="__codelineno-0-115" name="__codelineno-0-115"></a>    <span class="p">)</span>
-</span><span id="__span-0-116"><a id="__codelineno-0-116" name="__codelineno-0-116"></a>
-</span><span id="__span-0-117"><a id="__codelineno-0-117" name="__codelineno-0-117"></a>    <span class="c1"># ── Serialisation ─────────────────────────────────────────────────────────</span>
-</span><span id="__span-0-118"><a id="__codelineno-0-118" name="__codelineno-0-118"></a>
-</span><span id="__span-0-119"><a id="__codelineno-0-119" name="__codelineno-0-119"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span id="__span-0-120"><a id="__codelineno-0-120" name="__codelineno-0-120"></a><span class="w">        </span><span class="sd">"""Return a JSON-serialisable representation (excludes ``lock``)."""</span>
-</span><span id="__span-0-121"><a id="__codelineno-0-121" name="__codelineno-0-121"></a>
-</span><span id="__span-0-122"><a id="__codelineno-0-122" name="__codelineno-0-122"></a>        <span class="k">def</span><span class="w"> </span><span class="nf">_iso</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-123"><a id="__codelineno-0-123" name="__codelineno-0-123"></a>            <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="kc">None</span>
-</span><span id="__span-0-124"><a id="__codelineno-0-124" name="__codelineno-0-124"></a>
-</span><span id="__span-0-125"><a id="__codelineno-0-125" name="__codelineno-0-125"></a>        <span class="k">return</span> <span class="p">{</span>
-</span><span id="__span-0-126"><a id="__codelineno-0-126" name="__codelineno-0-126"></a>            <span class="s2">"data_root"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_root</span><span class="p">),</span>
-</span><span id="__span-0-127"><a id="__codelineno-0-127" name="__codelineno-0-127"></a>            <span class="s2">"subject_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">subject_id</span><span class="p">,</span>
-</span><span id="__span-0-128"><a id="__codelineno-0-128" name="__codelineno-0-128"></a>            <span class="s2">"session_datetime"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_datetime</span><span class="p">,</span>
-</span><span id="__span-0-129"><a id="__codelineno-0-129" name="__codelineno-0-129"></a>            <span class="s2">"run_dir"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_dir</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_dir</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-130"><a id="__codelineno-0-130" name="__codelineno-0-130"></a>            <span class="s2">"phase"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-</span><span id="__span-0-131"><a id="__codelineno-0-131" name="__codelineno-0-131"></a>            <span class="s2">"consolidation_done"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">consolidation_done</span><span class="p">,</span>
-</span><span id="__span-0-132"><a id="__codelineno-0-132" name="__codelineno-0-132"></a>            <span class="s2">"metadata_present"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_present</span><span class="p">,</span>
-</span><span id="__span-0-133"><a id="__codelineno-0-133" name="__codelineno-0-133"></a>            <span class="s2">"metadata_generated"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_generated</span><span class="p">,</span>
-</span><span id="__span-0-134"><a id="__codelineno-0-134" name="__codelineno-0-134"></a>            <span class="s2">"dataset_built"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_built</span><span class="p">,</span>
-</span><span id="__span-0-135"><a id="__codelineno-0-135" name="__codelineno-0-135"></a>            <span class="s2">"noise_floor_estimated"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_floor_estimated</span><span class="p">,</span>
-</span><span id="__span-0-136"><a id="__codelineno-0-136" name="__codelineno-0-136"></a>            <span class="s2">"upload_started"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">upload_started</span><span class="p">,</span>
-</span><span id="__span-0-137"><a id="__codelineno-0-137" name="__codelineno-0-137"></a>            <span class="s2">"discovered_at"</span><span class="p">:</span> <span class="n">_iso</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">discovered_at</span><span class="p">),</span>
-</span><span id="__span-0-138"><a id="__codelineno-0-138" name="__codelineno-0-138"></a>            <span class="s2">"last_processed"</span><span class="p">:</span> <span class="n">_iso</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_processed</span><span class="p">),</span>
-</span><span id="__span-0-139"><a id="__codelineno-0-139" name="__codelineno-0-139"></a>            <span class="s2">"last_upload_run"</span><span class="p">:</span> <span class="n">_iso</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_upload_run</span><span class="p">),</span>
-</span><span id="__span-0-140"><a id="__codelineno-0-140" name="__codelineno-0-140"></a>            <span class="s2">"error_message"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_message</span><span class="p">,</span>
-</span><span id="__span-0-141"><a id="__codelineno-0-141" name="__codelineno-0-141"></a>            <span class="s2">"consecutive_errors"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">consecutive_errors</span><span class="p">,</span>
-</span><span id="__span-0-142"><a id="__codelineno-0-142" name="__codelineno-0-142"></a>        <span class="p">}</span>
-</span><span id="__span-0-143"><a id="__codelineno-0-143" name="__codelineno-0-143"></a>
-</span><span id="__span-0-144"><a id="__codelineno-0-144" name="__codelineno-0-144"></a>    <span class="nd">@classmethod</span>
-</span><span id="__span-0-145"><a id="__codelineno-0-145" name="__codelineno-0-145"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SessionState"</span><span class="p">:</span>
-</span><span id="__span-0-146"><a id="__codelineno-0-146" name="__codelineno-0-146"></a><span class="w">        </span><span class="sd">"""Reconstruct a :class:`SessionState` from a serialised dict.</span>
-</span><span id="__span-0-147"><a id="__codelineno-0-147" name="__codelineno-0-147"></a>
-</span><span id="__span-0-148"><a id="__codelineno-0-148" name="__codelineno-0-148"></a><span class="sd">        Parameters</span>
-</span><span id="__span-0-149"><a id="__codelineno-0-149" name="__codelineno-0-149"></a><span class="sd">        ----------</span>
-</span><span id="__span-0-150"><a id="__codelineno-0-150" name="__codelineno-0-150"></a><span class="sd">        d : dict</span>
-</span><span id="__span-0-151"><a id="__codelineno-0-151" name="__codelineno-0-151"></a><span class="sd">            Mapping produced by :meth:`to_dict`.</span>
-</span><span id="__span-0-152"><a id="__codelineno-0-152" name="__codelineno-0-152"></a>
-</span><span id="__span-0-153"><a id="__codelineno-0-153" name="__codelineno-0-153"></a><span class="sd">        Returns</span>
-</span><span id="__span-0-154"><a id="__codelineno-0-154" name="__codelineno-0-154"></a><span class="sd">        -------</span>
-</span><span id="__span-0-155"><a id="__codelineno-0-155" name="__codelineno-0-155"></a><span class="sd">        SessionState</span>
-</span><span id="__span-0-156"><a id="__codelineno-0-156" name="__codelineno-0-156"></a><span class="sd">        """</span>
-</span><span id="__span-0-157"><a id="__codelineno-0-157" name="__codelineno-0-157"></a>
-</span><span id="__span-0-158"><a id="__codelineno-0-158" name="__codelineno-0-158"></a>        <span class="k">def</span><span class="w"> </span><span class="nf">_dt</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-159"><a id="__codelineno-0-159" name="__codelineno-0-159"></a>            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="kc">None</span>
-</span><span id="__span-0-160"><a id="__codelineno-0-160" name="__codelineno-0-160"></a>
-</span><span id="__span-0-161"><a id="__codelineno-0-161" name="__codelineno-0-161"></a>        <span class="n">run_dir_raw</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"run_dir"</span><span class="p">)</span>
-</span><span id="__span-0-162"><a id="__codelineno-0-162" name="__codelineno-0-162"></a>        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-</span><span id="__span-0-163"><a id="__codelineno-0-163" name="__codelineno-0-163"></a>            <span class="n">data_root</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"data_root"</span><span class="p">]),</span>
-</span><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164"></a>            <span class="n">subject_id</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">"subject_id"</span><span class="p">],</span>
-</span><span id="__span-0-165"><a id="__codelineno-0-165" name="__codelineno-0-165"></a>            <span class="n">session_datetime</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">"session_datetime"</span><span class="p">],</span>
-</span><span id="__span-0-166"><a id="__codelineno-0-166" name="__codelineno-0-166"></a>            <span class="n">run_dir</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">run_dir_raw</span><span class="p">)</span> <span class="k">if</span> <span class="n">run_dir_raw</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-167"><a id="__codelineno-0-167" name="__codelineno-0-167"></a>            <span class="n">phase</span><span class="o">=</span><span class="n">SessionPhase</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"phase"</span><span class="p">,</span> <span class="n">SessionPhase</span><span class="o">.</span><span class="n">DISCOVERED</span><span class="p">)),</span>
-</span><span id="__span-0-168"><a id="__codelineno-0-168" name="__codelineno-0-168"></a>            <span class="n">consolidation_done</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"consolidation_done"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-</span><span id="__span-0-169"><a id="__codelineno-0-169" name="__codelineno-0-169"></a>            <span class="n">metadata_present</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata_present"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-</span><span id="__span-0-170"><a id="__codelineno-0-170" name="__codelineno-0-170"></a>            <span class="n">metadata_generated</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata_generated"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-</span><span id="__span-0-171"><a id="__codelineno-0-171" name="__codelineno-0-171"></a>            <span class="n">dataset_built</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dataset_built"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-</span><span id="__span-0-172"><a id="__codelineno-0-172" name="__codelineno-0-172"></a>            <span class="n">noise_floor_estimated</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"noise_floor_estimated"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-</span><span id="__span-0-173"><a id="__codelineno-0-173" name="__codelineno-0-173"></a>            <span class="n">upload_started</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"upload_started"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-</span><span id="__span-0-174"><a id="__codelineno-0-174" name="__codelineno-0-174"></a>            <span class="n">discovered_at</span><span class="o">=</span><span class="n">_dt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"discovered_at"</span><span class="p">)),</span>
-</span><span id="__span-0-175"><a id="__codelineno-0-175" name="__codelineno-0-175"></a>            <span class="n">last_processed</span><span class="o">=</span><span class="n">_dt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"last_processed"</span><span class="p">)),</span>
-</span><span id="__span-0-176"><a id="__codelineno-0-176" name="__codelineno-0-176"></a>            <span class="n">last_upload_run</span><span class="o">=</span><span class="n">_dt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"last_upload_run"</span><span class="p">)),</span>
-</span><span id="__span-0-177"><a id="__codelineno-0-177" name="__codelineno-0-177"></a>            <span class="n">error_message</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"error_message"</span><span class="p">),</span>
-</span><span id="__span-0-178"><a id="__codelineno-0-178" name="__codelineno-0-178"></a>            <span class="n">consecutive_errors</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"consecutive_errors"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-</span><span id="__span-0-179"><a id="__codelineno-0-179" name="__codelineno-0-179"></a>        <span class="p">)</span>
+                <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-47"> 47</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-48"> 48</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-49"> 49</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-50"> 50</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-51"> 51</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-52"> 52</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-53"> 53</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-54"> 54</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-55"> 55</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-56"> 56</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-57"> 57</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-58"> 58</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-59"> 59</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-60"> 60</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-61"> 61</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-62"> 62</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-63"> 63</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-64"> 64</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-65"> 65</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-66"> 66</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-67"> 67</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-68"> 68</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-69"> 69</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-70"> 70</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-71"> 71</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-72"> 72</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-73"> 73</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-74"> 74</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-75"> 75</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-76"> 76</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-77"> 77</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-78"> 78</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-79"> 79</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-80"> 80</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-81"> 81</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-82"> 82</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-83"> 83</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-84"> 84</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-85"> 85</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-86"> 86</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-87"> 87</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-88"> 88</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-89"> 89</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-90"> 90</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-91"> 91</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-92"> 92</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-93"> 93</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-94"> 94</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-95"> 95</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-96"> 96</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-97"> 97</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-98"> 98</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-99"> 99</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-100">100</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-101">101</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-102">102</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-103">103</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-104">104</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-105">105</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-106">106</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-107">107</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-108">108</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-109">109</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-110">110</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-111">111</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-112">112</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-113">113</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-114">114</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-115">115</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-116">116</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-117">117</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-118">118</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-119">119</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-120">120</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-121">121</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-122">122</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-123">123</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-124">124</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-125">125</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-126">126</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-127">127</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-128">128</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-129">129</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-130">130</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-131">131</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-132">132</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-133">133</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-134">134</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-135">135</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-136">136</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-137">137</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-138">138</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-139">139</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-140">140</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-141">141</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-142">142</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-143">143</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-144">144</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-145">145</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-146">146</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-147">147</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-148">148</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-149">149</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-150">150</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-151">151</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-152">152</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-153">153</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-154">154</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-155">155</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-156">156</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-157">157</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-158">158</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-159">159</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-160">160</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-161">161</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-162">162</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-163">163</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-164">164</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-165">165</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-166">166</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-167">167</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-168">168</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-169">169</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-170">170</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-171">171</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-172">172</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-173">173</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-174">174</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-175">175</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-176">176</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-177">177</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-178">178</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState--source--__codelineno-0-179">179</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="experiment_conductor.session.SessionState--source--__span-0-47"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-47" name="experiment_conductor.session.SessionState--source--__codelineno-0-47"></a><span class="nd">@dataclass</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-48"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-48" name="experiment_conductor.session.SessionState--source--__codelineno-0-48"></a><span class="k">class</span><span class="w"> </span><span class="nc">SessionState</span><span class="p">:</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-49"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-49" name="experiment_conductor.session.SessionState--source--__codelineno-0-49"></a><span class="w">    </span><span class="sd">"""Mutable state for one acquisition session.</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-50"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-50" name="experiment_conductor.session.SessionState--source--__codelineno-0-50"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-51"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-51" name="experiment_conductor.session.SessionState--source--__codelineno-0-51"></a><span class="sd">    Thread-safety is provided by the embedded :attr:`lock`.  Any field that</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-52"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-52" name="experiment_conductor.session.SessionState--source--__codelineno-0-52"></a><span class="sd">    is mutated after initialisation must be accessed under ``state.lock``.</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-53"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-53" name="experiment_conductor.session.SessionState--source--__codelineno-0-53"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-54"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-54" name="experiment_conductor.session.SessionState--source--__codelineno-0-54"></a><span class="sd">    Parameters</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-55"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-55" name="experiment_conductor.session.SessionState--source--__codelineno-0-55"></a><span class="sd">    ----------</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-56"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-56" name="experiment_conductor.session.SessionState--source--__codelineno-0-56"></a><span class="sd">    data_root : Path</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-57"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-57" name="experiment_conductor.session.SessionState--source--__codelineno-0-57"></a><span class="sd">        Session root directory.  Contains one or more run-timestamp</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-58"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-58" name="experiment_conductor.session.SessionState--source--__codelineno-0-58"></a><span class="sd">        sub-directories (e.g. ``2026-03-20T20-23-37/``) before consolidation.</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-59"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-59" name="experiment_conductor.session.SessionState--source--__codelineno-0-59"></a><span class="sd">    subject_id : str</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-60"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-60" name="experiment_conductor.session.SessionState--source--__codelineno-0-60"></a><span class="sd">        Numeric AIND subject identifier (e.g. ``"842456"``).</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-61"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-61" name="experiment_conductor.session.SessionState--source--__codelineno-0-61"></a><span class="sd">    session_datetime : str</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-62"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-62" name="experiment_conductor.session.SessionState--source--__codelineno-0-62"></a><span class="sd">        Session timestamp in ``YYYY-MM-DDTHH-MM-SS`` format; equals</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-63"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-63" name="experiment_conductor.session.SessionState--source--__codelineno-0-63"></a><span class="sd">        ``data_root.name``.</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-64"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-64" name="experiment_conductor.session.SessionState--source--__codelineno-0-64"></a><span class="sd">    """</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-65"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-65" name="experiment_conductor.session.SessionState--source--__codelineno-0-65"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-66"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-66" name="experiment_conductor.session.SessionState--source--__codelineno-0-66"></a>    <span class="c1"># ── Identity ──────────────────────────────────────────────────────────────</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-67"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-67" name="experiment_conductor.session.SessionState--source--__codelineno-0-67"></a>    <span class="n">data_root</span><span class="p">:</span> <span class="n">Path</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-68"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-68" name="experiment_conductor.session.SessionState--source--__codelineno-0-68"></a><span class="w">    </span><span class="sd">"""Session root directory (e.g. ``…/842456/2026-03-20T20-23-05``)."""</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-69"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-69" name="experiment_conductor.session.SessionState--source--__codelineno-0-69"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-70"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-70" name="experiment_conductor.session.SessionState--source--__codelineno-0-70"></a>    <span class="n">subject_id</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-71"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-71" name="experiment_conductor.session.SessionState--source--__codelineno-0-71"></a><span class="w">    </span><span class="sd">"""Numeric AIND subject identifier."""</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-72"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-72" name="experiment_conductor.session.SessionState--source--__codelineno-0-72"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-73"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-73" name="experiment_conductor.session.SessionState--source--__codelineno-0-73"></a>    <span class="n">session_datetime</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-74"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-74" name="experiment_conductor.session.SessionState--source--__codelineno-0-74"></a><span class="w">    </span><span class="sd">"""Session timestamp string matching ``YYYY-MM-DDTHH-MM-SS``."""</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-75"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-75" name="experiment_conductor.session.SessionState--source--__codelineno-0-75"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-76"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-76" name="experiment_conductor.session.SessionState--source--__codelineno-0-76"></a>    <span class="c1"># ── Resolved paths ────────────────────────────────────────────────────────</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-77"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-77" name="experiment_conductor.session.SessionState--source--__codelineno-0-77"></a>    <span class="n">run_dir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-78"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-78" name="experiment_conductor.session.SessionState--source--__codelineno-0-78"></a><span class="w">    </span><span class="sd">"""Earliest run sub-directory; resolved after the first consolidation.</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-79"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-79" name="experiment_conductor.session.SessionState--source--__codelineno-0-79"></a><span class="sd">    All per-session steps (pipeline, metadata, upload) operate on this path."""</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-80"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-80" name="experiment_conductor.session.SessionState--source--__codelineno-0-80"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-81"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-81" name="experiment_conductor.session.SessionState--source--__codelineno-0-81"></a>    <span class="c1"># ── Lifecycle ─────────────────────────────────────────────────────────────</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-82"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-82" name="experiment_conductor.session.SessionState--source--__codelineno-0-82"></a>    <span class="n">phase</span><span class="p">:</span> <span class="n">SessionPhase</span> <span class="o">=</span> <span class="n">SessionPhase</span><span class="o">.</span><span class="n">DISCOVERED</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-83"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-83" name="experiment_conductor.session.SessionState--source--__codelineno-0-83"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-84"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-84" name="experiment_conductor.session.SessionState--source--__codelineno-0-84"></a>    <span class="c1"># ── Step-completion flags ──────────────────────────────────────────────────</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-85"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-85" name="experiment_conductor.session.SessionState--source--__codelineno-0-85"></a>    <span class="n">consolidation_done</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-86"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-86" name="experiment_conductor.session.SessionState--source--__codelineno-0-86"></a><span class="w">    </span><span class="sd">"""True once run sub-directories have been merged into *run_dir*."""</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-87"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-87" name="experiment_conductor.session.SessionState--source--__codelineno-0-87"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-88"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-88" name="experiment_conductor.session.SessionState--source--__codelineno-0-88"></a>    <span class="n">metadata_present</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-89"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-89" name="experiment_conductor.session.SessionState--source--__codelineno-0-89"></a><span class="w">    </span><span class="sd">"""True if all four AIND JSON files were found on the last check."""</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-90"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-90" name="experiment_conductor.session.SessionState--source--__codelineno-0-90"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-91"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-91" name="experiment_conductor.session.SessionState--source--__codelineno-0-91"></a>    <span class="n">metadata_generated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-92"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-92" name="experiment_conductor.session.SessionState--source--__codelineno-0-92"></a><span class="w">    </span><span class="sd">"""True once ``metadata_generator`` finished without errors."""</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-93"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-93" name="experiment_conductor.session.SessionState--source--__codelineno-0-93"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-94"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-94" name="experiment_conductor.session.SessionState--source--__codelineno-0-94"></a>    <span class="n">dataset_built</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-95"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-95" name="experiment_conductor.session.SessionState--source--__codelineno-0-95"></a><span class="w">    </span><span class="sd">"""True once ``delphi-data pipeline`` has run at least once."""</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-96"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-96" name="experiment_conductor.session.SessionState--source--__codelineno-0-96"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-97"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-97" name="experiment_conductor.session.SessionState--source--__codelineno-0-97"></a>    <span class="n">noise_floor_estimated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-98"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-98" name="experiment_conductor.session.SessionState--source--__codelineno-0-98"></a><span class="w">    </span><span class="sd">"""True once a noise-floor estimate has been written to ``ecephys/``."""</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-99"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-99" name="experiment_conductor.session.SessionState--source--__codelineno-0-99"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-100"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-100" name="experiment_conductor.session.SessionState--source--__codelineno-0-100"></a>    <span class="n">upload_started</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-101"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-101" name="experiment_conductor.session.SessionState--source--__codelineno-0-101"></a><span class="w">    </span><span class="sd">"""True once the initial ``chronic_ephys_start`` job has been posted."""</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-102"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-102" name="experiment_conductor.session.SessionState--source--__codelineno-0-102"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-103"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-103" name="experiment_conductor.session.SessionState--source--__codelineno-0-103"></a>    <span class="c1"># ── Timing ────────────────────────────────────────────────────────────────</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-104"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-104" name="experiment_conductor.session.SessionState--source--__codelineno-0-104"></a>    <span class="n">discovered_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-105"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-105" name="experiment_conductor.session.SessionState--source--__codelineno-0-105"></a>    <span class="n">last_processed</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-106"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-106" name="experiment_conductor.session.SessionState--source--__codelineno-0-106"></a>    <span class="n">last_upload_run</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-107"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-107" name="experiment_conductor.session.SessionState--source--__codelineno-0-107"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-108"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-108" name="experiment_conductor.session.SessionState--source--__codelineno-0-108"></a>    <span class="c1"># ── Error tracking ────────────────────────────────────────────────────────</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-109"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-109" name="experiment_conductor.session.SessionState--source--__codelineno-0-109"></a>    <span class="n">error_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-110"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-110" name="experiment_conductor.session.SessionState--source--__codelineno-0-110"></a>    <span class="n">consecutive_errors</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-111"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-111" name="experiment_conductor.session.SessionState--source--__codelineno-0-111"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-112"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-112" name="experiment_conductor.session.SessionState--source--__codelineno-0-112"></a>    <span class="c1"># ── Threading ─────────────────────────────────────────────────────────────</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-113"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-113" name="experiment_conductor.session.SessionState--source--__codelineno-0-113"></a>    <span class="n">lock</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-114"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-114" name="experiment_conductor.session.SessionState--source--__codelineno-0-114"></a>        <span class="n">default_factory</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compare</span><span class="o">=</span><span class="kc">False</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-115"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-115" name="experiment_conductor.session.SessionState--source--__codelineno-0-115"></a>    <span class="p">)</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-116"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-116" name="experiment_conductor.session.SessionState--source--__codelineno-0-116"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-117"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-117" name="experiment_conductor.session.SessionState--source--__codelineno-0-117"></a>    <span class="c1"># ── Serialisation ─────────────────────────────────────────────────────────</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-118"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-118" name="experiment_conductor.session.SessionState--source--__codelineno-0-118"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-119"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-119" name="experiment_conductor.session.SessionState--source--__codelineno-0-119"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-120"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-120" name="experiment_conductor.session.SessionState--source--__codelineno-0-120"></a><span class="w">        </span><span class="sd">"""Return a JSON-serialisable representation (excludes ``lock``)."""</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-121"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-121" name="experiment_conductor.session.SessionState--source--__codelineno-0-121"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-122"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-122" name="experiment_conductor.session.SessionState--source--__codelineno-0-122"></a>        <span class="k">def</span><span class="w"> </span><span class="nf">_iso</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-123"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-123" name="experiment_conductor.session.SessionState--source--__codelineno-0-123"></a>            <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-124"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-124" name="experiment_conductor.session.SessionState--source--__codelineno-0-124"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-125"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-125" name="experiment_conductor.session.SessionState--source--__codelineno-0-125"></a>        <span class="k">return</span> <span class="p">{</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-126"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-126" name="experiment_conductor.session.SessionState--source--__codelineno-0-126"></a>            <span class="s2">"data_root"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_root</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-127"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-127" name="experiment_conductor.session.SessionState--source--__codelineno-0-127"></a>            <span class="s2">"subject_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">subject_id</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-128"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-128" name="experiment_conductor.session.SessionState--source--__codelineno-0-128"></a>            <span class="s2">"session_datetime"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_datetime</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-129"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-129" name="experiment_conductor.session.SessionState--source--__codelineno-0-129"></a>            <span class="s2">"run_dir"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_dir</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_dir</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-130"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-130" name="experiment_conductor.session.SessionState--source--__codelineno-0-130"></a>            <span class="s2">"phase"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-131"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-131" name="experiment_conductor.session.SessionState--source--__codelineno-0-131"></a>            <span class="s2">"consolidation_done"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">consolidation_done</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-132"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-132" name="experiment_conductor.session.SessionState--source--__codelineno-0-132"></a>            <span class="s2">"metadata_present"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_present</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-133"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-133" name="experiment_conductor.session.SessionState--source--__codelineno-0-133"></a>            <span class="s2">"metadata_generated"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_generated</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-134"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-134" name="experiment_conductor.session.SessionState--source--__codelineno-0-134"></a>            <span class="s2">"dataset_built"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_built</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-135"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-135" name="experiment_conductor.session.SessionState--source--__codelineno-0-135"></a>            <span class="s2">"noise_floor_estimated"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_floor_estimated</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-136"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-136" name="experiment_conductor.session.SessionState--source--__codelineno-0-136"></a>            <span class="s2">"upload_started"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">upload_started</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-137"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-137" name="experiment_conductor.session.SessionState--source--__codelineno-0-137"></a>            <span class="s2">"discovered_at"</span><span class="p">:</span> <span class="n">_iso</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">discovered_at</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-138"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-138" name="experiment_conductor.session.SessionState--source--__codelineno-0-138"></a>            <span class="s2">"last_processed"</span><span class="p">:</span> <span class="n">_iso</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_processed</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-139"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-139" name="experiment_conductor.session.SessionState--source--__codelineno-0-139"></a>            <span class="s2">"last_upload_run"</span><span class="p">:</span> <span class="n">_iso</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_upload_run</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-140"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-140" name="experiment_conductor.session.SessionState--source--__codelineno-0-140"></a>            <span class="s2">"error_message"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_message</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-141"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-141" name="experiment_conductor.session.SessionState--source--__codelineno-0-141"></a>            <span class="s2">"consecutive_errors"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">consecutive_errors</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-142"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-142" name="experiment_conductor.session.SessionState--source--__codelineno-0-142"></a>        <span class="p">}</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-143"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-143" name="experiment_conductor.session.SessionState--source--__codelineno-0-143"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-144"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-144" name="experiment_conductor.session.SessionState--source--__codelineno-0-144"></a>    <span class="nd">@classmethod</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-145"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-145" name="experiment_conductor.session.SessionState--source--__codelineno-0-145"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SessionState"</span><span class="p">:</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-146"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-146" name="experiment_conductor.session.SessionState--source--__codelineno-0-146"></a><span class="w">        </span><span class="sd">"""Reconstruct a :class:`SessionState` from a serialised dict.</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-147"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-147" name="experiment_conductor.session.SessionState--source--__codelineno-0-147"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-148"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-148" name="experiment_conductor.session.SessionState--source--__codelineno-0-148"></a><span class="sd">        Parameters</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-149"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-149" name="experiment_conductor.session.SessionState--source--__codelineno-0-149"></a><span class="sd">        ----------</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-150"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-150" name="experiment_conductor.session.SessionState--source--__codelineno-0-150"></a><span class="sd">        d : dict</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-151"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-151" name="experiment_conductor.session.SessionState--source--__codelineno-0-151"></a><span class="sd">            Mapping produced by :meth:`to_dict`.</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-152"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-152" name="experiment_conductor.session.SessionState--source--__codelineno-0-152"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-153"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-153" name="experiment_conductor.session.SessionState--source--__codelineno-0-153"></a><span class="sd">        Returns</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-154"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-154" name="experiment_conductor.session.SessionState--source--__codelineno-0-154"></a><span class="sd">        -------</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-155"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-155" name="experiment_conductor.session.SessionState--source--__codelineno-0-155"></a><span class="sd">        SessionState</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-156"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-156" name="experiment_conductor.session.SessionState--source--__codelineno-0-156"></a><span class="sd">        """</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-157"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-157" name="experiment_conductor.session.SessionState--source--__codelineno-0-157"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-158"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-158" name="experiment_conductor.session.SessionState--source--__codelineno-0-158"></a>        <span class="k">def</span><span class="w"> </span><span class="nf">_dt</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-159"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-159" name="experiment_conductor.session.SessionState--source--__codelineno-0-159"></a>            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-160"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-160" name="experiment_conductor.session.SessionState--source--__codelineno-0-160"></a>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-161"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-161" name="experiment_conductor.session.SessionState--source--__codelineno-0-161"></a>        <span class="n">run_dir_raw</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"run_dir"</span><span class="p">)</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-162"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-162" name="experiment_conductor.session.SessionState--source--__codelineno-0-162"></a>        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-163"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-163" name="experiment_conductor.session.SessionState--source--__codelineno-0-163"></a>            <span class="n">data_root</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"data_root"</span><span class="p">]),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-164"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-164" name="experiment_conductor.session.SessionState--source--__codelineno-0-164"></a>            <span class="n">subject_id</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">"subject_id"</span><span class="p">],</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-165"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-165" name="experiment_conductor.session.SessionState--source--__codelineno-0-165"></a>            <span class="n">session_datetime</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">"session_datetime"</span><span class="p">],</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-166"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-166" name="experiment_conductor.session.SessionState--source--__codelineno-0-166"></a>            <span class="n">run_dir</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">run_dir_raw</span><span class="p">)</span> <span class="k">if</span> <span class="n">run_dir_raw</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-167"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-167" name="experiment_conductor.session.SessionState--source--__codelineno-0-167"></a>            <span class="n">phase</span><span class="o">=</span><span class="n">SessionPhase</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"phase"</span><span class="p">,</span> <span class="n">SessionPhase</span><span class="o">.</span><span class="n">DISCOVERED</span><span class="p">)),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-168"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-168" name="experiment_conductor.session.SessionState--source--__codelineno-0-168"></a>            <span class="n">consolidation_done</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"consolidation_done"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-169"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-169" name="experiment_conductor.session.SessionState--source--__codelineno-0-169"></a>            <span class="n">metadata_present</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata_present"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-170"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-170" name="experiment_conductor.session.SessionState--source--__codelineno-0-170"></a>            <span class="n">metadata_generated</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata_generated"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-171"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-171" name="experiment_conductor.session.SessionState--source--__codelineno-0-171"></a>            <span class="n">dataset_built</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dataset_built"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-172"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-172" name="experiment_conductor.session.SessionState--source--__codelineno-0-172"></a>            <span class="n">noise_floor_estimated</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"noise_floor_estimated"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-173"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-173" name="experiment_conductor.session.SessionState--source--__codelineno-0-173"></a>            <span class="n">upload_started</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"upload_started"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-174"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-174" name="experiment_conductor.session.SessionState--source--__codelineno-0-174"></a>            <span class="n">discovered_at</span><span class="o">=</span><span class="n">_dt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"discovered_at"</span><span class="p">)),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-175"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-175" name="experiment_conductor.session.SessionState--source--__codelineno-0-175"></a>            <span class="n">last_processed</span><span class="o">=</span><span class="n">_dt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"last_processed"</span><span class="p">)),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-176"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-176" name="experiment_conductor.session.SessionState--source--__codelineno-0-176"></a>            <span class="n">last_upload_run</span><span class="o">=</span><span class="n">_dt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"last_upload_run"</span><span class="p">)),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-177"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-177" name="experiment_conductor.session.SessionState--source--__codelineno-0-177"></a>            <span class="n">error_message</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"error_message"</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-178"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-178" name="experiment_conductor.session.SessionState--source--__codelineno-0-178"></a>            <span class="n">consecutive_errors</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"consecutive_errors"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState--source--__span-0-179"><a id="experiment_conductor.session.SessionState--source--__codelineno-0-179" name="experiment_conductor.session.SessionState--source--__codelineno-0-179"></a>        <span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
               </details>
 
@@ -4030,53 +4030,53 @@ All per-session steps (pipeline, metadata, upload) operate on this path.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/experiment_conductor/experiment_conductor/session.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-119">119</a></span>
-<span class="normal"><a href="#__codelineno-0-120">120</a></span>
-<span class="normal"><a href="#__codelineno-0-121">121</a></span>
-<span class="normal"><a href="#__codelineno-0-122">122</a></span>
-<span class="normal"><a href="#__codelineno-0-123">123</a></span>
-<span class="normal"><a href="#__codelineno-0-124">124</a></span>
-<span class="normal"><a href="#__codelineno-0-125">125</a></span>
-<span class="normal"><a href="#__codelineno-0-126">126</a></span>
-<span class="normal"><a href="#__codelineno-0-127">127</a></span>
-<span class="normal"><a href="#__codelineno-0-128">128</a></span>
-<span class="normal"><a href="#__codelineno-0-129">129</a></span>
-<span class="normal"><a href="#__codelineno-0-130">130</a></span>
-<span class="normal"><a href="#__codelineno-0-131">131</a></span>
-<span class="normal"><a href="#__codelineno-0-132">132</a></span>
-<span class="normal"><a href="#__codelineno-0-133">133</a></span>
-<span class="normal"><a href="#__codelineno-0-134">134</a></span>
-<span class="normal"><a href="#__codelineno-0-135">135</a></span>
-<span class="normal"><a href="#__codelineno-0-136">136</a></span>
-<span class="normal"><a href="#__codelineno-0-137">137</a></span>
-<span class="normal"><a href="#__codelineno-0-138">138</a></span>
-<span class="normal"><a href="#__codelineno-0-139">139</a></span>
-<span class="normal"><a href="#__codelineno-0-140">140</a></span>
-<span class="normal"><a href="#__codelineno-0-141">141</a></span>
-<span class="normal"><a href="#__codelineno-0-142">142</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-119"><a id="__codelineno-0-119" name="__codelineno-0-119"></a><span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span id="__span-0-120"><a id="__codelineno-0-120" name="__codelineno-0-120"></a><span class="w">    </span><span class="sd">"""Return a JSON-serialisable representation (excludes ``lock``)."""</span>
-</span><span id="__span-0-121"><a id="__codelineno-0-121" name="__codelineno-0-121"></a>
-</span><span id="__span-0-122"><a id="__codelineno-0-122" name="__codelineno-0-122"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_iso</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-123"><a id="__codelineno-0-123" name="__codelineno-0-123"></a>        <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="kc">None</span>
-</span><span id="__span-0-124"><a id="__codelineno-0-124" name="__codelineno-0-124"></a>
-</span><span id="__span-0-125"><a id="__codelineno-0-125" name="__codelineno-0-125"></a>    <span class="k">return</span> <span class="p">{</span>
-</span><span id="__span-0-126"><a id="__codelineno-0-126" name="__codelineno-0-126"></a>        <span class="s2">"data_root"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_root</span><span class="p">),</span>
-</span><span id="__span-0-127"><a id="__codelineno-0-127" name="__codelineno-0-127"></a>        <span class="s2">"subject_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">subject_id</span><span class="p">,</span>
-</span><span id="__span-0-128"><a id="__codelineno-0-128" name="__codelineno-0-128"></a>        <span class="s2">"session_datetime"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_datetime</span><span class="p">,</span>
-</span><span id="__span-0-129"><a id="__codelineno-0-129" name="__codelineno-0-129"></a>        <span class="s2">"run_dir"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_dir</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_dir</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-130"><a id="__codelineno-0-130" name="__codelineno-0-130"></a>        <span class="s2">"phase"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-</span><span id="__span-0-131"><a id="__codelineno-0-131" name="__codelineno-0-131"></a>        <span class="s2">"consolidation_done"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">consolidation_done</span><span class="p">,</span>
-</span><span id="__span-0-132"><a id="__codelineno-0-132" name="__codelineno-0-132"></a>        <span class="s2">"metadata_present"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_present</span><span class="p">,</span>
-</span><span id="__span-0-133"><a id="__codelineno-0-133" name="__codelineno-0-133"></a>        <span class="s2">"metadata_generated"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_generated</span><span class="p">,</span>
-</span><span id="__span-0-134"><a id="__codelineno-0-134" name="__codelineno-0-134"></a>        <span class="s2">"dataset_built"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_built</span><span class="p">,</span>
-</span><span id="__span-0-135"><a id="__codelineno-0-135" name="__codelineno-0-135"></a>        <span class="s2">"noise_floor_estimated"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_floor_estimated</span><span class="p">,</span>
-</span><span id="__span-0-136"><a id="__codelineno-0-136" name="__codelineno-0-136"></a>        <span class="s2">"upload_started"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">upload_started</span><span class="p">,</span>
-</span><span id="__span-0-137"><a id="__codelineno-0-137" name="__codelineno-0-137"></a>        <span class="s2">"discovered_at"</span><span class="p">:</span> <span class="n">_iso</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">discovered_at</span><span class="p">),</span>
-</span><span id="__span-0-138"><a id="__codelineno-0-138" name="__codelineno-0-138"></a>        <span class="s2">"last_processed"</span><span class="p">:</span> <span class="n">_iso</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_processed</span><span class="p">),</span>
-</span><span id="__span-0-139"><a id="__codelineno-0-139" name="__codelineno-0-139"></a>        <span class="s2">"last_upload_run"</span><span class="p">:</span> <span class="n">_iso</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_upload_run</span><span class="p">),</span>
-</span><span id="__span-0-140"><a id="__codelineno-0-140" name="__codelineno-0-140"></a>        <span class="s2">"error_message"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_message</span><span class="p">,</span>
-</span><span id="__span-0-141"><a id="__codelineno-0-141" name="__codelineno-0-141"></a>        <span class="s2">"consecutive_errors"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">consecutive_errors</span><span class="p">,</span>
-</span><span id="__span-0-142"><a id="__codelineno-0-142" name="__codelineno-0-142"></a>    <span class="p">}</span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-119">119</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-120">120</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-121">121</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-122">122</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-123">123</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-124">124</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-125">125</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-126">126</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-127">127</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-128">128</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-129">129</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-130">130</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-131">131</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-132">132</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-133">133</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-134">134</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-135">135</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-136">136</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-137">137</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-138">138</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-139">139</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-140">140</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-141">141</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-142">142</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-119"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-119" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-119"></a><span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-120"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-120" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-120"></a><span class="w">    </span><span class="sd">"""Return a JSON-serialisable representation (excludes ``lock``)."""</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-121"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-121" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-121"></a>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-122"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-122" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-122"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_iso</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-123"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-123" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-123"></a>        <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-124"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-124" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-124"></a>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-125"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-125" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-125"></a>    <span class="k">return</span> <span class="p">{</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-126"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-126" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-126"></a>        <span class="s2">"data_root"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_root</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-127"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-127" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-127"></a>        <span class="s2">"subject_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">subject_id</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-128"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-128" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-128"></a>        <span class="s2">"session_datetime"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_datetime</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-129"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-129" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-129"></a>        <span class="s2">"run_dir"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_dir</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_dir</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-130"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-130" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-130"></a>        <span class="s2">"phase"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-131"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-131" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-131"></a>        <span class="s2">"consolidation_done"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">consolidation_done</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-132"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-132" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-132"></a>        <span class="s2">"metadata_present"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_present</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-133"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-133" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-133"></a>        <span class="s2">"metadata_generated"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_generated</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-134"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-134" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-134"></a>        <span class="s2">"dataset_built"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_built</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-135"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-135" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-135"></a>        <span class="s2">"noise_floor_estimated"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_floor_estimated</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-136"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-136" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-136"></a>        <span class="s2">"upload_started"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">upload_started</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-137"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-137" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-137"></a>        <span class="s2">"discovered_at"</span><span class="p">:</span> <span class="n">_iso</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">discovered_at</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-138"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-138" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-138"></a>        <span class="s2">"last_processed"</span><span class="p">:</span> <span class="n">_iso</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_processed</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-139"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-139" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-139"></a>        <span class="s2">"last_upload_run"</span><span class="p">:</span> <span class="n">_iso</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_upload_run</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-140"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-140" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-140"></a>        <span class="s2">"error_message"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_message</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-141"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-141" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-141"></a>        <span class="s2">"consecutive_errors"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">consecutive_errors</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState.to_dict--source--__span-0-142"><a id="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-142" name="experiment_conductor.session.SessionState.to_dict--source--__codelineno-0-142"></a>    <span class="p">}</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -4162,77 +4162,77 @@ All per-session steps (pipeline, metadata, upload) operate on this path.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/experiment_conductor/experiment_conductor/session.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-144">144</a></span>
-<span class="normal"><a href="#__codelineno-0-145">145</a></span>
-<span class="normal"><a href="#__codelineno-0-146">146</a></span>
-<span class="normal"><a href="#__codelineno-0-147">147</a></span>
-<span class="normal"><a href="#__codelineno-0-148">148</a></span>
-<span class="normal"><a href="#__codelineno-0-149">149</a></span>
-<span class="normal"><a href="#__codelineno-0-150">150</a></span>
-<span class="normal"><a href="#__codelineno-0-151">151</a></span>
-<span class="normal"><a href="#__codelineno-0-152">152</a></span>
-<span class="normal"><a href="#__codelineno-0-153">153</a></span>
-<span class="normal"><a href="#__codelineno-0-154">154</a></span>
-<span class="normal"><a href="#__codelineno-0-155">155</a></span>
-<span class="normal"><a href="#__codelineno-0-156">156</a></span>
-<span class="normal"><a href="#__codelineno-0-157">157</a></span>
-<span class="normal"><a href="#__codelineno-0-158">158</a></span>
-<span class="normal"><a href="#__codelineno-0-159">159</a></span>
-<span class="normal"><a href="#__codelineno-0-160">160</a></span>
-<span class="normal"><a href="#__codelineno-0-161">161</a></span>
-<span class="normal"><a href="#__codelineno-0-162">162</a></span>
-<span class="normal"><a href="#__codelineno-0-163">163</a></span>
-<span class="normal"><a href="#__codelineno-0-164">164</a></span>
-<span class="normal"><a href="#__codelineno-0-165">165</a></span>
-<span class="normal"><a href="#__codelineno-0-166">166</a></span>
-<span class="normal"><a href="#__codelineno-0-167">167</a></span>
-<span class="normal"><a href="#__codelineno-0-168">168</a></span>
-<span class="normal"><a href="#__codelineno-0-169">169</a></span>
-<span class="normal"><a href="#__codelineno-0-170">170</a></span>
-<span class="normal"><a href="#__codelineno-0-171">171</a></span>
-<span class="normal"><a href="#__codelineno-0-172">172</a></span>
-<span class="normal"><a href="#__codelineno-0-173">173</a></span>
-<span class="normal"><a href="#__codelineno-0-174">174</a></span>
-<span class="normal"><a href="#__codelineno-0-175">175</a></span>
-<span class="normal"><a href="#__codelineno-0-176">176</a></span>
-<span class="normal"><a href="#__codelineno-0-177">177</a></span>
-<span class="normal"><a href="#__codelineno-0-178">178</a></span>
-<span class="normal"><a href="#__codelineno-0-179">179</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-144"><a id="__codelineno-0-144" name="__codelineno-0-144"></a><span class="nd">@classmethod</span>
-</span><span id="__span-0-145"><a id="__codelineno-0-145" name="__codelineno-0-145"></a><span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SessionState"</span><span class="p">:</span>
-</span><span id="__span-0-146"><a id="__codelineno-0-146" name="__codelineno-0-146"></a><span class="w">    </span><span class="sd">"""Reconstruct a :class:`SessionState` from a serialised dict.</span>
-</span><span id="__span-0-147"><a id="__codelineno-0-147" name="__codelineno-0-147"></a>
-</span><span id="__span-0-148"><a id="__codelineno-0-148" name="__codelineno-0-148"></a><span class="sd">    Parameters</span>
-</span><span id="__span-0-149"><a id="__codelineno-0-149" name="__codelineno-0-149"></a><span class="sd">    ----------</span>
-</span><span id="__span-0-150"><a id="__codelineno-0-150" name="__codelineno-0-150"></a><span class="sd">    d : dict</span>
-</span><span id="__span-0-151"><a id="__codelineno-0-151" name="__codelineno-0-151"></a><span class="sd">        Mapping produced by :meth:`to_dict`.</span>
-</span><span id="__span-0-152"><a id="__codelineno-0-152" name="__codelineno-0-152"></a>
-</span><span id="__span-0-153"><a id="__codelineno-0-153" name="__codelineno-0-153"></a><span class="sd">    Returns</span>
-</span><span id="__span-0-154"><a id="__codelineno-0-154" name="__codelineno-0-154"></a><span class="sd">    -------</span>
-</span><span id="__span-0-155"><a id="__codelineno-0-155" name="__codelineno-0-155"></a><span class="sd">    SessionState</span>
-</span><span id="__span-0-156"><a id="__codelineno-0-156" name="__codelineno-0-156"></a><span class="sd">    """</span>
-</span><span id="__span-0-157"><a id="__codelineno-0-157" name="__codelineno-0-157"></a>
-</span><span id="__span-0-158"><a id="__codelineno-0-158" name="__codelineno-0-158"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_dt</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-0-159"><a id="__codelineno-0-159" name="__codelineno-0-159"></a>        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="kc">None</span>
-</span><span id="__span-0-160"><a id="__codelineno-0-160" name="__codelineno-0-160"></a>
-</span><span id="__span-0-161"><a id="__codelineno-0-161" name="__codelineno-0-161"></a>    <span class="n">run_dir_raw</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"run_dir"</span><span class="p">)</span>
-</span><span id="__span-0-162"><a id="__codelineno-0-162" name="__codelineno-0-162"></a>    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-</span><span id="__span-0-163"><a id="__codelineno-0-163" name="__codelineno-0-163"></a>        <span class="n">data_root</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"data_root"</span><span class="p">]),</span>
-</span><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164"></a>        <span class="n">subject_id</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">"subject_id"</span><span class="p">],</span>
-</span><span id="__span-0-165"><a id="__codelineno-0-165" name="__codelineno-0-165"></a>        <span class="n">session_datetime</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">"session_datetime"</span><span class="p">],</span>
-</span><span id="__span-0-166"><a id="__codelineno-0-166" name="__codelineno-0-166"></a>        <span class="n">run_dir</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">run_dir_raw</span><span class="p">)</span> <span class="k">if</span> <span class="n">run_dir_raw</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="__span-0-167"><a id="__codelineno-0-167" name="__codelineno-0-167"></a>        <span class="n">phase</span><span class="o">=</span><span class="n">SessionPhase</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"phase"</span><span class="p">,</span> <span class="n">SessionPhase</span><span class="o">.</span><span class="n">DISCOVERED</span><span class="p">)),</span>
-</span><span id="__span-0-168"><a id="__codelineno-0-168" name="__codelineno-0-168"></a>        <span class="n">consolidation_done</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"consolidation_done"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-</span><span id="__span-0-169"><a id="__codelineno-0-169" name="__codelineno-0-169"></a>        <span class="n">metadata_present</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata_present"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-</span><span id="__span-0-170"><a id="__codelineno-0-170" name="__codelineno-0-170"></a>        <span class="n">metadata_generated</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata_generated"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-</span><span id="__span-0-171"><a id="__codelineno-0-171" name="__codelineno-0-171"></a>        <span class="n">dataset_built</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dataset_built"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-</span><span id="__span-0-172"><a id="__codelineno-0-172" name="__codelineno-0-172"></a>        <span class="n">noise_floor_estimated</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"noise_floor_estimated"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-</span><span id="__span-0-173"><a id="__codelineno-0-173" name="__codelineno-0-173"></a>        <span class="n">upload_started</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"upload_started"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-</span><span id="__span-0-174"><a id="__codelineno-0-174" name="__codelineno-0-174"></a>        <span class="n">discovered_at</span><span class="o">=</span><span class="n">_dt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"discovered_at"</span><span class="p">)),</span>
-</span><span id="__span-0-175"><a id="__codelineno-0-175" name="__codelineno-0-175"></a>        <span class="n">last_processed</span><span class="o">=</span><span class="n">_dt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"last_processed"</span><span class="p">)),</span>
-</span><span id="__span-0-176"><a id="__codelineno-0-176" name="__codelineno-0-176"></a>        <span class="n">last_upload_run</span><span class="o">=</span><span class="n">_dt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"last_upload_run"</span><span class="p">)),</span>
-</span><span id="__span-0-177"><a id="__codelineno-0-177" name="__codelineno-0-177"></a>        <span class="n">error_message</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"error_message"</span><span class="p">),</span>
-</span><span id="__span-0-178"><a id="__codelineno-0-178" name="__codelineno-0-178"></a>        <span class="n">consecutive_errors</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"consecutive_errors"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-</span><span id="__span-0-179"><a id="__codelineno-0-179" name="__codelineno-0-179"></a>    <span class="p">)</span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-144">144</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-145">145</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-146">146</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-147">147</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-148">148</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-149">149</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-150">150</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-151">151</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-152">152</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-153">153</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-154">154</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-155">155</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-156">156</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-157">157</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-158">158</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-159">159</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-160">160</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-161">161</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-162">162</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-163">163</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-164">164</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-165">165</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-166">166</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-167">167</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-168">168</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-169">169</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-170">170</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-171">171</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-172">172</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-173">173</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-174">174</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-175">175</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-176">176</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-177">177</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-178">178</a></span>
+<span class="normal"><a href="#experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-179">179</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-144"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-144" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-144"></a><span class="nd">@classmethod</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-145"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-145" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-145"></a><span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SessionState"</span><span class="p">:</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-146"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-146" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-146"></a><span class="w">    </span><span class="sd">"""Reconstruct a :class:`SessionState` from a serialised dict.</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-147"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-147" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-147"></a>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-148"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-148" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-148"></a><span class="sd">    Parameters</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-149"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-149" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-149"></a><span class="sd">    ----------</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-150"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-150" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-150"></a><span class="sd">    d : dict</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-151"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-151" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-151"></a><span class="sd">        Mapping produced by :meth:`to_dict`.</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-152"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-152" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-152"></a>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-153"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-153" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-153"></a><span class="sd">    Returns</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-154"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-154" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-154"></a><span class="sd">    -------</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-155"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-155" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-155"></a><span class="sd">    SessionState</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-156"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-156" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-156"></a><span class="sd">    """</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-157"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-157" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-157"></a>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-158"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-158" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-158"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_dt</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-159"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-159" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-159"></a>        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-160"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-160" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-160"></a>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-161"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-161" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-161"></a>    <span class="n">run_dir_raw</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"run_dir"</span><span class="p">)</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-162"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-162" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-162"></a>    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-163"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-163" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-163"></a>        <span class="n">data_root</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">"data_root"</span><span class="p">]),</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-164"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-164" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-164"></a>        <span class="n">subject_id</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">"subject_id"</span><span class="p">],</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-165"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-165" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-165"></a>        <span class="n">session_datetime</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">"session_datetime"</span><span class="p">],</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-166"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-166" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-166"></a>        <span class="n">run_dir</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">run_dir_raw</span><span class="p">)</span> <span class="k">if</span> <span class="n">run_dir_raw</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-167"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-167" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-167"></a>        <span class="n">phase</span><span class="o">=</span><span class="n">SessionPhase</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"phase"</span><span class="p">,</span> <span class="n">SessionPhase</span><span class="o">.</span><span class="n">DISCOVERED</span><span class="p">)),</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-168"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-168" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-168"></a>        <span class="n">consolidation_done</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"consolidation_done"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-169"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-169" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-169"></a>        <span class="n">metadata_present</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata_present"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-170"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-170" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-170"></a>        <span class="n">metadata_generated</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata_generated"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-171"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-171" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-171"></a>        <span class="n">dataset_built</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dataset_built"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-172"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-172" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-172"></a>        <span class="n">noise_floor_estimated</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"noise_floor_estimated"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-173"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-173" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-173"></a>        <span class="n">upload_started</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"upload_started"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-174"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-174" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-174"></a>        <span class="n">discovered_at</span><span class="o">=</span><span class="n">_dt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"discovered_at"</span><span class="p">)),</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-175"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-175" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-175"></a>        <span class="n">last_processed</span><span class="o">=</span><span class="n">_dt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"last_processed"</span><span class="p">)),</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-176"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-176" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-176"></a>        <span class="n">last_upload_run</span><span class="o">=</span><span class="n">_dt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"last_upload_run"</span><span class="p">)),</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-177"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-177" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-177"></a>        <span class="n">error_message</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"error_message"</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-178"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-178" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-178"></a>        <span class="n">consecutive_errors</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"consecutive_errors"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+</span><span id="experiment_conductor.session.SessionState.from_dict--source--__span-0-179"><a id="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-179" name="experiment_conductor.session.SessionState.from_dict--source--__codelineno-0-179"></a>    <span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>

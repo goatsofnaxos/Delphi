@@ -2923,267 +2923,267 @@ processing pipeline (e.g. <code>"bonhoeffer"</code>).
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>src/delphi-data/delphi_data/settings.py</code></summary>
-                <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-211">211</a></span>
-<span class="normal"><a href="#__codelineno-0-212">212</a></span>
-<span class="normal"><a href="#__codelineno-0-213">213</a></span>
-<span class="normal"><a href="#__codelineno-0-214">214</a></span>
-<span class="normal"><a href="#__codelineno-0-215">215</a></span>
-<span class="normal"><a href="#__codelineno-0-216">216</a></span>
-<span class="normal"><a href="#__codelineno-0-217">217</a></span>
-<span class="normal"><a href="#__codelineno-0-218">218</a></span>
-<span class="normal"><a href="#__codelineno-0-219">219</a></span>
-<span class="normal"><a href="#__codelineno-0-220">220</a></span>
-<span class="normal"><a href="#__codelineno-0-221">221</a></span>
-<span class="normal"><a href="#__codelineno-0-222">222</a></span>
-<span class="normal"><a href="#__codelineno-0-223">223</a></span>
-<span class="normal"><a href="#__codelineno-0-224">224</a></span>
-<span class="normal"><a href="#__codelineno-0-225">225</a></span>
-<span class="normal"><a href="#__codelineno-0-226">226</a></span>
-<span class="normal"><a href="#__codelineno-0-227">227</a></span>
-<span class="normal"><a href="#__codelineno-0-228">228</a></span>
-<span class="normal"><a href="#__codelineno-0-229">229</a></span>
-<span class="normal"><a href="#__codelineno-0-230">230</a></span>
-<span class="normal"><a href="#__codelineno-0-231">231</a></span>
-<span class="normal"><a href="#__codelineno-0-232">232</a></span>
-<span class="normal"><a href="#__codelineno-0-233">233</a></span>
-<span class="normal"><a href="#__codelineno-0-234">234</a></span>
-<span class="normal"><a href="#__codelineno-0-235">235</a></span>
-<span class="normal"><a href="#__codelineno-0-236">236</a></span>
-<span class="normal"><a href="#__codelineno-0-237">237</a></span>
-<span class="normal"><a href="#__codelineno-0-238">238</a></span>
-<span class="normal"><a href="#__codelineno-0-239">239</a></span>
-<span class="normal"><a href="#__codelineno-0-240">240</a></span>
-<span class="normal"><a href="#__codelineno-0-241">241</a></span>
-<span class="normal"><a href="#__codelineno-0-242">242</a></span>
-<span class="normal"><a href="#__codelineno-0-243">243</a></span>
-<span class="normal"><a href="#__codelineno-0-244">244</a></span>
-<span class="normal"><a href="#__codelineno-0-245">245</a></span>
-<span class="normal"><a href="#__codelineno-0-246">246</a></span>
-<span class="normal"><a href="#__codelineno-0-247">247</a></span>
-<span class="normal"><a href="#__codelineno-0-248">248</a></span>
-<span class="normal"><a href="#__codelineno-0-249">249</a></span>
-<span class="normal"><a href="#__codelineno-0-250">250</a></span>
-<span class="normal"><a href="#__codelineno-0-251">251</a></span>
-<span class="normal"><a href="#__codelineno-0-252">252</a></span>
-<span class="normal"><a href="#__codelineno-0-253">253</a></span>
-<span class="normal"><a href="#__codelineno-0-254">254</a></span>
-<span class="normal"><a href="#__codelineno-0-255">255</a></span>
-<span class="normal"><a href="#__codelineno-0-256">256</a></span>
-<span class="normal"><a href="#__codelineno-0-257">257</a></span>
-<span class="normal"><a href="#__codelineno-0-258">258</a></span>
-<span class="normal"><a href="#__codelineno-0-259">259</a></span>
-<span class="normal"><a href="#__codelineno-0-260">260</a></span>
-<span class="normal"><a href="#__codelineno-0-261">261</a></span>
-<span class="normal"><a href="#__codelineno-0-262">262</a></span>
-<span class="normal"><a href="#__codelineno-0-263">263</a></span>
-<span class="normal"><a href="#__codelineno-0-264">264</a></span>
-<span class="normal"><a href="#__codelineno-0-265">265</a></span>
-<span class="normal"><a href="#__codelineno-0-266">266</a></span>
-<span class="normal"><a href="#__codelineno-0-267">267</a></span>
-<span class="normal"><a href="#__codelineno-0-268">268</a></span>
-<span class="normal"><a href="#__codelineno-0-269">269</a></span>
-<span class="normal"><a href="#__codelineno-0-270">270</a></span>
-<span class="normal"><a href="#__codelineno-0-271">271</a></span>
-<span class="normal"><a href="#__codelineno-0-272">272</a></span>
-<span class="normal"><a href="#__codelineno-0-273">273</a></span>
-<span class="normal"><a href="#__codelineno-0-274">274</a></span>
-<span class="normal"><a href="#__codelineno-0-275">275</a></span>
-<span class="normal"><a href="#__codelineno-0-276">276</a></span>
-<span class="normal"><a href="#__codelineno-0-277">277</a></span>
-<span class="normal"><a href="#__codelineno-0-278">278</a></span>
-<span class="normal"><a href="#__codelineno-0-279">279</a></span>
-<span class="normal"><a href="#__codelineno-0-280">280</a></span>
-<span class="normal"><a href="#__codelineno-0-281">281</a></span>
-<span class="normal"><a href="#__codelineno-0-282">282</a></span>
-<span class="normal"><a href="#__codelineno-0-283">283</a></span>
-<span class="normal"><a href="#__codelineno-0-284">284</a></span>
-<span class="normal"><a href="#__codelineno-0-285">285</a></span>
-<span class="normal"><a href="#__codelineno-0-286">286</a></span>
-<span class="normal"><a href="#__codelineno-0-287">287</a></span>
-<span class="normal"><a href="#__codelineno-0-288">288</a></span>
-<span class="normal"><a href="#__codelineno-0-289">289</a></span>
-<span class="normal"><a href="#__codelineno-0-290">290</a></span>
-<span class="normal"><a href="#__codelineno-0-291">291</a></span>
-<span class="normal"><a href="#__codelineno-0-292">292</a></span>
-<span class="normal"><a href="#__codelineno-0-293">293</a></span>
-<span class="normal"><a href="#__codelineno-0-294">294</a></span>
-<span class="normal"><a href="#__codelineno-0-295">295</a></span>
-<span class="normal"><a href="#__codelineno-0-296">296</a></span>
-<span class="normal"><a href="#__codelineno-0-297">297</a></span>
-<span class="normal"><a href="#__codelineno-0-298">298</a></span>
-<span class="normal"><a href="#__codelineno-0-299">299</a></span>
-<span class="normal"><a href="#__codelineno-0-300">300</a></span>
-<span class="normal"><a href="#__codelineno-0-301">301</a></span>
-<span class="normal"><a href="#__codelineno-0-302">302</a></span>
-<span class="normal"><a href="#__codelineno-0-303">303</a></span>
-<span class="normal"><a href="#__codelineno-0-304">304</a></span>
-<span class="normal"><a href="#__codelineno-0-305">305</a></span>
-<span class="normal"><a href="#__codelineno-0-306">306</a></span>
-<span class="normal"><a href="#__codelineno-0-307">307</a></span>
-<span class="normal"><a href="#__codelineno-0-308">308</a></span>
-<span class="normal"><a href="#__codelineno-0-309">309</a></span>
-<span class="normal"><a href="#__codelineno-0-310">310</a></span>
-<span class="normal"><a href="#__codelineno-0-311">311</a></span>
-<span class="normal"><a href="#__codelineno-0-312">312</a></span>
-<span class="normal"><a href="#__codelineno-0-313">313</a></span>
-<span class="normal"><a href="#__codelineno-0-314">314</a></span>
-<span class="normal"><a href="#__codelineno-0-315">315</a></span>
-<span class="normal"><a href="#__codelineno-0-316">316</a></span>
-<span class="normal"><a href="#__codelineno-0-317">317</a></span>
-<span class="normal"><a href="#__codelineno-0-318">318</a></span>
-<span class="normal"><a href="#__codelineno-0-319">319</a></span>
-<span class="normal"><a href="#__codelineno-0-320">320</a></span>
-<span class="normal"><a href="#__codelineno-0-321">321</a></span>
-<span class="normal"><a href="#__codelineno-0-322">322</a></span>
-<span class="normal"><a href="#__codelineno-0-323">323</a></span>
-<span class="normal"><a href="#__codelineno-0-324">324</a></span>
-<span class="normal"><a href="#__codelineno-0-325">325</a></span>
-<span class="normal"><a href="#__codelineno-0-326">326</a></span>
-<span class="normal"><a href="#__codelineno-0-327">327</a></span>
-<span class="normal"><a href="#__codelineno-0-328">328</a></span>
-<span class="normal"><a href="#__codelineno-0-329">329</a></span>
-<span class="normal"><a href="#__codelineno-0-330">330</a></span>
-<span class="normal"><a href="#__codelineno-0-331">331</a></span>
-<span class="normal"><a href="#__codelineno-0-332">332</a></span>
-<span class="normal"><a href="#__codelineno-0-333">333</a></span>
-<span class="normal"><a href="#__codelineno-0-334">334</a></span>
-<span class="normal"><a href="#__codelineno-0-335">335</a></span>
-<span class="normal"><a href="#__codelineno-0-336">336</a></span>
-<span class="normal"><a href="#__codelineno-0-337">337</a></span>
-<span class="normal"><a href="#__codelineno-0-338">338</a></span>
-<span class="normal"><a href="#__codelineno-0-339">339</a></span>
-<span class="normal"><a href="#__codelineno-0-340">340</a></span>
-<span class="normal"><a href="#__codelineno-0-341">341</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-211"><a id="__codelineno-0-211" name="__codelineno-0-211"></a><span class="k">class</span><span class="w"> </span><span class="nc">_Settings</span><span class="p">:</span>
-</span><span id="__span-0-212"><a id="__codelineno-0-212" name="__codelineno-0-212"></a><span class="w">    </span><span class="sd">"""Typed access to all ``DELPHI_*`` environment settings.</span>
-</span><span id="__span-0-213"><a id="__codelineno-0-213" name="__codelineno-0-213"></a>
-</span><span id="__span-0-214"><a id="__codelineno-0-214" name="__codelineno-0-214"></a><span class="sd">    Values are resolved once at import time.  Re-instantiate or call</span>
-</span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215"></a><span class="sd">    :func:`reload` after programmatically changing environment variables</span>
-</span><span id="__span-0-216"><a id="__codelineno-0-216" name="__codelineno-0-216"></a><span class="sd">    if needed.</span>
-</span><span id="__span-0-217"><a id="__codelineno-0-217" name="__codelineno-0-217"></a>
-</span><span id="__span-0-218"><a id="__codelineno-0-218" name="__codelineno-0-218"></a><span class="sd">    Attributes</span>
-</span><span id="__span-0-219"><a id="__codelineno-0-219" name="__codelineno-0-219"></a><span class="sd">    ----------</span>
-</span><span id="__span-0-220"><a id="__codelineno-0-220" name="__codelineno-0-220"></a><span class="sd">    tau:</span>
-</span><span id="__span-0-221"><a id="__codelineno-0-221" name="__codelineno-0-221"></a><span class="sd">        Exponential decay time constant for poke-rate estimation (seconds).</span>
-</span><span id="__span-0-222"><a id="__codelineno-0-222" name="__codelineno-0-222"></a><span class="sd">        ``DELPHI_TAU`` — default ``600.0``.</span>
-</span><span id="__span-0-223"><a id="__codelineno-0-223" name="__codelineno-0-223"></a><span class="sd">    dt:</span>
-</span><span id="__span-0-224"><a id="__codelineno-0-224" name="__codelineno-0-224"></a><span class="sd">        Window length for poke-rate estimation (seconds).</span>
-</span><span id="__span-0-225"><a id="__codelineno-0-225" name="__codelineno-0-225"></a><span class="sd">        ``DELPHI_DT`` — default ``60.0``.</span>
-</span><span id="__span-0-226"><a id="__codelineno-0-226" name="__codelineno-0-226"></a><span class="sd">    overlap:</span>
-</span><span id="__span-0-227"><a id="__codelineno-0-227" name="__codelineno-0-227"></a><span class="sd">        Fractional window overlap for poke-rate estimation ``[0, 1)``.</span>
-</span><span id="__span-0-228"><a id="__codelineno-0-228" name="__codelineno-0-228"></a><span class="sd">        ``DELPHI_OVERLAP`` — default ``0.5``.</span>
-</span><span id="__span-0-229"><a id="__codelineno-0-229" name="__codelineno-0-229"></a><span class="sd">    pre_days:</span>
-</span><span id="__span-0-230"><a id="__codelineno-0-230" name="__codelineno-0-230"></a><span class="sd">        Baseline days before each odor change for windowed analyses.</span>
-</span><span id="__span-0-231"><a id="__codelineno-0-231" name="__codelineno-0-231"></a><span class="sd">        ``DELPHI_PRE_DAYS`` — default ``3``.</span>
-</span><span id="__span-0-232"><a id="__codelineno-0-232" name="__codelineno-0-232"></a><span class="sd">    post_days:</span>
-</span><span id="__span-0-233"><a id="__codelineno-0-233" name="__codelineno-0-233"></a><span class="sd">        Post-change days included in windowed analyses.</span>
-</span><span id="__span-0-234"><a id="__codelineno-0-234" name="__codelineno-0-234"></a><span class="sd">        ``DELPHI_POST_DAYS`` — default ``1``.</span>
-</span><span id="__span-0-235"><a id="__codelineno-0-235" name="__codelineno-0-235"></a><span class="sd">    n_pokes_duration:</span>
-</span><span id="__span-0-236"><a id="__codelineno-0-236" name="__codelineno-0-236"></a><span class="sd">        Pokes extracted per day for the duration-comparison figure.</span>
-</span><span id="__span-0-237"><a id="__codelineno-0-237" name="__codelineno-0-237"></a><span class="sd">        ``DELPHI_N_POKES_DURATION`` — default ``25``.</span>
-</span><span id="__span-0-238"><a id="__codelineno-0-238" name="__codelineno-0-238"></a><span class="sd">    camera_fps:</span>
-</span><span id="__span-0-239"><a id="__codelineno-0-239" name="__codelineno-0-239"></a><span class="sd">        Camera frame-rate override for QC plots (Hz).  ``None`` means</span>
-</span><span id="__span-0-240"><a id="__codelineno-0-240" name="__codelineno-0-240"></a><span class="sd">        auto-detect from hardware register → rig config → HardwareSettings →</span>
-</span><span id="__span-0-241"><a id="__codelineno-0-241" name="__codelineno-0-241"></a><span class="sd">        default.  ``DELPHI_CAMERA_FPS`` — default ``None``.</span>
-</span><span id="__span-0-242"><a id="__codelineno-0-242" name="__codelineno-0-242"></a><span class="sd">    default_camera_fps:</span>
-</span><span id="__span-0-243"><a id="__codelineno-0-243" name="__codelineno-0-243"></a><span class="sd">        Last-resort camera frame rate when all auto-detect sources fail (Hz).</span>
-</span><span id="__span-0-244"><a id="__codelineno-0-244" name="__codelineno-0-244"></a><span class="sd">        ``DELPHI_DEFAULT_CAMERA_FPS`` — default ``60.0``.</span>
-</span><span id="__span-0-245"><a id="__codelineno-0-245" name="__codelineno-0-245"></a><span class="sd">    firmware:</span>
-</span><span id="__span-0-246"><a id="__codelineno-0-246" name="__codelineno-0-246"></a><span class="sd">        Default firmware version string (e.g. ``"0.1.0"``).  ``None`` means</span>
-</span><span id="__span-0-247"><a id="__codelineno-0-247" name="__codelineno-0-247"></a><span class="sd">        auto-detect from ``device.yml``.  ``DELPHI_FIRMWARE`` — default ``None``.</span>
-</span><span id="__span-0-248"><a id="__codelineno-0-248" name="__codelineno-0-248"></a><span class="sd">    workers:</span>
-</span><span id="__span-0-249"><a id="__codelineno-0-249" name="__codelineno-0-249"></a><span class="sd">        Parallel clip-export threads for the ``create-clips`` command.</span>
-</span><span id="__span-0-250"><a id="__codelineno-0-250" name="__codelineno-0-250"></a><span class="sd">        ``DELPHI_WORKERS`` — default ``4``.</span>
-</span><span id="__span-0-251"><a id="__codelineno-0-251" name="__codelineno-0-251"></a><span class="sd">    no_delete:</span>
-</span><span id="__span-0-252"><a id="__codelineno-0-252" name="__codelineno-0-252"></a><span class="sd">        Skip deletion of PortCamera source files after clip export.</span>
-</span><span id="__span-0-253"><a id="__codelineno-0-253" name="__codelineno-0-253"></a><span class="sd">        ``DELPHI_NO_DELETE`` — default ``False``.</span>
-</span><span id="__span-0-254"><a id="__codelineno-0-254" name="__codelineno-0-254"></a><span class="sd">    no_consolidate:</span>
-</span><span id="__span-0-255"><a id="__codelineno-0-255" name="__codelineno-0-255"></a><span class="sd">        Disable automatic run-directory consolidation in ``build-dataset``.</span>
-</span><span id="__span-0-256"><a id="__codelineno-0-256" name="__codelineno-0-256"></a><span class="sd">        ``DELPHI_NO_CONSOLIDATE`` — default ``False``.</span>
-</span><span id="__span-0-257"><a id="__codelineno-0-257" name="__codelineno-0-257"></a><span class="sd">    consolidate_only:</span>
-</span><span id="__span-0-258"><a id="__codelineno-0-258" name="__codelineno-0-258"></a><span class="sd">        Consolidate run sub-directories and move metadata files, then exit</span>
-</span><span id="__span-0-259"><a id="__codelineno-0-259" name="__codelineno-0-259"></a><span class="sd">        without building the dataset CSV.  Overrides ``no_consolidate`` and</span>
-</span><span id="__span-0-260"><a id="__codelineno-0-260" name="__codelineno-0-260"></a><span class="sd">        makes ``firmware`` optional.  ``DELPHI_CONSOLIDATE_ONLY`` — default ``False``.</span>
-</span><span id="__span-0-261"><a id="__codelineno-0-261" name="__codelineno-0-261"></a><span class="sd">    skip_build:</span>
-</span><span id="__span-0-262"><a id="__codelineno-0-262" name="__codelineno-0-262"></a><span class="sd">        Skip the build-dataset step in the full pipeline.</span>
-</span><span id="__span-0-263"><a id="__codelineno-0-263" name="__codelineno-0-263"></a><span class="sd">        ``DELPHI_SKIP_BUILD`` — default ``False``.</span>
-</span><span id="__span-0-264"><a id="__codelineno-0-264" name="__codelineno-0-264"></a><span class="sd">    skip_clips:</span>
-</span><span id="__span-0-265"><a id="__codelineno-0-265" name="__codelineno-0-265"></a><span class="sd">        Skip the create-clips step in the full pipeline.</span>
-</span><span id="__span-0-266"><a id="__codelineno-0-266" name="__codelineno-0-266"></a><span class="sd">        ``DELPHI_SKIP_CLIPS`` — default ``False``.</span>
-</span><span id="__span-0-267"><a id="__codelineno-0-267" name="__codelineno-0-267"></a><span class="sd">    skip_snapshot:</span>
-</span><span id="__span-0-268"><a id="__codelineno-0-268" name="__codelineno-0-268"></a><span class="sd">        Skip the snapshot step in the full pipeline.</span>
-</span><span id="__span-0-269"><a id="__codelineno-0-269" name="__codelineno-0-269"></a><span class="sd">        ``DELPHI_SKIP_SNAPSHOT`` — default ``False``.</span>
-</span><span id="__span-0-270"><a id="__codelineno-0-270" name="__codelineno-0-270"></a><span class="sd">    dataset_append:</span>
-</span><span id="__span-0-271"><a id="__codelineno-0-271" name="__codelineno-0-271"></a><span class="sd">        When ``True`` and ``delphi_dataset.csv`` already exists, ingest the</span>
-</span><span id="__span-0-272"><a id="__codelineno-0-272" name="__codelineno-0-272"></a><span class="sd">        full dataset and append new rows, deduplicating on</span>
-</span><span id="__span-0-273"><a id="__codelineno-0-273" name="__codelineno-0-273"></a><span class="sd">        ``beam_break_onset``.  When ``False`` (default), the build step is</span>
-</span><span id="__span-0-274"><a id="__codelineno-0-274" name="__codelineno-0-274"></a><span class="sd">        skipped if the CSV exists.  ``DELPHI_DATASET_APPEND`` — default</span>
-</span><span id="__span-0-275"><a id="__codelineno-0-275" name="__codelineno-0-275"></a><span class="sd">        ``False``.</span>
-</span><span id="__span-0-276"><a id="__codelineno-0-276" name="__codelineno-0-276"></a><span class="sd">    experiment:</span>
-</span><span id="__span-0-277"><a id="__codelineno-0-277" name="__codelineno-0-277"></a><span class="sd">        Default experiment type for the ``snapshot`` command and the full</span>
-</span><span id="__span-0-278"><a id="__codelineno-0-278" name="__codelineno-0-278"></a><span class="sd">        processing pipeline (e.g. ``"bonhoeffer"``).</span>
-</span><span id="__span-0-279"><a id="__codelineno-0-279" name="__codelineno-0-279"></a><span class="sd">        ``DELPHI_EXPERIMENT`` — default ``None``.</span>
-</span><span id="__span-0-280"><a id="__codelineno-0-280" name="__codelineno-0-280"></a><span class="sd">    data_root:</span>
-</span><span id="__span-0-281"><a id="__codelineno-0-281" name="__codelineno-0-281"></a><span class="sd">        Default run-level session directory path.  Used as the default for</span>
-</span><span id="__span-0-282"><a id="__codelineno-0-282" name="__codelineno-0-282"></a><span class="sd">        ``--data-root`` across all commands (``snapshot``, ``build-dataset``,</span>
-</span><span id="__span-0-283"><a id="__codelineno-0-283" name="__codelineno-0-283"></a><span class="sd">        ``consolidate``).  ``DELPHI_DATA_ROOT`` — default ``None``.</span>
-</span><span id="__span-0-284"><a id="__codelineno-0-284" name="__codelineno-0-284"></a><span class="sd">    """</span>
-</span><span id="__span-0-285"><a id="__codelineno-0-285" name="__codelineno-0-285"></a>
-</span><span id="__span-0-286"><a id="__codelineno-0-286" name="__codelineno-0-286"></a>    <span class="c1"># Snapshot settings</span>
-</span><span id="__span-0-287"><a id="__codelineno-0-287" name="__codelineno-0-287"></a>    <span class="n">tau</span><span class="p">:</span>                <span class="nb">float</span>          <span class="o">=</span> <span class="n">_float</span><span class="p">(</span><span class="s2">"DELPHI_TAU"</span><span class="p">,</span> <span class="mf">600.0</span><span class="p">)</span>
-</span><span id="__span-0-288"><a id="__codelineno-0-288" name="__codelineno-0-288"></a>    <span class="n">dt</span><span class="p">:</span>                 <span class="nb">float</span>          <span class="o">=</span> <span class="n">_float</span><span class="p">(</span><span class="s2">"DELPHI_DT"</span><span class="p">,</span> <span class="mf">60.0</span><span class="p">)</span>
-</span><span id="__span-0-289"><a id="__codelineno-0-289" name="__codelineno-0-289"></a>    <span class="n">overlap</span><span class="p">:</span>            <span class="nb">float</span>          <span class="o">=</span> <span class="n">_float</span><span class="p">(</span><span class="s2">"DELPHI_OVERLAP"</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
-</span><span id="__span-0-290"><a id="__codelineno-0-290" name="__codelineno-0-290"></a>    <span class="n">pre_days</span><span class="p">:</span>           <span class="nb">int</span>            <span class="o">=</span> <span class="n">_int</span><span class="p">(</span><span class="s2">"DELPHI_PRE_DAYS"</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-</span><span id="__span-0-291"><a id="__codelineno-0-291" name="__codelineno-0-291"></a>    <span class="n">post_days</span><span class="p">:</span>          <span class="nb">int</span>            <span class="o">=</span> <span class="n">_int</span><span class="p">(</span><span class="s2">"DELPHI_POST_DAYS"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="__span-0-292"><a id="__codelineno-0-292" name="__codelineno-0-292"></a>    <span class="n">n_pokes_duration</span><span class="p">:</span>   <span class="nb">int</span>            <span class="o">=</span> <span class="n">_int</span><span class="p">(</span><span class="s2">"DELPHI_N_POKES_DURATION"</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
-</span><span id="__span-0-293"><a id="__codelineno-0-293" name="__codelineno-0-293"></a>    <span class="n">camera_fps</span><span class="p">:</span>         <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">_optional_float</span><span class="p">(</span><span class="s2">"DELPHI_CAMERA_FPS"</span><span class="p">)</span>
-</span><span id="__span-0-294"><a id="__codelineno-0-294" name="__codelineno-0-294"></a>
-</span><span id="__span-0-295"><a id="__codelineno-0-295" name="__codelineno-0-295"></a>    <span class="c1"># QC settings</span>
-</span><span id="__span-0-296"><a id="__codelineno-0-296" name="__codelineno-0-296"></a>    <span class="n">default_camera_fps</span><span class="p">:</span> <span class="nb">float</span>          <span class="o">=</span> <span class="n">_float</span><span class="p">(</span><span class="s2">"DELPHI_DEFAULT_CAMERA_FPS"</span><span class="p">,</span> <span class="mf">60.0</span><span class="p">)</span>
-</span><span id="__span-0-297"><a id="__codelineno-0-297" name="__codelineno-0-297"></a>
-</span><span id="__span-0-298"><a id="__codelineno-0-298" name="__codelineno-0-298"></a>    <span class="c1"># Build / ingest settings</span>
-</span><span id="__span-0-299"><a id="__codelineno-0-299" name="__codelineno-0-299"></a>    <span class="n">firmware</span><span class="p">:</span>           <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="o">=</span> <span class="n">_optional_str</span><span class="p">(</span><span class="s2">"DELPHI_FIRMWARE"</span><span class="p">)</span>
-</span><span id="__span-0-300"><a id="__codelineno-0-300" name="__codelineno-0-300"></a>    <span class="n">no_consolidate</span><span class="p">:</span>     <span class="nb">bool</span>           <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_NO_CONSOLIDATE"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-301"><a id="__codelineno-0-301" name="__codelineno-0-301"></a>    <span class="n">consolidate_only</span><span class="p">:</span>   <span class="nb">bool</span>           <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_CONSOLIDATE_ONLY"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-302"><a id="__codelineno-0-302" name="__codelineno-0-302"></a>    <span class="n">dataset_append</span><span class="p">:</span>     <span class="nb">bool</span>           <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_DATASET_APPEND"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-303"><a id="__codelineno-0-303" name="__codelineno-0-303"></a>
-</span><span id="__span-0-304"><a id="__codelineno-0-304" name="__codelineno-0-304"></a>    <span class="c1"># Pipeline step toggles</span>
-</span><span id="__span-0-305"><a id="__codelineno-0-305" name="__codelineno-0-305"></a>    <span class="n">skip_build</span><span class="p">:</span>         <span class="nb">bool</span>           <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_SKIP_BUILD"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-306"><a id="__codelineno-0-306" name="__codelineno-0-306"></a>    <span class="n">skip_clips</span><span class="p">:</span>         <span class="nb">bool</span>           <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_SKIP_CLIPS"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-307"><a id="__codelineno-0-307" name="__codelineno-0-307"></a>    <span class="n">skip_snapshot</span><span class="p">:</span>      <span class="nb">bool</span>           <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_SKIP_SNAPSHOT"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-308"><a id="__codelineno-0-308" name="__codelineno-0-308"></a>
-</span><span id="__span-0-309"><a id="__codelineno-0-309" name="__codelineno-0-309"></a>    <span class="c1"># Video clip settings</span>
-</span><span id="__span-0-310"><a id="__codelineno-0-310" name="__codelineno-0-310"></a>    <span class="n">workers</span><span class="p">:</span>            <span class="nb">int</span>            <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_WORKERS"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># type: ignore[assignment]</span>
-</span><span id="__span-0-311"><a id="__codelineno-0-311" name="__codelineno-0-311"></a>    <span class="n">no_delete</span><span class="p">:</span>          <span class="nb">bool</span>           <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_NO_DELETE"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-312"><a id="__codelineno-0-312" name="__codelineno-0-312"></a>
-</span><span id="__span-0-313"><a id="__codelineno-0-313" name="__codelineno-0-313"></a>    <span class="c1"># Experiment type (snapshot / pipeline)</span>
-</span><span id="__span-0-314"><a id="__codelineno-0-314" name="__codelineno-0-314"></a>    <span class="n">experiment</span><span class="p">:</span>         <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="o">=</span> <span class="n">_optional_str</span><span class="p">(</span><span class="s2">"DELPHI_EXPERIMENT"</span><span class="p">)</span>
-</span><span id="__span-0-315"><a id="__codelineno-0-315" name="__codelineno-0-315"></a>
-</span><span id="__span-0-316"><a id="__codelineno-0-316" name="__codelineno-0-316"></a>    <span class="c1"># Path shortcuts — use _optional_path to normalise backslashes on Windows</span>
-</span><span id="__span-0-317"><a id="__codelineno-0-317" name="__codelineno-0-317"></a>    <span class="n">data_root</span><span class="p">:</span>          <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="o">=</span> <span class="n">_optional_path</span><span class="p">(</span><span class="s2">"DELPHI_DATA_ROOT"</span><span class="p">)</span>
-</span><span id="__span-0-318"><a id="__codelineno-0-318" name="__codelineno-0-318"></a>
-</span><span id="__span-0-319"><a id="__codelineno-0-319" name="__codelineno-0-319"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa: D105</span>
-</span><span id="__span-0-320"><a id="__codelineno-0-320" name="__codelineno-0-320"></a>        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="__span-0-321"><a id="__codelineno-0-321" name="__codelineno-0-321"></a>            <span class="sa">f</span><span class="s2">"tau=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-322"><a id="__codelineno-0-322" name="__codelineno-0-322"></a>            <span class="sa">f</span><span class="s2">"dt=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-323"><a id="__codelineno-0-323" name="__codelineno-0-323"></a>            <span class="sa">f</span><span class="s2">"overlap=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">overlap</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-324"><a id="__codelineno-0-324" name="__codelineno-0-324"></a>            <span class="sa">f</span><span class="s2">"pre_days=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pre_days</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-325"><a id="__codelineno-0-325" name="__codelineno-0-325"></a>            <span class="sa">f</span><span class="s2">"post_days=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">post_days</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-326"><a id="__codelineno-0-326" name="__codelineno-0-326"></a>            <span class="sa">f</span><span class="s2">"n_pokes_duration=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_pokes_duration</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-327"><a id="__codelineno-0-327" name="__codelineno-0-327"></a>            <span class="sa">f</span><span class="s2">"camera_fps=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_fps</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-328"><a id="__codelineno-0-328" name="__codelineno-0-328"></a>            <span class="sa">f</span><span class="s2">"default_camera_fps=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_camera_fps</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-329"><a id="__codelineno-0-329" name="__codelineno-0-329"></a>            <span class="sa">f</span><span class="s2">"firmware=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">firmware</span><span class="si">!r}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-330"><a id="__codelineno-0-330" name="__codelineno-0-330"></a>            <span class="sa">f</span><span class="s2">"workers=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workers</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-331"><a id="__codelineno-0-331" name="__codelineno-0-331"></a>            <span class="sa">f</span><span class="s2">"no_delete=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">no_delete</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-332"><a id="__codelineno-0-332" name="__codelineno-0-332"></a>            <span class="sa">f</span><span class="s2">"no_consolidate=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">no_consolidate</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-333"><a id="__codelineno-0-333" name="__codelineno-0-333"></a>            <span class="sa">f</span><span class="s2">"consolidate_only=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">consolidate_only</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-334"><a id="__codelineno-0-334" name="__codelineno-0-334"></a>            <span class="sa">f</span><span class="s2">"experiment=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="si">!r}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-335"><a id="__codelineno-0-335" name="__codelineno-0-335"></a>            <span class="sa">f</span><span class="s2">"skip_build=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">skip_build</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-336"><a id="__codelineno-0-336" name="__codelineno-0-336"></a>            <span class="sa">f</span><span class="s2">"skip_clips=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">skip_clips</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-337"><a id="__codelineno-0-337" name="__codelineno-0-337"></a>            <span class="sa">f</span><span class="s2">"skip_snapshot=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">skip_snapshot</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-338"><a id="__codelineno-0-338" name="__codelineno-0-338"></a>            <span class="sa">f</span><span class="s2">"dataset_append=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_append</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-339"><a id="__codelineno-0-339" name="__codelineno-0-339"></a>            <span class="sa">f</span><span class="s2">"data_root=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_root</span><span class="si">!r}</span><span class="s2">"</span><span class="p">,</span>
-</span><span id="__span-0-340"><a id="__codelineno-0-340" name="__codelineno-0-340"></a>        <span class="p">]</span>
-</span><span id="__span-0-341"><a id="__codelineno-0-341" name="__codelineno-0-341"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Settings(</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span>
+                <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-211">211</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-212">212</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-213">213</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-214">214</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-215">215</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-216">216</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-217">217</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-218">218</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-219">219</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-220">220</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-221">221</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-222">222</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-223">223</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-224">224</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-225">225</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-226">226</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-227">227</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-228">228</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-229">229</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-230">230</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-231">231</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-232">232</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-233">233</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-234">234</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-235">235</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-236">236</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-237">237</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-238">238</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-239">239</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-240">240</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-241">241</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-242">242</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-243">243</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-244">244</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-245">245</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-246">246</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-247">247</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-248">248</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-249">249</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-250">250</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-251">251</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-252">252</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-253">253</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-254">254</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-255">255</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-256">256</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-257">257</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-258">258</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-259">259</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-260">260</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-261">261</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-262">262</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-263">263</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-264">264</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-265">265</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-266">266</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-267">267</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-268">268</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-269">269</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-270">270</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-271">271</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-272">272</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-273">273</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-274">274</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-275">275</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-276">276</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-277">277</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-278">278</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-279">279</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-280">280</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-281">281</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-282">282</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-283">283</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-284">284</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-285">285</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-286">286</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-287">287</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-288">288</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-289">289</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-290">290</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-291">291</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-292">292</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-293">293</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-294">294</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-295">295</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-296">296</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-297">297</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-298">298</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-299">299</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-300">300</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-301">301</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-302">302</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-303">303</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-304">304</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-305">305</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-306">306</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-307">307</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-308">308</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-309">309</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-310">310</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-311">311</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-312">312</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-313">313</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-314">314</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-315">315</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-316">316</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-317">317</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-318">318</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-319">319</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-320">320</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-321">321</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-322">322</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-323">323</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-324">324</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-325">325</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-326">326</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-327">327</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-328">328</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-329">329</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-330">330</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-331">331</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-332">332</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-333">333</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-334">334</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-335">335</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-336">336</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-337">337</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-338">338</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-339">339</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-340">340</a></span>
+<span class="normal"><a href="#delphi_data.settings._Settings--source--__codelineno-0-341">341</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="delphi_data.settings._Settings--source--__span-0-211"><a id="delphi_data.settings._Settings--source--__codelineno-0-211" name="delphi_data.settings._Settings--source--__codelineno-0-211"></a><span class="k">class</span><span class="w"> </span><span class="nc">_Settings</span><span class="p">:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-212"><a id="delphi_data.settings._Settings--source--__codelineno-0-212" name="delphi_data.settings._Settings--source--__codelineno-0-212"></a><span class="w">    </span><span class="sd">"""Typed access to all ``DELPHI_*`` environment settings.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-213"><a id="delphi_data.settings._Settings--source--__codelineno-0-213" name="delphi_data.settings._Settings--source--__codelineno-0-213"></a>
+</span><span id="delphi_data.settings._Settings--source--__span-0-214"><a id="delphi_data.settings._Settings--source--__codelineno-0-214" name="delphi_data.settings._Settings--source--__codelineno-0-214"></a><span class="sd">    Values are resolved once at import time.  Re-instantiate or call</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-215"><a id="delphi_data.settings._Settings--source--__codelineno-0-215" name="delphi_data.settings._Settings--source--__codelineno-0-215"></a><span class="sd">    :func:`reload` after programmatically changing environment variables</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-216"><a id="delphi_data.settings._Settings--source--__codelineno-0-216" name="delphi_data.settings._Settings--source--__codelineno-0-216"></a><span class="sd">    if needed.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-217"><a id="delphi_data.settings._Settings--source--__codelineno-0-217" name="delphi_data.settings._Settings--source--__codelineno-0-217"></a>
+</span><span id="delphi_data.settings._Settings--source--__span-0-218"><a id="delphi_data.settings._Settings--source--__codelineno-0-218" name="delphi_data.settings._Settings--source--__codelineno-0-218"></a><span class="sd">    Attributes</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-219"><a id="delphi_data.settings._Settings--source--__codelineno-0-219" name="delphi_data.settings._Settings--source--__codelineno-0-219"></a><span class="sd">    ----------</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-220"><a id="delphi_data.settings._Settings--source--__codelineno-0-220" name="delphi_data.settings._Settings--source--__codelineno-0-220"></a><span class="sd">    tau:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-221"><a id="delphi_data.settings._Settings--source--__codelineno-0-221" name="delphi_data.settings._Settings--source--__codelineno-0-221"></a><span class="sd">        Exponential decay time constant for poke-rate estimation (seconds).</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-222"><a id="delphi_data.settings._Settings--source--__codelineno-0-222" name="delphi_data.settings._Settings--source--__codelineno-0-222"></a><span class="sd">        ``DELPHI_TAU`` — default ``600.0``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-223"><a id="delphi_data.settings._Settings--source--__codelineno-0-223" name="delphi_data.settings._Settings--source--__codelineno-0-223"></a><span class="sd">    dt:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-224"><a id="delphi_data.settings._Settings--source--__codelineno-0-224" name="delphi_data.settings._Settings--source--__codelineno-0-224"></a><span class="sd">        Window length for poke-rate estimation (seconds).</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-225"><a id="delphi_data.settings._Settings--source--__codelineno-0-225" name="delphi_data.settings._Settings--source--__codelineno-0-225"></a><span class="sd">        ``DELPHI_DT`` — default ``60.0``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-226"><a id="delphi_data.settings._Settings--source--__codelineno-0-226" name="delphi_data.settings._Settings--source--__codelineno-0-226"></a><span class="sd">    overlap:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-227"><a id="delphi_data.settings._Settings--source--__codelineno-0-227" name="delphi_data.settings._Settings--source--__codelineno-0-227"></a><span class="sd">        Fractional window overlap for poke-rate estimation ``[0, 1)``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-228"><a id="delphi_data.settings._Settings--source--__codelineno-0-228" name="delphi_data.settings._Settings--source--__codelineno-0-228"></a><span class="sd">        ``DELPHI_OVERLAP`` — default ``0.5``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-229"><a id="delphi_data.settings._Settings--source--__codelineno-0-229" name="delphi_data.settings._Settings--source--__codelineno-0-229"></a><span class="sd">    pre_days:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-230"><a id="delphi_data.settings._Settings--source--__codelineno-0-230" name="delphi_data.settings._Settings--source--__codelineno-0-230"></a><span class="sd">        Baseline days before each odor change for windowed analyses.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-231"><a id="delphi_data.settings._Settings--source--__codelineno-0-231" name="delphi_data.settings._Settings--source--__codelineno-0-231"></a><span class="sd">        ``DELPHI_PRE_DAYS`` — default ``3``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-232"><a id="delphi_data.settings._Settings--source--__codelineno-0-232" name="delphi_data.settings._Settings--source--__codelineno-0-232"></a><span class="sd">    post_days:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-233"><a id="delphi_data.settings._Settings--source--__codelineno-0-233" name="delphi_data.settings._Settings--source--__codelineno-0-233"></a><span class="sd">        Post-change days included in windowed analyses.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-234"><a id="delphi_data.settings._Settings--source--__codelineno-0-234" name="delphi_data.settings._Settings--source--__codelineno-0-234"></a><span class="sd">        ``DELPHI_POST_DAYS`` — default ``1``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-235"><a id="delphi_data.settings._Settings--source--__codelineno-0-235" name="delphi_data.settings._Settings--source--__codelineno-0-235"></a><span class="sd">    n_pokes_duration:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-236"><a id="delphi_data.settings._Settings--source--__codelineno-0-236" name="delphi_data.settings._Settings--source--__codelineno-0-236"></a><span class="sd">        Pokes extracted per day for the duration-comparison figure.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-237"><a id="delphi_data.settings._Settings--source--__codelineno-0-237" name="delphi_data.settings._Settings--source--__codelineno-0-237"></a><span class="sd">        ``DELPHI_N_POKES_DURATION`` — default ``25``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-238"><a id="delphi_data.settings._Settings--source--__codelineno-0-238" name="delphi_data.settings._Settings--source--__codelineno-0-238"></a><span class="sd">    camera_fps:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-239"><a id="delphi_data.settings._Settings--source--__codelineno-0-239" name="delphi_data.settings._Settings--source--__codelineno-0-239"></a><span class="sd">        Camera frame-rate override for QC plots (Hz).  ``None`` means</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-240"><a id="delphi_data.settings._Settings--source--__codelineno-0-240" name="delphi_data.settings._Settings--source--__codelineno-0-240"></a><span class="sd">        auto-detect from hardware register → rig config → HardwareSettings →</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-241"><a id="delphi_data.settings._Settings--source--__codelineno-0-241" name="delphi_data.settings._Settings--source--__codelineno-0-241"></a><span class="sd">        default.  ``DELPHI_CAMERA_FPS`` — default ``None``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-242"><a id="delphi_data.settings._Settings--source--__codelineno-0-242" name="delphi_data.settings._Settings--source--__codelineno-0-242"></a><span class="sd">    default_camera_fps:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-243"><a id="delphi_data.settings._Settings--source--__codelineno-0-243" name="delphi_data.settings._Settings--source--__codelineno-0-243"></a><span class="sd">        Last-resort camera frame rate when all auto-detect sources fail (Hz).</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-244"><a id="delphi_data.settings._Settings--source--__codelineno-0-244" name="delphi_data.settings._Settings--source--__codelineno-0-244"></a><span class="sd">        ``DELPHI_DEFAULT_CAMERA_FPS`` — default ``60.0``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-245"><a id="delphi_data.settings._Settings--source--__codelineno-0-245" name="delphi_data.settings._Settings--source--__codelineno-0-245"></a><span class="sd">    firmware:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-246"><a id="delphi_data.settings._Settings--source--__codelineno-0-246" name="delphi_data.settings._Settings--source--__codelineno-0-246"></a><span class="sd">        Default firmware version string (e.g. ``"0.1.0"``).  ``None`` means</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-247"><a id="delphi_data.settings._Settings--source--__codelineno-0-247" name="delphi_data.settings._Settings--source--__codelineno-0-247"></a><span class="sd">        auto-detect from ``device.yml``.  ``DELPHI_FIRMWARE`` — default ``None``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-248"><a id="delphi_data.settings._Settings--source--__codelineno-0-248" name="delphi_data.settings._Settings--source--__codelineno-0-248"></a><span class="sd">    workers:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-249"><a id="delphi_data.settings._Settings--source--__codelineno-0-249" name="delphi_data.settings._Settings--source--__codelineno-0-249"></a><span class="sd">        Parallel clip-export threads for the ``create-clips`` command.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-250"><a id="delphi_data.settings._Settings--source--__codelineno-0-250" name="delphi_data.settings._Settings--source--__codelineno-0-250"></a><span class="sd">        ``DELPHI_WORKERS`` — default ``4``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-251"><a id="delphi_data.settings._Settings--source--__codelineno-0-251" name="delphi_data.settings._Settings--source--__codelineno-0-251"></a><span class="sd">    no_delete:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-252"><a id="delphi_data.settings._Settings--source--__codelineno-0-252" name="delphi_data.settings._Settings--source--__codelineno-0-252"></a><span class="sd">        Skip deletion of PortCamera source files after clip export.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-253"><a id="delphi_data.settings._Settings--source--__codelineno-0-253" name="delphi_data.settings._Settings--source--__codelineno-0-253"></a><span class="sd">        ``DELPHI_NO_DELETE`` — default ``False``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-254"><a id="delphi_data.settings._Settings--source--__codelineno-0-254" name="delphi_data.settings._Settings--source--__codelineno-0-254"></a><span class="sd">    no_consolidate:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-255"><a id="delphi_data.settings._Settings--source--__codelineno-0-255" name="delphi_data.settings._Settings--source--__codelineno-0-255"></a><span class="sd">        Disable automatic run-directory consolidation in ``build-dataset``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-256"><a id="delphi_data.settings._Settings--source--__codelineno-0-256" name="delphi_data.settings._Settings--source--__codelineno-0-256"></a><span class="sd">        ``DELPHI_NO_CONSOLIDATE`` — default ``False``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-257"><a id="delphi_data.settings._Settings--source--__codelineno-0-257" name="delphi_data.settings._Settings--source--__codelineno-0-257"></a><span class="sd">    consolidate_only:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-258"><a id="delphi_data.settings._Settings--source--__codelineno-0-258" name="delphi_data.settings._Settings--source--__codelineno-0-258"></a><span class="sd">        Consolidate run sub-directories and move metadata files, then exit</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-259"><a id="delphi_data.settings._Settings--source--__codelineno-0-259" name="delphi_data.settings._Settings--source--__codelineno-0-259"></a><span class="sd">        without building the dataset CSV.  Overrides ``no_consolidate`` and</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-260"><a id="delphi_data.settings._Settings--source--__codelineno-0-260" name="delphi_data.settings._Settings--source--__codelineno-0-260"></a><span class="sd">        makes ``firmware`` optional.  ``DELPHI_CONSOLIDATE_ONLY`` — default ``False``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-261"><a id="delphi_data.settings._Settings--source--__codelineno-0-261" name="delphi_data.settings._Settings--source--__codelineno-0-261"></a><span class="sd">    skip_build:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-262"><a id="delphi_data.settings._Settings--source--__codelineno-0-262" name="delphi_data.settings._Settings--source--__codelineno-0-262"></a><span class="sd">        Skip the build-dataset step in the full pipeline.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-263"><a id="delphi_data.settings._Settings--source--__codelineno-0-263" name="delphi_data.settings._Settings--source--__codelineno-0-263"></a><span class="sd">        ``DELPHI_SKIP_BUILD`` — default ``False``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-264"><a id="delphi_data.settings._Settings--source--__codelineno-0-264" name="delphi_data.settings._Settings--source--__codelineno-0-264"></a><span class="sd">    skip_clips:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-265"><a id="delphi_data.settings._Settings--source--__codelineno-0-265" name="delphi_data.settings._Settings--source--__codelineno-0-265"></a><span class="sd">        Skip the create-clips step in the full pipeline.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-266"><a id="delphi_data.settings._Settings--source--__codelineno-0-266" name="delphi_data.settings._Settings--source--__codelineno-0-266"></a><span class="sd">        ``DELPHI_SKIP_CLIPS`` — default ``False``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-267"><a id="delphi_data.settings._Settings--source--__codelineno-0-267" name="delphi_data.settings._Settings--source--__codelineno-0-267"></a><span class="sd">    skip_snapshot:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-268"><a id="delphi_data.settings._Settings--source--__codelineno-0-268" name="delphi_data.settings._Settings--source--__codelineno-0-268"></a><span class="sd">        Skip the snapshot step in the full pipeline.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-269"><a id="delphi_data.settings._Settings--source--__codelineno-0-269" name="delphi_data.settings._Settings--source--__codelineno-0-269"></a><span class="sd">        ``DELPHI_SKIP_SNAPSHOT`` — default ``False``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-270"><a id="delphi_data.settings._Settings--source--__codelineno-0-270" name="delphi_data.settings._Settings--source--__codelineno-0-270"></a><span class="sd">    dataset_append:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-271"><a id="delphi_data.settings._Settings--source--__codelineno-0-271" name="delphi_data.settings._Settings--source--__codelineno-0-271"></a><span class="sd">        When ``True`` and ``delphi_dataset.csv`` already exists, ingest the</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-272"><a id="delphi_data.settings._Settings--source--__codelineno-0-272" name="delphi_data.settings._Settings--source--__codelineno-0-272"></a><span class="sd">        full dataset and append new rows, deduplicating on</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-273"><a id="delphi_data.settings._Settings--source--__codelineno-0-273" name="delphi_data.settings._Settings--source--__codelineno-0-273"></a><span class="sd">        ``beam_break_onset``.  When ``False`` (default), the build step is</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-274"><a id="delphi_data.settings._Settings--source--__codelineno-0-274" name="delphi_data.settings._Settings--source--__codelineno-0-274"></a><span class="sd">        skipped if the CSV exists.  ``DELPHI_DATASET_APPEND`` — default</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-275"><a id="delphi_data.settings._Settings--source--__codelineno-0-275" name="delphi_data.settings._Settings--source--__codelineno-0-275"></a><span class="sd">        ``False``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-276"><a id="delphi_data.settings._Settings--source--__codelineno-0-276" name="delphi_data.settings._Settings--source--__codelineno-0-276"></a><span class="sd">    experiment:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-277"><a id="delphi_data.settings._Settings--source--__codelineno-0-277" name="delphi_data.settings._Settings--source--__codelineno-0-277"></a><span class="sd">        Default experiment type for the ``snapshot`` command and the full</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-278"><a id="delphi_data.settings._Settings--source--__codelineno-0-278" name="delphi_data.settings._Settings--source--__codelineno-0-278"></a><span class="sd">        processing pipeline (e.g. ``"bonhoeffer"``).</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-279"><a id="delphi_data.settings._Settings--source--__codelineno-0-279" name="delphi_data.settings._Settings--source--__codelineno-0-279"></a><span class="sd">        ``DELPHI_EXPERIMENT`` — default ``None``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-280"><a id="delphi_data.settings._Settings--source--__codelineno-0-280" name="delphi_data.settings._Settings--source--__codelineno-0-280"></a><span class="sd">    data_root:</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-281"><a id="delphi_data.settings._Settings--source--__codelineno-0-281" name="delphi_data.settings._Settings--source--__codelineno-0-281"></a><span class="sd">        Default run-level session directory path.  Used as the default for</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-282"><a id="delphi_data.settings._Settings--source--__codelineno-0-282" name="delphi_data.settings._Settings--source--__codelineno-0-282"></a><span class="sd">        ``--data-root`` across all commands (``snapshot``, ``build-dataset``,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-283"><a id="delphi_data.settings._Settings--source--__codelineno-0-283" name="delphi_data.settings._Settings--source--__codelineno-0-283"></a><span class="sd">        ``consolidate``).  ``DELPHI_DATA_ROOT`` — default ``None``.</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-284"><a id="delphi_data.settings._Settings--source--__codelineno-0-284" name="delphi_data.settings._Settings--source--__codelineno-0-284"></a><span class="sd">    """</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-285"><a id="delphi_data.settings._Settings--source--__codelineno-0-285" name="delphi_data.settings._Settings--source--__codelineno-0-285"></a>
+</span><span id="delphi_data.settings._Settings--source--__span-0-286"><a id="delphi_data.settings._Settings--source--__codelineno-0-286" name="delphi_data.settings._Settings--source--__codelineno-0-286"></a>    <span class="c1"># Snapshot settings</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-287"><a id="delphi_data.settings._Settings--source--__codelineno-0-287" name="delphi_data.settings._Settings--source--__codelineno-0-287"></a>    <span class="n">tau</span><span class="p">:</span>                <span class="nb">float</span>          <span class="o">=</span> <span class="n">_float</span><span class="p">(</span><span class="s2">"DELPHI_TAU"</span><span class="p">,</span> <span class="mf">600.0</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-288"><a id="delphi_data.settings._Settings--source--__codelineno-0-288" name="delphi_data.settings._Settings--source--__codelineno-0-288"></a>    <span class="n">dt</span><span class="p">:</span>                 <span class="nb">float</span>          <span class="o">=</span> <span class="n">_float</span><span class="p">(</span><span class="s2">"DELPHI_DT"</span><span class="p">,</span> <span class="mf">60.0</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-289"><a id="delphi_data.settings._Settings--source--__codelineno-0-289" name="delphi_data.settings._Settings--source--__codelineno-0-289"></a>    <span class="n">overlap</span><span class="p">:</span>            <span class="nb">float</span>          <span class="o">=</span> <span class="n">_float</span><span class="p">(</span><span class="s2">"DELPHI_OVERLAP"</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-290"><a id="delphi_data.settings._Settings--source--__codelineno-0-290" name="delphi_data.settings._Settings--source--__codelineno-0-290"></a>    <span class="n">pre_days</span><span class="p">:</span>           <span class="nb">int</span>            <span class="o">=</span> <span class="n">_int</span><span class="p">(</span><span class="s2">"DELPHI_PRE_DAYS"</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-291"><a id="delphi_data.settings._Settings--source--__codelineno-0-291" name="delphi_data.settings._Settings--source--__codelineno-0-291"></a>    <span class="n">post_days</span><span class="p">:</span>          <span class="nb">int</span>            <span class="o">=</span> <span class="n">_int</span><span class="p">(</span><span class="s2">"DELPHI_POST_DAYS"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-292"><a id="delphi_data.settings._Settings--source--__codelineno-0-292" name="delphi_data.settings._Settings--source--__codelineno-0-292"></a>    <span class="n">n_pokes_duration</span><span class="p">:</span>   <span class="nb">int</span>            <span class="o">=</span> <span class="n">_int</span><span class="p">(</span><span class="s2">"DELPHI_N_POKES_DURATION"</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-293"><a id="delphi_data.settings._Settings--source--__codelineno-0-293" name="delphi_data.settings._Settings--source--__codelineno-0-293"></a>    <span class="n">camera_fps</span><span class="p">:</span>         <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">_optional_float</span><span class="p">(</span><span class="s2">"DELPHI_CAMERA_FPS"</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-294"><a id="delphi_data.settings._Settings--source--__codelineno-0-294" name="delphi_data.settings._Settings--source--__codelineno-0-294"></a>
+</span><span id="delphi_data.settings._Settings--source--__span-0-295"><a id="delphi_data.settings._Settings--source--__codelineno-0-295" name="delphi_data.settings._Settings--source--__codelineno-0-295"></a>    <span class="c1"># QC settings</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-296"><a id="delphi_data.settings._Settings--source--__codelineno-0-296" name="delphi_data.settings._Settings--source--__codelineno-0-296"></a>    <span class="n">default_camera_fps</span><span class="p">:</span> <span class="nb">float</span>          <span class="o">=</span> <span class="n">_float</span><span class="p">(</span><span class="s2">"DELPHI_DEFAULT_CAMERA_FPS"</span><span class="p">,</span> <span class="mf">60.0</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-297"><a id="delphi_data.settings._Settings--source--__codelineno-0-297" name="delphi_data.settings._Settings--source--__codelineno-0-297"></a>
+</span><span id="delphi_data.settings._Settings--source--__span-0-298"><a id="delphi_data.settings._Settings--source--__codelineno-0-298" name="delphi_data.settings._Settings--source--__codelineno-0-298"></a>    <span class="c1"># Build / ingest settings</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-299"><a id="delphi_data.settings._Settings--source--__codelineno-0-299" name="delphi_data.settings._Settings--source--__codelineno-0-299"></a>    <span class="n">firmware</span><span class="p">:</span>           <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="o">=</span> <span class="n">_optional_str</span><span class="p">(</span><span class="s2">"DELPHI_FIRMWARE"</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-300"><a id="delphi_data.settings._Settings--source--__codelineno-0-300" name="delphi_data.settings._Settings--source--__codelineno-0-300"></a>    <span class="n">no_consolidate</span><span class="p">:</span>     <span class="nb">bool</span>           <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_NO_CONSOLIDATE"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-301"><a id="delphi_data.settings._Settings--source--__codelineno-0-301" name="delphi_data.settings._Settings--source--__codelineno-0-301"></a>    <span class="n">consolidate_only</span><span class="p">:</span>   <span class="nb">bool</span>           <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_CONSOLIDATE_ONLY"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-302"><a id="delphi_data.settings._Settings--source--__codelineno-0-302" name="delphi_data.settings._Settings--source--__codelineno-0-302"></a>    <span class="n">dataset_append</span><span class="p">:</span>     <span class="nb">bool</span>           <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_DATASET_APPEND"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-303"><a id="delphi_data.settings._Settings--source--__codelineno-0-303" name="delphi_data.settings._Settings--source--__codelineno-0-303"></a>
+</span><span id="delphi_data.settings._Settings--source--__span-0-304"><a id="delphi_data.settings._Settings--source--__codelineno-0-304" name="delphi_data.settings._Settings--source--__codelineno-0-304"></a>    <span class="c1"># Pipeline step toggles</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-305"><a id="delphi_data.settings._Settings--source--__codelineno-0-305" name="delphi_data.settings._Settings--source--__codelineno-0-305"></a>    <span class="n">skip_build</span><span class="p">:</span>         <span class="nb">bool</span>           <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_SKIP_BUILD"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-306"><a id="delphi_data.settings._Settings--source--__codelineno-0-306" name="delphi_data.settings._Settings--source--__codelineno-0-306"></a>    <span class="n">skip_clips</span><span class="p">:</span>         <span class="nb">bool</span>           <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_SKIP_CLIPS"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-307"><a id="delphi_data.settings._Settings--source--__codelineno-0-307" name="delphi_data.settings._Settings--source--__codelineno-0-307"></a>    <span class="n">skip_snapshot</span><span class="p">:</span>      <span class="nb">bool</span>           <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_SKIP_SNAPSHOT"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-308"><a id="delphi_data.settings._Settings--source--__codelineno-0-308" name="delphi_data.settings._Settings--source--__codelineno-0-308"></a>
+</span><span id="delphi_data.settings._Settings--source--__span-0-309"><a id="delphi_data.settings._Settings--source--__codelineno-0-309" name="delphi_data.settings._Settings--source--__codelineno-0-309"></a>    <span class="c1"># Video clip settings</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-310"><a id="delphi_data.settings._Settings--source--__codelineno-0-310" name="delphi_data.settings._Settings--source--__codelineno-0-310"></a>    <span class="n">workers</span><span class="p">:</span>            <span class="nb">int</span>            <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_WORKERS"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># type: ignore[assignment]</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-311"><a id="delphi_data.settings._Settings--source--__codelineno-0-311" name="delphi_data.settings._Settings--source--__codelineno-0-311"></a>    <span class="n">no_delete</span><span class="p">:</span>          <span class="nb">bool</span>           <span class="o">=</span> <span class="n">_bool</span><span class="p">(</span><span class="s2">"DELPHI_NO_DELETE"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-312"><a id="delphi_data.settings._Settings--source--__codelineno-0-312" name="delphi_data.settings._Settings--source--__codelineno-0-312"></a>
+</span><span id="delphi_data.settings._Settings--source--__span-0-313"><a id="delphi_data.settings._Settings--source--__codelineno-0-313" name="delphi_data.settings._Settings--source--__codelineno-0-313"></a>    <span class="c1"># Experiment type (snapshot / pipeline)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-314"><a id="delphi_data.settings._Settings--source--__codelineno-0-314" name="delphi_data.settings._Settings--source--__codelineno-0-314"></a>    <span class="n">experiment</span><span class="p">:</span>         <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="o">=</span> <span class="n">_optional_str</span><span class="p">(</span><span class="s2">"DELPHI_EXPERIMENT"</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-315"><a id="delphi_data.settings._Settings--source--__codelineno-0-315" name="delphi_data.settings._Settings--source--__codelineno-0-315"></a>
+</span><span id="delphi_data.settings._Settings--source--__span-0-316"><a id="delphi_data.settings._Settings--source--__codelineno-0-316" name="delphi_data.settings._Settings--source--__codelineno-0-316"></a>    <span class="c1"># Path shortcuts — use _optional_path to normalise backslashes on Windows</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-317"><a id="delphi_data.settings._Settings--source--__codelineno-0-317" name="delphi_data.settings._Settings--source--__codelineno-0-317"></a>    <span class="n">data_root</span><span class="p">:</span>          <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>  <span class="o">=</span> <span class="n">_optional_path</span><span class="p">(</span><span class="s2">"DELPHI_DATA_ROOT"</span><span class="p">)</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-318"><a id="delphi_data.settings._Settings--source--__codelineno-0-318" name="delphi_data.settings._Settings--source--__codelineno-0-318"></a>
+</span><span id="delphi_data.settings._Settings--source--__span-0-319"><a id="delphi_data.settings._Settings--source--__codelineno-0-319" name="delphi_data.settings._Settings--source--__codelineno-0-319"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa: D105</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-320"><a id="delphi_data.settings._Settings--source--__codelineno-0-320" name="delphi_data.settings._Settings--source--__codelineno-0-320"></a>        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-321"><a id="delphi_data.settings._Settings--source--__codelineno-0-321" name="delphi_data.settings._Settings--source--__codelineno-0-321"></a>            <span class="sa">f</span><span class="s2">"tau=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-322"><a id="delphi_data.settings._Settings--source--__codelineno-0-322" name="delphi_data.settings._Settings--source--__codelineno-0-322"></a>            <span class="sa">f</span><span class="s2">"dt=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-323"><a id="delphi_data.settings._Settings--source--__codelineno-0-323" name="delphi_data.settings._Settings--source--__codelineno-0-323"></a>            <span class="sa">f</span><span class="s2">"overlap=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">overlap</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-324"><a id="delphi_data.settings._Settings--source--__codelineno-0-324" name="delphi_data.settings._Settings--source--__codelineno-0-324"></a>            <span class="sa">f</span><span class="s2">"pre_days=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pre_days</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-325"><a id="delphi_data.settings._Settings--source--__codelineno-0-325" name="delphi_data.settings._Settings--source--__codelineno-0-325"></a>            <span class="sa">f</span><span class="s2">"post_days=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">post_days</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-326"><a id="delphi_data.settings._Settings--source--__codelineno-0-326" name="delphi_data.settings._Settings--source--__codelineno-0-326"></a>            <span class="sa">f</span><span class="s2">"n_pokes_duration=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_pokes_duration</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-327"><a id="delphi_data.settings._Settings--source--__codelineno-0-327" name="delphi_data.settings._Settings--source--__codelineno-0-327"></a>            <span class="sa">f</span><span class="s2">"camera_fps=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_fps</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-328"><a id="delphi_data.settings._Settings--source--__codelineno-0-328" name="delphi_data.settings._Settings--source--__codelineno-0-328"></a>            <span class="sa">f</span><span class="s2">"default_camera_fps=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_camera_fps</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-329"><a id="delphi_data.settings._Settings--source--__codelineno-0-329" name="delphi_data.settings._Settings--source--__codelineno-0-329"></a>            <span class="sa">f</span><span class="s2">"firmware=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">firmware</span><span class="si">!r}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-330"><a id="delphi_data.settings._Settings--source--__codelineno-0-330" name="delphi_data.settings._Settings--source--__codelineno-0-330"></a>            <span class="sa">f</span><span class="s2">"workers=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">workers</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-331"><a id="delphi_data.settings._Settings--source--__codelineno-0-331" name="delphi_data.settings._Settings--source--__codelineno-0-331"></a>            <span class="sa">f</span><span class="s2">"no_delete=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">no_delete</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-332"><a id="delphi_data.settings._Settings--source--__codelineno-0-332" name="delphi_data.settings._Settings--source--__codelineno-0-332"></a>            <span class="sa">f</span><span class="s2">"no_consolidate=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">no_consolidate</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-333"><a id="delphi_data.settings._Settings--source--__codelineno-0-333" name="delphi_data.settings._Settings--source--__codelineno-0-333"></a>            <span class="sa">f</span><span class="s2">"consolidate_only=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">consolidate_only</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-334"><a id="delphi_data.settings._Settings--source--__codelineno-0-334" name="delphi_data.settings._Settings--source--__codelineno-0-334"></a>            <span class="sa">f</span><span class="s2">"experiment=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="si">!r}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-335"><a id="delphi_data.settings._Settings--source--__codelineno-0-335" name="delphi_data.settings._Settings--source--__codelineno-0-335"></a>            <span class="sa">f</span><span class="s2">"skip_build=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">skip_build</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-336"><a id="delphi_data.settings._Settings--source--__codelineno-0-336" name="delphi_data.settings._Settings--source--__codelineno-0-336"></a>            <span class="sa">f</span><span class="s2">"skip_clips=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">skip_clips</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-337"><a id="delphi_data.settings._Settings--source--__codelineno-0-337" name="delphi_data.settings._Settings--source--__codelineno-0-337"></a>            <span class="sa">f</span><span class="s2">"skip_snapshot=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">skip_snapshot</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-338"><a id="delphi_data.settings._Settings--source--__codelineno-0-338" name="delphi_data.settings._Settings--source--__codelineno-0-338"></a>            <span class="sa">f</span><span class="s2">"dataset_append=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_append</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-339"><a id="delphi_data.settings._Settings--source--__codelineno-0-339" name="delphi_data.settings._Settings--source--__codelineno-0-339"></a>            <span class="sa">f</span><span class="s2">"data_root=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_root</span><span class="si">!r}</span><span class="s2">"</span><span class="p">,</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-340"><a id="delphi_data.settings._Settings--source--__codelineno-0-340" name="delphi_data.settings._Settings--source--__codelineno-0-340"></a>        <span class="p">]</span>
+</span><span id="delphi_data.settings._Settings--source--__span-0-341"><a id="delphi_data.settings._Settings--source--__codelineno-0-341" name="delphi_data.settings._Settings--source--__codelineno-0-341"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Settings(</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span>
 </span></code></pre></div></td></tr></table></div>
               </details>
 
@@ -3270,39 +3270,39 @@ the module-level :data:<code>settings</code> singleton.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/delphi-data/delphi_data/settings.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-354">354</a></span>
-<span class="normal"><a href="#__codelineno-0-355">355</a></span>
-<span class="normal"><a href="#__codelineno-0-356">356</a></span>
-<span class="normal"><a href="#__codelineno-0-357">357</a></span>
-<span class="normal"><a href="#__codelineno-0-358">358</a></span>
-<span class="normal"><a href="#__codelineno-0-359">359</a></span>
-<span class="normal"><a href="#__codelineno-0-360">360</a></span>
-<span class="normal"><a href="#__codelineno-0-361">361</a></span>
-<span class="normal"><a href="#__codelineno-0-362">362</a></span>
-<span class="normal"><a href="#__codelineno-0-363">363</a></span>
-<span class="normal"><a href="#__codelineno-0-364">364</a></span>
-<span class="normal"><a href="#__codelineno-0-365">365</a></span>
-<span class="normal"><a href="#__codelineno-0-366">366</a></span>
-<span class="normal"><a href="#__codelineno-0-367">367</a></span>
-<span class="normal"><a href="#__codelineno-0-368">368</a></span>
-<span class="normal"><a href="#__codelineno-0-369">369</a></span>
-<span class="normal"><a href="#__codelineno-0-370">370</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-354"><a id="__codelineno-0-354" name="__codelineno-0-354"></a><span class="k">def</span><span class="w"> </span><span class="nf">reload</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">_Settings</span><span class="p">:</span>
-</span><span id="__span-0-355"><a id="__codelineno-0-355" name="__codelineno-0-355"></a><span class="w">    </span><span class="sd">"""Re-read all ``DELPHI_*`` environment variables and return a fresh :class:`_Settings`.</span>
-</span><span id="__span-0-356"><a id="__codelineno-0-356" name="__codelineno-0-356"></a>
-</span><span id="__span-0-357"><a id="__codelineno-0-357" name="__codelineno-0-357"></a><span class="sd">    Useful in tests or interactive sessions where environment variables are</span>
-</span><span id="__span-0-358"><a id="__codelineno-0-358" name="__codelineno-0-358"></a><span class="sd">    changed programmatically after import.</span>
-</span><span id="__span-0-359"><a id="__codelineno-0-359" name="__codelineno-0-359"></a>
-</span><span id="__span-0-360"><a id="__codelineno-0-360" name="__codelineno-0-360"></a><span class="sd">    Returns</span>
-</span><span id="__span-0-361"><a id="__codelineno-0-361" name="__codelineno-0-361"></a><span class="sd">    -------</span>
-</span><span id="__span-0-362"><a id="__codelineno-0-362" name="__codelineno-0-362"></a><span class="sd">    _Settings</span>
-</span><span id="__span-0-363"><a id="__codelineno-0-363" name="__codelineno-0-363"></a><span class="sd">        New settings instance with current environment values.  Also updates</span>
-</span><span id="__span-0-364"><a id="__codelineno-0-364" name="__codelineno-0-364"></a><span class="sd">        the module-level :data:`settings` singleton.</span>
-</span><span id="__span-0-365"><a id="__codelineno-0-365" name="__codelineno-0-365"></a><span class="sd">    """</span>
-</span><span id="__span-0-366"><a id="__codelineno-0-366" name="__codelineno-0-366"></a>    <span class="k">global</span> <span class="n">settings</span>
-</span><span id="__span-0-367"><a id="__codelineno-0-367" name="__codelineno-0-367"></a>    <span class="n">load_dotenv</span><span class="p">(</span><span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-0-368"><a id="__codelineno-0-368" name="__codelineno-0-368"></a>    <span class="n">settings</span> <span class="o">=</span> <span class="n">_Settings</span><span class="p">()</span>
-</span><span id="__span-0-369"><a id="__codelineno-0-369" name="__codelineno-0-369"></a>    <span class="n">settings</span><span class="o">.</span><span class="n">workers</span> <span class="o">=</span> <span class="n">_int</span><span class="p">(</span><span class="s2">"DELPHI_WORKERS"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-</span><span id="__span-0-370"><a id="__codelineno-0-370" name="__codelineno-0-370"></a>    <span class="k">return</span> <span class="n">settings</span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-354">354</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-355">355</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-356">356</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-357">357</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-358">358</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-359">359</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-360">360</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-361">361</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-362">362</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-363">363</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-364">364</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-365">365</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-366">366</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-367">367</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-368">368</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-369">369</a></span>
+<span class="normal"><a href="#delphi_data.settings.reload--source--__codelineno-0-370">370</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="delphi_data.settings.reload--source--__span-0-354"><a id="delphi_data.settings.reload--source--__codelineno-0-354" name="delphi_data.settings.reload--source--__codelineno-0-354"></a><span class="k">def</span><span class="w"> </span><span class="nf">reload</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">_Settings</span><span class="p">:</span>
+</span><span id="delphi_data.settings.reload--source--__span-0-355"><a id="delphi_data.settings.reload--source--__codelineno-0-355" name="delphi_data.settings.reload--source--__codelineno-0-355"></a><span class="w">    </span><span class="sd">"""Re-read all ``DELPHI_*`` environment variables and return a fresh :class:`_Settings`.</span>
+</span><span id="delphi_data.settings.reload--source--__span-0-356"><a id="delphi_data.settings.reload--source--__codelineno-0-356" name="delphi_data.settings.reload--source--__codelineno-0-356"></a>
+</span><span id="delphi_data.settings.reload--source--__span-0-357"><a id="delphi_data.settings.reload--source--__codelineno-0-357" name="delphi_data.settings.reload--source--__codelineno-0-357"></a><span class="sd">    Useful in tests or interactive sessions where environment variables are</span>
+</span><span id="delphi_data.settings.reload--source--__span-0-358"><a id="delphi_data.settings.reload--source--__codelineno-0-358" name="delphi_data.settings.reload--source--__codelineno-0-358"></a><span class="sd">    changed programmatically after import.</span>
+</span><span id="delphi_data.settings.reload--source--__span-0-359"><a id="delphi_data.settings.reload--source--__codelineno-0-359" name="delphi_data.settings.reload--source--__codelineno-0-359"></a>
+</span><span id="delphi_data.settings.reload--source--__span-0-360"><a id="delphi_data.settings.reload--source--__codelineno-0-360" name="delphi_data.settings.reload--source--__codelineno-0-360"></a><span class="sd">    Returns</span>
+</span><span id="delphi_data.settings.reload--source--__span-0-361"><a id="delphi_data.settings.reload--source--__codelineno-0-361" name="delphi_data.settings.reload--source--__codelineno-0-361"></a><span class="sd">    -------</span>
+</span><span id="delphi_data.settings.reload--source--__span-0-362"><a id="delphi_data.settings.reload--source--__codelineno-0-362" name="delphi_data.settings.reload--source--__codelineno-0-362"></a><span class="sd">    _Settings</span>
+</span><span id="delphi_data.settings.reload--source--__span-0-363"><a id="delphi_data.settings.reload--source--__codelineno-0-363" name="delphi_data.settings.reload--source--__codelineno-0-363"></a><span class="sd">        New settings instance with current environment values.  Also updates</span>
+</span><span id="delphi_data.settings.reload--source--__span-0-364"><a id="delphi_data.settings.reload--source--__codelineno-0-364" name="delphi_data.settings.reload--source--__codelineno-0-364"></a><span class="sd">        the module-level :data:`settings` singleton.</span>
+</span><span id="delphi_data.settings.reload--source--__span-0-365"><a id="delphi_data.settings.reload--source--__codelineno-0-365" name="delphi_data.settings.reload--source--__codelineno-0-365"></a><span class="sd">    """</span>
+</span><span id="delphi_data.settings.reload--source--__span-0-366"><a id="delphi_data.settings.reload--source--__codelineno-0-366" name="delphi_data.settings.reload--source--__codelineno-0-366"></a>    <span class="k">global</span> <span class="n">settings</span>
+</span><span id="delphi_data.settings.reload--source--__span-0-367"><a id="delphi_data.settings.reload--source--__codelineno-0-367" name="delphi_data.settings.reload--source--__codelineno-0-367"></a>    <span class="n">load_dotenv</span><span class="p">(</span><span class="n">override</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="delphi_data.settings.reload--source--__span-0-368"><a id="delphi_data.settings.reload--source--__codelineno-0-368" name="delphi_data.settings.reload--source--__codelineno-0-368"></a>    <span class="n">settings</span> <span class="o">=</span> <span class="n">_Settings</span><span class="p">()</span>
+</span><span id="delphi_data.settings.reload--source--__span-0-369"><a id="delphi_data.settings.reload--source--__codelineno-0-369" name="delphi_data.settings.reload--source--__codelineno-0-369"></a>    <span class="n">settings</span><span class="o">.</span><span class="n">workers</span> <span class="o">=</span> <span class="n">_int</span><span class="p">(</span><span class="s2">"DELPHI_WORKERS"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</span><span id="delphi_data.settings.reload--source--__span-0-370"><a id="delphi_data.settings.reload--source--__codelineno-0-370" name="delphi_data.settings.reload--source--__codelineno-0-370"></a>    <span class="k">return</span> <span class="n">settings</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>
