@@ -174,6 +174,9 @@ def main():
             pass  # Proceed with generating other metadata files even if instrument.json generation fails
     else:
         print("Skipping instrument.json generation.")
+        cam_assemblies, ephys_assembly, platform_surface, odor_names, odor_channels = (
+            None, None, None, None, None,
+        )
 
     # # ============================================================
     # # ACQUISITION METADATA

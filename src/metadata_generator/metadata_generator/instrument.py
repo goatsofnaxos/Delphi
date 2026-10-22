@@ -536,7 +536,7 @@ def create_instrument_metadata(
                     detector_type="Camera",
                     data_interface="USB",
                     manufacturer=Organization.FLIR,
-                    frame_rate=cam["frameRate"],
+                    frame_rate=camera["frameRate"],
                     frame_rate_unit=FrequencyUnit.HZ,
                     sensor_width=1440,
                     sensor_height=1080,
