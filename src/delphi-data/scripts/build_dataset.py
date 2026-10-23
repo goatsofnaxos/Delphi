@@ -49,6 +49,7 @@ _s = _Settings()
 def consolidate_session(
     data_root: pathlib.Path,
     consolidate_runs: bool = True,
+    rename_conflicts: bool = False,
 ) -> pathlib.Path:
     """Consolidate run sub-directories and move metadata files into place.
 
@@ -66,6 +67,11 @@ def consolidate_session(
         When ``True`` and multiple run sub-directories are detected, merge them
         into the earliest one.  When ``False``, a warning is printed and the
         earliest run directory is still selected.
+    rename_conflicts:
+        When ``True``, conflicting filenames are renamed (``{stem}_1{ext}``,
+        …) rather than skipped.  Useful when a Bonsai restart creates a new
+        run whose first hour-chunk shares a filename with the previous run.
+        Default ``False``.
 
     Returns
     -------
@@ -79,7 +85,7 @@ def consolidate_session(
         print(f"Detected {len(ts_run_dirs)} run directories in session: {data_root}")
         if consolidate_runs:
             print("Consolidating run directories …")
-            consolidate_session_runs(str(data_root))
+            consolidate_session_runs(str(data_root), rename_conflicts=rename_conflicts)
             print("Consolidation complete.")
         else:
             print("Warning: multiple runs detected but consolidation is disabled.")
@@ -109,6 +115,7 @@ def build_dataset(
     data_root: pathlib.Path,
     firmware: str,
     consolidate_runs: bool = True,
+    rename_conflicts: bool = False,
     append: bool = False,
 ) -> "pd.DataFrame":
     """Build a Delphi dataset and save the per-poke CSV to the behavior folder.
@@ -144,7 +151,7 @@ def build_dataset(
     pd.DataFrame
         The per-poke event dataframe that was saved to CSV.
     """
-    data_root = consolidate_session(data_root, consolidate_runs=consolidate_runs)
+    data_root = consolidate_session(data_root, consolidate_runs=consolidate_runs, rename_conflicts=rename_conflicts)
 
     df = ingest(
         data_root_path=data_root,
@@ -236,6 +243,16 @@ def _parse_args(argv=None) -> argparse.Namespace:
             f"[env: DELPHI_CONSOLIDATE_ONLY, current: {_s.consolidate_only}]"
         ),
     )
+    parser.add_argument(
+        "--rename-conflicts", action="store_true", default=_s.rename_conflicts,
+        help=(
+            "When consolidating run sub-directories, rename conflicting files "
+            "({stem}_1{ext}, {stem}_2{ext}, …) instead of skipping them.  "
+            "Useful when a Bonsai restart creates a run whose first hour-chunk "
+            "shares a filename with the previous run.  Default: disabled.  "
+            f"[env: DELPHI_RENAME_CONFLICTS, current: {_s.rename_conflicts}]"
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -243,7 +260,11 @@ if __name__ == "__main__":
     args = _parse_args()
 
     if args.consolidate_only:
-        consolidate_session(pathlib.Path(args.data_root), consolidate_runs=True)
+        consolidate_session(
+            pathlib.Path(args.data_root),
+            consolidate_runs=True,
+            rename_conflicts=args.rename_conflicts,
+        )
         print("Done.")
     else:
         if not args.firmware:
@@ -254,4 +275,5 @@ if __name__ == "__main__":
             data_root=pathlib.Path(args.data_root),
             firmware=args.firmware,
             consolidate_runs=not args.no_consolidate,
+            rename_conflicts=args.rename_conflicts,
         )

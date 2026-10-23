@@ -254,6 +254,12 @@ class _Settings:
     no_consolidate:
         Disable automatic run-directory consolidation in ``build-dataset``.
         ``DELPHI_NO_CONSOLIDATE`` — default ``False``.
+    rename_conflicts:
+        When consolidating run sub-directories, rename conflicting files
+        (``{stem}_1{ext}``, ``{stem}_2{ext}``, …) instead of skipping them.
+        Useful when a Bonsai restart creates a new run whose first hour-chunk
+        shares a filename with the last hour-chunk of the previous run.
+        ``DELPHI_RENAME_CONFLICTS`` — default ``False``.
     consolidate_only:
         Consolidate run sub-directories and move metadata files, then exit
         without building the dataset CSV.  Overrides ``no_consolidate`` and
@@ -299,6 +305,7 @@ class _Settings:
     firmware:           Optional[str]  = _optional_str("DELPHI_FIRMWARE")
     no_consolidate:     bool           = _bool("DELPHI_NO_CONSOLIDATE", False)
     consolidate_only:   bool           = _bool("DELPHI_CONSOLIDATE_ONLY", False)
+    rename_conflicts:   bool           = _bool("DELPHI_RENAME_CONFLICTS", False)
     dataset_append:     bool           = _bool("DELPHI_DATASET_APPEND", False)
 
     # Pipeline step toggles
@@ -330,6 +337,7 @@ class _Settings:
             f"workers={self.workers}",
             f"no_delete={self.no_delete}",
             f"no_consolidate={self.no_consolidate}",
+            f"rename_conflicts={self.rename_conflicts}",
             f"consolidate_only={self.consolidate_only}",
             f"experiment={self.experiment!r}",
             f"skip_build={self.skip_build}",

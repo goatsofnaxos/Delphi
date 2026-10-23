@@ -202,15 +202,38 @@ def count_files(directory: str) -> int:
     return total
 
 
-def move_contents_with_progress(src_dir: str, dst_dir: str) -> None:
+def _resolve_conflict_dst(dst_file: str) -> str:
+    """Return a non-colliding destination path by appending ``_1``, ``_2``, … before the extension."""
+    base, ext = os.path.splitext(dst_file)
+    counter = 1
+    candidate = f"{base}_{counter}{ext}"
+    while os.path.exists(candidate):
+        counter += 1
+        candidate = f"{base}_{counter}{ext}"
+    return candidate
+
+
+def move_contents_with_progress(
+    src_dir: str,
+    dst_dir: str,
+    rename_conflicts: bool = False,
+) -> None:
     """Recursively move the contents of *src_dir* into *dst_dir* with a progress bar.
 
     Uses :func:`fast_move_with_optional_checksum` for each file, so same-
     filesystem moves are instant while cross-filesystem moves are checksum-
-    verified.  Destination files that are already at least as large as the
-    source are skipped; partial destinations (smaller than source) are removed
-    and re-transferred so an interrupted cross-filesystem copy does not leave
-    stale incomplete files.
+    verified.
+
+    When a destination file already exists:
+
+    * ``rename_conflicts=False`` (default): destination files that are already
+      at least as large as the source are skipped; partial destinations (smaller
+      than source) are removed and re-transferred so an interrupted
+      cross-filesystem copy does not leave stale incomplete files.
+    * ``rename_conflicts=True``: the source file is moved to a non-colliding
+      name (``{stem}_1{ext}``, ``{stem}_2{ext}``, …) so both files are kept.
+      Use this when a Bonsai restart creates a new run directory whose first
+      hour-chunk shares a filename with the last hour-chunk of the previous run.
 
     Parameters
     ----------
@@ -218,6 +241,9 @@ def move_contents_with_progress(src_dir: str, dst_dir: str) -> None:
         Source directory whose contents will be moved.
     dst_dir:
         Destination directory.  Created automatically if it does not exist.
+    rename_conflicts:
+        When *True*, rename conflicting source files rather than skipping or
+        overwriting them.  Default *False*.
     """
     total_files = count_files(src_dir)
 
@@ -246,21 +272,27 @@ def move_contents_with_progress(src_dir: str, dst_dir: str) -> None:
                     except OSError:
                         pbar.update(1)
                         continue
-                    if dst_size >= src_size:
-                        pbar.update(1)
-                        continue
-                    # dst is smaller than src — interrupted cross-filesystem copy.
-                    # Remove the partial file so the move is retried.
-                    try:
-                        os.remove(dst_file)
-                        print(
-                            f"\nPartial destination removed ({dst_size} < {src_size} bytes): "
-                            f"{dst_file}"
-                        )
-                    except OSError as e:
-                        print(f"\nERROR removing partial destination {dst_file}: {e}")
-                        pbar.update(1)
-                        continue
+
+                    if rename_conflicts:
+                        # Both files are real data — keep both by renaming the source.
+                        dst_file = _resolve_conflict_dst(dst_file)
+                        print(f"\nConflict — renaming to: {dst_file}")
+                    else:
+                        if dst_size >= src_size:
+                            pbar.update(1)
+                            continue
+                        # dst is smaller than src — interrupted cross-filesystem copy.
+                        # Remove the partial file so the move is retried.
+                        try:
+                            os.remove(dst_file)
+                            print(
+                                f"\nPartial destination removed ({dst_size} < {src_size} bytes): "
+                                f"{dst_file}"
+                            )
+                        except OSError as e:
+                            print(f"\nERROR removing partial destination {dst_file}: {e}")
+                            pbar.update(1)
+                            continue
 
                 try:
                     fast_move_with_optional_checksum(src_file, dst_file)
@@ -295,7 +327,10 @@ def remove_all_empty_dirs(directory: str) -> None:
                     pass
 
 
-def consolidate_session_runs(session_root: str) -> None:
+def consolidate_session_runs(
+    session_root: str,
+    rename_conflicts: bool = False,
+) -> None:
     """Consolidate multiple run sub-directories in *session_root* into the earliest one.
 
     Identifies all timestamp-named run directories, moves the contents of
@@ -307,6 +342,10 @@ def consolidate_session_runs(session_root: str) -> None:
     session_root:
         Path to the session directory containing one or more timestamp-named
         run sub-directories (e.g. ``2026-03-20T20-23-37``).
+    rename_conflicts:
+        When *True*, conflicting filenames are renamed (``{stem}_1{ext}``, …)
+        rather than skipped.  See :func:`move_contents_with_progress`.
+        Default *False*.
 
     Raises
     ------
@@ -333,7 +372,7 @@ def consolidate_session_runs(session_root: str) -> None:
             continue
 
         print(f"\nProcessing: {run_dir}")
-        move_contents_with_progress(run_dir, earliest_run)
+        move_contents_with_progress(run_dir, earliest_run, rename_conflicts=rename_conflicts)
 
         # Cleanup empty structure
         remove_all_empty_dirs(run_dir)
