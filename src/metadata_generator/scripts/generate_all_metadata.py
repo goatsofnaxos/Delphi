@@ -16,7 +16,6 @@ from metadata_generator.subject import write_subject_metadata
 # ------------------------
 from metadata_generator.instrument import (
     create_instrument_metadata,
-    parse_delphi_metadata,
 )
 from aind_data_schema.core.instrument import Instrument
 
@@ -44,6 +43,20 @@ from metadata_generator.utils import (
 # ------------------------
 from metadata_generator.config import build_config, MetadataGenerationConfig
 
+import traceback
+from pathlib import Path as _Path
+
+
+def _write_utf8(model_obj, output_dir: _Path) -> None:
+    """Write an aind-data-schema model to JSON with explicit UTF-8 encoding.
+
+    Replaces write_standard_file which on Windows defaults to cp1252 and
+    produces files that downstream UTF-8 readers (e.g. aind_metadata_mapper)
+    cannot parse when the content contains characters like em dashes.
+    """
+    filename = output_dir / model_obj.default_filename()
+    filename.write_text(model_obj.model_dump_json(indent=3), encoding="utf-8")
+
 
 def main():
     # ============================================================
@@ -61,8 +74,18 @@ def main():
     METADATA_PATH = DATASET_ROOT / "behavior" / "metadata"
     METADATA_OUTPUT_PATH = config.metadata_output_path
     SURGERY_NOTES_PATH = config.surgery_notes_path
-    _, _, _, PROBE_ID = parse_surgery_notes(SURGERY_NOTES_PATH)
-    PROBE_SERIAL_NUMBER = PROBE_ID
+    PROBE_ID = None
+    PROBE_SERIAL_NUMBER = None
+    if config.generate_procedures:
+        try:
+            _, _, _, PROBE_ID = parse_surgery_notes(SURGERY_NOTES_PATH)
+            PROBE_SERIAL_NUMBER = PROBE_ID
+        except FileNotFoundError:
+            print(
+                f"Warning: surgery notes not found at {SURGERY_NOTES_PATH}. "
+                "Skipping procedures generation."
+            )
+            config.generate_procedures = False
 
     # Instrument / acquisition
     INSTRUMENT_ID = config.instrument_id
@@ -85,33 +108,6 @@ def main():
         generate_acquisition=config.generate_acquisition,
     )
 
-    # SUBJECT_ID = "801055"
-    # PROTOCOL_ID = "2413"
-    # CURRENT_EXPERIMENT = "delphi_pirouette"  # delphi | delphi_pirouette | pirouette
-    # DATASET_ROOT = Path(r"\\allen\aind\stage\chronic\data\2026-01-06T22-49-36")
-    # METADATA_PATH = DATASET_ROOT / "behavior" / "metadata"
-    # METADATA_OUTPUT_PATH = Path.cwd() / "metadata_v2"
-    # SURGERY_NOTES_PATH = (
-    #     Path(r"\\allen\aind\scratch\chronos\surgeryNotes")
-    #     / SUBJECT_ID
-    #     / f"{SUBJECT_ID}_craniotomy-implantation.docx"
-    # )
-    # INSTRUMENT_ID = "Chronic1"
-    # EXPERIMENT_ROOM = "157"
-    # ACQUISITION_TYPE = "Longterm chronic recording"
-    # DELPHI_COMPUTER_ID = "DTMZ0334PS"
-    # _, _, _, PROBE_ID = parse_surgery_notes(SURGERY_NOTES_PATH)
-    # PROBE_SERIAL_NUMBER = PROBE_ID
-    # EXPERIMENTERS = ["Brandon Pratt"]
-    # SURGEONS = ["Carl Schoonover", "Ben Ouellette"]
-    # METADATA_OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
-    # METADATA_FILES_TO_GENERATE = MetadataGenerationConfig(
-    #     generate_subject=True,
-    #     generate_instrument=True,
-    #     generate_procedures=True,
-    #     generate_acquisition=True,
-    # )
-
     # # ============================================================
     # # SUBJECT METADATA
     # # ============================================================
@@ -121,7 +117,7 @@ def main():
             subject_obj = write_subject_metadata(
                 subject_id=SUBJECT_ID,
                 output_directory=METADATA_OUTPUT_PATH,
-                allow_fallback=True,  # allow fallback to minimal subject if fetch fails
+                allow_fallback=False,  # allow fallback to minimal subject if fetch fails
             )
             print("✅ subject.json generated.")
         except Exception as e:
@@ -135,6 +131,8 @@ def main():
     # INSTRUMENT METADATA
     # ============================================================
     if METADATA_FILES_TO_GENERATE.generate_instrument:
+        print(METADATA_PATH)
+        print(CURRENT_EXPERIMENT)
         print("Generating instrument.json...")
         try:
             instrument = create_instrument_metadata(
@@ -149,7 +147,7 @@ def main():
             )
             serialized = instrument.model_dump_json()
             deserialized = Instrument.model_validate_json(serialized)
-            deserialized.write_standard_file(output_directory=METADATA_OUTPUT_PATH)
+            _write_utf8(deserialized, METADATA_OUTPUT_PATH)
             print("✅ instrument.json generated.")
 
             # Pull objects needed downstream
@@ -159,13 +157,13 @@ def main():
             platform_surface = get_platform_surface_from_instrument(instrument)
 
             if "delphi" in CURRENT_EXPERIMENT:
-                _, delphi_rules = parse_delphi_metadata(METADATA_PATH)
                 odor_names = get_delphi_odor_names(METADATA_PATH)
                 odor_channels = get_delphi_odor_channel_indices(instrument)
                 print(f"Identified odor channels: {odor_channels} with odor names: {odor_names}")
 
         except Exception as e:
             print(f"Error generating instrument.json: {e}")
+            traceback.print_exc()
             cam_assemblies, ephys_assembly, platform_surface, odor_names, odor_channels = (
                 None,
                 None,
@@ -176,6 +174,9 @@ def main():
             pass  # Proceed with generating other metadata files even if instrument.json generation fails
     else:
         print("Skipping instrument.json generation.")
+        cam_assemblies, ephys_assembly, platform_surface, odor_names, odor_channels = (
+            None, None, None, None, None,
+        )
 
     # # ============================================================
     # # ACQUISITION METADATA
@@ -201,7 +202,7 @@ def main():
             )
             serialized = acquisition.model_dump_json()
             deserialized = Acquisition.model_validate_json(serialized)
-            deserialized.write_standard_file(output_directory=METADATA_OUTPUT_PATH)
+            _write_utf8(deserialized, METADATA_OUTPUT_PATH)
             print("✅ acquisition.json generated.")
 
             # Probe config for procedures metadata
@@ -230,7 +231,7 @@ def main():
             )
             serialized = procedures.model_dump_json()
             deserialized = Procedures.model_validate_json(serialized)
-            deserialized.write_standard_file(output_directory=METADATA_OUTPUT_PATH)
+            _write_utf8(deserialized, METADATA_OUTPUT_PATH)
             print("✅ procedures.json generated.")
         except Exception as e:
             print(f"Error generating procedures.json: {e}")

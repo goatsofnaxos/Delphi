@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-06-05T17-02-29",
+  "experiments": [
+    "Delphi"
+  ],
+  "auto_start": false,
+  "parallel": false,
+  "experiments_config": {
+    "Delphi": {
+      "root": "C:\\Users\\brandon.pratt\\Desktop\\code\\Delphi",
+      "workflow": "src/DelphiMain.bonsai",
+      "session_count": 2,
+      "parameters": {
+        "HardwareSettings": "src/schemas/hardware-schema.yml",
+        "RuleSettings": "src/schemas/rule-3.yml",
+        "NextRuleSettings": "src/schemas/rule-3.yml"
+      }
+    }
+  }
+}

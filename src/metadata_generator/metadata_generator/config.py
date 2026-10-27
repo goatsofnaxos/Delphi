@@ -24,6 +24,22 @@ load_dotenv()  # loads .env automatically
 
 
 def _as_bool(value: str | None, default: bool = False) -> bool:
+    """
+    Convert a string environment-variable value to bool.
+
+    Parameters
+    ----------
+    value : str or None
+        Raw string value (e.g. from ``os.getenv``). ``None`` triggers the default.
+    default : bool, optional
+        Value returned when *value* is ``None``. Default is ``False``.
+
+    Returns
+    -------
+    bool
+        ``True`` if *value* is one of ``{"1", "true", "yes", "y"}`` (case-insensitive),
+        otherwise ``False`` (or *default* when *value* is ``None``).
+    """
     if value is None:
         return default
     return value.lower() in {"1", "true", "yes", "y"}
@@ -54,6 +70,18 @@ class PipelineConfig:
 
 
 def build_config():
+    """
+    Build a ``PipelineConfig`` from CLI arguments and environment variables.
+
+    CLI arguments take precedence over environment variables. Missing required
+    fields (e.g. ``SUBJECT_ID``) will raise at construction time if neither
+    source provides a value.
+
+    Returns
+    -------
+    PipelineConfig
+        Fully populated pipeline configuration dataclass.
+    """
     args = parse_args()
 
     subject_id = args.subject_id or os.getenv("SUBJECT_ID")

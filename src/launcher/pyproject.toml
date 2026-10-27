@@ -1,0 +1,67 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "launcher"
+version = "0.1.0"
+description = "Interactive multi-experiment Bonsai workflow launcher for Delphi and Pirouette"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+authors = [
+  { name = "Brandon Pratt", email = "brandon.pratt@alleninstitute.org" }
+]
+
+keywords = [
+  "Bonsai",
+  "Delphi",
+  "Pirouette",
+  "launcher",
+  "neuroscience",
+]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: MIT License",
+]
+
+dependencies = [
+  # Process inspection — used to wait for lifealert child-process trees
+  "psutil>=6.0",
+
+  # YAML profile support (optional at runtime but declared here so the venv
+  # always has it available)
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.4",
+  "mypy>=1.9",
+]
+docs = [
+  "mkdocs>=1.6",
+  "mkdocs-material>=9.5",
+  "mkdocstrings[python]>=0.25",
+]
+
+[project.scripts]
+launcher = "launcher.launcher:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["launcher"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true

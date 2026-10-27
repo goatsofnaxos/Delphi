@@ -1,17 +1,8 @@
 {
-  "experiments": ["Delphi", "Pirouette"],
+  "experiments": ["Pirouette"],
   "auto_start": false,
   "parallel": false,
   "experiments_config": {
-    "Delphi": {
-      "root": "C:/Users/svc_aind_chronic/Documents/code/Delphi",
-      "workflow": "src/DelphiMain.bonsai",
-      "parameters": {
-        "HardwareSettings": "src/schemas/hardware-schema.yml",
-        "RuleSettings": "src/schemas/rule-3.yml",
-        "NextRuleSettings": "src/schemas/rule-3.yml"
-      }
-    },
     "Pirouette": {
       "root": "C:/Users/svc_aind_chronic/Documents/code/Aind.Behavior.Pirouette",
       "workflow": "src/WrappedPirouette.bonsai",

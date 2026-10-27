@@ -24,7 +24,7 @@
     "Pirouette": {
       "name": "Pirouette",
       "WorkflowRoot": [
-        "C:\\Users\\brandon.pratt\\Desktop\\code\\Aind.Behavior.Pirouette"
+        "C:/Users/brandon.pratt/Desktop/code/Aind.Behavior.Pirouette"
       ],
       "workflows": [
         "src/WrappedPirouette.bonsai"

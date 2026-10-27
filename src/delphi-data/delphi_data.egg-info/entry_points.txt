@@ -1,0 +1,2 @@
+[console_scripts]
+delphi-data = delphi_data.cli:main

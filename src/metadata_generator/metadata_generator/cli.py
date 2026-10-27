@@ -4,6 +4,14 @@ from pathlib import Path
 
 
 def parse_args():
+    """
+    Parse command-line arguments for the metadata generation pipeline.
+
+    Returns
+    -------
+    argparse.Namespace
+        Parsed argument namespace with all pipeline configuration fields.
+    """
     parser = argparse.ArgumentParser(description="Generate AIND metadata files")
 
     parser.add_argument("--subject-id", help="Subject ID")

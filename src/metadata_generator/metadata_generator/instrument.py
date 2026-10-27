@@ -52,11 +52,20 @@ def get_behavior_enclosure(instrument):
     """
     Determine whether the instrument uses a Delphi cage or a Pirouette behavior box.
 
+    Parameters
+    ----------
+    instrument : Instrument
+        AIND Instrument object whose ``components`` list is searched for an ``Enclosure``.
+
     Returns
     -------
-    (enclosure, kind) where kind is one of:
-      - "delphi"
-      - "pirouette"
+    tuple[Enclosure, str]
+        ``(enclosure, kind)`` where *kind* is one of ``"delphi"`` or ``"pirouette"``.
+
+    Raises
+    ------
+    ValueError
+        If no ``Enclosure`` component is found, or the enclosure name is unrecognised.
     """
     enclosures = [c for c in instrument.components if isinstance(c, Enclosure)]
 
@@ -80,25 +89,58 @@ def get_behavior_enclosure(instrument):
 # HELPER Delphi metadata parsing
 # ------------------------------
 def parse_delphi_metadata(metadata_path: Path):
+    """
+    Parse Delphi HardwareSettings and RuleSettings JSONL files.
 
-    # load .jsonl file
+    Parameters
+    ----------
+    metadata_path : Path
+        Directory containing Delphi metadata files (``*HardwareSettings*.jsonl``
+        and ``*RuleSettings*.jsonl``).
+
+    Returns
+    -------
+    tuple[list, dict]
+        ``(delphi_hardware, delphi_rules)`` where *delphi_hardware* is a list of
+        hardware-settings records and *delphi_rules* maps odor name to channel index.
+    """
     metadatafiles = os.listdir(metadata_path)
-    for file in metadatafiles:
-        if "HardwareSettings" in file:
-            delphi_metadata_path = pathlib.Path.cwd().joinpath(metadata_path, file)
 
-            # Open the JSONL file
-            with open(delphi_metadata_path, "r") as jsonl_file:
-                # Read and parse each line into a list of dictionaries
-                delphi_hardware = [json.loads(line) for line in jsonl_file]
+    delphi_rules = {}  # initialize once
+    delphi_hardware = []  # (optional: same fix for hardware if needed)
+
+    for file in metadatafiles:
+        full_path = pathlib.Path.cwd().joinpath(metadata_path, file)
+
+        if "HardwareSettings" in file:
+            with open(full_path, "r") as jsonl_file:
+                delphi_hardware.extend(json.loads(line) for line in jsonl_file)
 
         if "RuleSettings" in file:
-            rule_metadata_path = pathlib.Path.cwd().joinpath(metadata_path, file)
+            full_path = pathlib.Path.cwd().joinpath(metadata_path, file)
 
-            # Open the JSONL file
-            with open(rule_metadata_path, "r") as jsonl_file:
-                # Read and parse each line into a list of dictionaries
-                delphi_rules = [json.loads(line) for line in jsonl_file]
+            with open(full_path, "r") as jsonl_file:
+                for line in jsonl_file:
+                    record = json.loads(line)
+
+                    try:
+                        state_defs = record["value"]["rule"]["stateDefinitions"]
+                    except KeyError:
+                        continue  # skip malformed entries safely
+
+                    for odor in state_defs:
+                        name = odor.get("name")
+
+                        if not name or name == "DefaultState":
+                            continue
+
+                        try:
+                            idx = int(math.log2(odor["odorIndex"]))
+                        except (KeyError, ValueError):
+                            continue
+
+                        # store in dictionary (deduplicates automatically)
+                        delphi_rules[name] = idx
 
     return delphi_hardware, delphi_rules
 
@@ -106,6 +148,34 @@ def parse_delphi_metadata(metadata_path: Path):
 # -------------------------
 # CREATE METADATA OBJECTS
 # -------------------------
+
+
+def _normalize_probe_model(name: str) -> str:
+    """Map probe annotation names (old and new formats) to AIND EphysProbe enum values.
+
+    Handles both the old parenthesis format (e.g. "Neuropixels 2.0 (multishank)")
+    and the new dash format (e.g. "Neuropixels 2.0 - multishank"), with
+    case-insensitive matching. Falls back to "Custom" if no match is found.
+    """
+    n = name.lower().replace("-", " ").replace("(", " ").replace(")", " ")
+    if "2.0" in n and "multi" in n:
+        return "Neuropixels 2.0 (Multi Shank)"
+    elif "2.0" in n and "single" in n:
+        return "Neuropixels 2.0 (Single Shank)"
+    elif "2.0" in n and "quad" in n:
+        return "Neuropixels 2.0 (Quad Base)"
+    elif "uhd" in n and "switch" in n:
+        return "Neuropixels UHD (Switchable)"
+    elif "uhd" in n and "fixed" in n:
+        return "Neuropixels UHD (Fixed)"
+    elif "uhd" in n:
+        return "Neuropixels UHD (Fixed)"
+    elif "opto" in n:
+        return "Neuropixels Opto (Demonstrator)"
+    elif "1.0" in n:
+        return "Neuropixels 1.0"
+    else:
+        return "Custom"
 
 
 def create_instrument_metadata(
@@ -170,11 +240,8 @@ def create_instrument_metadata(
         with probe_json_path.open("r", encoding="utf-8") as f:
             probe_json = json.load(f)
 
-        probe_model = (
+        probe_model = _normalize_probe_model(
             probe_json["probes"][0]["annotations"]["name"]
-            .replace(" - ", " (")
-            .replace("Multishank", "Multi Shank")
-            + ")"
         )
 
         # ---- HARP
@@ -404,59 +471,55 @@ def create_instrument_metadata(
         else:
             delphi_computer = Computer(name=rig_json["rig_name"])  # Same as pirouette computer
 
-        """Delphi Controller"""
-        # channels
-        odor_transitions = delphi_rules[0]["value"]["rule"]["stateDefinitions"]
-        odor_channels = []
-        for odor in odor_transitions:
-            odor_name = odor["name"]
-            odor_idx = int(math.log2(odor["odorIndex"]))
-            if odor_name != "DefaultState":
-                odor_channels.append(
-                    OlfactometerChannel(
-                        channel_index=odor_idx,
-                        channel_type=OlfactometerChannelType.ODOR,
-                        flow_unit="mL/min",
-                    )
+        if delphi_hardware:
+            """Delphi Controller"""
+            # channels
+            odor_channels = [
+                OlfactometerChannel(
+                    channel_index=idx,
+                    channel_type=OlfactometerChannelType.ODOR,
+                    flow_unit="mL/min",
                 )
+                for name, idx in sorted(delphi_rules.items(), key=lambda x: x[1])
+            ]
 
-        # delphi controller device
-        harp_delphi_controller = Olfactometer(
-            manufacturer=Organization.AIND,
-            name="Delphi Controller",
-            harp_device_type=HarpDeviceType.OLFACTOMETER,
-            core_version="1.0",
-            channels=odor_channels,
-            is_clock_generator=False,
-            notes="whoami=1409 and flow rate is actually set to 75 mL/min",
-        )
-        components.append(harp_delphi_controller)
-
-        connections.append(
-            Connection(
-                source_device="Delphi Controller",
-                target_device=delphi_computer.name,
+            # delphi controller device
+            harp_delphi_controller = Olfactometer(
+                manufacturer=Organization.AIND,
+                name="Delphi Controller",
+                harp_device_type=HarpDeviceType.OLFACTOMETER,
+                core_version="1.0",
+                channels=odor_channels,
+                is_clock_generator=False,
+                notes="whoami=1409 and flow rate is actually set to 75 mL/min",
             )
-        )
+            components.append(harp_delphi_controller)
 
-        """Poke Port"""
-        poke_port = Device(
-            name="Poke Port",
-            manufacturer=Organization.AIND,
-            notes="https://github.com/AllenNeuralDynamics/harp.peripheral.poke-port",
-        )
-        components.append(poke_port)
-
-        connections.append(
-            Connection(
-                source_device="Poke Port",
-                target_device="Delphi Controller",
-                target_port=f"POKE0_Pin {delphi_hardware[0]['value']['delphiController']['pokePin']}",
+            connections.append(
+                Connection(
+                    source_device="Delphi Controller",
+                    target_device=delphi_computer.name,
+                )
             )
-        )
+
+            """Poke Port"""
+            poke_port = Device(
+                name="Poke Port",
+                manufacturer=Organization.AIND,
+                notes="https://github.com/AllenNeuralDynamics/harp.peripheral.poke-port",
+            )
+            components.append(poke_port)
+
+            connections.append(
+                Connection(
+                    source_device="Poke Port",
+                    target_device="Delphi Controller",
+                    target_port=f"POKE0_Pin {delphi_hardware[0]['value']['delphiController']['pokePin']}",
+                )
+            )
 
         # Pirouette doesn't use cameras from delphi workflow, but delphi only does
-        if "pirouette" not in current_experiment:
+        if "pirouette" not in current_experiment and delphi_hardware:
             """Cameras"""
             # camera lens
             lens = Lens(
@@ -473,7 +536,7 @@ def create_instrument_metadata(
                     detector_type="Camera",
                     data_interface="USB",
                     manufacturer=Organization.FLIR,
-                    frame_rate=cam["frameRate"],
+                    frame_rate=camera["frameRate"],
                     frame_rate_unit=FrequencyUnit.HZ,
                     sensor_width=1440,
                     sensor_height=1080,
@@ -500,12 +563,13 @@ def create_instrument_metadata(
                     )
                 )
 
+                rel_pos = AnatomicalRelative.SUPERIOR if "Top" in camera["cameraName"] else AnatomicalRelative.LEFT
                 cam_assemblies.append(
                     CameraAssembly(
                         name=f"{camera['cameraName']}_assembly",
                         target=CameraTarget.BODY,
                         relative_position=[rel_pos],
-                        camera=camera["cameraName"],
+                        camera=cam,
                         lens=lens,
                     )
                 )
@@ -523,6 +587,8 @@ def create_instrument_metadata(
                 notes="https://www.allentowninc.com/rodent-housing/nexgen/",
             )
             components.append(delphi_cage)
+            for cam_assembly in cam_assemblies:
+                components.append(cam_assembly)
 
             # modalities
             modalities.append(Modality.BEHAVIOR)

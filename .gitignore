@@ -12,13 +12,13 @@ Packages
 # python files
 .venv
 *.pyc
+site/
 
 # data files
 *.avi
 *.bin
 *.csv
 *.jsonl
-.env
 
 *.mp4
 /src/LocalRules
