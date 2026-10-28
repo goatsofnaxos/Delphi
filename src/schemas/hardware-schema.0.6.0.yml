@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=hardware-schema.json
 subject_id: '801055'
 session_time: '2024-06-01_12-00-00'
-logging_root_path: C:/Users/svc_aind_chronic/Documents/data/test_data/local
+logging_root_path: D:/Data
 robocopy_script_path: C:/Users/svc_aind_chronic/Documents/code/Delphi/src/python/robocopy.py
 remote_transfer_root_path: //allen/aind/stage/chronic/data
 
