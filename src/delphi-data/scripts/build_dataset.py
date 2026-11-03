@@ -50,6 +50,7 @@ def consolidate_session(
     data_root: pathlib.Path,
     consolidate_runs: bool = True,
     rename_conflicts: bool = False,
+    settle_minutes: float = _s.settle_minutes,
 ) -> pathlib.Path:
     """Consolidate run sub-directories and move metadata files into place.
 
@@ -72,6 +73,10 @@ def consolidate_session(
         …) rather than skipped.  Useful when a Bonsai restart creates a new
         run whose first hour-chunk shares a filename with the previous run.
         Default ``False``.
+    settle_minutes:
+        Minutes a file (and its hour-chunk) must have been finished before it
+        is moved, so chunks the acquisition is still writing are left for a
+        later run.  Default from ``DELPHI_SETTLE_MINUTES`` (10).
 
     Returns
     -------
@@ -85,8 +90,12 @@ def consolidate_session(
         print(f"Detected {len(ts_run_dirs)} run directories in session: {data_root}")
         if consolidate_runs:
             print("Consolidating run directories …")
-            consolidate_session_runs(str(data_root), rename_conflicts=rename_conflicts)
-            print("Consolidation complete.")
+            # Prints its own summary, including any files left behind.
+            consolidate_session_runs(
+                str(data_root),
+                rename_conflicts=rename_conflicts,
+                settle_s=settle_minutes * 60,
+            )
         else:
             print("Warning: multiple runs detected but consolidation is disabled.")
         ts_run_dirs = collect_run_dirs(str(data_root))
@@ -117,6 +126,7 @@ def build_dataset(
     consolidate_runs: bool = True,
     rename_conflicts: bool = False,
     append: bool = False,
+    settle_minutes: float = _s.settle_minutes,
 ) -> "pd.DataFrame":
     """Build a Delphi dataset and save the per-poke CSV to the behavior folder.
 
@@ -145,13 +155,20 @@ def build_dataset(
         ingest the full session and append new rows to the existing CSV,
         keeping the first occurrence of each ``beam_break_onset`` value.
         When ``False`` (default), the existing CSV is overwritten.
+    settle_minutes:
+        Passed to :func:`consolidate_session`.
 
     Returns
     -------
     pd.DataFrame
         The per-poke event dataframe that was saved to CSV.
     """
-    data_root = consolidate_session(data_root, consolidate_runs=consolidate_runs, rename_conflicts=rename_conflicts)
+    data_root = consolidate_session(
+        data_root,
+        consolidate_runs=consolidate_runs,
+        rename_conflicts=rename_conflicts,
+        settle_minutes=settle_minutes,
+    )
 
     df = ingest(
         data_root_path=data_root,
@@ -253,6 +270,15 @@ def _parse_args(argv=None) -> argparse.Namespace:
             f"[env: DELPHI_RENAME_CONFLICTS, current: {_s.rename_conflicts}]"
         ),
     )
+    parser.add_argument(
+        "--settle-minutes", type=float, default=_s.settle_minutes,
+        help=(
+            "When consolidating run sub-directories, minutes a file (and its "
+            "hour-chunk) must have been finished before it is moved.  Chunks "
+            "the acquisition is still writing are left for a later run.  "
+            f"[env: DELPHI_SETTLE_MINUTES, current: {_s.settle_minutes}]"
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -264,6 +290,7 @@ if __name__ == "__main__":
             pathlib.Path(args.data_root),
             consolidate_runs=True,
             rename_conflicts=args.rename_conflicts,
+            settle_minutes=args.settle_minutes,
         )
         print("Done.")
     else:
@@ -276,4 +303,5 @@ if __name__ == "__main__":
             firmware=args.firmware,
             consolidate_runs=not args.no_consolidate,
             rename_conflicts=args.rename_conflicts,
+            settle_minutes=args.settle_minutes,
         )

@@ -130,9 +130,10 @@ def _cmd_consolidate(args: argparse.Namespace) -> None:
         Parsed namespace from the ``consolidate`` sub-parser.
     """
     from delphi_data.curation import consolidate_session_runs
+    from delphi_data.settings import settings as _s
 
-    consolidate_session_runs(args.data_root)
-    print("Consolidation complete.")
+    # Prints its own summary, including any files left behind.
+    consolidate_session_runs(args.data_root, settle_s=_s.settle_minutes * 60)
 
 
 def _cmd_create_clips(args: argparse.Namespace) -> None:

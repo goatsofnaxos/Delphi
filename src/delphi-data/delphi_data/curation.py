@@ -2,13 +2,33 @@ import hashlib
 import logging
 import os
 import pathlib
+import re
 import shutil
-from datetime import datetime
+import time
+from collections import Counter
+from datetime import datetime, timezone
 from typing import Optional
 
 from tqdm import tqdm
 
 log = logging.getLogger(__name__)
+
+#: Acquisition chunk files carry their start time (UTC) in the filename,
+#: e.g. ``OnixEphys_AmplifierData_2026-09-09T19-00-00.bin``.
+_CHUNK_TS_RE = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}")
+
+#: Duration of one acquisition chunk file.  A file is not complete until its
+#: chunk has ended.
+CHUNK_DURATION_S: float = 3600.0
+
+#: Minimum time since a file's last modification (and since its chunk ended)
+#: before it is considered complete and safe to move.
+DEFAULT_SETTLE_S: float = 600.0
+
+# Sampled comparison of two files: this many blocks of this size, spread
+# evenly over the shorter file (which is read whole when it is smaller).
+_COMPARE_BLOCKS = 8
+_COMPARE_BLOCK_SIZE = 4 * 1024 * 1024
 
 
 def is_timestamp_dir(name: str) -> bool:
@@ -85,12 +105,24 @@ def fast_move_with_optional_checksum(src_file: str, dst_file: str) -> None:
     ensures that an interrupted copy (conductor restart, network blip) never
     leaves a partial file at the real destination path.
 
+    A cross-filesystem move is aborted when the source changes during the copy
+    (it is still being written), and undone when the source cannot be removed
+    afterwards (it is still held open), so a file never ends up split between a
+    truncated copy at the destination and the full file at the source.
+
     Parameters
     ----------
     src_file:
         Absolute path of the source file.
     dst_file:
         Absolute path of the destination file.
+
+    Raises
+    ------
+    RuntimeError
+        If the checksums differ or the source changed during the copy.
+    OSError
+        If the source cannot be moved or removed.
     """
     if same_filesystem(src_file, dst_file):
         # Fast path (no copy, no hashing)
@@ -102,22 +134,30 @@ def fast_move_with_optional_checksum(src_file: str, dst_file: str) -> None:
     # verified the temp file is atomically renamed into place, then the source
     # is removed.
     tmp_file = dst_file + ".tmp"
+    before = os.stat(src_file)
     try:
         src_hash = compute_sha256(src_file)
         shutil.copy2(src_file, tmp_file)
         dst_hash = compute_sha256(tmp_file)
+        after = os.stat(src_file)
+        if (after.st_size, after.st_mtime_ns) != (before.st_size, before.st_mtime_ns):
+            raise RuntimeError(f"source changed during copy (still being written?): {src_file}")
         if src_hash != dst_hash:
-            print(f"\nWARNING: checksum mismatch for {dst_file} — aborting move")
-            os.remove(tmp_file)
-            return
+            raise RuntimeError(f"checksum mismatch for {dst_file}")
         os.replace(tmp_file, dst_file)
-        os.remove(src_file)
     except Exception:
         # Clean up the temp file on any failure so the next attempt starts fresh.
         try:
             os.remove(tmp_file)
         except OSError:
             pass
+        raise
+    try:
+        os.remove(src_file)
+    except OSError:
+        # The source is still held open (e.g. by the acquisition).  Remove the
+        # copy so the data stays in one place, the source, for the next attempt.
+        os.remove(dst_file)
         raise
 
 
@@ -213,27 +253,150 @@ def _resolve_conflict_dst(dst_file: str) -> str:
     return candidate
 
 
+def is_file_in_progress(
+    file_path: str,
+    settle_s: float = DEFAULT_SETTLE_S,
+    chunk_s: float = CHUNK_DURATION_S,
+    now: Optional[float] = None,
+) -> bool:
+    """Return ``True`` if *file_path* may still be written by the acquisition.
+
+    A file counts as in progress when either
+
+    * it was modified less than *settle_s* seconds ago, or
+    * its filename carries a chunk start time (UTC, ``YYYY-MM-DDTHH-MM-SS``)
+      and that chunk ended less than *settle_s* seconds ago.
+
+    The filename check matters because a file held open by Bonsai, especially
+    on a network share, can keep the modification time of its creation until
+    it is closed, so the modification time alone does not reveal it.
+
+    Parameters
+    ----------
+    file_path:
+        Path of the file to test.
+    settle_s:
+        Seconds a file (and its chunk) must have been finished for.
+    chunk_s:
+        Duration of one chunk file in seconds.
+    now:
+        Current POSIX time; ``None`` uses :func:`time.time`.
+
+    Returns
+    -------
+    bool
+    """
+    now = time.time() if now is None else now
+    if now - os.path.getmtime(file_path) < settle_s:
+        return True
+    match = _CHUNK_TS_RE.search(os.path.basename(file_path))
+    if match:
+        start = datetime.strptime(match.group(), "%Y-%m-%dT%H-%M-%S")
+        start_s = start.replace(tzinfo=timezone.utc).timestamp()
+        if now < start_s + chunk_s + settle_s:
+            return True
+    return False
+
+
+def is_prefix_of(short_file: str, long_file: str) -> bool:
+    """Return ``True`` if the bytes of *short_file* match the start of *long_file*.
+
+    This is how a truncated copy of a chunk (taken while it was still being
+    written) is recognised.  *short_file* is compared whole when it is small;
+    otherwise ``_COMPARE_BLOCKS`` blocks spread evenly over it, including its
+    first and last bytes, are compared.
+
+    Parameters
+    ----------
+    short_file:
+        The candidate prefix.
+    long_file:
+        The file it may be a prefix of.
+
+    Returns
+    -------
+    bool
+        ``False`` when *short_file* is the larger of the two.
+    """
+    n = os.path.getsize(short_file)
+    if n > os.path.getsize(long_file):
+        return False
+    if n <= _COMPARE_BLOCKS * _COMPARE_BLOCK_SIZE:
+        blocks = [(0, n)]
+    else:
+        step = (n - _COMPARE_BLOCK_SIZE) / (_COMPARE_BLOCKS - 1)
+        blocks = [(round(i * step), _COMPARE_BLOCK_SIZE) for i in range(_COMPARE_BLOCKS)]
+    with open(short_file, "rb") as a, open(long_file, "rb") as b:
+        for offset, size in blocks:
+            a.seek(offset)
+            b.seek(offset)
+            if a.read(size) != b.read(size):
+                return False
+    return True
+
+
+def _resolve_existing_dst(
+    src_file: str,
+    dst_file: str,
+    rename_conflicts: bool,
+) -> tuple:
+    """Decide how to move *src_file* when *dst_file* already exists.
+
+    Returns
+    -------
+    tuple of (str, str or None, str)
+        The action (``"move"``, ``"removed"`` or ``"leave"``), the path to move
+        *src_file* to (``None`` unless moving), and a description.
+    """
+    src_size = os.path.getsize(src_file)
+    dst_size = os.path.getsize(dst_file)
+
+    if src_size == dst_size and compute_sha256(src_file) == compute_sha256(dst_file):
+        # Already moved (e.g. a copy whose source could not be removed).
+        os.remove(src_file)
+        return "removed", None, "identical to destination; source removed"
+    if dst_size < src_size and is_prefix_of(dst_file, src_file):
+        # The destination is a truncated copy taken while the chunk was being
+        # written; the source is the complete file.
+        return "move", dst_file, "destination is a truncated copy; replaced with the complete file"
+    if src_size < dst_size and is_prefix_of(src_file, dst_file):
+        return "leave", None, "source is a truncated copy of the destination"
+    if rename_conflicts:
+        # Both files are real data — keep both by renaming the source.
+        return "move", _resolve_conflict_dst(dst_file), "different file with the same name; renamed"
+    return "leave", None, "different file with the same name (rename_conflicts keeps both)"
+
+
 def move_contents_with_progress(
     src_dir: str,
     dst_dir: str,
     rename_conflicts: bool = False,
-) -> None:
+    settle_s: float = DEFAULT_SETTLE_S,
+) -> list:
     """Recursively move the contents of *src_dir* into *dst_dir* with a progress bar.
 
     Uses :func:`fast_move_with_optional_checksum` for each file, so same-
     filesystem moves are instant while cross-filesystem moves are checksum-
     verified.
 
+    Files that may still be written by the acquisition (see
+    :func:`is_file_in_progress`) are left in place for a later run.  Moving a
+    chunk while Bonsai is writing it leaves a truncated copy at the destination
+    and the rest of the data behind in *src_dir*.
+
     When a destination file already exists:
 
-    * ``rename_conflicts=False`` (default): destination files that are already
-      at least as large as the source are skipped; partial destinations (smaller
-      than source) are removed and re-transferred so an interrupted
-      cross-filesystem copy does not leave stale incomplete files.
-    * ``rename_conflicts=True``: the source file is moved to a non-colliding
-      name (``{stem}_1{ext}``, ``{stem}_2{ext}``, …) so both files are kept.
-      Use this when a Bonsai restart creates a new run directory whose first
-      hour-chunk shares a filename with the last hour-chunk of the previous run.
+    * identical to the source: the source is removed.
+    * a truncated copy of the source (byte prefix, see :func:`is_prefix_of`):
+      it is replaced with the complete source file.
+    * the source is a truncated copy of the destination: the source is left
+      in place.
+    * a different file with the same name: with ``rename_conflicts=True`` the
+      source is moved to a non-colliding name (``{stem}_1{ext}``,
+      ``{stem}_2{ext}``, …) so both files are kept; otherwise it is left in
+      place.  Use ``rename_conflicts`` when a Bonsai restart creates a new run
+      directory whose first hour-chunk shares a filename with the last
+      hour-chunk of the previous run.
 
     Parameters
     ----------
@@ -242,14 +405,24 @@ def move_contents_with_progress(
     dst_dir:
         Destination directory.  Created automatically if it does not exist.
     rename_conflicts:
-        When *True*, rename conflicting source files rather than skipping or
-        overwriting them.  Default *False*.
+        When *True*, keep both files of a same-name conflict by renaming the
+        source.  Default *False*.
+    settle_s:
+        Seconds a file (and its chunk) must have been finished before it is
+        moved.  Default :data:`DEFAULT_SETTLE_S`.
+
+    Returns
+    -------
+    list of tuple of (str, str)
+        ``(source path, reason)`` for every file left in *src_dir*.
     """
     total_files = count_files(src_dir)
+    left_behind = []
 
     if total_files == 0:
-        return
+        return left_behind
 
+    now = time.time()
     with tqdm(
         total=total_files,
         desc=f"Consolidating data: Moving {os.path.basename(src_dir)}",
@@ -265,41 +438,32 @@ def move_contents_with_progress(
                 src_file = os.path.join(root, file)
                 dst_file = os.path.join(target_root, file)
 
-                if os.path.exists(dst_file):
-                    try:
-                        dst_size = os.path.getsize(dst_file)
-                        src_size = os.path.getsize(src_file)
-                    except OSError:
+                try:
+                    if is_file_in_progress(src_file, settle_s=settle_s, now=now):
+                        left_behind.append((src_file, "may still be written by the acquisition"))
                         pbar.update(1)
                         continue
 
-                    if rename_conflicts:
-                        # Both files are real data — keep both by renaming the source.
-                        dst_file = _resolve_conflict_dst(dst_file)
-                        print(f"\nConflict — renaming to: {dst_file}")
-                    else:
-                        if dst_size >= src_size:
+                    if os.path.exists(dst_file):
+                        action, dst_file, reason = _resolve_existing_dst(
+                            src_file, dst_file, rename_conflicts
+                        )
+                        if action != "move":
+                            print(f"\nConflict — {reason}: {src_file}")
+                            if action == "leave":
+                                left_behind.append((src_file, reason))
                             pbar.update(1)
                             continue
-                        # dst is smaller than src — interrupted cross-filesystem copy.
-                        # Remove the partial file so the move is retried.
-                        try:
-                            os.remove(dst_file)
-                            print(
-                                f"\nPartial destination removed ({dst_size} < {src_size} bytes): "
-                                f"{dst_file}"
-                            )
-                        except OSError as e:
-                            print(f"\nERROR removing partial destination {dst_file}: {e}")
-                            pbar.update(1)
-                            continue
+                        print(f"\nConflict — {reason}: {dst_file}")
 
-                try:
                     fast_move_with_optional_checksum(src_file, dst_file)
                 except Exception as e:
                     print(f"\nERROR moving {src_file}: {e}")
+                    left_behind.append((src_file, f"error: {e}"))
 
                 pbar.update(1)
+
+    return left_behind
 
 
 def remove_all_empty_dirs(directory: str) -> None:
@@ -330,12 +494,18 @@ def remove_all_empty_dirs(directory: str) -> None:
 def consolidate_session_runs(
     session_root: str,
     rename_conflicts: bool = False,
-) -> None:
+    settle_s: float = DEFAULT_SETTLE_S,
+) -> list:
     """Consolidate multiple run sub-directories in *session_root* into the earliest one.
 
     Identifies all timestamp-named run directories, moves the contents of
     every later run into the earliest run using
     :func:`move_contents_with_progress`, then removes empty directories.
+
+    Safe to run while the acquisition is still writing: files that may still
+    be written are left for the next run, and a truncated copy left at the
+    destination by an earlier consolidation is replaced with the complete
+    file.  Every file left behind is listed in a warning at the end.
 
     Parameters
     ----------
@@ -344,8 +514,17 @@ def consolidate_session_runs(
         run sub-directories (e.g. ``2026-03-20T20-23-37``).
     rename_conflicts:
         When *True*, conflicting filenames are renamed (``{stem}_1{ext}``, …)
-        rather than skipped.  See :func:`move_contents_with_progress`.
+        rather than left in place.  See :func:`move_contents_with_progress`.
         Default *False*.
+    settle_s:
+        Seconds a file (and its chunk) must have been finished before it is
+        moved.  See :func:`is_file_in_progress`.  Default
+        :data:`DEFAULT_SETTLE_S`.
+
+    Returns
+    -------
+    list of tuple of (str, str)
+        ``(source path, reason)`` for every file left in a later run directory.
 
     Raises
     ------
@@ -362,17 +541,20 @@ def consolidate_session_runs(
 
     if len(run_dirs) < 2:
         print("Nothing to do (need at least 2 run directories).")
-        return
+        return []
 
     earliest_run = find_earliest_run(run_dirs)
     print(f"Earliest run: {earliest_run}")
 
+    left_behind = []
     for run_dir in run_dirs:
         if run_dir == earliest_run:
             continue
 
         print(f"\nProcessing: {run_dir}")
-        move_contents_with_progress(run_dir, earliest_run, rename_conflicts=rename_conflicts)
+        left_behind += move_contents_with_progress(
+            run_dir, earliest_run, rename_conflicts=rename_conflicts, settle_s=settle_s
+        )
 
         # Cleanup empty structure
         remove_all_empty_dirs(run_dir)
@@ -391,7 +573,17 @@ def consolidate_session_runs(
             except OSError:
                 pass
 
-    print("\nConsolidation complete.")
+    if left_behind:
+        counts = Counter(reason for _, reason in left_behind)
+        print(f"\nWARNING: consolidation incomplete — {len(left_behind)} file(s) left in later run directories:")
+        for reason, n in counts.most_common():
+            print(f"  {n:5d}  {reason}")
+        for src_file, reason in sorted(left_behind):
+            print(f"    {src_file}  [{reason}]")
+        print("Re-run consolidation once the acquisition has finished writing these files.")
+    else:
+        print("\nConsolidation complete.")
+    return left_behind
 
 
 # ---------------------------------------------------------------------------
