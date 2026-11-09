@@ -260,6 +260,11 @@ class _Settings:
         Useful when a Bonsai restart creates a new run whose first hour-chunk
         shares a filename with the last hour-chunk of the previous run.
         ``DELPHI_RENAME_CONFLICTS`` — default ``False``.
+    settle_minutes:
+        When consolidating run sub-directories, minutes a file (and its
+        hour-chunk) must have been finished before it is moved, so chunks the
+        acquisition is still writing are left for a later run.
+        ``DELPHI_SETTLE_MINUTES`` — default ``10``.
     consolidate_only:
         Consolidate run sub-directories and move metadata files, then exit
         without building the dataset CSV.  Overrides ``no_consolidate`` and
@@ -306,6 +311,7 @@ class _Settings:
     no_consolidate:     bool           = _bool("DELPHI_NO_CONSOLIDATE", False)
     consolidate_only:   bool           = _bool("DELPHI_CONSOLIDATE_ONLY", False)
     rename_conflicts:   bool           = _bool("DELPHI_RENAME_CONFLICTS", False)
+    settle_minutes:     float          = _float("DELPHI_SETTLE_MINUTES", 10.0)
     dataset_append:     bool           = _bool("DELPHI_DATASET_APPEND", False)
 
     # Pipeline step toggles
@@ -338,6 +344,7 @@ class _Settings:
             f"no_delete={self.no_delete}",
             f"no_consolidate={self.no_consolidate}",
             f"rename_conflicts={self.rename_conflicts}",
+            f"settle_minutes={self.settle_minutes}",
             f"consolidate_only={self.consolidate_only}",
             f"experiment={self.experiment!r}",
             f"skip_build={self.skip_build}",
